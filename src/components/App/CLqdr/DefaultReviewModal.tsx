@@ -10,8 +10,7 @@ import { PrimaryButton } from 'components/Button'
 import InputBox from 'components/InputBox'
 import ModalInfo from 'components/ReviewModal/ModalInfo'
 import InputBoxInDollar from 'components/App/StableCoin/InputBoxInDollar'
-import LottieDei from 'components/Icons/LottieDei'
-import { darken } from 'polished'
+import LottieDeus from 'components/Icons/LottieDeus'
 
 const MainModal = styled(Modal)`
   display: flex;
@@ -34,7 +33,7 @@ const Wrapper = styled.div`
   margin: 0 15px;
   gap: 0.8rem;
   padding: 1.5rem 0;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
   height: auto;
 `
 
@@ -88,37 +87,39 @@ const ConfirmButton = styled(PrimaryButton)`
   margin: 0 auto;
   margin-bottom: 20px;
   border-radius: 12px;
-  background: ${({ theme }) => theme.cLqdrColor};
-  color: ${({ theme }) => theme.black};
+
+  background: ${({ theme }) => theme.primary5};
+  color: ${({ theme, disabled }) => (disabled ? theme.white : theme.black)};
 
   &:hover {
-    background: ${({ theme }) => darken(0.1, theme.cLqdrColor)};
+    background: linear-gradient(270deg, #14e8e3 -1.33%, #01aef3 100%);
   }
 
   ${({ theme, disabled }) =>
     disabled &&
     `
-    color: ${theme.text1}
-    background: ${theme.bg2};
-    border: 1px solid ${theme.border1};
-    cursor: default;
+      background: ${theme.bg2};
+      border: 1px solid ${theme.border1};
+      cursor: default;
 
-    &:focus,
-    &:hover {
-    background: ${theme.bg2};
-    }
+      &:focus,
+      &:hover {
+        background: ${theme.bg2};
+      }
   `}
 `
 
 const Separator = styled.div`
-  height: 1px;
-  background: ${({ theme }) => theme.border2};
+  height: 2px;
+  background: ${({ theme }) => theme.bg4};
 `
 
 const SeparatorLight = styled.div`
   height: 2px;
-  background: ${({ theme }) => theme.bg2};
-  margin-top: 30px;
+  background: ${({ theme }) => theme.bg4};
+  margin-top: 15px;
+  width: 440px;
+  margin-left: -16px;
 `
 
 export default function DefaultReviewModal({
@@ -152,11 +153,11 @@ export default function DefaultReviewModal({
 }) {
   return (
     <MainModal isOpen={isOpen} onBackgroundClick={() => toggleModal(false)} onEscapeKeydown={() => toggleModal(false)}>
-      <ModalHeader onClose={() => toggleModal(false)} title={awaiting ? 'Confirmation' : title} border={false} />
+      <ModalHeader onClose={() => toggleModal(false)} title={awaiting ? 'Confirmation' : title} border={true} />
       {awaiting ? (
         <AwaitingWrapper>
           <LottieWrap>
-            <LottieDei />
+            <LottieDeus />
           </LottieWrap>
 
           <RowCenter>
@@ -208,6 +209,8 @@ export default function DefaultReviewModal({
               )
             )}
           </TokenResultWrapper>
+          <SeparatorLight />
+
           <ModalInfo info={info} />
         </Wrapper>
       )}

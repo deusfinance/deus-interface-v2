@@ -8,7 +8,7 @@ const Wrapper = styled(TopTableau)`
   background: ${({ theme }) => theme.bg1};
 `
 const Title = styled(TableauTitle)`
-  color: ${({ theme }) => theme.cLqdrColor};
+  color: ${({ theme }) => theme.blueClqdrColor};
 `
 
 export default function Tableau({ title, imgSrc }: { title: string; imgSrc: string }) {

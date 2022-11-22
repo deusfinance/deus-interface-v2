@@ -11,15 +11,28 @@ const Wrapper = styled.div`
 `
 
 const Title = styled(RowStart)`
+  font-family: 'Noto Sans';
   font-size: 12px;
   line-height: 16px;
-  color: ${({ theme }) => theme.text2};
+
+  color: ${({ theme }) => theme.text5};
 `
 
 const Value = styled(RowEnd)`
   font-size: 12px;
   line-height: 16px;
   color: ${({ theme }) => theme.text1};
+
+  font-family: 'Noto Sans Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+  text-align: right;
+
+  color: ${({ theme }) => theme.text6};
 `
 
 export default function ModalInfo({ info }: { info: { title: string; value: string }[] }) {

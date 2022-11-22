@@ -69,6 +69,8 @@ function colors(themeName: SupportedThemes): Colors {
       text2: '#78787B',
       text3: '#808086',
       text4: '#B8B8BE',
+      text5: '#79868C',
+      text6: '#dce7eb',
 
       // backgrounds / greys
       bg0: '#FFFFFF',
@@ -82,6 +84,7 @@ function colors(themeName: SupportedThemes): Colors {
       border1: '#B8B8BE',
       border2: 'rgba(99, 126, 161, 0.2)',
       border3: 'rgba(99, 126, 161, 0.2)',
+      border4: '#101010',
 
       //specialty colors
       specialBG1: 'linear-gradient(90deg, #ffb56c 0%, #ff538f 100%)',
@@ -96,6 +99,7 @@ function colors(themeName: SupportedThemes): Colors {
       primary5: 'linear-gradient(92.33deg, #8f3e5c -10.26%, #a97d4d 80%)',
       primary6: 'linear-gradient(-90deg, #B63562 10%, #CF8D49 90%)',
       primary7: 'linear-gradient(90deg, #B63562 10%, #CF8D49 90%)',
+      primary8: 'linear-gradient(90deg, #F78C2A 0%, #F34038 100%)',
 
       // color text
       primaryText1: '#FFB463',
@@ -116,6 +120,8 @@ function colors(themeName: SupportedThemes): Colors {
       blue1: '#0068FC',
       blue2: '#0068FC',
       darkPink: '#de4a7b',
+      orange: '#E59C46',
+      darkOrange: '#391D12',
 
       error: '#DF1F38',
       success: '#007D35',
@@ -123,6 +129,8 @@ function colors(themeName: SupportedThemes): Colors {
       deusColor: 'linear-gradient(90deg, #0badf4 0%, #30efe4 93.4%)',
       deiColor: 'linear-gradient(90deg, #E0974C 0%, #C93F6F 100%);',
       cLqdrColor: '#06EBC8',
+      blueClqdrColor: '#0ACBEB',
+      lqdrColor: 'linear-gradient(339.11deg, #1984FF 9.31%, #4DD9F6 96.03%)',
     },
     [SupportedThemes.DARK]: {
       themeName: SupportedThemes.DARK,
@@ -135,20 +143,23 @@ function colors(themeName: SupportedThemes): Colors {
       text1: '#EBEBEC',
       text2: '#6F7380',
       text3: '#55575F',
-      text4: '#B2B9D2',
+      text4: '#8F9390',
+      text5: '#79868C',
+      text6: '#dce7eb',
 
       // backgrounds / greys
-      bg0: '#101116',
-      bg1: '#14161C',
-      bg2: '#181A1F',
-      bg3: '#1B1D24',
-      bg4: '#23252C',
+      bg0: '#090909',
+      bg1: '#0A0A0A',
+      bg2: '#0D0D0D',
+      bg3: '#181A1F',
+      bg4: '#141414',
       bg5: '#181818', //TEST
 
       // borders
       border1: '#23252C',
       border2: '#101116',
       border3: '#2E2F33',
+      border4: '#101010',
 
       //specialty colors
       specialBG1: 'linear-gradient(90deg, #ffb56c 0%, #ff538f 100%)',
@@ -159,9 +170,11 @@ function colors(themeName: SupportedThemes): Colors {
       primary2: 'linear-gradient(92.33deg, #E29D52 -10.26%, #DE4A7B 80%)',
       primary3: '#FFBA35',
       primary4: 'linear-gradient(92.33deg, #DE4A7B -10.26%, #E29D52 80%)',
-      primary5: 'linear-gradient(-92.33deg, #421D2D -10.26%, #493625 80%)',
+      primary5: 'linear-gradient(270deg, #01AEF3 -1.33%, #14E8E3 100%)',
       primary6: 'linear-gradient(-90deg, #B63562 10%, #CF8D49 90%)',
       primary7: 'linear-gradient(90deg, #ff538f 10%, #ffb56c 90%)',
+      primary8: 'linear-gradient(90deg, #F78C2A 0%, #F34038 100%)',
+
       // color text
       primaryText1: '#1749FA',
 
@@ -173,7 +186,7 @@ function colors(themeName: SupportedThemes): Colors {
       red1: '#DD5D5D',
       red2: '#F82D3A',
       red3: '#D60000',
-      green1: '#27AE60',
+      green1: '#7CD985',
       yellow1: '#E3A507',
       yellow2: '#FF8F00',
       yellow3: '#F3B71E',
@@ -181,6 +194,8 @@ function colors(themeName: SupportedThemes): Colors {
       blue1: '#2172E5',
       blue2: '#5199FF',
       darkPink: '#de4a7b',
+      orange: '#E59C46',
+      darkOrange: '#391D12',
 
       error: '#FD4040',
       success: '#27AE60',
@@ -189,6 +204,8 @@ function colors(themeName: SupportedThemes): Colors {
       deusColor: 'linear-gradient(90deg, #0badf4 0%, #30efe4 93.4%)',
       deiColor: 'linear-gradient(90deg, #E0974C 0%, #C93F6F 100%);',
       cLqdrColor: '#06EBC8',
+      blueClqdrColor: '#0ACBEB',
+      lqdrColor: 'linear-gradient(339.11deg, #1984FF 9.31%, #4DD9F6 96.03%)',
     },
   }
   // default the theme to light mode

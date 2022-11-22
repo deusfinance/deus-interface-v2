@@ -1,0 +1,74 @@
+import { useState } from 'react'
+import styled from 'styled-components'
+
+import Collapsible from 'react-collapsible'
+import { Row, RowEnd } from 'components/Row'
+import { ChevronDown, ChevronUp } from 'components/Icons'
+import ImageWithFallback from 'components/ImageWithFallback'
+
+const MainDropdown = styled(Collapsible)`
+  height: 60px;
+  width: clamp(250px, 90%, 484px);
+  /* width: 484px; */
+  /* width: 100%; */
+
+  cursor: pointer;
+  border-radius: 12px;
+  background: ${({ theme }) => theme.bg2};
+`
+
+const DropdownHeader = styled(Row)<{ borderBottom?: boolean }>`
+  height: 60px;
+  background: ${({ theme }) => theme.bg2};
+  display: flex;
+  /* width: 100%; */
+  /* width: 484px; */
+  width: clamp(250px, 90%, 484px);
+
+  padding: 20px 16px;
+  border-radius: ${({ borderBottom }) => (borderBottom ? '12px' : '12px 12px 0px 0px')};
+`
+
+const Logo = styled.div`
+  min-height: 28px;
+  min-width: 28px;
+`
+
+const Text = styled.div`
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 21px;
+  white-space: nowrap;
+  margin-left: 8px;
+
+  color: ${({ theme }) => theme.text1};
+`
+
+export default function Dropdown({ content, logo, text }: { content: JSX.Element; logo: any; text: string }) {
+  const [border, setBorder] = useState(true)
+
+  function handleClick() {
+    setBorder(!border)
+    console.log('ehhh')
+  }
+  function getTriggers(logo: any, text: string): React.ReactElement<any> | string {
+    return (
+      // <DropdownHeader>
+      <DropdownHeader borderBottom={border}>
+        <Logo>
+          <ImageWithFallback src={logo} width={28} height={28} alt={'logo'} round />
+        </Logo>
+        <Text>{text}</Text>
+        <RowEnd>{border ? <ChevronDown /> : <ChevronUp />}</RowEnd>
+      </DropdownHeader>
+    )
+  }
+
+  return (
+    <MainDropdown trigger={getTriggers(logo, text)} onOpen={handleClick} onClose={handleClick}>
+      {content}
+    </MainDropdown>
+  )
+}

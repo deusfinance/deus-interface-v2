@@ -14,13 +14,13 @@ import { Row, RowBetween, RowCenter, RowEnd } from 'components/Row'
 import { ChevronDown as ChevronDownIcon } from 'components/Icons'
 
 export const Wrapper = styled(Row)`
-  background: ${({ theme }) => theme.bg2};
+  background: ${({ theme }) => theme.border4};
   border-radius: 12px;
   color: ${({ theme }) => theme.text2};
   white-space: nowrap;
-  height: 80px;
-  border: 1px solid #444444;
-  border-color: ${({ theme }) => theme.border1};
+  height: 72px;
+  border: 1px solid;
+  border-color: ${({ theme }) => theme.bg4};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     height: 65px;
@@ -50,6 +50,7 @@ const NumericalWrapper = styled.div`
 `
 
 export const CurrencySymbol = styled.div<{ active?: any }>`
+  font-family: 'Space Grotesk';
   font-weight: 600;
   font-size: 16px;
   margin-left: 5px;
@@ -66,7 +67,7 @@ export const CurrencySymbol = styled.div<{ active?: any }>`
 export const RightWrapper = styled.div`
   width: 100%;
   border-left: 1px solid ${({ theme }) => theme.border1};
-  padding: 8px;
+  padding: 5px;
   padding-left: 10px;
   height: 100%;
   position: relative;
@@ -99,11 +100,12 @@ export const ChevronDown = styled(ChevronDownIcon)`
 `
 
 const Balance = styled(RowWrap)<{ disabled?: boolean }>`
+  font-family: 'Noto Sans Mono';
   font-weight: 500;
   font-size: 10px;
   margin-left: 4px;
   gap: 5px;
-  color: ${({ theme }) => theme.text2};
+  color: ${({ theme }) => theme.text1};
   width: 20px;
 
   & > span {

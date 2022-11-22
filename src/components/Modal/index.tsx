@@ -29,7 +29,7 @@ export const MobileModal = styled(BaseModal)`
 export const Modal = styled(BaseModal)<{
   width?: string
 }>`
-  background: ${({ theme }) => theme.bg0};
+  background: ${({ theme }) => theme.bg2};
   width: clamp(200px, 85%, ${({ width }: { width?: string }) => width ?? '424px'});
 `
 
@@ -56,11 +56,11 @@ const HeaderWrapper = styled.div<{
   align-items: center;
   padding: 16px 24px;
   color: ${({ theme }) => theme.text1};
-  border-bottom: 1px solid ${({ theme, border }) => (border ? theme.bg2 : 'transparent')};
-  background: ${({ theme }) => theme.bg0};
+  border-bottom: 2px solid ${({ theme, border }) => (border ? theme.bg4 : 'transparent')};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 1rem;
+    font-size:10px;
   `};
 `
 

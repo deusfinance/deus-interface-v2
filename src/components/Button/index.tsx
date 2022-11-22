@@ -60,8 +60,8 @@ export const NavButton = styled.button`
 `
 
 export const PrimaryButton = styled(BaseButton)`
-  background: ${({ theme }) => theme.specialBG1};
-  color: ${({ theme }) => theme.text1};
+  background: ${({ theme }) => theme.primary5};
+  color: ${({ theme }) => theme.black};
   font-weight: 600;
   font-size: 20px;
   z-index: 0;
@@ -71,7 +71,7 @@ export const PrimaryButton = styled(BaseButton)`
     background: ${({ theme }) => theme.primary7};
   }
   &:hover {
-    background: ${({ theme }) => theme.primary7};
+    background: linear-gradient(270deg, #14e8e3 -1.33%, #01aef3 100%);
   }
 
   ${({ theme, disabled }) =>

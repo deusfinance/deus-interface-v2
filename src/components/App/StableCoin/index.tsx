@@ -8,16 +8,16 @@ import { Row, RowCenter, RowBetween, RowEnd } from 'components/Row'
 export const Container = styled(Row)`
   flex-flow: column nowrap;
   overflow: visible;
-  margin: 0 auto;
+  /* margin: 0 auto; */
 `
 
 export const Wrapper = styled(Container)`
-  margin-top: 28px;
-  width: clamp(250px, 90%, 500px);
+  /* margin-top: 28px; */
+  width: clamp(250px, 90%, 484px);
   background: ${({ theme }) => theme.bg0};
   /* border: 1px solid ${({ theme }) => theme.bg0}; */
   border-radius: 15px;
-  overflow: hidden;
+  /* overflow: hidden; */
 `
 
 export const InputWrapper = styled(Container)`
@@ -50,6 +50,8 @@ export const TopTableau = styled.div`
   overflow: hidden;
   border-top-right-radius: 12px;
   border-top-left-radius: 12px;
+
+  border-bottom: 2px solid ${({ theme }) => theme.border4};
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     height: 50px;

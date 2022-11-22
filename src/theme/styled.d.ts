@@ -14,6 +14,8 @@ export interface Colors {
   text2: Color
   text3: Color
   text4: Color
+  text5: Color
+  text6: Color
 
   // backgrounds
   bg0: Color
@@ -27,6 +29,7 @@ export interface Colors {
   border1: Color
   border2: Color
   border3: Color
+  border4: Color
 
   specialBG1: Color
   specialBG2: Color
@@ -39,6 +42,7 @@ export interface Colors {
   primary5: Color
   primary6: Color
   primary7: Color
+  primary8: Color
 
   primaryText1: Color
 
@@ -58,6 +62,8 @@ export interface Colors {
   blue1: Color
   blue2: Color
   darkPink: Color
+  orange: Color
+  darkOrange: Color
 
   error: Color
   success: Color
@@ -66,6 +72,8 @@ export interface Colors {
   deusColor: Color
   deiColor: Color
   cLqdrColor: Color
+  blueClqdrColor: Color
+  lqdrColor: Color
 }
 
 export type Shadow = string

@@ -13,7 +13,7 @@ import Telegram from '/public/static/images/footer/Telegram.svg'
 
 const Wrapper = styled(RowCenter)`
   color: ${({ theme }) => theme.text3};
-  background: ${({ theme }) => theme.bg2};
+  background: ${({ theme }) => theme.bg3};
   text-align: center;
   gap: 20px;
   font-size: 13px;
