@@ -2,14 +2,16 @@ import React from 'react'
 import styled from 'styled-components'
 import FIREBIRD_ICON from '/public/static/images/pages/clqdr/ic_firebird.svg'
 
-import { RowBetween } from 'components/Row'
+import { RowBetween, RowEnd } from 'components/Row'
 import ImageWithFallback from 'components/ImageWithFallback'
 import { ExternalLink } from 'components/Link'
 import { BuyButton, Wrapper } from '.'
 import { LQDR_ADDRESS, CLQDR_ADDRESS } from 'constants/addresses'
-import { ArrowUpRight } from 'react-feather'
+import { ArrowRight, ArrowUpRight } from 'react-feather'
 import QuestionMark from 'components/Icons/QuestionMark'
 import { ToolTip } from 'components/ToolTip'
+import { useClqdrData, useFetchFirebirdData } from 'hooks/useClqdrPage'
+import { formatBalance } from '../../../utils/numbers'
 
 const MainWrapper = styled(Wrapper)`
   height: 164px;
@@ -81,7 +83,6 @@ const QuestionMarkWrap = styled.div`
   margin-left: 6px;
   display: inline;
   background: transparent;
-  /* background: ${({ theme }) => theme.text2}; */
 `
 
 const ButtonText = styled.span`
@@ -101,7 +102,18 @@ const ButtonText = styled.span`
   text-decoration-line: underline;
 `
 
-export default function FirebirdBox1({ ratio }: { ratio: string | number }) {
+const ValueBox = styled(RowEnd)`
+  & > * {
+    &:nth-child(2) {
+      margin: 0 5px;
+    }
+  }
+`
+
+export default function FirebirdBox1() {
+  const firebird = useFetchFirebirdData('1')
+  const { mintRate } = useClqdrData()
+
   return (
     <MainWrapper>
       <Icon>
@@ -129,15 +141,25 @@ export default function FirebirdBox1({ ratio }: { ratio: string | number }) {
       </RatioWrap>
       <RatioWrap>
         <Name>cLQDR/LQDR Ratio on Firebird:</Name>
-        <Value>{ratio} - 0</Value>
+        <MintValue>{firebird && firebird.convertRate ? formatBalance(firebird.convertRate, 4) : '-'}</MintValue>
       </RatioWrap>
       <RatioWrap>
         <Name>Mint cLQDR:</Name>
-        <MintValue>{ratio}</MintValue>
+        <ValueBox>
+          <Value>{`1 LQDR`}</Value>
+          <ArrowRight size={13} />
+          <Value>{`${formatBalance(1 / mintRate, 3)} cLQDR`}</Value>
+        </ValueBox>
       </RatioWrap>
       <RatioWrap>
         <Name>Buy on Firebird:</Name>
-        <Value>{ratio}</Value>
+        <ValueBox>
+          <MintValue>{`1 LQDR`}</MintValue>
+          <ArrowRight size={13} />
+          <MintValue>{`≈${
+            firebird && firebird.convertRate ? formatBalance(1 / firebird?.convertRate, 3) : '0'
+          } cLQDR`}</MintValue>
+        </ValueBox>
       </RatioWrap>
     </MainWrapper>
   )

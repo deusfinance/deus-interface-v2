@@ -1,10 +1,15 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import CLQDR_ICON from '/public/static/images/pages/clqdr/clqdr_logo.svg'
 import LQDR_ICON from '/public/static/images/pages/clqdr/lqdr_logo.svg'
 
 import { RowEnd, RowStart } from 'components/Row'
 import ImageWithFallback from 'components/ImageWithFallback'
+import { useClqdrData, useFetchFirebirdData } from 'hooks/useClqdrPage'
+import { useCurrencyBalance } from 'state/wallet/hooks'
+import { cLQDR_TOKEN, LQDR_TOKEN } from 'constants/tokens'
+import useWeb3React from 'hooks/useWeb3'
+import { formatBalance } from 'utils/numbers'
 
 const MainWrapper = styled.div`
   overflow: hidden;
@@ -80,6 +85,21 @@ const Logo = styled.div`
 `
 
 export default function BalanceBox() {
+  const { account } = useWeb3React()
+  const firebird = useFetchFirebirdData('1')
+  const { mintRate } = useClqdrData()
+
+  const lqdrBalance = useCurrencyBalance(account ?? undefined, LQDR_TOKEN ?? undefined)
+  const cLqdrBalance = useCurrencyBalance(account ?? undefined, cLQDR_TOKEN ?? undefined)
+
+  const [lqdrBalanceDisplay] = useMemo(() => {
+    return [lqdrBalance?.toSignificant(3)]
+  }, [lqdrBalance])
+
+  const [cLqdrBalanceDisplay] = useMemo(() => {
+    return [cLqdrBalance?.toSignificant(3)]
+  }, [cLqdrBalance])
+
   return (
     <MainWrapper>
       <BalanceWrap>
@@ -89,8 +109,14 @@ export default function BalanceBox() {
           </Logo>
           <LqdrBalance>Your LQDR Balance:</LqdrBalance>
           <RowEnd>
-            <Value>{`42`}</Value>
-            <EstimatedValue> ≈ 213</EstimatedValue>
+            <Value>{lqdrBalanceDisplay ? lqdrBalanceDisplay : '0.00'}</Value>
+            <EstimatedValue>
+              {` ≈ $${
+                lqdrBalanceDisplay && firebird
+                  ? formatBalance(firebird?.lqdrPrice * Number(lqdrBalanceDisplay), 3)
+                  : '0.00'
+              }`}
+            </EstimatedValue>
           </RowEnd>
         </Item>
         <Item>
@@ -99,19 +125,25 @@ export default function BalanceBox() {
           </Logo>
           <CLqdrBalance>Your cLQDR Balance:</CLqdrBalance>
           <RowEnd>
-            <Value>42</Value>
-            <EstimatedValue> ≈ 213</EstimatedValue>
+            <Value>{cLqdrBalanceDisplay ? cLqdrBalanceDisplay : '0.00'}</Value>
+            <EstimatedValue>
+              {` ≈ $${
+                cLqdrBalanceDisplay && firebird
+                  ? formatBalance(firebird?.lqdrPrice * firebird?.convertRate * Number(cLqdrBalanceDisplay), 3)
+                  : '0.00'
+              }`}
+            </EstimatedValue>
           </RowEnd>
         </Item>
       </BalanceWrap>
       <RatioWrap>
         <Item>
           <Name>cLQDR/LQDR Ratio:</Name>
-          <Value>42</Value>
+          <Value>{formatBalance(mintRate, 3) ?? '-'}</Value>
         </Item>
         <Item>
-          <Name>cLQDR/LQDR Ratio:</Name>
-          <Value>42</Value>
+          <Name>LQDR Price:</Name>
+          <Value>${firebird?.lqdrPrice.toFixed(2) ?? '-'}</Value>
         </Item>
       </RatioWrap>
     </MainWrapper>

@@ -491,17 +491,11 @@ export default function Mint() {
   return (
     <>
       <Container>
-        {/* <Hero>
-          <Image src={CLQDR_LOGO} height={'90px'} alt="Logo" />
-          <StatsHeader items={items} />
-        </Hero> */}
         <BackgroundImage />
 
         <ContentWrapper>
           <LeftWrapper>
-            {firebird && firebird.convertRate < mintRate && (
-              <FireBird1 ratio={formatBalance(firebird.convertRate, 4) ?? ''} />
-            )}
+            {firebird && firebird.convertRate < mintRate && <FireBird1 />}
             <Chart>cLQDR/LQDR Ratio</Chart>
             <Chart>Circulation</Chart>
 
