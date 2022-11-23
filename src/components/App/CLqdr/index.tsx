@@ -3,7 +3,7 @@ import styled from 'styled-components'
 export const Wrapper = styled.div`
   margin-top: 16px;
   border-radius: 12px;
-  width: clamp(250px, 90%, 484px);
+  width: 100%;
   background: ${({ theme }) => theme.bg2};
   padding: 12px;
   height: 88px;

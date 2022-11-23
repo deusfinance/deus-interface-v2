@@ -7,9 +7,8 @@ import { RowEnd, RowStart } from 'components/Row'
 import ImageWithFallback from 'components/ImageWithFallback'
 
 const MainWrapper = styled.div`
-  /* margin-top: 12px; */
   overflow: hidden;
-  width: clamp(250px, 90%, 484px);
+  width: 100%;
   height: 164px;
 `
 

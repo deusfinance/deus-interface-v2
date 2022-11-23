@@ -1,20 +1,16 @@
-import React, { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
+import React from 'react'
 import { Currency, Token } from '@sushiswap/core-sdk'
 import { isMobile } from 'react-device-detect'
 
-import { useCurrencyBalance } from 'state/wallet/hooks'
-import useCurrencyLogo from 'hooks/useCurrencyLogo'
-import useWeb3React from 'hooks/useWeb3'
-import { maxAmountSpend } from 'utils/currency'
-
-import ImageWithFallback from 'components/ImageWithFallback'
-import { NumericalInput } from 'components/Input'
-import { Row, RowBetween, RowCenter, RowEnd } from 'components/Row'
-import { ChevronDown as ChevronDownIcon } from 'components/Icons'
-import { PrimaryButton } from '../../Button/index'
 import { ArrowUpRight } from 'react-feather'
 import { ExternalLink } from 'components/Link'
+import { NumericalInput } from 'components/Input'
+import useCurrencyLogo from 'hooks/useCurrencyLogo'
+import { PrimaryButton } from 'components/Button/index'
+import ImageWithFallback from 'components/ImageWithFallback'
+import { ChevronDown as ChevronDownIcon } from 'components/Icons'
+import { Row, RowBetween, RowCenter, RowEnd } from 'components/Row'
 
 const Wrapper = styled(Row)`
   background: ${({ theme }) => theme.darkOrange};
@@ -74,11 +70,10 @@ export const RightWrapper = styled.div`
 const OuterRightWrapper = styled.div`
   padding: 1px;
   width: 85%;
-  /* width: 384px; */
   height: 100%;
   background: ${({ theme }) => theme.primary8};
   border-radius: 0px 12px 12px 0px;
-  /* display: flex; */
+
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 87%;
   `}
@@ -86,7 +81,6 @@ const OuterRightWrapper = styled.div`
 
 const OuterLogoWrapper = styled(OuterRightWrapper)`
   width: 60px;
-  /* width: 20%; */
   border-radius: 12px 0px 0px 12px;
   padding: 1px 0px 1px 1px;
 `
@@ -133,7 +127,6 @@ const BuyButton = styled(PrimaryButton)`
   font-weight: 600;
   font-size: 14px;
   line-height: 19px;
-  /* identical to box height */
 
   text-align: center;
   text-decoration-line: underline;
@@ -169,18 +162,7 @@ export default function BuyClqdrInputBox({
   onTokenSelect?: () => void
   disabled?: boolean
 }) {
-  const { account } = useWeb3React()
   const logo = useCurrencyLogo((currency as Token)?.address)
-  const currencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
-
-  const [balanceExact, balanceDisplay] = useMemo(() => {
-    return [maxAmountSpend(currencyBalance)?.toExact(), currencyBalance?.toSignificant(6)]
-  }, [currencyBalance])
-
-  const handleClick = useCallback(() => {
-    if (!balanceExact || !onChange || disabled) return
-    onChange(balanceExact)
-  }, [balanceExact, disabled, onChange])
 
   return (
     <Wrapper>

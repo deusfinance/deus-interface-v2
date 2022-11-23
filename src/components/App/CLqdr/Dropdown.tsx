@@ -1,17 +1,13 @@
 import { useState } from 'react'
 import styled from 'styled-components'
-
 import Collapsible from 'react-collapsible'
+
 import { Row, RowEnd } from 'components/Row'
 import { ChevronDown, ChevronUp } from 'components/Icons'
 import ImageWithFallback from 'components/ImageWithFallback'
 
 const MainDropdown = styled(Collapsible)`
   height: 60px;
-  width: clamp(250px, 90%, 484px);
-  /* width: 484px; */
-  /* width: 100%; */
-
   cursor: pointer;
   border-radius: 12px;
   background: ${({ theme }) => theme.bg2};
@@ -19,13 +15,9 @@ const MainDropdown = styled(Collapsible)`
 
 const DropdownHeader = styled(Row)<{ borderBottom?: boolean }>`
   height: 60px;
-  background: ${({ theme }) => theme.bg2};
   display: flex;
-  /* width: 100%; */
-  /* width: 484px; */
-  width: clamp(250px, 90%, 484px);
-
   padding: 20px 16px;
+  background: ${({ theme }) => theme.bg2};
   border-radius: ${({ borderBottom }) => (borderBottom ? '12px' : '12px 12px 0px 0px')};
 `
 
@@ -51,11 +43,10 @@ export default function Dropdown({ content, logo, text }: { content: JSX.Element
 
   function handleClick() {
     setBorder(!border)
-    console.log('ehhh')
   }
+
   function getTriggers(logo: any, text: string): React.ReactElement<any> | string {
     return (
-      // <DropdownHeader>
       <DropdownHeader borderBottom={border}>
         <Logo>
           <ImageWithFallback src={logo} width={28} height={28} alt={'logo'} round />

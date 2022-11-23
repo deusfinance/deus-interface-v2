@@ -6,9 +6,8 @@ import { ExternalLink } from 'components/Link'
 import { LQDR_ADDRESS, CLQDR_ADDRESS } from 'constants/addresses'
 
 const MainWrapper = styled.div`
-  /* margin-top: 12px; */
   overflow: hidden;
-  width: clamp(250px, 90%, 484px);
+  width: 100%;
   height: 116px;
 `
 

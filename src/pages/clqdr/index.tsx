@@ -42,8 +42,7 @@ import { truncateAddress } from 'utils/address'
 import { ExternalLink } from 'components/Link'
 
 const Wrapper = styled(MainWrapper)`
-  /* margin-top: 16px; */
-  /* margin-left: 0px; */
+  width: 100%;
   margin: unset;
 `
 
@@ -109,37 +108,37 @@ const ContentWrapper = styled.div`
     flex-direction: column-reverse
   `}
 `
-const LeftWrapper = styled.div`
+
+const LeftWrapper = styled(Row)`
   display: flex;
-  width: 50%;
-  /* justify-content: center; */
+  margin-right: 8px;
   flex-direction: column;
+  width: clamp(250px, 90%, 484px);
   & > * {
     margin-top: 16px;
   }
-  align-items: center;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width:100%;
-  `}
+    `}
 `
-const RightWrapper = styled.div`
+
+const RightWrapper = styled(Row)`
   display: flex;
-  width: 50%;
-  /* justify-content: center; */
+  margin-left: 8px;
   flex-direction: column;
+  width: clamp(250px, 90%, 484px);
   & > * {
     margin-top: 16px;
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width:100%;
-    align-items: center;
   `}
 `
 
 const Chart = styled.div`
-  width: clamp(250px, 90%, 484px);
+  width: 100%;
   background: ${({ theme }) => theme.bg1};
   border-radius: 12px;
   height: 258px;
@@ -155,8 +154,7 @@ const BackgroundImage = styled.div`
 `
 
 const Item = styled(Row)`
-  /* width: 484px; */
-  width: clamp(250px, 90%, 484px);
+  width: 100%;
   height: 48px;
   padding: 16px 16px 16px 24px;
   background: ${({ theme }) => theme.bg2};
@@ -168,13 +166,17 @@ const Item = styled(Row)`
 
 const ClqdrItem = styled(Item)`
   height: unset;
-  display: flex;
   flex-direction: column;
 `
 
 const ItemWrapper = styled.div`
   border-radius: 0px 0px 12px 12px;
-  width: 484px;
+  width: 100%;
+  & > * {
+    &:last-child {
+      border-radius: 0px 0px 12px 12px;
+    }
+  }
 `
 
 const ItemText = styled(RowStart)`
@@ -185,6 +187,7 @@ const ItemText = styled(RowStart)`
   line-height: 15px;
 
   color: ${({ theme }) => theme.text2};
+  width: 100%;
 `
 const ItemValue = styled(RowEnd)`
   font-family: 'IBM Plex Mono';
@@ -196,6 +199,7 @@ const ItemValue = styled(RowEnd)`
   text-decoration-line: underline;
 
   color: ${({ theme }) => theme.text1};
+  width: 100%;
 `
 
 const SolidValue = styled(ItemValue)`
@@ -217,7 +221,6 @@ const XLQDR = styled.span`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-fill-color: transparent;
 `
 const LQDRText = styled.p`
   font-family: 'IBM Plex Mono';
@@ -226,12 +229,16 @@ const LQDRText = styled.p`
   font-size: 12px;
   line-height: 20px;
   text-indent: -15px;
-  /* text-decoration-line: underline; */
-  /* background: linear-gradient(339.11deg, #1984ff 9.31%, #4dd9f6 96.03%); */
-  /* -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent; */
+`
+
+const Dropdowns = styled.div`
+  width: 100%;
+  & > * {
+    width: 100%;
+    &:not(:first-child) {
+      margin-top: 16px;
+    }
+  }
 `
 
 export default function Mint() {
@@ -408,12 +415,20 @@ export default function Mint() {
       </ItemWrapper>
     )
   }
+
   function getDefiWars(): JSX.Element {
     return (
       <ItemWrapper>
         <Item>
           <ItemText>Tokens:</ItemText>
-          <ItemValue>{truncateAddress('0x814c66594a22404e101fecfecac1012d8d75c156')}</ItemValue>
+          <ItemValue>
+            <ExternalLink
+              href={`https://ftmscan.com/token/0x814c66594a22404e101fecfecac1012d8d75c156`}
+              style={{ textDecoration: 'underline' }}
+            >
+              {truncateAddress('0x814c66594a22404e101fecfecac1012d8d75c156')}
+            </ExternalLink>
+          </ItemValue>
         </Item>
         <Item>
           <ItemText>Expected Ratio:</ItemText>
@@ -430,6 +445,7 @@ export default function Mint() {
       </ItemWrapper>
     )
   }
+
   function getCLqdrData(): JSX.Element {
     return (
       <ItemWrapper>
@@ -490,9 +506,11 @@ export default function Mint() {
             <Chart>Circulation</Chart>
 
             <PicBox />
-            <Dropdown content={getDefiWars()} logo={DEFIWAR_LOGO} text={'DefiWars'} />
-            <Dropdown content={getCLqdrData()} logo={CLQDR_LOGO} text={'What is cLQDR?'} />
-            <Dropdown content={getContracts()} logo={CLQDR_LOGO} text={'Contracts'} />
+            <Dropdowns>
+              <Dropdown content={getDefiWars()} logo={DEFIWAR_LOGO} text={'DefiWars'} />
+              <Dropdown content={getCLqdrData()} logo={CLQDR_LOGO} text={'What is cLQDR?'} />
+              <Dropdown content={getContracts()} logo={CLQDR_LOGO} text={'Contracts'} />
+            </Dropdowns>
           </LeftWrapper>
           <RightWrapper>
             <BalanceBox />
