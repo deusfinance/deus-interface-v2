@@ -57,36 +57,35 @@ const CurrencySymbol = styled.div<{ active?: any }>`
 `
 
 export const RightWrapper = styled.div`
-  width: 100%;
   border-left: 1px solid ${({ theme }) => theme.border1};
   padding: 5px;
   padding-left: 10px;
+  width: 100%;
   height: 100%;
   display: flex;
+  /* position: relative; */
   border-radius: 0px 12px 12px 0px;
-  position: relative;
+  overflow: hidden;
   background: ${({ theme }) => theme.darkOrange};
 `
 const OuterRightWrapper = styled.div`
   padding: 1px;
-  width: 85%;
+  width: 100%;
   height: 100%;
   background: ${({ theme }) => theme.primary8};
   border-radius: 0px 12px 12px 0px;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    width: 87%;
-  `}
+  overflow: hidden;
 `
 
 const OuterLogoWrapper = styled(OuterRightWrapper)`
-  width: 60px;
+  width: 80px;
+  min-width: 60px;
   border-radius: 12px 0px 0px 12px;
   padding: 1px 0px 1px 1px;
 `
 
 export const LogoWrapper = styled(RowCenter)<{ active?: any }>`
-  width: 60px;
+  width: 100%;
   height: 100%;
   background: ${({ theme }) => theme.darkOrange};
   border-radius: 12px 0px 0px 12px;
@@ -112,12 +111,11 @@ export const ChevronDown = styled(ChevronDownIcon)`
   `}
 `
 
-const ButtonWrapper = styled.div`
-  width: 41%;
-  margin-top: 4px;
+const ButtonWrapper = styled(RowEnd)`
+  width: 100%;
+  margin: auto 0;
   ${({ theme }) => theme.mediaWidth.upToSmall`
-  width: 80px;
-
+    width: 80px;
   `}
 `
 
@@ -136,14 +134,10 @@ const BuyButton = styled(PrimaryButton)`
   height: 48px;
   background: linear-gradient(270deg, #01aef3 -1.33%, #14e8e3 100%);
   border-radius: 12px;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-  width: 80px;
-
-  `}
 `
 
 const DataWrapper = styled.div`
-  width: 59%;
+  width: 100%;
 `
 export const getImageSize = () => {
   return isMobile ? 35 : 38

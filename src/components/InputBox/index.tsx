@@ -75,8 +75,10 @@ export const RightWrapper = styled.div`
 
 export const LogoWrapper = styled(RowCenter)<{ active?: any }>`
   height: 100%;
+
   /* padding-left: 10px; */
   width: 80px;
+  min-width: 60px;
   cursor: ${({ active }) => active && 'pointer'};
 `
 
