@@ -103,7 +103,7 @@ export default function PicBox() {
 
           <Value>
             APY cLQDR:
-            <GreenValue>22</GreenValue>
+            <GreenValue>36.99%</GreenValue>
           </Value>
         </RatioWrap>
         <RatioWrap>

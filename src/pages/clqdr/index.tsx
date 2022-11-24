@@ -279,6 +279,10 @@ export default function Mint() {
 
   const spender = useMemo(() => (chainId ? CLQDR_ADDRESS[chainId] : undefined), [chainId])
   const [approvalState, approveCallback] = useApproveCallback(inputCurrency ?? undefined, spender)
+  const buyOnFirebird = useMemo(
+    () => (firebird && firebird.cLqdrAmountOut && formattedAmountOut < firebird?.cLqdrAmountOut ? true : false),
+    [firebird, formattedAmountOut]
+  )
 
   const [showApprove, showApproveLoader] = useMemo(() => {
     const show = inputCurrency && approvalState !== ApprovalState.APPROVED && !!amount
@@ -348,13 +352,25 @@ export default function Mint() {
     else if (showApprove) return null
     else if (insufficientBalance) return <MainButton disabled>Insufficient {inputCurrency?.symbol} Balance</MainButton>
     else if (awaitingMintConfirmation) {
-      return (
+      return buyOnFirebird ? (
+        <BuyAnyWayButton>
+          Minting {outputCurrency?.symbol} <DotFlashing />
+        </BuyAnyWayButton>
+      ) : (
         <MainButton>
           Minting {outputCurrency?.symbol} <DotFlashing />
         </MainButton>
       )
     }
-    return (
+    return buyOnFirebird ? (
+      <BuyAnyWayButton
+        onClick={() => {
+          if (amount !== '0' && amount !== '' && amount !== '0.') toggleReviewModal(true)
+        }}
+      >
+        Mint {outputCurrency?.symbol} Anyway!
+      </BuyAnyWayButton>
+    ) : (
       <MainButton
         onClick={() => {
           if (amount !== '0' && amount !== '' && amount !== '0.') toggleReviewModal(true)
@@ -495,7 +511,7 @@ export default function Mint() {
 
         <ContentWrapper>
           <LeftWrapper>
-            {firebird && firebird.convertRate < mintRate && <FireBird1 />}
+            {firebird && firebird.convertRate && <FireBird1 />}
             <Chart>cLQDR/LQDR Ratio</Chart>
             <Chart>Circulation</Chart>
 
@@ -531,7 +547,14 @@ export default function Mint() {
                   onChange={() => console.log('')}
                   disabled
                 />
-                <BuyClqdrInputBox currency={inputCurrency} value={amount} onChange={setAmount} disabled />
+                {firebird && firebird.cLqdrAmountOut && amount && buyOnFirebird && (
+                  <BuyClqdrInputBox
+                    currency={outputCurrency}
+                    value={formatBalance(firebird.cLqdrAmountOut, 7)}
+                    onChange={() => console.log('')}
+                    disabled
+                  />
+                )}
                 <div style={{ marginTop: '30px' }}></div>
                 {getApproveButton()}
                 {getActionButton()}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import FIREBIRD_ICON from '/public/static/images/pages/clqdr/ic_firebird.svg'
 
@@ -10,8 +10,8 @@ import { LQDR_ADDRESS, CLQDR_ADDRESS } from 'constants/addresses'
 import { ArrowRight, ArrowUpRight } from 'react-feather'
 import QuestionMark from 'components/Icons/QuestionMark'
 import { ToolTip } from 'components/ToolTip'
-import { useClqdrData, useFetchFirebirdData } from 'hooks/useClqdrPage'
-import { formatBalance } from '../../../utils/numbers'
+import { useCalcSharesFromAmount, useFetchFirebirdData } from 'hooks/useClqdrPage'
+import { formatBalance, toBN } from 'utils/numbers'
 
 const MainWrapper = styled(Wrapper)`
   height: 164px;
@@ -51,7 +51,7 @@ const FirebirdText = styled.div`
   `}
 `
 
-const Value = styled.div`
+const Value = styled.div<{ greenColor?: boolean }>`
   font-family: 'Noto Sans Mono';
   font-style: normal;
   font-weight: 600;
@@ -59,14 +59,14 @@ const Value = styled.div`
   line-height: 19px;
 
   text-align: right;
-  color: ${({ theme }) => theme.text1};
+  color: ${({ theme, greenColor }) => (greenColor ? theme.green1 : theme.text1)};
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     font-size:12px
   `}
 `
 
 const MintValue = styled(Value)`
-  color: ${({ theme }) => theme.green1};
+  color: ${({ theme, greenColor }) => (greenColor ? theme.text1 : theme.green1)};
 `
 
 const Icon = styled.div`
@@ -112,7 +112,13 @@ const ValueBox = styled(RowEnd)`
 
 export default function FirebirdBox1() {
   const firebird = useFetchFirebirdData('1')
-  const { mintRate } = useClqdrData()
+  const amountOutBN = useCalcSharesFromAmount('1')
+  const formattedAmountOut = amountOutBN == '' ? '0' : toBN(amountOutBN).div(1e18).toFixed()
+
+  const mintOrNot = useMemo(
+    () => (firebird && firebird.cLqdrAmountOut && formattedAmountOut > firebird?.cLqdrAmountOut ? true : false),
+    [firebird, formattedAmountOut]
+  )
 
   return (
     <MainWrapper>
@@ -141,23 +147,25 @@ export default function FirebirdBox1() {
       </RatioWrap>
       <RatioWrap>
         <Name>cLQDR/LQDR Ratio on Firebird:</Name>
-        <MintValue>{firebird && firebird.convertRate ? formatBalance(firebird.convertRate, 4) : '-'}</MintValue>
+        <Value>{firebird && firebird.convertRate ? formatBalance(firebird.convertRate, 4) : '-'}</Value>
       </RatioWrap>
       <RatioWrap>
         <Name>Mint cLQDR:</Name>
         <ValueBox>
-          <Value>{`1 LQDR`}</Value>
+          <Value greenColor={mintOrNot}>{`1 LQDR`}</Value>
           <ArrowRight size={13} />
-          <Value>{`${formatBalance(1 / mintRate, 3)} cLQDR`}</Value>
+          <Value greenColor={mintOrNot}>{`${
+            formattedAmountOut ? formatBalance(formattedAmountOut, 3) : '0'
+          } cLQDR`}</Value>
         </ValueBox>
       </RatioWrap>
       <RatioWrap>
         <Name>Buy on Firebird:</Name>
         <ValueBox>
-          <MintValue>{`1 LQDR`}</MintValue>
+          <MintValue greenColor={mintOrNot}>{`1 LQDR`}</MintValue>
           <ArrowRight size={13} />
-          <MintValue>{`≈${
-            firebird && firebird.convertRate ? formatBalance(1 / firebird?.convertRate, 3) : '0'
+          <MintValue greenColor={mintOrNot}>{`≈${
+            firebird && firebird.cLqdrAmountOut ? formatBalance(firebird?.cLqdrAmountOut, 3) : '0'
           } cLQDR`}</MintValue>
         </ValueBox>
       </RatioWrap>

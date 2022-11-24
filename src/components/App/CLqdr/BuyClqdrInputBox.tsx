@@ -20,6 +20,7 @@ const Wrapper = styled(Row)`
   border: 1px solid;
   border-color: ${({ theme }) => theme.bg4};
   height: 72px;
+  margin-top: 16px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     height: 65px;
@@ -114,6 +115,7 @@ export const ChevronDown = styled(ChevronDownIcon)`
 const ButtonWrapper = styled(RowEnd)`
   width: 100%;
   margin: auto 0;
+  margin-right: 5px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 80px;
   `}
@@ -197,7 +199,7 @@ export default function BuyClqdrInputBox({
           <ButtonWrapper>
             <BuyButton>
               <ExternalLink
-                href={`https://app.firebird.finance/swap?inputCurrency=&outputCurrency=$&net=250`}
+                href={`https://app.firebird.finance/swap/?from=0x10b620b2dbac4faa7d7ffd71da486f5d44cd86f9&to=0x814c66594a22404e101fecfecac1012d8d75c156`}
                 style={{ textDecoration: 'underline', textDecorationColor: 'rgba(255, 128, 128, 0.5)' }}
               >
                 <BuyButton>

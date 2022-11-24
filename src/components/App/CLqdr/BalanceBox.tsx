@@ -138,7 +138,7 @@ export default function BalanceBox() {
       </BalanceWrap>
       <RatioWrap>
         <Item>
-          <Name>cLQDR/LQDR Ratio:</Name>
+          <Name>cLQDR/LQDR Ratio on Minter:</Name>
           <Value>{formatBalance(mintRate, 3) ?? '-'}</Value>
         </Item>
         <Item>

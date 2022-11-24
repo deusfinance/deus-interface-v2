@@ -58,7 +58,14 @@ export default function Dropdown({ content, logo, text }: { content: JSX.Element
   }
 
   return (
-    <MainDropdown trigger={getTriggers(logo, text)} onOpen={handleClick} onClose={handleClick}>
+    <MainDropdown
+      trigger={getTriggers(logo, text)}
+      onOpen={handleClick}
+      onClose={handleClick}
+      transitionTime={120}
+      transitionCloseTime={120}
+      easing={'step-start'}
+    >
       {content}
     </MainDropdown>
   )
