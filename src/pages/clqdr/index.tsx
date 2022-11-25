@@ -40,6 +40,7 @@ import BuyClqdrInputBox from 'components/App/CLqdr/BuyClqdrInputBox'
 import Dropdown from 'components/App/CLqdr/Dropdown'
 import { truncateAddress } from 'utils/address'
 import { ExternalLink } from 'components/Link'
+import SingleChart from 'components/App/CLqdr/SingleChart'
 
 const Wrapper = styled(MainWrapper)`
   width: 100%;
@@ -512,8 +513,8 @@ export default function Mint() {
         <ContentWrapper>
           <LeftWrapper>
             {firebird && firebird.convertRate && <FireBird1 />}
-            <Chart>cLQDR/LQDR Ratio</Chart>
-            <Chart>Circulation</Chart>
+            <SingleChart uniqueID="clqdrRatio" label="cLQDR/LQDR Ratio" />
+            <SingleChart uniqueID="totalSupply" label="cLQDR in Circulation" />
 
             <PicBox />
             <Dropdowns>
