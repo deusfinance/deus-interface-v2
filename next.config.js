@@ -6,12 +6,7 @@ module.exports = {
     return [
       {
         source: '/',
-        destination: '/dashboard',
-        permanent: true,
-      },
-      {
-        source: '/bonds',
-        destination: '/bond',
+        destination: '/clqdr',
         permanent: true,
       },
     ]

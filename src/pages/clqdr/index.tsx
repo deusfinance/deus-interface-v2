@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import CLQDR_ICON from '/public/static/images/pages/clqdr/ic_clqdr.svg'
 import CLQDR_LOGO from '/public/static/images/tokens/clqdr.svg'
-import DEFIWAR_LOGO from '/public/static/images/pages/clqdr/defi_war.svg'
+// import DEFIWAR_LOGO from '/public/static/images/pages/clqdr/defi_war.svg'
 
 import { LQDR_TOKEN, cLQDR_TOKEN } from 'constants/tokens'
 import { CLQDR_ADDRESS } from 'constants/addresses'
@@ -35,7 +35,7 @@ import Tableau from 'components/App/CLqdr/Tableau'
 import WarningModal from 'components/ReviewModal/Warning'
 import FireBird1 from 'components/App/CLqdr/FirebirdBox1'
 import BalanceBox from 'components/App/CLqdr/BalanceBox'
-import PicBox from 'components/App/CLqdr/PicBox'
+// import PicBox from 'components/App/CLqdr/PicBox'
 import BuyClqdrInputBox from 'components/App/CLqdr/BuyClqdrInputBox'
 import Dropdown from 'components/App/CLqdr/Dropdown'
 import { truncateAddress } from 'utils/address'
@@ -68,13 +68,16 @@ const MainButton = styled(MainButtonWrap)`
       }
   `}
 `
-const BuyAnyWayButton = styled(MainButtonWrap)`
-  background: ${({ theme }) => theme.primary5};
+const BuyAnyWayButton = styled(MainButtonWrap)<{
+  firebird?: boolean
+}>`
+  background: ${({ theme, firebird }) =>
+    !firebird ? theme.primary5 : 'linear-gradient(270deg, #0b403f -1.33%, #064056 100%);'};
   color: ${({ theme, disabled }) => (disabled ? theme.white : theme.orange)};
-  opacity: 0.33;
+  opacity: 0.9;
 
   &:hover {
-    background: linear-gradient(270deg, #14e8e3 -1.33%, #01aef3 100%);
+    background: linear-gradient(270deg, #0b403f -1.33%, #064056 100%);
   }
 
   ${({ theme, disabled }) =>
@@ -121,6 +124,8 @@ const LeftWrapper = styled(Row)`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width:100%;
+    margin-right: 0px;
+
     `}
 `
 
@@ -135,19 +140,21 @@ const RightWrapper = styled(Row)`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width:100%;
+    margin-left: 0px;
   `}
 `
 
-const Chart = styled.div`
-  width: 100%;
-  background: ${({ theme }) => theme.bg1};
-  border-radius: 12px;
-  height: 258px;
-`
+// const Chart = styled.div`
+//   width: 100%;
+//   background: ${({ theme }) => theme.bg1};
+//   border-radius: 12px;
+//   height: 258px;
+// `
 
 const BackgroundImage = styled.div`
   position: absolute;
-  width: 720px;
+  max-width: 720px;
+  width: 100%;
   height: 510px;
   background: linear-gradient(90deg, #0badf4 0%, #30efe4 53.12%, #ff9af5 99.99%);
   opacity: 0.1;
@@ -246,7 +253,7 @@ export default function Mint() {
   const { chainId, account } = useWeb3React()
   const isSupportedChainId = useSupportedChainId()
 
-  const { burningFee, mintRate } = useClqdrData()
+  const { burningFee } = useClqdrData()
 
   const [isOpenReviewModal, toggleReviewModal] = useState(false)
   const [isOpenWarningModal, toggleWarningModal] = useState(false)
@@ -281,7 +288,13 @@ export default function Mint() {
   const spender = useMemo(() => (chainId ? CLQDR_ADDRESS[chainId] : undefined), [chainId])
   const [approvalState, approveCallback] = useApproveCallback(inputCurrency ?? undefined, spender)
   const buyOnFirebird = useMemo(
-    () => (firebird && firebird.cLqdrAmountOut && formattedAmountOut < firebird?.cLqdrAmountOut ? true : false),
+    () =>
+      formattedAmountOut !== '0' &&
+      firebird &&
+      firebird.cLqdrAmountOut &&
+      toBN(formattedAmountOut).lt(firebird?.cLqdrAmountOut || '0')
+        ? true
+        : false,
     [firebird, formattedAmountOut]
   )
 
@@ -365,6 +378,7 @@ export default function Mint() {
     }
     return buyOnFirebird ? (
       <BuyAnyWayButton
+        firebird
         onClick={() => {
           if (amount !== '0' && amount !== '' && amount !== '0.') toggleReviewModal(true)
         }}
@@ -385,6 +399,17 @@ export default function Mint() {
   function getContracts(): JSX.Element {
     return (
       <ItemWrapper>
+        <Item>
+          <ItemText>LQDR contract:</ItemText>
+          <ItemValue>
+            <ExternalLink
+              href={`https://ftmscan.com/address/0x10b620b2dbAC4Faa7D7FFD71Da486f5D44cd86f9`}
+              style={{ textDecoration: 'underline' }}
+            >
+              {truncateAddress(`0x10b620b2dbAC4Faa7D7FFD71Da486f5D44cd86f9`)}
+            </ExternalLink>
+          </ItemValue>
+        </Item>
         <Item>
           <ItemText>cLQDR contract:</ItemText>
           <ItemValue>
@@ -494,17 +519,6 @@ export default function Mint() {
     )
   }
 
-  const items = useMemo(
-    () =>
-      firebird
-        ? [
-            { name: 'LQDR Price', value: `$${formatBalance(firebird.lqdrPrice, 3)}` },
-            { name: 'cLQDR/LQDR Ratio', value: `${formatBalance(mintRate, 4)}` },
-          ]
-        : [],
-    [firebird, mintRate]
-  )
-
   return (
     <>
       <Container>
@@ -516,9 +530,9 @@ export default function Mint() {
             <SingleChart uniqueID="clqdrRatio" label="cLQDR/LQDR Ratio" />
             <SingleChart uniqueID="totalSupply" label="cLQDR in Circulation" />
 
-            <PicBox />
+            {/* <PicBox /> */}
             <Dropdowns>
-              <Dropdown content={getDefiWars()} logo={DEFIWAR_LOGO} text={'DefiWars'} />
+              {/* <Dropdown content={getDefiWars()} logo={DEFIWAR_LOGO} text={'DefiWars'} /> */}
               <Dropdown content={getCLqdrData()} logo={CLQDR_LOGO} text={'What is cLQDR?'} />
               <Dropdown content={getContracts()} logo={CLQDR_LOGO} text={'Contracts'} />
             </Dropdowns>

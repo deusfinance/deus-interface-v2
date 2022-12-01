@@ -182,13 +182,6 @@ export default function NavBar() {
     )
   }
 
-  // function isSubItemChosen(item: Array<any>) {
-  //   for (let i = 0; i < item.length; i++) {
-  //     if (item[i].path === router.route) return true
-  //   }
-  //   return false
-  // }
-
   function getDefaultContent() {
     return (
       <>
@@ -204,6 +197,27 @@ export default function NavBar() {
                 </SimpleLinkWrapper>
               )
             })}
+
+            <SimpleLinkWrapper>
+              <Link
+                href={
+                  'https://app.firebird.finance/swap?inputCurrency=FTM&outputCurrency=0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44&net=250'
+                }
+                passHref
+              >
+                <a style={{ textDecoration: 'none' }} rel="noreferrer" target="_blank">
+                  <NavLink active={false}>Swap</NavLink>
+                </a>
+              </Link>
+            </SimpleLinkWrapper>
+            <SimpleLinkWrapper>
+              <Link href={'https://app.multichain.org/#/router'} passHref>
+                <a style={{ textDecoration: 'none' }} rel="noreferrer" target="_blank">
+                  <NavLink active={false}>Bridge</NavLink>
+                </a>
+              </Link>
+            </SimpleLinkWrapper>
+
             <SimpleLinkWrapper>
               <Link href={'https://docs.deus.finance/contracts/disclaimer'} passHref>
                 <a style={{ textDecoration: 'none' }} rel="noreferrer" target="_blank">

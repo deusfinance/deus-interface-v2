@@ -225,9 +225,7 @@ export default function Table({
           )}
         </TableWrapper>
         <PaginationWrapper>
-          {paginatedItems.length > 0 && (
-            <Pagination count={nftIds.length} pageCount={pageCount} onPageChange={onPageChange} />
-          )}
+          {paginatedItems.length > 0 && <Pagination pageCount={pageCount} onPageChange={onPageChange} />}
         </PaginationWrapper>
       </Wrapper>
     </>

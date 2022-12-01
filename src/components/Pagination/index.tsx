@@ -48,11 +48,9 @@ const Wrapper = styled.div`
 export default function Pagination({
   pageCount,
   onPageChange,
-  count,
 }: {
   pageCount: number
   onPageChange: ({ selected }: { selected: number }) => void
-  count: number
 }) {
   return (
     <Wrapper>

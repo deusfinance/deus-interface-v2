@@ -38,7 +38,7 @@ export default function NavLogo() {
       <ExternalLink href="https://dei.finance" target="_self" passHref>
         <Wrapper>
           <div>
-            <Image src={'/static/images/DeiLogo.svg'} alt="App Logo" width={getImageSize()} height={getImageSize()} />
+            <Image src={'/static/images/DeusLogo.svg'} alt="App Logo" width={getImageSize()} height={getImageSize()} />
           </div>
         </Wrapper>
       </ExternalLink>

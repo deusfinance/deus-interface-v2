@@ -5,7 +5,7 @@ import Link from 'next/link'
 // import Image from 'next/image'
 import { Z_INDEX } from 'theme'
 
-// import LEGACY_DEI_LOGO from '/public/static/images/LegacyDeiLogo.svg'
+// import LEGACY_DEI_LOGO from '/public/static/images/LegacyDeusLogo.svg'
 import { Link as LinkIcon } from 'components/Icons'
 import useOnOutsideClick from 'hooks/useOnOutsideClick'
 
@@ -102,12 +102,32 @@ export default function Menu() {
               </IconWrapper> */}
             </Row>
           </Link>
-
+          <ExternalLink href="https://app.firebird.finance/swap?inputCurrency=FTM&outputCurrency=0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44&net=250">
+            <Row onClick={() => toggle()}>
+              <div>Swap</div>
+            </Row>
+          </ExternalLink>
+          <ExternalLink href="https://app.multichain.org/#/router">
+            <Row onClick={() => toggle()}>
+              <div>Bridge</div>
+            </Row>
+          </ExternalLink>
+          <ExternalLink href="https://snapshot.org/#/dea.eth">
+            <Row onClick={() => toggle()}>
+              <div>Vote</div>
+            </Row>
+          </ExternalLink>
+          <ExternalLink href="https://legacy.deus.finance/migrator">
+            <Row onClick={() => toggle()}>
+              <div>V2 Migrator</div>
+            </Row>
+          </ExternalLink>
           <ExternalLink href="https://docs.deus.finance/contracts/disclaimer">
             <Row onClick={() => toggle()}>
               <div>Terms</div>
             </Row>
           </ExternalLink>
+          <Separator />
 
           <ExternalLink href="https://twitter.com/deusdao">
             <Row onClick={() => toggle()}>
@@ -115,12 +135,16 @@ export default function Menu() {
             </Row>
           </ExternalLink>
 
+          <ExternalLink href="https://discord.gg/xTTaBBAMgG">
+            <Row onClick={() => toggle()}>
+              <div>Discord</div>
+            </Row>
+          </ExternalLink>
           <ExternalLink href="https://github.com/deusfinance">
             <Row onClick={() => toggle()}>
               <div>Github</div>
             </Row>
           </ExternalLink>
-          <Separator />
 
           <ExternalLink href="https://legacy.deus.finance/">
             <Row onClick={() => toggle()}>

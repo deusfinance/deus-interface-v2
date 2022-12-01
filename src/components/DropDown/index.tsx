@@ -45,7 +45,7 @@ const Header = styled(Box)<{
   `}
 `
 
-const StyledChevron = styled(({ isOpen, ...props }) => <ChevronDown {...props} />)<{
+const StyledChevron = styled(({ ...props }) => <ChevronDown {...props} />)<{
   isOpen?: boolean
 }>`
   transition: transform 0.5s ease-out;
