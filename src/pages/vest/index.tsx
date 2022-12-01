@@ -89,23 +89,23 @@ export const ButtonText = styled.span<{ gradientText?: boolean }>`
   ${({ gradientText }) =>
     gradientText &&
     `
-    background: -webkit-linear-gradient(92.33deg, #e29d52 -10.26%, #de4a7b 80%);
+    background: -webkit-linear-gradient(92.33deg, #0badf4 -10.26%, #30efe4 80%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   `}
 `
 
 export const TopBorderWrap = styled.div<{ active?: boolean }>`
-  background: ${({ theme }) => theme.primary2};
+  background: ${({ theme }) => theme.deusColor};
   padding: 1px;
   border-radius: 8px;
   margin-right: 4px;
   margin-left: 3px;
-  border: 1px solid ${({ theme }) => theme.bg0};
+  border: 1px solid ${({ theme }) => theme.cLqdrColor};
   flex: 1;
 
   &:hover {
-    border: 1px solid ${({ theme, active }) => (active ? theme.bg0 : theme.warning)};
+    filter: brightness(0.8);
   }
 `
 

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import CLQDR_ICON from '/public/static/images/pages/clqdr/clqdr_logo.svg'
 import LQDR_ICON from '/public/static/images/pages/clqdr/lqdr_logo.svg'
 
-import { RowEnd, RowStart } from 'components/Row'
+import { RowBetween, RowEnd, RowStart } from 'components/Row'
 import ImageWithFallback from 'components/ImageWithFallback'
 import { useClqdrData, useFetchFirebirdData } from 'hooks/useClqdrPage'
 import { useCurrencyBalance } from 'state/wallet/hooks'
@@ -52,11 +52,8 @@ const EstimatedValue = styled.div`
   color: ${({ theme }) => theme.text4};
 `
 
-const Item = styled.div`
-  display: flex;
-  flex-direction: row;
-  height: 50%;
-  vertical-align: baseline;
+const Item = styled(RowBetween)`
+  padding: 3px 0;
 `
 const LqdrBalance = styled(RowStart)`
   font-family: 'Noto Sans';
@@ -80,7 +77,6 @@ const CLqdrBalance = styled(RowStart)`
 const Logo = styled.div`
   min-width: 24px;
   min-height: 24px;
-  margin-top: 5px;
   margin-right: 8px;
 `
 
@@ -108,32 +104,40 @@ export default function BalanceBox() {
             <ImageWithFallback src={LQDR_ICON} width={24} height={24} alt={'lqdr_logo'} />
           </Logo>
           <LqdrBalance>Your LQDR Balance:</LqdrBalance>
-          <RowEnd>
-            <Value>{lqdrBalanceDisplay ? lqdrBalanceDisplay : '0.00'}</Value>
-            <EstimatedValue>
-              {` ≈ $${
-                lqdrBalanceDisplay && firebird
-                  ? formatBalance(firebird?.lqdrPrice * Number(lqdrBalanceDisplay), 3)
-                  : '0.00'
-              }`}
-            </EstimatedValue>
-          </RowEnd>
+          {account ? (
+            <RowEnd>
+              <Value>{lqdrBalanceDisplay ? lqdrBalanceDisplay : '0.00'}</Value>
+              <EstimatedValue>
+                {` ≈ $${
+                  lqdrBalanceDisplay && firebird
+                    ? formatBalance(firebird?.lqdrPrice * Number(lqdrBalanceDisplay), 3)
+                    : '0.00'
+                }`}
+              </EstimatedValue>
+            </RowEnd>
+          ) : (
+            'Connect Wallet'
+          )}
         </Item>
         <Item>
           <Logo>
             <ImageWithFallback src={CLQDR_ICON} width={24} height={24} alt={'clqdr_logo'} />
           </Logo>
           <CLqdrBalance>Your cLQDR Balance:</CLqdrBalance>
-          <RowEnd>
-            <Value>{cLqdrBalanceDisplay ? cLqdrBalanceDisplay : '0.00'}</Value>
-            <EstimatedValue>
-              {` ≈ $${
-                cLqdrBalanceDisplay && firebird
-                  ? formatBalance(firebird?.lqdrPrice * firebird?.convertRate * Number(cLqdrBalanceDisplay), 3)
-                  : '0.00'
-              }`}
-            </EstimatedValue>
-          </RowEnd>
+          {account ? (
+            <RowEnd>
+              <Value>{cLqdrBalanceDisplay ? cLqdrBalanceDisplay : '0.00'}</Value>
+              <EstimatedValue>
+                {` ≈ $${
+                  cLqdrBalanceDisplay && firebird
+                    ? formatBalance(firebird?.lqdrPrice * firebird?.convertRate * Number(cLqdrBalanceDisplay), 3)
+                    : '0.00'
+                }`}
+              </EstimatedValue>
+            </RowEnd>
+          ) : (
+            'Connect Wallet'
+          )}
         </Item>
       </BalanceWrap>
       <RatioWrap>

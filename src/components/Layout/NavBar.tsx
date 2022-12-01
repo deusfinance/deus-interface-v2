@@ -136,7 +136,7 @@ const NavLink = styled.div<{
   ${({ active }) =>
     active &&
     `
-    background: -webkit-linear-gradient(1deg, #e29d52 -10.26%, #de4a7b 90%);
+    background: -webkit-linear-gradient(1deg, #0badf4 -10.26%, #30efe4 90%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: 600;
