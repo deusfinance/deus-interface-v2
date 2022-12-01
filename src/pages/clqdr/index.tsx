@@ -253,7 +253,7 @@ export default function Mint() {
   const { chainId, account } = useWeb3React()
   const isSupportedChainId = useSupportedChainId()
 
-  const { burningFee } = useClqdrData()
+  const { burningFee, mintRate } = useClqdrData()
 
   const [isOpenReviewModal, toggleReviewModal] = useState(false)
   const [isOpenWarningModal, toggleWarningModal] = useState(false)
@@ -289,13 +289,10 @@ export default function Mint() {
   const [approvalState, approveCallback] = useApproveCallback(inputCurrency ?? undefined, spender)
   const buyOnFirebird = useMemo(
     () =>
-      formattedAmountOut !== '0' &&
-      firebird &&
-      firebird.cLqdrAmountOut &&
-      toBN(formattedAmountOut).lt(firebird?.cLqdrAmountOut || '0')
+      formattedAmountOut !== '0' && firebird && firebird.convertRate && toBN(firebird.convertRate).lt(mintRate)
         ? true
         : false,
-    [firebird, formattedAmountOut]
+    [firebird, mintRate, formattedAmountOut]
   )
 
   const [showApprove, showApproveLoader] = useMemo(() => {
@@ -526,7 +523,7 @@ export default function Mint() {
 
         <ContentWrapper>
           <LeftWrapper>
-            {firebird && firebird.convertRate && <FireBird1 />}
+            {firebird && firebird.convertRate && <FireBird1 mintRate={mintRate} firebirdRate={firebird.convertRate} />}
             <SingleChart uniqueID="clqdrRatio" label="cLQDR/LQDR Ratio" />
             <SingleChart uniqueID="totalSupply" label="cLQDR in Circulation" />
 
