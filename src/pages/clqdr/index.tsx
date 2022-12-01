@@ -108,7 +108,7 @@ const ContentWrapper = styled.div`
   flex-direction: row;
   width: clamp(250px, 90%, 984px);
   z-index: 1;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     flex-direction: column-reverse
   `}
 `

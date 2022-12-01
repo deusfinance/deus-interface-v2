@@ -12,6 +12,7 @@ import useOnOutsideClick from 'hooks/useOnOutsideClick'
 import { NavToggle as NavToggleIcon, IconWrapper, VeDeus as VeDeusIcon } from 'components/Icons'
 import { Card } from 'components/Card'
 import { ExternalLink } from 'components/Link'
+import { RowStart } from 'components/Row'
 
 const Container = styled.div`
   overflow: hidden;
@@ -72,6 +73,22 @@ const Separator = styled.div`
   background: ${({ theme }) => theme.bg4};
 `
 
+const ExternalLinkIcon = styled(LinkIcon)`
+  margin-left: 4px;
+  path {
+    fill: ${({ theme }) => theme.text2};
+  }
+`
+const ExternalItem = styled(RowStart)`
+  &:hover {
+    svg {
+      path {
+        fill: ${({ theme }) => theme.white};
+      }
+    }
+  }
+`
+
 export default function Menu() {
   const ref = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
@@ -104,27 +121,42 @@ export default function Menu() {
           </Link>
           <ExternalLink href="https://app.firebird.finance/swap?inputCurrency=FTM&outputCurrency=0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44&net=250">
             <Row onClick={() => toggle()}>
-              <div>Swap</div>
+              <ExternalItem>
+                <div>Swap</div>
+                <ExternalLinkIcon />
+              </ExternalItem>
             </Row>
           </ExternalLink>
           <ExternalLink href="https://app.multichain.org/#/router">
             <Row onClick={() => toggle()}>
-              <div>Bridge</div>
+              <ExternalItem>
+                <div>Bridge</div>
+                <ExternalLinkIcon />
+              </ExternalItem>
             </Row>
           </ExternalLink>
           <ExternalLink href="https://snapshot.org/#/dea.eth">
             <Row onClick={() => toggle()}>
-              <div>Vote</div>
+              <ExternalItem>
+                <div>Vote</div>
+                <ExternalLinkIcon />
+              </ExternalItem>
             </Row>
           </ExternalLink>
           <ExternalLink href="https://legacy.deus.finance/migrator">
             <Row onClick={() => toggle()}>
-              <div>V2 Migrator</div>
+              <ExternalItem>
+                <div>V2 Migrator</div>
+                <ExternalLinkIcon />
+              </ExternalItem>
             </Row>
           </ExternalLink>
           <ExternalLink href="https://docs.deus.finance/contracts/disclaimer">
             <Row onClick={() => toggle()}>
-              <div>Terms</div>
+              <ExternalItem>
+                <div>Terms</div>
+                <ExternalLinkIcon />
+              </ExternalItem>
             </Row>
           </ExternalLink>
           <Separator />
@@ -138,6 +170,11 @@ export default function Menu() {
           <ExternalLink href="https://discord.gg/xTTaBBAMgG">
             <Row onClick={() => toggle()}>
               <div>Discord</div>
+            </Row>
+          </ExternalLink>
+          <ExternalLink href="https://t.me/deusfinance">
+            <Row onClick={() => toggle()}>
+              <div>Telegram</div>
             </Row>
           </ExternalLink>
           <ExternalLink href="https://github.com/deusfinance">
