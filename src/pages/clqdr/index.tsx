@@ -300,15 +300,6 @@ export default function Mint() {
     return [show, show && approvalState === ApprovalState.PENDING]
   }, [inputCurrency, approvalState, amount])
 
-  const info = useMemo(() => {
-    return [
-      { title: 'Max Slippage', value: '1' },
-      { title: 'Txn Deadline', value: '3' },
-      { title: 'Network Fee', value: '1' },
-      { title: 'Min Received', value: '3' },
-    ]
-  }, [])
-
   const handleApprove = async () => {
     setAwaitingApproveConfirmation(true)
     await approveCallback()
@@ -602,7 +593,7 @@ export default function Mint() {
         outputTokens={[cLQDR_TOKEN]}
         amountsIn={[amount]}
         amountsOut={[formattedAmountOut]}
-        info={info}
+        info={[]}
         data={''}
         buttonText={'Confirm Mint'}
         awaiting={awaitingMintConfirmation}
