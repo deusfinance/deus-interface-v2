@@ -9,6 +9,11 @@ module.exports = {
         destination: '/clqdr',
         permanent: true,
       },
+      {
+        source: '/migrator',
+        destination: '/',
+        permanent: true,
+      },
     ]
   },
 }
