@@ -2,8 +2,6 @@ import React, { useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 
 import CLQDR_ICON from '/public/static/images/pages/clqdr/ic_clqdr.svg'
-import CLQDR_LOGO from '/public/static/images/tokens/clqdr.svg'
-// import DEFIWAR_LOGO from '/public/static/images/pages/clqdr/defi_war.svg'
 
 import { LQDR_TOKEN, cLQDR_TOKEN } from 'constants/tokens'
 import { CLQDR_ADDRESS } from 'constants/addresses'
@@ -29,7 +27,7 @@ import {
   MainButton as MainButtonWrap,
   ConnectWallet,
 } from 'components/App/StableCoin'
-import { Row, RowCenter, RowEnd, RowStart } from 'components/Row'
+import { Row, RowCenter } from 'components/Row'
 import InfoItem from 'components/App/StableCoin/InfoItem'
 import Tableau from 'components/App/CLqdr/Tableau'
 import WarningModal from 'components/ReviewModal/Warning'
@@ -37,10 +35,10 @@ import FireBird1 from 'components/App/CLqdr/FirebirdBox1'
 import BalanceBox from 'components/App/CLqdr/BalanceBox'
 // import PicBox from 'components/App/CLqdr/PicBox'
 import BuyClqdrInputBox from 'components/App/CLqdr/BuyClqdrInputBox'
-import Dropdown from 'components/App/CLqdr/Dropdown'
-import { truncateAddress } from 'utils/address'
-import { ExternalLink } from 'components/Link'
 import SingleChart from 'components/App/CLqdr/SingleChart'
+import DataDropdown from 'components/App/CLqdr/DataDropdown'
+import ContractsDropdown from 'components/App/CLqdr/ContractsDropdown'
+// import DefiWarsDropdown from 'components/App/CLqdr/DefiWarsDropdown'
 
 const Wrapper = styled(MainWrapper)`
   width: 100%;
@@ -159,84 +157,6 @@ const BackgroundImage = styled.div`
   background: linear-gradient(90deg, #0badf4 0%, #30efe4 53.12%, #ff9af5 99.99%);
   opacity: 0.1;
   filter: blur(120px);
-`
-
-const Item = styled(Row)`
-  width: 100%;
-  height: 48px;
-  padding: 16px 16px 16px 24px;
-  background: ${({ theme }) => theme.bg2};
-
-  &:hover {
-    background: ${({ theme }) => theme.border4};
-  }
-`
-
-const ClqdrItem = styled(Item)`
-  height: unset;
-  flex-direction: column;
-`
-
-const ItemWrapper = styled.div`
-  border-radius: 0px 0px 12px 12px;
-  width: 100%;
-  & > * {
-    &:last-child {
-      border-radius: 0px 0px 12px 12px;
-    }
-  }
-`
-
-const ItemText = styled(RowStart)`
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 15px;
-
-  color: ${({ theme }) => theme.text2};
-  width: 100%;
-`
-const ItemValue = styled(RowEnd)`
-  font-family: 'IBM Plex Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  cursor: pointer;
-  line-height: 16px;
-  text-decoration-line: underline;
-
-  color: ${({ theme }) => theme.text1};
-  width: 100%;
-`
-
-const SolidValue = styled(ItemValue)`
-  text-decoration-line: none;
-`
-const GreenItem = styled(ItemValue)`
-  text-decoration-line: none;
-  color: ${({ theme }) => theme.green1};
-`
-
-const XLQDR = styled.span`
-  font-family: 'IBM Plex Mono';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 20px;
-  text-decoration-line: underline;
-  background: linear-gradient(339.11deg, #1984ff 9.31%, #4dd9f6 96.03%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-`
-const LQDRText = styled.p`
-  font-family: 'IBM Plex Mono';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 20px;
-  text-indent: -15px;
 `
 
 const Dropdowns = styled.div`
@@ -363,7 +283,7 @@ export default function Mint() {
     else if (showApprove) return null
     else if (insufficientBalance) return <MainButton disabled>Insufficient {inputCurrency?.symbol} Balance</MainButton>
     else if (awaitingMintConfirmation) {
-      return buyOnFirebird ? (
+      return buyOnFirebird && amount ? (
         <BuyAnyWayButton>
           Minting {outputCurrency?.symbol} <DotFlashing />
         </BuyAnyWayButton>
@@ -373,7 +293,7 @@ export default function Mint() {
         </MainButton>
       )
     }
-    return buyOnFirebird ? (
+    return buyOnFirebird && amount ? (
       <BuyAnyWayButton
         firebird
         onClick={() => {
@@ -393,129 +313,6 @@ export default function Mint() {
     )
   }
 
-  function getContracts(): JSX.Element {
-    return (
-      <ItemWrapper>
-        <Item>
-          <ItemText>LQDR contract:</ItemText>
-          <ItemValue>
-            <ExternalLink
-              href={`https://ftmscan.com/address/0x10b620b2dbAC4Faa7D7FFD71Da486f5D44cd86f9`}
-              style={{ textDecoration: 'underline' }}
-            >
-              {truncateAddress(`0x10b620b2dbAC4Faa7D7FFD71Da486f5D44cd86f9`)}
-            </ExternalLink>
-          </ItemValue>
-        </Item>
-        <Item>
-          <ItemText>cLQDR contract:</ItemText>
-          <ItemValue>
-            <ExternalLink
-              href={`https://ftmscan.com/address/0x814c66594a22404e101FEcfECac1012D8d75C156`}
-              style={{ textDecoration: 'underline' }}
-            >
-              {truncateAddress('0x814c66594a22404e101FEcfECac1012D8d75C156')}
-            </ExternalLink>
-          </ItemValue>
-        </Item>
-        <Item>
-          <ItemText>Collactor Proxy:</ItemText>
-          <ItemValue>
-            <ExternalLink
-              href={`https://ftmscan.com/address/0x30d1900306FD84EcFBCb16F821Aba69054aca15C`}
-              style={{ textDecoration: 'underline' }}
-            >
-              {truncateAddress('0x30d1900306FD84EcFBCb16F821Aba69054aca15C')}
-            </ExternalLink>
-          </ItemValue>
-        </Item>
-        <Item>
-          <ItemText>BuyBack Contract:</ItemText>
-          <ItemValue>
-            <ExternalLink
-              href={`https://ftmscan.com/address/0xCD3563CD8dE2602701d5d9f960db30710fcc4053`}
-              style={{ textDecoration: 'underline' }}
-            >
-              {truncateAddress('0xCD3563CD8dE2602701d5d9f960db30710fcc4053')}
-            </ExternalLink>
-          </ItemValue>
-        </Item>
-        <Item>
-          <ItemText>Oracle:</ItemText>
-          <ItemValue>
-            <ExternalLink
-              href={`https://ftmscan.com/address/0x2e5a83cE42F9887E222813371c5cA2bA1e827700`}
-              style={{ textDecoration: 'underline' }}
-            >
-              {truncateAddress('0x2e5a83cE42F9887E222813371c5cA2bA1e827700')}
-            </ExternalLink>
-          </ItemValue>
-        </Item>
-      </ItemWrapper>
-    )
-  }
-
-  function getDefiWars(): JSX.Element {
-    return (
-      <ItemWrapper>
-        <Item>
-          <ItemText>Tokens:</ItemText>
-          <ItemValue>
-            <ExternalLink
-              href={`https://ftmscan.com/token/0x814c66594a22404e101fecfecac1012d8d75c156`}
-              style={{ textDecoration: 'underline' }}
-            >
-              {truncateAddress('0x814c66594a22404e101fecfecac1012d8d75c156')}
-            </ExternalLink>
-          </ItemValue>
-        </Item>
-        <Item>
-          <ItemText>Expected Ratio:</ItemText>
-          <SolidValue>1.422?</SolidValue>
-        </Item>
-        <Item>
-          <ItemText>Market Ratio:</ItemText>
-          <SolidValue>1.42?</SolidValue>
-        </Item>
-        <Item>
-          <ItemText>Peg for 1k:</ItemText>
-          <GreenItem>99.34%?</GreenItem>
-        </Item>
-      </ItemWrapper>
-    )
-  }
-
-  function getCLqdrData(): JSX.Element {
-    return (
-      <ItemWrapper>
-        <ClqdrItem>
-          <LQDRText>
-            cLQDR is a wrapped token derivative built on top of <XLQDR>xLQDR</XLQDR> that has several benefits. cLQDR:
-          </LQDRText>
-          <LQDRText>1.Allows users to sell their position in secondary markets.</LQDRText>
-          <LQDRText>
-            2.Compounds all the rewards (cLQDR increases vs. LQDR overtime). This increases long-term returns and makes
-            cLQDR easier to integrate with borrow markets, LPs, and other protocols. This also simplifies holding
-            because users {`don't`} need to claim rewards, since rewards are automatically compounded into the{' '}
-            {`holder's`}
-            position.
-          </LQDRText>
-          <LQDRText>
-            3.Holders profit from the rewards and the bribes that xLQDR holders receive, and also from the performance
-            fees collected through strategies.
-          </LQDRText>
-          <LQDRText>
-            4.Creates constant buy pressure for LQDR and perpetually locks a large portion of {`LQDR's`} supply.
-          </LQDRText>
-          <LQDRText>
-            5.Allows users to leverage their cLQDR position to borrow our overcollateralized stablecoin, MOR. Holders
-            can then use that MOR to earn more yield.
-          </LQDRText>
-        </ClqdrItem>
-      </ItemWrapper>
-    )
-  }
-
   return (
     <>
       <Container>
@@ -529,9 +326,9 @@ export default function Mint() {
 
             {/* <PicBox /> */}
             <Dropdowns>
-              {/* <Dropdown content={getDefiWars()} logo={DEFIWAR_LOGO} text={'DefiWars'} /> */}
-              <Dropdown content={getCLqdrData()} logo={CLQDR_LOGO} text={'What is cLQDR?'} />
-              <Dropdown content={getContracts()} logo={CLQDR_LOGO} text={'Contracts'} />
+              {/* <DefiWarsDropdown /> */}
+              <DataDropdown />
+              <ContractsDropdown />
             </Dropdowns>
           </LeftWrapper>
           <RightWrapper>
