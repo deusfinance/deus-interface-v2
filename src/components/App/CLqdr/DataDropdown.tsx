@@ -25,6 +25,7 @@ const LQDRText = styled.p`
   font-size: 12px;
   line-height: 20px;
   text-indent: -15px;
+  width: 100%;
 `
 
 const ClqdrItem = styled(Item)`
