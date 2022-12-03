@@ -15,6 +15,7 @@ import Menu from './Menu'
 import NavLogo from './NavLogo'
 import { Link as LinkIcon } from 'components/Icons'
 import { RowStart } from 'components/Row'
+import { ExternalLink } from 'components/Link'
 
 const Wrapper = styled.div`
   padding: 0px 2rem;
@@ -164,14 +165,27 @@ const ExternalItem = styled(RowStart)`
     padding-left: 0;
     padding-right: 0;
   }
-  &:hover {
-    svg {
-      path {
-        fill: ${({ theme }) => theme.blueClqdrColor};
-      }
+  a:hover + svg {
+    path {
+      fill: ${({ theme }) => theme.blueClqdrColor};
     }
   }
 `
+
+function getExternalNavBar(title: string, link: string): JSX.Element {
+  return (
+    <>
+      <SimpleLinkWrapper>
+        <ExternalItem>
+          <ExternalLink href={link}>
+            <NavLink active={false}>{title}</NavLink>
+          </ExternalLink>
+          <ExternalLinkIcon />
+        </ExternalItem>
+      </SimpleLinkWrapper>
+    </>
+  )
+}
 
 export default function NavBar() {
   const router = useRouter()
@@ -217,43 +231,12 @@ export default function NavBar() {
                 </SimpleLinkWrapper>
               )
             })}
-
-            <SimpleLinkWrapper>
-              <ExternalItem>
-                <Link
-                  href={
-                    'https://app.firebird.finance/swap?inputCurrency=FTM&outputCurrency=0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44&net=250'
-                  }
-                  passHref
-                >
-                  <a style={{ textDecoration: 'none' }} rel="noreferrer" target="_blank">
-                    <NavLink active={false}>Swap</NavLink>
-                  </a>
-                </Link>
-                <ExternalLinkIcon />
-              </ExternalItem>
-            </SimpleLinkWrapper>
-            <SimpleLinkWrapper>
-              <ExternalItem>
-                <Link href={'https://app.multichain.org/#/router'} passHref>
-                  <a style={{ textDecoration: 'none' }} rel="noreferrer" target="_blank">
-                    <NavLink active={false}>Bridge</NavLink>
-                  </a>
-                </Link>
-                <ExternalLinkIcon />
-              </ExternalItem>
-            </SimpleLinkWrapper>
-
-            <SimpleLinkWrapper>
-              <ExternalItem>
-                <Link href={'https://docs.deus.finance/contracts/disclaimer'} passHref>
-                  <a style={{ textDecoration: 'none' }} rel="noreferrer" target="_blank">
-                    <NavLink active={false}>Terms</NavLink>
-                  </a>
-                </Link>
-                <ExternalLinkIcon />
-              </ExternalItem>
-            </SimpleLinkWrapper>
+            {getExternalNavBar(
+              'Swap',
+              'https://app.firebird.finance/swap?inputCurrency=FTM&outputCurrency=0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44&net=250'
+            )}
+            {getExternalNavBar('Bridge', 'https://app.multichain.org/#/router')}
+            {getExternalNavBar('Terms', 'https://docs.deus.finance/contracts/disclaimer')}
           </Routes>
           <Items>
             <Web3Network />

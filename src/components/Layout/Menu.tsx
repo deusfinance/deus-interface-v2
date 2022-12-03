@@ -68,7 +68,7 @@ const Separator = styled.div`
   width: 225px;
   margin-left: -13px;
   height: 1px;
-  background: ${({ theme }) => theme.bg4};
+  background: ${({ theme }) => theme.bg3};
 `
 
 const ExternalLinkIcon = styled(LinkIcon)`
@@ -180,6 +180,7 @@ export default function Menu() {
               <div>Github</div>
             </Row>
           </ExternalLink>
+          <Separator />
 
           <ExternalLink href="https://legacy.deus.finance/">
             <Row onClick={() => toggle()}>
