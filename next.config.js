@@ -11,8 +11,13 @@ module.exports = {
       },
       {
         source: '/migrator',
-        destination: '/',
-        permanent: true,
+        destination: 'https://legacy.deus.finance/migrator',
+        permanent: false,
+      },
+      {
+        source: '/bridge',
+        destination: 'https://app.multichain.org/#/router',
+        permanent: false,
       },
     ]
   },

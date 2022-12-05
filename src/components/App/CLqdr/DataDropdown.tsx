@@ -55,8 +55,8 @@ function getCLqdrData(): JSX.Element {
           4.Creates constant buy pressure for LQDR and perpetually locks a large portion of {`LQDR's`} supply.
         </LQDRText>
         <LQDRText>
-          5.Allows users to leverage their cLQDR position to borrow our overcollateralized stablecoin, MOR. Holders can
-          then use that MOR to earn more yield.
+          5.Allows users to leverage their cLQDR position to borrow our overcollateralized stablecoin, AIR. Holders can
+          then use that AIR to earn more yield.
         </LQDRText>
       </ClqdrItem>
     </ItemWrapper>
