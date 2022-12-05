@@ -60,6 +60,7 @@ const Item = styled.div<{
 
   &:hover {
     color: ${({ theme }) => theme.text1};
+    cursor: pointer;
   }
 `
 
