@@ -341,7 +341,7 @@ export default function SingleChart({ label, uniqueID }: { label: string; unique
           </defs>
           <YAxis
             dataKey={dataKey}
-            tick={{ fontSize: '10px' }}
+            tick={{ fontSize: '12px' }}
             interval={0}
             tickLine={false}
             axisLine={false}
