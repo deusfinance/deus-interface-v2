@@ -129,6 +129,7 @@ export default function Vest() {
   const { chainId, account } = useWeb3React()
   const [showLockManager, setShowLockManager] = useState(false)
   const [showAPYManager, setShowAPYManager] = useState(false)
+  const [showMigrateManager, setShowMigrateManager] = useState(false)
   const [nftId, setNftId] = useState(0)
   const { lockedVeDEUS } = useVestedAPY(undefined, getMaximumDate())
   const deusPrice = useDeusPrice()
@@ -245,7 +246,7 @@ export default function Vest() {
         <TopBorder>
           <Link href="/vest/create" passHref>
             <PrimaryButtonWide transparentBG padding={'1rem'}>
-              <ButtonText gradientText>Create Lock</ButtonText>
+              <ButtonText gradientText>Migrate All</ButtonText>
             </PrimaryButtonWide>
           </Link>
         </TopBorder>
@@ -309,7 +310,7 @@ export default function Vest() {
         {getUpperRow()}
         <Table
           nftIds={snapshotList as number[]}
-          toggleLockManager={toggleLockManager}
+          toggleMigrateManager={toggleLockManager}
           toggleAPYManager={toggleAPYManager}
           isMobile={isMobile}
           rewards={rewards}

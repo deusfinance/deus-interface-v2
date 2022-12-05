@@ -7,7 +7,7 @@ import utc from 'dayjs/plugin/utc'
 import Image from 'next/image'
 import toast from 'react-hot-toast'
 
-import { useVeDeusContract } from 'hooks/useContract'
+import { useVeDeusContract, useVeDeusMigratorContract } from 'hooks/useContract'
 import { useHasPendingVest, useTransactionAdder } from 'state/transactions/hooks'
 import { useVestedInformation } from 'hooks/useVested'
 import { useVeDistContract } from 'hooks/useContract'
@@ -29,6 +29,9 @@ import { formatAmount } from 'utils/numbers'
 import { DefaultHandlerError } from 'utils/parseError'
 import { ButtonText, TopBorder, TopBorderWrap } from 'pages/vest'
 import useWeb3React from 'hooks/useWeb3'
+import { veDEUS, veDEUSMigrator } from 'constants/addresses'
+import { useERC721ApproveAllCallback, ApprovalState } from 'hooks/useApproveNftCallback2'
+import { useSupportedChainId } from 'hooks/useSupportedChainId'
 
 dayjs.extend(utc)
 dayjs.extend(relativeTime)
@@ -151,14 +154,14 @@ const itemsPerPage = 10
 
 export default function Table({
   nftIds,
-  toggleLockManager,
+  toggleMigrateManager,
   toggleAPYManager,
   isMobile,
   rewards,
   isLoading,
 }: {
   nftIds: number[]
-  toggleLockManager: (nftId: number) => void
+  toggleMigrateManager: (nftId: number) => void
   toggleAPYManager: (nftId: number) => void
   isMobile?: boolean
   rewards: number[]
@@ -190,7 +193,7 @@ export default function Table({
                   key={index}
                   index={index}
                   nftId={nftId}
-                  toggleLockManager={toggleLockManager}
+                  toggleMigrateManager={toggleMigrateManager}
                   toggleAPYManager={toggleAPYManager}
                   isMobile={isMobile}
                   reward={rewards[index] ?? 0}
@@ -234,26 +237,43 @@ export default function Table({
 
 function TableRow({
   nftId,
-  toggleLockManager,
+  toggleMigrateManager,
   index,
   isMobile,
   reward,
 }: {
   nftId: number
-  toggleLockManager: (nftId: number) => void
+  toggleMigrateManager: (nftId: number) => void
   toggleAPYManager: (nftId: number) => void
   index: number
   isMobile?: boolean
   reward: number
 }) {
+  const { chainId, account } = useWeb3React()
+  const isSupportedChainId = useSupportedChainId()
+
   const [awaitingConfirmation, setAwaitingConfirmation] = useState(false)
   const [ClaimAwaitingConfirmation, setClaimAwaitingConfirmation] = useState(false)
   const [pendingTxHash, setPendingTxHash] = useState('')
   const { deusAmount, veDEUSAmount, lockEnd } = useVestedInformation(nftId)
   const veDEUSContract = useVeDeusContract()
+  const veDEUSMigratorContract = useVeDeusMigratorContract()
   const addTransaction = useTransactionAdder()
   const showTransactionPending = useHasPendingVest(pendingTxHash, true)
   const veDistContract = useVeDistContract()
+
+  const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
+
+  const spender = useMemo(() => (chainId ? veDEUSMigrator[chainId] : undefined), [chainId])
+
+  const [approvalState, approveCallback] = useERC721ApproveAllCallback(chainId ? veDEUS[chainId] : undefined, spender)
+  const showApprove = useMemo(() => approvalState !== ApprovalState.APPROVED, [approvalState])
+
+  const handleApprove = async () => {
+    setAwaitingApproveConfirmation(true)
+    await approveCallback()
+    setAwaitingApproveConfirmation(false)
+  }
 
   // subtracting 10 seconds to mitigate this from being true on page load
   const lockHasEnded = useMemo(() => dayjs.utc(lockEnd).isBefore(dayjs.utc().subtract(10, 'seconds')), [lockEnd])
@@ -305,6 +325,49 @@ function TableRow({
         <Name>Expired in</Name>
         <Value>{dayjs.utc(lockEnd).format('LLL')}</Value>
       </ExpirationPassed>
+    )
+  }
+
+  function getApproveButton(): JSX.Element | null {
+    if (!isSupportedChainId || !account) {
+      return null
+    }
+    if (awaitingApproveConfirmation) {
+      return (
+        <PrimaryButtonWide whiteBorder active>
+          <ButtonText>
+            Awaiting Confirmation <DotFlashing />
+          </ButtonText>
+        </PrimaryButtonWide>
+      )
+    }
+    if (showApprove) {
+      return (
+        <PrimaryButtonWide whiteBorder onClick={handleApprove}>
+          <ButtonText>Approve NFT</ButtonText>
+        </PrimaryButtonWide>
+      )
+    }
+    return null
+  }
+
+  function getMigrateCell() {
+    if (showApprove) {
+      return null
+    }
+
+    // if (awaitingRedeemConfirmation) {
+    //   return (
+    //     <MainButton>
+    //       Migrating to ERC20 <DotFlashing />
+    //     </MainButton>
+    //   )
+    // }
+
+    return (
+      <PrimaryButtonWide whiteBorder onClick={() => toggleMigrateManager(nftId)}>
+        <ButtonText>Migrate</ButtonText>
+      </PrimaryButtonWide>
     )
   }
 
@@ -377,9 +440,8 @@ function TableRow({
         <Cell style={{ padding: '5px 10px' }}>{getClaimWithdrawCell()}</Cell>
 
         <Cell style={{ padding: '5px 10px' }}>
-          <PrimaryButtonWide whiteBorder onClick={() => toggleLockManager(nftId)}>
-            <ButtonText>Update Lock</ButtonText>
-          </PrimaryButtonWide>
+          {getApproveButton()}
+          {getMigrateCell()}
         </Cell>
       </>
     )
@@ -399,9 +461,9 @@ function TableRow({
           <RowCenter style={{ padding: '5px 2px' }}>{getClaimWithdrawCell()}</RowCenter>
 
           <RowCenter style={{ padding: '5px 2px' }}>
-            <PrimaryButtonWide whiteBorder onClick={() => toggleLockManager(nftId)}>
-              <ButtonText>Update Lock</ButtonText>
-            </PrimaryButtonWide>
+            {getApproveButton()}
+
+            {getMigrateCell()}
           </RowCenter>
         </FirstRow>
 

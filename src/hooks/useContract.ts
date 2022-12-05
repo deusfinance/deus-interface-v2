@@ -10,6 +10,7 @@ import ERC20_ABI from 'constants/abi/ERC20.json'
 import ERC20_BYTES32_ABI from 'constants/abi/ERC20'
 import MULTICALL2_ABI from 'constants/abi/MULTICALL2.json'
 import VEDEUS_ABI from 'constants/abi/VEDEUS.json'
+import VEDEUS_MIGRATOR_ABI from 'constants/abi/VEDEUS.json'
 import VE_DIST_ABI from 'constants/abi/VE_DIST.json'
 
 import CLQDR_ABI from 'constants/abi/CLQDR_ABI.json'
@@ -17,7 +18,7 @@ import CLQDR_FULL_ABI from 'constants/abi/CLQDR_FULL_ABI.json'
 
 import { Providers } from 'constants/providers'
 
-import { Multicall2, ZERO_ADDRESS, veDEUS, veDist, CLQDR_ADDRESS } from 'constants/addresses'
+import { Multicall2, ZERO_ADDRESS, veDEUS, veDist, CLQDR_ADDRESS, veDEUSMigrator } from 'constants/addresses'
 
 export function useContract<T extends Contract = Contract>(
   addressOrAddressMap: string | null | undefined,
@@ -82,6 +83,12 @@ export function useVeDeusContract() {
   const { chainId } = useWeb3React()
   const address = useMemo(() => (chainId ? veDEUS[chainId] : undefined), [chainId])
   return useContract(address, VEDEUS_ABI)
+}
+
+export function useVeDeusMigratorContract() {
+  const { chainId } = useWeb3React()
+  const address = useMemo(() => (chainId ? veDEUSMigrator[chainId] : undefined), [chainId])
+  return useContract(address, VEDEUS_MIGRATOR_ABI)
 }
 
 export function useVeDistContract() {
