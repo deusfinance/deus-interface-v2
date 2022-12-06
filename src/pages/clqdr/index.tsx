@@ -168,6 +168,8 @@ const Item = styled(Row)`
 const ClqdrItem = styled(Item)`
   height: unset;
   flex-direction: column;
+  padding: 20px;
+  gap: 12px;
 `
 
 const ItemWrapper = styled.div`
@@ -211,7 +213,7 @@ const GreenItem = styled(ItemValue)`
   color: ${({ theme }) => theme.green1};
 `
 
-const XLQDR = styled.span`
+const CLQDR = styled.span`
   font-family: 'IBM Plex Mono';
   font-style: normal;
   font-weight: 600;
@@ -222,6 +224,7 @@ const XLQDR = styled.span`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  align-self: flex-start;
 `
 const LQDRText = styled.p`
   font-family: 'IBM Plex Mono';
@@ -229,7 +232,7 @@ const LQDRText = styled.p`
   font-weight: 600;
   font-size: 12px;
   line-height: 20px;
-  text-indent: -15px;
+  align-self: flex-start;
 `
 
 const Dropdowns = styled.div`
@@ -397,7 +400,7 @@ export default function Mint() {
           </ItemValue>
         </Item>
         <Item>
-          <ItemText>Collactor Proxy:</ItemText>
+          <ItemText>Collector Proxy:</ItemText>
           <ItemValue>
             <ExternalLink
               href={`https://ftmscan.com/address/0x30d1900306FD84EcFBCb16F821Aba69054aca15C`}
@@ -468,26 +471,25 @@ export default function Mint() {
       <ItemWrapper>
         <ClqdrItem>
           <LQDRText>
-            cLQDR is a wrapped token derivative built on top of <XLQDR>xLQDR</XLQDR> that has several benefits. cLQDR:
+            Liquiddriver and DEUS have a long-standing partnership and cLQDR holders had a DAO vote to allow DEUS to
+            take over the stewardship. cLQDR is simply a wrapped version of xLQDR, a vested $LQDR, {`Liquid Driver’s `}
+            native token, and receives rewards from the LQDR revenue-sharing vault.
           </LQDRText>
-          <LQDRText>1.Allows users to sell their position in secondary markets.</LQDRText>
+          <CLQDR>cLQDR benefits:</CLQDR>
           <LQDRText>
-            2.Compounds all the rewards (cLQDR increases vs. LQDR overtime). This increases long-term returns and makes
+            1. Compounds all the rewards (cLQDR increases vs. LQDR overtime). This increases long-term returns and makes
             cLQDR easier to integrate with borrow markets, LPs, and other protocols. This also simplifies holding
             because users {`don't`} need to claim rewards, since rewards are automatically compounded into the{' '}
-            {`holder's`}
+            {`holder's `}
             position.
           </LQDRText>
+          <LQDRText>2. Allows users to sell their position in secondary markets.</LQDRText>
           <LQDRText>
-            3.Holders profit from the rewards and the bribes that xLQDR holders receive, and also from the performance
+            3. Holders profit from the rewards and the bribes that xLQDR holders receive, and also from the performance
             fees collected through strategies.
           </LQDRText>
           <LQDRText>
-            4.Creates constant buy pressure for LQDR and perpetually locks a large portion of {`LQDR's`} supply.
-          </LQDRText>
-          <LQDRText>
-            5.Allows users to leverage their cLQDR position to borrow our overcollateralized stablecoin, MOR. Holders
-            can then use that MOR to earn more yield.
+            4. Creates constant buy pressure for LQDR and perpetually locks a large portion of {`LQDR's`} supply.
           </LQDRText>
         </ClqdrItem>
       </ItemWrapper>
@@ -562,7 +564,7 @@ export default function Mint() {
               </InputWrapper>
 
               <BottomWrapper>
-                <InfoItem name={'Management Fee'} value={`${burningFee}%`} />
+                {/* <InfoItem name={'Management Fee'} value={`${burningFee}%`} /> */}
                 <InfoItem
                   name={'Rate on Firebird'}
                   value={
