@@ -26,7 +26,7 @@ import {
   MainButton as MainButtonWrap,
   ConnectWallet,
 } from 'components/App/StableCoin'
-import { Row, RowCenter, RowEnd, RowStart } from 'components/Row'
+import { Row, RowCenter } from 'components/Row'
 import Tableau from 'components/App/CLqdr/Tableau'
 import WarningModal from 'components/ReviewModal/Warning'
 import FireBird1 from 'components/App/CLqdr/FirebirdBox1'
@@ -35,8 +35,6 @@ import BuyClqdrInputBox from 'components/App/CLqdr/BuyClqdrInputBox'
 import SingleChart from 'components/App/CLqdr/SingleChart'
 import DataDropdown from 'components/App/CLqdr/DataDropdown'
 import ContractsDropdown from 'components/App/CLqdr/ContractsDropdown'
-import { ExternalLink } from 'react-feather'
-import { truncateAddress } from 'utils/address'
 
 const Wrapper = styled(MainWrapper)`
   width: 100%;
@@ -159,76 +157,6 @@ const Item = styled(Row)`
   &:hover {
     background: ${({ theme }) => theme.border4};
   }
-`
-
-const ClqdrItem = styled(Item)`
-  height: unset;
-  flex-direction: column;
-  padding: 20px;
-  gap: 12px;
-`
-
-const ItemWrapper = styled.div`
-  border-radius: 0px 0px 12px 12px;
-  width: 100%;
-  & > * {
-    &:last-child {
-      border-radius: 0px 0px 12px 12px;
-    }
-  }
-`
-
-const ItemText = styled(RowStart)`
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 15px;
-
-  color: ${({ theme }) => theme.text2};
-  width: 100%;
-`
-const ItemValue = styled(RowEnd)`
-  font-family: 'IBM Plex Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  cursor: pointer;
-  line-height: 16px;
-  text-decoration-line: underline;
-
-  color: ${({ theme }) => theme.text1};
-  width: 100%;
-`
-
-const SolidValue = styled(ItemValue)`
-  text-decoration-line: none;
-`
-const GreenItem = styled(ItemValue)`
-  text-decoration-line: none;
-  color: ${({ theme }) => theme.green1};
-`
-
-const CLQDR = styled.span`
-  font-family: 'IBM Plex Mono';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 20px;
-  text-decoration-line: underline;
-  background: linear-gradient(339.11deg, #1984ff 9.31%, #4dd9f6 96.03%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  align-self: flex-start;
-`
-const LQDRText = styled.p`
-  font-family: 'IBM Plex Mono';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 20px;
-  align-self: flex-start;
 `
 
 const Dropdowns = styled.div`
@@ -375,128 +303,6 @@ export default function Mint() {
       </MainButton>
     )
   }
-
-  function getContracts(): JSX.Element {
-    return (
-      <ItemWrapper>
-        <Item>
-          <ItemText>cLQDR contract:</ItemText>
-          <ItemValue>
-            <ExternalLink
-              href={`https://ftmscan.com/address/0x814c66594a22404e101FEcfECac1012D8d75C156`}
-              style={{ textDecoration: 'underline' }}
-            >
-              {truncateAddress('0x814c66594a22404e101FEcfECac1012D8d75C156')}
-            </ExternalLink>
-          </ItemValue>
-        </Item>
-        <Item>
-          <ItemText>Collector Proxy:</ItemText>
-          <ItemValue>
-            <ExternalLink
-              href={`https://ftmscan.com/address/0x30d1900306FD84EcFBCb16F821Aba69054aca15C`}
-              style={{ textDecoration: 'underline' }}
-            >
-              {truncateAddress('0x30d1900306FD84EcFBCb16F821Aba69054aca15C')}
-            </ExternalLink>
-          </ItemValue>
-        </Item>
-        <Item>
-          <ItemText>BuyBack Contract:</ItemText>
-          <ItemValue>
-            <ExternalLink
-              href={`https://ftmscan.com/address/0xCD3563CD8dE2602701d5d9f960db30710fcc4053`}
-              style={{ textDecoration: 'underline' }}
-            >
-              {truncateAddress('0xCD3563CD8dE2602701d5d9f960db30710fcc4053')}
-            </ExternalLink>
-          </ItemValue>
-        </Item>
-        <Item>
-          <ItemText>Oracle:</ItemText>
-          <ItemValue>
-            <ExternalLink
-              href={`https://ftmscan.com/address/0x2e5a83cE42F9887E222813371c5cA2bA1e827700`}
-              style={{ textDecoration: 'underline' }}
-            >
-              {truncateAddress('0x2e5a83cE42F9887E222813371c5cA2bA1e827700')}
-            </ExternalLink>
-          </ItemValue>
-        </Item>
-      </ItemWrapper>
-    )
-  }
-
-  function getDefiWars(): JSX.Element {
-    return (
-      <ItemWrapper>
-        <Item>
-          <ItemText>Tokens:</ItemText>
-          <ItemValue>
-            <ExternalLink
-              href={`https://ftmscan.com/token/0x814c66594a22404e101fecfecac1012d8d75c156`}
-              style={{ textDecoration: 'underline' }}
-            >
-              {truncateAddress('0x814c66594a22404e101fecfecac1012d8d75c156')}
-            </ExternalLink>
-          </ItemValue>
-        </Item>
-        <Item>
-          <ItemText>Expected Ratio:</ItemText>
-          <SolidValue>1.422?</SolidValue>
-        </Item>
-        <Item>
-          <ItemText>Market Ratio:</ItemText>
-          <SolidValue>1.42?</SolidValue>
-        </Item>
-        <Item>
-          <ItemText>Peg for 1k:</ItemText>
-          <GreenItem>99.34%?</GreenItem>
-        </Item>
-      </ItemWrapper>
-    )
-  }
-
-  function getCLqdrData(): JSX.Element {
-    return (
-      <ItemWrapper>
-        <ClqdrItem>
-          <LQDRText>
-            Liquiddriver and DEUS have a long-standing partnership and cLQDR holders had a DAO vote to allow DEUS to
-            take over the stewardship. cLQDR is simply a wrapped version of xLQDR, a vested $LQDR, {`Liquid Driver’s `}
-            native token, and receives rewards from the LQDR revenue-sharing vault.
-          </LQDRText>
-          <CLQDR>cLQDR benefits:</CLQDR>
-          <LQDRText>
-            1. Compounds all the rewards (cLQDR increases vs. LQDR overtime). This increases long-term returns and makes
-            cLQDR easier to integrate with borrow markets, LPs, and other protocols. This also simplifies holding
-            because users {`don't`} need to claim rewards, since rewards are automatically compounded into the{' '}
-            {`holder's `}
-            position.
-          </LQDRText>
-          <LQDRText>2. Allows users to sell their position in secondary markets.</LQDRText>
-          <LQDRText>
-            3. Holders profit from the rewards and the bribes that xLQDR holders receive, and also from the performance
-            fees collected through strategies.
-          </LQDRText>
-          <LQDRText>
-            4. Creates constant buy pressure for LQDR and perpetually locks a large portion of {`LQDR's`} supply.
-          </LQDRText>
-        </ClqdrItem>
-      </ItemWrapper>
-    )
-  }
-
-  const items = useMemo(
-    () =>
-      firebird
-        ? [
-            { name: 'LQDR Price', value: `$${formatBalance(firebird.lqdrPrice, 3)}` },
-            { name: 'cLQDR/LQDR Ratio', value: `${formatBalance(mintRate, 4)}` },
-          ]
-        : [],
-    [firebird, mintRate]
-  )
 
   return (
     <>
