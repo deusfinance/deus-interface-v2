@@ -72,7 +72,7 @@ export interface Colors {
   deusColor: Color
   deiColor: Color
   cLqdrColor: Color
-  blueClqdrColor: Color
+  clqdrBlueColor: Color
   lqdrColor: Color
   clqdChartPrimaryColor: Color
   clqdChartSecondaryColor: Color

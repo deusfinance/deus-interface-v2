@@ -75,12 +75,12 @@ export default function APYManager({
   isOpen,
   onDismiss,
   nftId,
-  toggleLockManager,
+  toggleMigrateAllManager,
 }: {
   isOpen: boolean
   onDismiss: () => void
   nftId: number
-  toggleLockManager: (nftId: number) => void
+  toggleMigrateAllManager: (nftId: number) => void
 }) {
   const { deusAmount, veDEUSAmount, lockEnd } = useVestedInformation(nftId)
   const { lockedVeDEUS } = useVestedAPY(nftId, lockEnd)
@@ -144,7 +144,7 @@ export default function APYManager({
           <div>Your APR: </div>
           <div>{formatAmount(parseFloat(userAPY), 0)}%</div>
         </Row> */}
-        <PrimaryButton onClick={() => toggleLockManager(nftId)}>Update Lock</PrimaryButton>
+        <PrimaryButton onClick={() => toggleMigrateAllManager(nftId)}>Update Lock</PrimaryButton>
       </ModalInnerWrapper>
     </StyledModal>
   )

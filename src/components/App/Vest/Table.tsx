@@ -27,7 +27,7 @@ import LOADING_LOCK_MOBILE from '/public/static/images/pages/veDEUS/loadingLockM
 
 import { formatAmount } from 'utils/numbers'
 import { DefaultHandlerError } from 'utils/parseError'
-import { ButtonText, TopBorder, TopBorderWrap } from 'pages/vest'
+import { ButtonText, TopBorder, TopBorderWrap } from 'components/App/Vest'
 import useWeb3React from 'hooks/useWeb3'
 import { veDEUS, veDEUSMigrator } from 'constants/addresses'
 import { useERC721ApproveAllCallback, ApprovalState } from 'hooks/useApproveNftCallback2'
@@ -122,6 +122,10 @@ const Value = styled.div`
   margin-top: 10px;
 `
 
+const VDeusValue = styled(Value)`
+  color: ${({ theme }) => theme.clqdrBlueColor};
+`
+
 const ZebraStripesRow = styled(Row)<{ isEven?: boolean }>`
   background: ${({ isEven, theme }) => (isEven ? theme.bg2 : theme.bg1)};
 `
@@ -154,15 +158,11 @@ const itemsPerPage = 10
 
 export default function Table({
   nftIds,
-  toggleMigrateManager,
-  toggleAPYManager,
   isMobile,
   rewards,
   isLoading,
 }: {
   nftIds: number[]
-  toggleMigrateManager: (nftId: number) => void
-  toggleAPYManager: (nftId: number) => void
   isMobile?: boolean
   rewards: number[]
   isLoading: boolean
@@ -189,15 +189,7 @@ export default function Table({
           <tbody>
             {paginatedItems.length > 0 &&
               paginatedItems.map((nftId: number, index) => (
-                <TableRow
-                  key={index}
-                  index={index}
-                  nftId={nftId}
-                  toggleMigrateManager={toggleMigrateManager}
-                  toggleAPYManager={toggleAPYManager}
-                  isMobile={isMobile}
-                  reward={rewards[index] ?? 0}
-                />
+                <TableRow key={index} index={index} nftId={nftId} isMobile={isMobile} reward={rewards[index] ?? 0} />
               ))}
           </tbody>
           {paginatedItems.length === 0 && (
@@ -237,14 +229,11 @@ export default function Table({
 
 function TableRow({
   nftId,
-  toggleMigrateManager,
   index,
   isMobile,
   reward,
 }: {
   nftId: number
-  toggleMigrateManager: (nftId: number) => void
-  toggleAPYManager: (nftId: number) => void
   index: number
   isMobile?: boolean
   reward: number
@@ -365,7 +354,7 @@ function TableRow({
     // }
 
     return (
-      <PrimaryButtonWide whiteBorder onClick={() => toggleMigrateManager(nftId)}>
+      <PrimaryButtonWide whiteBorder onClick={() => console.log(nftId)}>
         <ButtonText>Migrate</ButtonText>
       </PrimaryButtonWide>
     )
@@ -431,8 +420,8 @@ function TableRow({
         </Cell>
 
         <Cell>
-          <Name>Vest Value</Name>
-          <Value>{formatAmount(parseFloat(veDEUSAmount), 6)} veDEUS</Value>
+          <Name>Migration Amount</Name>
+          <VDeusValue>N/A vDEUS</VDeusValue>
         </Cell>
 
         <Cell style={{ padding: '5px 10px' }}>{getExpirationCell()}</Cell>
@@ -472,10 +461,10 @@ function TableRow({
           <Value>{formatAmount(parseFloat(deusAmount), 8)} DEUS</Value>
         </MobileCell>
 
-        <MobileCell>
-          <Name>Vest Value</Name>
-          <Value>{formatAmount(parseFloat(veDEUSAmount), 6)} veDEUS</Value>
-        </MobileCell>
+        <Cell>
+          <Name>Migration Amount</Name>
+          <VDeusValue>N/A vDEUS</VDeusValue>
+        </Cell>
 
         <MobileCell>{getExpirationCell()}</MobileCell>
       </MobileWrapper>

@@ -151,7 +151,7 @@ const NavLink = styled.div<{
       !active &&
       `
       cursor: pointer;
-      color: ${theme.blueClqdrColor};
+      color: ${theme.clqdrBlueColor};
   `};
   }
 `
@@ -167,7 +167,7 @@ const ExternalItem = styled(RowStart)`
   }
   a:hover + svg {
     path {
-      fill: ${({ theme }) => theme.blueClqdrColor};
+      fill: ${({ theme }) => theme.clqdrBlueColor};
     }
   }
 `

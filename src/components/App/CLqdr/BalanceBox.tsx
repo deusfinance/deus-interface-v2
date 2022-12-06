@@ -71,7 +71,7 @@ const CLqdrBalance = styled(RowStart)`
   vertical-align: middle;
   font-weight: 500;
   font-size: 14px;
-  color: ${({ theme }) => theme.blueClqdrColor};
+  color: ${({ theme }) => theme.clqdrBlueColor};
 `
 
 const Logo = styled.div`

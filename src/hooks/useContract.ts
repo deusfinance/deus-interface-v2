@@ -10,7 +10,7 @@ import ERC20_ABI from 'constants/abi/ERC20.json'
 import ERC20_BYTES32_ABI from 'constants/abi/ERC20'
 import MULTICALL2_ABI from 'constants/abi/MULTICALL2.json'
 import VEDEUS_ABI from 'constants/abi/VEDEUS.json'
-import VEDEUS_MIGRATOR_ABI from 'constants/abi/VEDEUS.json'
+import VEDEUS_MIGRATOR_ABI from 'constants/abi/VEDEUS_MIGRATOR_ABI.json'
 import VE_DIST_ABI from 'constants/abi/VE_DIST.json'
 
 import CLQDR_ABI from 'constants/abi/CLQDR_ABI.json'

@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import Link from 'next/link'
 import styled from 'styled-components'
 import Image from 'next/image'
 import { isMobile } from 'react-device-detect'
@@ -26,9 +25,8 @@ import { PrimaryButtonWide } from 'components/Button'
 import { RowFixed, RowBetween } from 'components/Row'
 import StatsHeader from 'components/StatsHeader'
 import { Container } from 'components/App/StableCoin'
-import { useSearch, SearchField, Table } from 'components/App/Vest'
-import LockManager from 'components/App/Vest/LockManager'
-import APYManager from 'components/App/Vest/APYManager'
+import { useSearch, SearchField, Table, TopBorder, TopBorderWrap, ButtonText } from 'components/App/Vest'
+import MigrateAllManager from 'components/App/Vest/MigrateAllManager'
 import InfoHeader from 'components/InfoHeader'
 
 const Wrapper = styled(Container)`
@@ -74,49 +72,6 @@ const ButtonWrapper = styled(RowFixed)`
   }
 `
 
-export const ButtonText = styled.span<{ gradientText?: boolean }>`
-  display: flex;
-  font-family: 'Inter';
-  font-weight: 600;
-  font-size: 15px;
-  white-space: nowrap;
-  color: ${({ theme }) => theme.text1};
-
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    font-size: 14px;
-  `}
-
-  ${({ gradientText }) =>
-    gradientText &&
-    `
-    background: -webkit-linear-gradient(92.33deg, #0badf4 -10.26%, #30efe4 80%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  `}
-`
-
-export const TopBorderWrap = styled.div<{ active?: boolean }>`
-  background: ${({ theme }) => theme.deusColor};
-  padding: 1px;
-  border-radius: 8px;
-  margin-right: 4px;
-  margin-left: 3px;
-  border: 1px solid ${({ theme }) => theme.cLqdrColor};
-  flex: 1;
-
-  &:hover {
-    filter: brightness(0.8);
-  }
-`
-
-export const TopBorder = styled.div`
-  background: ${({ theme }) => theme.bg0};
-  border-radius: 6px;
-  height: 100%;
-  width: 100%;
-  display: flex;
-`
-
 const FirstRowWrapper = styled.div`
   display: flex;
   flex-flow: row nowrap;
@@ -127,10 +82,7 @@ const FirstRowWrapper = styled.div`
 
 export default function Vest() {
   const { chainId, account } = useWeb3React()
-  const [showLockManager, setShowLockManager] = useState(false)
-  const [showAPYManager, setShowAPYManager] = useState(false)
-  const [showMigrateManager, setShowMigrateManager] = useState(false)
-  const [nftId, setNftId] = useState(0)
+  const [showMigrateAllManager, setShowMigrateAllManager] = useState(false)
   const { lockedVeDEUS } = useVestedAPY(undefined, getMaximumDate())
   const deusPrice = useDeusPrice()
   const addTransaction = useTransactionAdder()
@@ -154,20 +106,11 @@ export default function Vest() {
   }, [snapshot])
 
   useEffect(() => {
-    setShowLockManager(false)
-    setShowAPYManager(false)
+    setShowMigrateAllManager(false)
   }, [chainId, account])
 
-  const toggleLockManager = (nftId: number) => {
-    setShowLockManager(true)
-    setShowAPYManager(false)
-    setNftId(nftId)
-  }
-
-  const toggleAPYManager = (nftId: number) => {
-    setShowLockManager(false)
-    setShowAPYManager(true)
-    setNftId(nftId)
+  const toggleMigrateAllManager = () => {
+    setShowMigrateAllManager(true)
   }
 
   const [unClaimedIds, totalRewards] = useMemo(() => {
@@ -241,22 +184,16 @@ export default function Vest() {
           </PrimaryButtonWide>
         </TopBorder>
       </TopBorderWrap>
-    ) : !!snapshotList.length ? (
-      <TopBorderWrap>
-        <TopBorder>
-          <Link href="/vest/create" passHref>
-            <PrimaryButtonWide transparentBG padding={'1rem'}>
+    ) : (
+      !!snapshotList.length && (
+        <TopBorderWrap>
+          <TopBorder>
+            <PrimaryButtonWide transparentBG onClick={toggleMigrateAllManager}>
               <ButtonText gradientText>Migrate All</ButtonText>
             </PrimaryButtonWide>
-          </Link>
-        </TopBorder>
-      </TopBorderWrap>
-    ) : (
-      <PrimaryButtonWide>
-        <Link href="/vest/create" passHref>
-          <ButtonText>Create New Lock</ButtonText>
-        </Link>
-      </PrimaryButtonWide>
+          </TopBorder>
+        </TopBorderWrap>
+      )
     )
   }
 
@@ -310,19 +247,15 @@ export default function Vest() {
         {getUpperRow()}
         <Table
           nftIds={snapshotList as number[]}
-          toggleMigrateManager={toggleLockManager}
-          toggleAPYManager={toggleAPYManager}
           isMobile={isMobile}
           rewards={rewards}
           isLoading={ownedNfts.isLoading}
         />
       </Wrapper>
-      <LockManager isOpen={showLockManager} onDismiss={() => setShowLockManager(false)} nftId={nftId} />
-      <APYManager
-        isOpen={showAPYManager}
-        onDismiss={() => setShowAPYManager(false)}
-        nftId={nftId}
-        toggleLockManager={toggleLockManager}
+      <MigrateAllManager
+        isOpen={showMigrateAllManager}
+        onDismiss={() => setShowMigrateAllManager(false)}
+        nftIds={nftIds}
       />
     </Container>
   )

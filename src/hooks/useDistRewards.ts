@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
 import { toBN } from 'utils/numbers'
-import { useSingleContractMultipleData } from 'state/multicall/hooks'
-import { useVeDistContract } from 'hooks/useContract'
+import { useSingleContractMultipleMethods, useSingleContractMultipleData } from 'state/multicall/hooks'
+import { useVeDeusMigratorContract, useVeDistContract } from 'hooks/useContract'
 import { useOwnerVeDeusNFTs } from 'hooks/useOwnerNfts'
 
 export default function useDistRewards(): number[] {
@@ -26,4 +26,35 @@ export default function useDistRewards(): number[] {
       return acc
     }, [])
   }, [results])
+}
+
+export function useVeMigrationData(): {
+  paused: boolean
+} {
+  const contract = useVeDeusMigratorContract()
+  const nftIds = useOwnerVeDeusNFTs().results
+  const nftIdsCallInputs = useMemo(() => (!nftIds.length ? [] : nftIds.map((id) => [id])), [nftIds])
+
+  const calls = useMemo(
+    () => [
+      {
+        methodName: 'paused',
+        callInputs: [],
+      },
+      {
+        methodName: 'valueOfVeDeusNFTs',
+        callInputs: nftIdsCallInputs,
+      },
+    ],
+    [nftIdsCallInputs]
+  )
+
+  const [pauseResult] = useSingleContractMultipleMethods(contract, calls)
+
+  return useMemo(
+    () => ({
+      paused: pauseResult?.result ? pauseResult?.result[0] : false,
+    }),
+    [pauseResult]
+  )
 }
