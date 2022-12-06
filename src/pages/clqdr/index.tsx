@@ -20,7 +20,6 @@ import { ArrowBubble, DotFlashing } from 'components/Icons'
 import InputBox from 'components/InputBox'
 import DefaultReviewModal from 'components/App/CLqdr/DefaultReviewModal'
 import {
-  BottomWrapper,
   Container,
   InputWrapper,
   Wrapper as MainWrapper,
@@ -28,17 +27,14 @@ import {
   ConnectWallet,
 } from 'components/App/StableCoin'
 import { Row, RowCenter } from 'components/Row'
-import InfoItem from 'components/App/StableCoin/InfoItem'
 import Tableau from 'components/App/CLqdr/Tableau'
 import WarningModal from 'components/ReviewModal/Warning'
 import FireBird1 from 'components/App/CLqdr/FirebirdBox1'
 import BalanceBox from 'components/App/CLqdr/BalanceBox'
-// import PicBox from 'components/App/CLqdr/PicBox'
 import BuyClqdrInputBox from 'components/App/CLqdr/BuyClqdrInputBox'
 import SingleChart from 'components/App/CLqdr/SingleChart'
 import DataDropdown from 'components/App/CLqdr/DataDropdown'
 import ContractsDropdown from 'components/App/CLqdr/ContractsDropdown'
-// import DefiWarsDropdown from 'components/App/CLqdr/DefiWarsDropdown'
 
 const Wrapper = styled(MainWrapper)`
   width: 100%;
@@ -141,13 +137,6 @@ const RightWrapper = styled(Row)`
     margin-left: 0px;
   `}
 `
-
-// const Chart = styled.div`
-//   width: 100%;
-//   background: ${({ theme }) => theme.bg1};
-//   border-radius: 12px;
-//   height: 258px;
-// `
 
 const BackgroundImage = styled.div`
   position: absolute;
@@ -359,18 +348,6 @@ export default function Mint() {
                 {getApproveButton()}
                 {getActionButton()}
               </InputWrapper>
-
-              <BottomWrapper>
-                <InfoItem name={'Management Fee'} value={`${burningFee}%`} />
-                <InfoItem
-                  name={'Rate on Firebird'}
-                  value={
-                    amount && Number(amount) > 0
-                      ? `${formatBalance(amount, 6)} LQDR = ${formatBalance(firebird?.cLqdrAmountOut, 6)} cLQDR`
-                      : '-'
-                  }
-                />
-              </BottomWrapper>
             </Wrapper>
           </RightWrapper>
         </ContentWrapper>

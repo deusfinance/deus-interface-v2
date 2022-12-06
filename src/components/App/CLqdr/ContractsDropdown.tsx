@@ -31,7 +31,7 @@ function getContracts(): JSX.Element {
         </ItemValue>
       </Item>
       <Item>
-        <ItemText>Collactor Proxy:</ItemText>
+        <ItemText>Collector Proxy:</ItemText>
         <ItemValue>
           <ExternalLink
             href={`https://ftmscan.com/address/0x30d1900306FD84EcFBCb16F821Aba69054aca15C`}
