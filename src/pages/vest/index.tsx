@@ -27,7 +27,6 @@ import StatsHeader from 'components/StatsHeader'
 import { Container } from 'components/App/StableCoin'
 import { useSearch, SearchField, Table, TopBorder, TopBorderWrap, ButtonText } from 'components/App/Vest'
 import MigrateAllManager from 'components/App/Vest/MigrateAllManager'
-import InfoHeader from 'components/InfoHeader'
 
 const Wrapper = styled(Container)`
   margin: 0 auto;
@@ -98,8 +97,6 @@ export default function Vest() {
 
   const toggleWalletModal = useWalletModalToggle()
 
-  const [showTopBanner, setShowTopBanner] = useState(true)
-
   const { snapshot, searchProps } = useSearch()
   const snapshotList = useMemo(() => {
     return snapshot.options.map((obj) => {
@@ -112,6 +109,10 @@ export default function Vest() {
   }, [chainId, account])
 
   const toggleMigrateAllManager = () => {
+    if (totalRewards > 0) {
+      toast.error('First "Claim all" your rewards. After migrating your unclaimed rewards will miss.')
+      return
+    }
     setShowMigrateAllManager(true)
   }
 
@@ -235,12 +236,6 @@ export default function Vest() {
 
   return (
     <Container>
-      {showTopBanner && (
-        <InfoHeader
-          onClose={setShowTopBanner}
-          text={`In preparation for the launch of DEUS v3, we are currently overhauling the veDEUS’s tokenomics, fee accruing mechanisms, and reward contracts. We will release an article with more information shortly. This update especially concerns the veDEUS anti-dilution and rewards payout.`}
-        />
-      )}
       <Hero>
         <Image src={veDEUS_LOGO} height={'90px'} alt="Logo" />
         <StatsHeader items={items} />

@@ -156,12 +156,6 @@ const MobileWrapper = styled.div`
 
 const itemsPerPage = 10
 
-const getAmountsByNftId = (nftId: number, nftIds: number[], arr: number[] | string[]): number | string => {
-  const findIndex = nftIds.indexOf(nftId)
-  if (findIndex < 0) return 0
-  return arr[findIndex]
-}
-
 export default function Table({
   nftIds,
   isMobile,
@@ -264,7 +258,7 @@ function TableRow({
   const [awaitingConfirmation, setAwaitingConfirmation] = useState(false)
   const [ClaimAwaitingConfirmation, setClaimAwaitingConfirmation] = useState(false)
   const [pendingTxHash, setPendingTxHash] = useState('')
-  const { deusAmount, veDEUSAmount, lockEnd } = useVestedInformation(nftId)
+  const { deusAmount, lockEnd } = useVestedInformation(nftId)
   const veDEUSContract = useVeDeusContract()
   const veDEUSMigratorContract = useVeDeusMigratorContract()
   const addTransaction = useTransactionAdder()

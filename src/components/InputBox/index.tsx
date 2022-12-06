@@ -227,7 +227,7 @@ export function InputBoxV2({
       balanceDisplay={balanceDisplay}
       placeholder={placeholder}
       value={value}
-      logo={logo}
+      icon={logo}
       name={currency?.symbol}
       balanceExact={balanceExact}
       onChange={onChange}
@@ -239,7 +239,7 @@ export function InputBoxV2({
 
 export function CustomInputBox({
   value,
-  logo,
+  icon,
   name,
   placeholder,
   balanceDisplay,
@@ -253,7 +253,7 @@ export function CustomInputBox({
   placeholder?: string
   balanceDisplay: string | number | undefined
   balanceExact: string | number | undefined
-  logo?: string | StaticImageData
+  icon?: string | StaticImageData
   onChange(values: string): void
   onSelect?: () => void
   disabled?: boolean
@@ -265,13 +265,13 @@ export function CustomInputBox({
 
   return (
     <Wrapper>
-      {logo && (
+      {icon && (
         <LogoWrapper onClick={onSelect ? () => onSelect() : undefined} active={onSelect ? true : false}>
-          <ImageWithFallback src={logo} width={getImageSize()} height={getImageSize()} alt={`${name} Logo`} round />
+          <ImageWithFallback src={icon} width={getImageSize()} height={getImageSize()} alt={`${name} icon`} round />
           {onSelect ? <ChevronDown /> : null}
         </LogoWrapper>
       )}
-      <RightWrapper borderLeft={!!logo}>
+      <RightWrapper borderLeft={!!icon}>
         <RowBetween>
           <CurrencySymbol onClick={onSelect ? () => onSelect() : undefined} active={onSelect ? true : false}>
             {name}
