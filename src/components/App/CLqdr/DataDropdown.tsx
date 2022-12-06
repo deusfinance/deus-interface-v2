@@ -41,7 +41,7 @@ function getCLqdrData(): JSX.Element {
     <ItemWrapper>
       <ClqdrItem>
         <LQDRText>
-          Liquiddriver and DEUS have a long-standing partnership and cLQDR holders had a DAO vote to allow DEUS to{' '}
+          Liquid Driver and DEUS have a long-standing partnership and cLQDR holders had a DAO vote to allow DEUS to{' '}
           <ExternalLink
             href="https://medium.com/@deusfinance/deus-finance-taking-over-clqdr-stewardship-71e93db6ceae"
             style={{ textDecoration: 'underline' }}
@@ -50,8 +50,8 @@ function getCLqdrData(): JSX.Element {
           </ExternalLink>
         </LQDRText>
         <LQDRText>
-          cLQDR is simply a wrapped version of xLQDR, a vested $LQDR, {`Liquid Driver’s `}native token, and receives
-          rewards from the LQDR revenue-sharing vault.
+          cLQDR is a wrapped version of xLQDR. xLQDR is the vested version of $LQDR and receives rewards from the LQDR
+          revenue-sharing vault.
         </LQDRText>
         <CLQDR>cLQDR benefits:</CLQDR>
         <LQDRText>
