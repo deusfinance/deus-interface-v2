@@ -6,13 +6,18 @@ module.exports = {
     return [
       {
         source: '/',
-        destination: '/dashboard',
+        destination: '/clqdr',
         permanent: true,
       },
       {
-        source: '/bonds',
-        destination: '/bond',
-        permanent: true,
+        source: '/migrator',
+        destination: 'https://legacy.deus.finance/migrator',
+        permanent: false,
+      },
+      {
+        source: '/bridge',
+        destination: 'https://app.multichain.org/#/router',
+        permanent: false,
       },
     ]
   },

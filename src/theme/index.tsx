@@ -120,7 +120,7 @@ function colors(themeName: SupportedThemes): Colors {
       blue1: '#0068FC',
       blue2: '#0068FC',
       darkPink: '#de4a7b',
-      orange: '#E59C46',
+      orange: '#D79747',
       darkOrange: '#391D12',
 
       error: '#DF1F38',

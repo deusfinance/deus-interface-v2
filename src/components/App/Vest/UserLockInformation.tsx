@@ -5,11 +5,9 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import utc from 'dayjs/plugin/utc'
 import BigNumber from 'bignumber.js'
-import useWeb3React from 'hooks/useWeb3'
-import { useVestedAPY } from 'hooks/useVested'
 
+import useWeb3React from 'hooks/useWeb3'
 import { lastThursday } from 'utils/vest'
-import { formatAmount } from 'utils/numbers'
 
 dayjs.extend(utc)
 dayjs.extend(relativeTime)
@@ -106,7 +104,7 @@ export default function UserLockInformation({
     return computedVotingPower().plus(current).toFixed(2)
   }, [computedVotingPower, currentVotingPower])
 
-  const { userAPY } = useVestedAPY(undefined, effectiveDate)
+  // const { userAPY } = useVestedAPY(undefined, effectiveDate)
 
   // const durationUntilTarget: string = useMemo(() => {
   //   return dayjs.utc(effectiveDate).fromNow(true)
@@ -119,10 +117,10 @@ export default function UserLockInformation({
         <div>Total voting Power:</div>
         <TotalVP isModal={isModal}>{totalVotingPower} veDEUS</TotalVP>
       </Row>
-      <Row active={increaseType === '2' && isNew} isModal={isModal}>
+      {/* <Row active={increaseType === '2' && isNew} isModal={isModal}>
         <div>Est. APR</div>
         <div>{formatAmount(parseFloat(userAPY), 0)}%</div>
-      </Row>
+      </Row> */}
       {/* <Row>
         <div>Expiration in: </div>
         {lockHasEnded ? <div>Expired</div> : <div>~ {durationUntilTarget}</div>}

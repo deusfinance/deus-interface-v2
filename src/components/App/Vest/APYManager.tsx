@@ -83,7 +83,7 @@ export default function APYManager({
   toggleLockManager: (nftId: number) => void
 }) {
   const { deusAmount, veDEUSAmount, lockEnd } = useVestedInformation(nftId)
-  const { lockedVeDEUS, globalAPY, userAPY, antiDilutiveAPY, deiAPY, bribesAPY } = useVestedAPY(nftId, lockEnd)
+  const { lockedVeDEUS } = useVestedAPY(nftId, lockEnd)
   const deusPrice = useDeusPrice()
 
   return (
@@ -117,7 +117,7 @@ export default function APYManager({
           <div>{formatAmount(parseFloat(lockedVeDEUS), 0)}</div>
         </Row>
         <HorPartition />
-        <Row>
+        {/*         <Row>
           <div>
             DEI Lending APR: <span>(paid in DEI)</span>
           </div>
@@ -143,7 +143,7 @@ export default function APYManager({
         <Row>
           <div>Your APR: </div>
           <div>{formatAmount(parseFloat(userAPY), 0)}%</div>
-        </Row>
+        </Row> */}
         <PrimaryButton onClick={() => toggleLockManager(nftId)}>Update Lock</PrimaryButton>
       </ModalInnerWrapper>
     </StyledModal>

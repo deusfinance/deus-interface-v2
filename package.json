@@ -1,6 +1,6 @@
 {
-  "name": "dei-interface-v2",
-  "description": "DEI stablecoin",
+  "name": "deus-interface-v2",
+  "description": "DEUS interface v2",
   "version": "1.0.0",
   "license": "GPL-3.0-or-later",
   "dependencies": {

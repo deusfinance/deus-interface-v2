@@ -2,8 +2,6 @@ import React, { useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 
 import CLQDR_ICON from '/public/static/images/pages/clqdr/ic_clqdr.svg'
-import CLQDR_LOGO from '/public/static/images/tokens/clqdr.svg'
-import DEFIWAR_LOGO from '/public/static/images/pages/clqdr/defi_war.svg'
 
 import { LQDR_TOKEN, cLQDR_TOKEN } from 'constants/tokens'
 import { CLQDR_ADDRESS } from 'constants/addresses'
@@ -22,7 +20,6 @@ import { ArrowBubble, DotFlashing } from 'components/Icons'
 import InputBox from 'components/InputBox'
 import DefaultReviewModal from 'components/App/CLqdr/DefaultReviewModal'
 import {
-  BottomWrapper,
   Container,
   InputWrapper,
   Wrapper as MainWrapper,
@@ -30,17 +27,16 @@ import {
   ConnectWallet,
 } from 'components/App/StableCoin'
 import { Row, RowCenter, RowEnd, RowStart } from 'components/Row'
-import InfoItem from 'components/App/StableCoin/InfoItem'
 import Tableau from 'components/App/CLqdr/Tableau'
 import WarningModal from 'components/ReviewModal/Warning'
 import FireBird1 from 'components/App/CLqdr/FirebirdBox1'
 import BalanceBox from 'components/App/CLqdr/BalanceBox'
-import PicBox from 'components/App/CLqdr/PicBox'
 import BuyClqdrInputBox from 'components/App/CLqdr/BuyClqdrInputBox'
-import Dropdown from 'components/App/CLqdr/Dropdown'
-import { truncateAddress } from 'utils/address'
-import { ExternalLink } from 'components/Link'
 import SingleChart from 'components/App/CLqdr/SingleChart'
+import DataDropdown from 'components/App/CLqdr/DataDropdown'
+import ContractsDropdown from 'components/App/CLqdr/ContractsDropdown'
+import { ExternalLink } from 'react-feather'
+import { truncateAddress } from 'utils/address'
 
 const Wrapper = styled(MainWrapper)`
   width: 100%;
@@ -68,13 +64,16 @@ const MainButton = styled(MainButtonWrap)`
       }
   `}
 `
-const BuyAnyWayButton = styled(MainButtonWrap)`
-  background: ${({ theme }) => theme.primary5};
+const BuyAnyWayButton = styled(MainButtonWrap)<{
+  firebird?: boolean
+}>`
+  background: ${({ theme, firebird }) =>
+    !firebird ? theme.primary5 : 'linear-gradient(270deg, #0b403f -1.33%, #064056 100%);'};
   color: ${({ theme, disabled }) => (disabled ? theme.white : theme.orange)};
-  opacity: 0.33;
+  opacity: 0.9;
 
   &:hover {
-    background: linear-gradient(270deg, #14e8e3 -1.33%, #01aef3 100%);
+    background: linear-gradient(270deg, #0b403f -1.33%, #064056 100%);
   }
 
   ${({ theme, disabled }) =>
@@ -105,7 +104,7 @@ const ContentWrapper = styled.div`
   flex-direction: row;
   width: clamp(250px, 90%, 984px);
   z-index: 1;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     flex-direction: column-reverse
   `}
 `
@@ -121,6 +120,8 @@ const LeftWrapper = styled(Row)`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width:100%;
+    margin-right: 0px;
+
     `}
 `
 
@@ -135,19 +136,14 @@ const RightWrapper = styled(Row)`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width:100%;
+    margin-left: 0px;
   `}
-`
-
-const Chart = styled.div`
-  width: 100%;
-  background: ${({ theme }) => theme.bg1};
-  border-radius: 12px;
-  height: 258px;
 `
 
 const BackgroundImage = styled.div`
   position: absolute;
-  width: 720px;
+  max-width: 720px;
+  width: 100%;
   height: 510px;
   background: linear-gradient(90deg, #0badf4 0%, #30efe4 53.12%, #ff9af5 99.99%);
   opacity: 0.1;
@@ -284,23 +280,17 @@ export default function Mint() {
   const spender = useMemo(() => (chainId ? CLQDR_ADDRESS[chainId] : undefined), [chainId])
   const [approvalState, approveCallback] = useApproveCallback(inputCurrency ?? undefined, spender)
   const buyOnFirebird = useMemo(
-    () => (firebird && firebird.cLqdrAmountOut && formattedAmountOut < firebird?.cLqdrAmountOut ? true : false),
-    [firebird, formattedAmountOut]
+    () =>
+      formattedAmountOut !== '0' && firebird && firebird.convertRate && toBN(firebird.convertRate).lt(mintRate)
+        ? true
+        : false,
+    [firebird, mintRate, formattedAmountOut]
   )
 
   const [showApprove, showApproveLoader] = useMemo(() => {
     const show = inputCurrency && approvalState !== ApprovalState.APPROVED && !!amount
     return [show, show && approvalState === ApprovalState.PENDING]
   }, [inputCurrency, approvalState, amount])
-
-  const info = useMemo(() => {
-    return [
-      { title: 'Max Slippage', value: '1' },
-      { title: 'Txn Deadline', value: '3' },
-      { title: 'Network Fee', value: '1' },
-      { title: 'Min Received', value: '3' },
-    ]
-  }, [])
 
   const handleApprove = async () => {
     setAwaitingApproveConfirmation(true)
@@ -356,7 +346,7 @@ export default function Mint() {
     else if (showApprove) return null
     else if (insufficientBalance) return <MainButton disabled>Insufficient {inputCurrency?.symbol} Balance</MainButton>
     else if (awaitingMintConfirmation) {
-      return buyOnFirebird ? (
+      return buyOnFirebird && amount ? (
         <BuyAnyWayButton>
           Minting {outputCurrency?.symbol} <DotFlashing />
         </BuyAnyWayButton>
@@ -366,8 +356,9 @@ export default function Mint() {
         </MainButton>
       )
     }
-    return buyOnFirebird ? (
+    return buyOnFirebird && amount ? (
       <BuyAnyWayButton
+        firebird
         onClick={() => {
           if (amount !== '0' && amount !== '' && amount !== '0.') toggleReviewModal(true)
         }}
@@ -514,15 +505,15 @@ export default function Mint() {
 
         <ContentWrapper>
           <LeftWrapper>
-            {firebird && firebird.convertRate && <FireBird1 />}
+            {firebird && firebird.convertRate && <FireBird1 mintRate={mintRate} firebirdRate={firebird.convertRate} />}
             <SingleChart uniqueID="clqdrRatio" label="cLQDR/LQDR Ratio" />
             <SingleChart uniqueID="totalSupply" label="cLQDR in Circulation" />
 
-            <PicBox />
+            {/* <PicBox /> */}
             <Dropdowns>
-              <Dropdown content={getDefiWars()} logo={DEFIWAR_LOGO} text={'DefiWars'} />
-              <Dropdown content={getCLqdrData()} logo={CLQDR_LOGO} text={'What is cLQDR?'} />
-              <Dropdown content={getContracts()} logo={CLQDR_LOGO} text={'Contracts'} />
+              {/* <DefiWarsDropdown /> */}
+              <DataDropdown />
+              <ContractsDropdown />
             </Dropdowns>
           </LeftWrapper>
           <RightWrapper>
@@ -581,7 +572,7 @@ export default function Mint() {
         outputTokens={[cLQDR_TOKEN]}
         amountsIn={[amount]}
         amountsOut={[formattedAmountOut]}
-        info={info}
+        info={[]}
         data={''}
         buttonText={'Confirm Mint'}
         awaiting={awaitingMintConfirmation}

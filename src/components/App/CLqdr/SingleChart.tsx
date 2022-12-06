@@ -237,6 +237,7 @@ export default function SingleChart({ label, uniqueID }: { label: string; unique
       if (!arr[id]) {
         arr[id] = data
       }
+      console.log({ data, id })
       return arr
     }, {})
     const result: ClqdrChartData[] = Object.values(data)

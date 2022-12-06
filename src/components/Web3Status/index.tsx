@@ -17,7 +17,7 @@ import { RowCenter } from 'components/Row'
 
 const ConnectButtonWrap = styled.div`
   border: none;
-  background: ${({ theme }) => theme.specialBG1};
+  background: ${({ theme }) => theme.deusColor};
   padding: 1px;
   border-radius: 8px;
   width: 148px;
@@ -39,7 +39,7 @@ const ConnectButton = styled(RowCenter)`
 `
 
 const ConnectButtonText = styled.span`
-  background: -webkit-linear-gradient(0deg, #e29d52 -10.26%, #de4a7b 80%);
+  background: -webkit-linear-gradient(0deg, #0badf4 -10.26%, #30efe4 80%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 `

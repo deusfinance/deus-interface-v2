@@ -13,6 +13,9 @@ import Web3Status from 'components/Web3Status'
 import RiskNotification from 'components/InfoHeader'
 import Menu from './Menu'
 import NavLogo from './NavLogo'
+import { Link as LinkIcon } from 'components/Icons'
+import { RowStart } from 'components/Row'
+import { ExternalLink } from 'components/Link'
 
 const Wrapper = styled.div`
   padding: 0px 2rem;
@@ -136,7 +139,7 @@ const NavLink = styled.div<{
   ${({ active }) =>
     active &&
     `
-    background: -webkit-linear-gradient(1deg, #e29d52 -10.26%, #de4a7b 90%);
+    background: -webkit-linear-gradient(1deg, #0badf4 -10.26%, #30efe4 90%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: 600;
@@ -148,10 +151,41 @@ const NavLink = styled.div<{
       !active &&
       `
       cursor: pointer;
-      color: ${theme.darkPink};
+      color: ${theme.blueClqdrColor};
   `};
   }
 `
+
+const ExternalLinkIcon = styled(LinkIcon)`
+  margin-left: 6px;
+`
+const ExternalItem = styled(RowStart)`
+  padding: 0 1rem;
+  div {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  a:hover + svg {
+    path {
+      fill: ${({ theme }) => theme.blueClqdrColor};
+    }
+  }
+`
+
+function getExternalNavBar(title: string, link: string): JSX.Element {
+  return (
+    <>
+      <SimpleLinkWrapper>
+        <ExternalItem>
+          <ExternalLink href={link}>
+            <NavLink active={false}>{title}</NavLink>
+          </ExternalLink>
+          <ExternalLinkIcon />
+        </ExternalItem>
+      </SimpleLinkWrapper>
+    </>
+  )
+}
 
 export default function NavBar() {
   const router = useRouter()
@@ -182,13 +216,6 @@ export default function NavBar() {
     )
   }
 
-  // function isSubItemChosen(item: Array<any>) {
-  //   for (let i = 0; i < item.length; i++) {
-  //     if (item[i].path === router.route) return true
-  //   }
-  //   return false
-  // }
-
   function getDefaultContent() {
     return (
       <>
@@ -204,13 +231,12 @@ export default function NavBar() {
                 </SimpleLinkWrapper>
               )
             })}
-            <SimpleLinkWrapper>
-              <Link href={'https://docs.deus.finance/contracts/disclaimer'} passHref>
-                <a style={{ textDecoration: 'none' }} rel="noreferrer" target="_blank">
-                  <NavLink active={false}>Terms</NavLink>
-                </a>
-              </Link>
-            </SimpleLinkWrapper>
+            {getExternalNavBar(
+              'Swap',
+              'https://app.firebird.finance/swap?inputCurrency=FTM&outputCurrency=0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44&net=250'
+            )}
+            {getExternalNavBar('Bridge', 'https://app.multichain.org/#/router')}
+            {getExternalNavBar('Terms', 'https://docs.deus.finance/contracts/disclaimer')}
           </Routes>
           <Items>
             <Web3Network />
