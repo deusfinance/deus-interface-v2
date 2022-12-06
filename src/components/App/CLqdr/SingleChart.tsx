@@ -1,6 +1,7 @@
 import { getCLQDRApolloClient } from 'apollo/client/clqdr'
 import { ClqdrChartData, CLQDR_DATA } from 'apollo/queries'
 import Dropdown from 'components/DropDown'
+import { FALLBACK_CHAIN_ID } from 'constants/chains'
 import useWeb3React from 'hooks/useWeb3'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { isMobile } from 'react-device-detect'
@@ -153,7 +154,7 @@ const tempData: ClqdrChartData[] = [
 ]
 
 export default function SingleChart({ label, uniqueID }: { label: string; uniqueID: string }) {
-  const { chainId } = useWeb3React()
+  const { chainId = FALLBACK_CHAIN_ID } = useWeb3React()
   const theme = useTheme()
 
   const [loading, setLoading] = useState(true)
