@@ -9,9 +9,13 @@ import { PrimaryButtonWide } from 'components/Button'
 import { DotFlashing } from 'components/Icons'
 import UserLockInformation from './UserLockInformation'
 import { ButtonText } from 'components/App/Vest'
-import { toBN } from 'utils/numbers'
+import { formatBalance, toBN } from 'utils/numbers'
 import { CustomInputBox } from 'components/InputBox'
 import { DefaultHandlerError } from 'utils/parseError'
+import { useERC721ApproveAllCallback } from 'hooks/useApproveNftCallback2'
+import { veDEUS } from 'constants/addresses'
+import { ApprovalState } from 'hooks/useApproveNftCallback'
+import useWeb3React from 'hooks/useWeb3'
 
 const StyledModal = styled(Modal)`
   overflow: visible; // date picker needs an overflow
@@ -40,17 +44,17 @@ const ModalInnerWrapper = styled.div`
 
 export default function MigrateAllManager({
   nftIds,
+  deusAmounts,
+  migrationAmounts,
   isOpen,
   onDismiss,
 }: {
   nftIds: number[]
+  deusAmounts: string[]
+  migrationAmounts: string[]
   isOpen: boolean
   onDismiss: () => void
 }) {
-  function getMainContent() {
-    return <IncreaseAmount nftIds={nftIds} />
-  }
-
   const onDismissProxy = () => {
     onDismiss()
   }
@@ -58,18 +62,32 @@ export default function MigrateAllManager({
   return (
     <StyledModal isOpen={isOpen} onBackgroundClick={onDismissProxy} onEscapeKeydown={onDismissProxy}>
       <ModalHeader title={`Migrate All`} border onClose={onDismissProxy} />
-      <ModalInnerWrapper>{getMainContent()}</ModalInnerWrapper>
+      <ModalInnerWrapper>
+        <IncreaseAmount nftIds={nftIds} deusAmounts={deusAmounts} migrationAmounts={migrationAmounts} />
+      </ModalInnerWrapper>
     </StyledModal>
   )
 }
 
-function IncreaseAmount({ nftIds }: { nftIds: number[] }) {
+function IncreaseAmount({
+  nftIds,
+  deusAmounts,
+  migrationAmounts,
+}: {
+  nftIds: number[]
+  migrationAmounts: string[]
+  deusAmounts: string[]
+}) {
+  const { chainId } = useWeb3React()
   const [awaitingConfirmation, setAwaitingConfirmation] = useState(false)
+  const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
+
   const [pendingTxHash, setPendingTxHash] = useState('')
   const showTransactionPending = useHasPendingVest(pendingTxHash)
   const addTransaction = useTransactionAdder()
 
   const veDEUSMigratorContract = useVeDeusMigratorContract()
+
   const [count, setCount] = useState('')
   const MAX_COUNT = useMemo(() => (nftIds ? nftIds.length : 0), [nftIds])
   const nftList = useMemo(() => {
@@ -77,13 +95,39 @@ function IncreaseAmount({ nftIds }: { nftIds: number[] }) {
     const size = MAX_COUNT < Number(count) ? MAX_COUNT : Number(count)
     return nftIds.slice(0, size)
   }, [nftIds, count, MAX_COUNT])
-  const vestAmount = '80'
-  const migrationAmount = '100'
+
+  const migrationAmount = useMemo(() => {
+    if (!nftList.length) return '-'
+    let s = 0
+    migrationAmounts.slice(0, nftList.length).forEach((amount) => {
+      s += Number(amount)
+    })
+    return formatBalance(s)
+  }, [nftList, migrationAmounts])
+
+  const vestAmount = useMemo(() => {
+    if (!nftList.length) return '-'
+    let s = 0
+    deusAmounts.slice(0, nftList.length).forEach((amount) => {
+      s += Number(amount)
+    })
+    return formatBalance(s)
+  }, [nftList, deusAmounts])
 
   const INSUFFICIENT_BALANCE = useMemo(() => {
     if (!count || Number(count) === 0) return false
     return toBN(MAX_COUNT).lt(count)
   }, [MAX_COUNT, count])
+
+  const spender = useMemo(() => veDEUSMigratorContract?.address, [veDEUSMigratorContract])
+  const [approvalState, approveCallback] = useERC721ApproveAllCallback(chainId ? veDEUS[chainId] : undefined, spender)
+  const showApprove = useMemo(() => approvalState !== ApprovalState.APPROVED, [approvalState])
+
+  const handleApprove = async () => {
+    setAwaitingApproveConfirmation(true)
+    await approveCallback()
+    setAwaitingApproveConfirmation(false)
+  }
 
   const onLock = useCallback(async () => {
     try {
@@ -118,14 +162,18 @@ function IncreaseAmount({ nftIds }: { nftIds: number[] }) {
         nftList={nftList}
       />
       {INSUFFICIENT_BALANCE ? (
-        <PrimaryButtonWide disabled>
+        <PrimaryButtonWide>
           <ButtonModalText>INSUFFICIENT BALANCE</ButtonModalText>
         </PrimaryButtonWide>
-      ) : awaitingConfirmation ? (
+      ) : awaitingConfirmation || awaitingApproveConfirmation ? (
         <PrimaryButtonWide>
           <ButtonModalText>
             Awaiting Confirmation <DotFlashing />
           </ButtonModalText>
+        </PrimaryButtonWide>
+      ) : showApprove ? (
+        <PrimaryButtonWide onClick={handleApprove}>
+          <ButtonModalText>Approve NFT</ButtonModalText>
         </PrimaryButtonWide>
       ) : showTransactionPending ? (
         <PrimaryButtonWide>

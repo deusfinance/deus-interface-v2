@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { toBN } from 'utils/numbers'
 import { useSingleContractMultipleMethods, useSingleContractMultipleData } from 'state/multicall/hooks'
-import { useVeDeusMigratorContract, useVeDistContract } from 'hooks/useContract'
+import { useVeDeusContract, useVeDeusMigratorContract, useVeDistContract } from 'hooks/useContract'
 import { useOwnerVeDeusNFTs } from 'hooks/useOwnerNfts'
 
 export default function useDistRewards(): number[] {
@@ -28,12 +28,10 @@ export default function useDistRewards(): number[] {
   }, [results])
 }
 
-export function useVeMigrationData(): {
+export function useVeMigrationGlobal(): {
   paused: boolean
 } {
   const contract = useVeDeusMigratorContract()
-  const nftIds = useOwnerVeDeusNFTs().results
-  const nftIdsCallInputs = useMemo(() => (!nftIds.length ? [] : nftIds.map((id) => [id])), [nftIds])
 
   const calls = useMemo(
     () => [
@@ -41,12 +39,8 @@ export function useVeMigrationData(): {
         methodName: 'paused',
         callInputs: [],
       },
-      {
-        methodName: 'valueOfVeDeusNFTs',
-        callInputs: nftIdsCallInputs,
-      },
     ],
-    [nftIdsCallInputs]
+    []
   )
 
   const [pauseResult] = useSingleContractMultipleMethods(contract, calls)
@@ -57,4 +51,53 @@ export function useVeMigrationData(): {
     }),
     [pauseResult]
   )
+}
+
+export function useVeMigrationData(nftIds: number[]): {
+  migrationAmounts: string[]
+  deusAmounts: string[]
+} {
+  const veDeusMigratorContract = useVeDeusMigratorContract()
+  const veDEUSContract = useVeDeusContract()
+
+  const nftIdsCallInputs = useMemo(() => (!nftIds.length ? [] : nftIds.map((id) => [id])), [nftIds])
+
+  const migrationCalls = useMemo(
+    () =>
+      !nftIds.length
+        ? []
+        : [
+            {
+              methodName: 'valueOfVeDeusPerNFTs',
+              callInputs: [nftIds],
+            },
+          ],
+    [nftIds]
+  )
+
+  const results = useSingleContractMultipleMethods(veDeusMigratorContract, migrationCalls)
+
+  const balanceOfNFTResults = useSingleContractMultipleData(veDEUSContract, 'locked', nftIdsCallInputs)
+
+  return useMemo(() => {
+    return {
+      migrationAmounts:
+        !results.length || !results[0].result || !results[0].result.length
+          ? []
+          : results[0].result[0].reduce((acc: string[], value: any) => {
+              if (!value) return acc
+              const result = value.toString()
+              if (!result) return acc
+              acc.push(toBN(result).div(1e18).toString())
+              return acc
+            }, []),
+      deusAmounts: balanceOfNFTResults.reduce((acc: string[], value) => {
+        if (!value.result) return acc
+        const result = value.result[0].toString()
+        if (!result) return acc
+        acc.push(toBN(result).div(1e18).toString())
+        return acc
+      }, []),
+    }
+  }, [results, balanceOfNFTResults])
 }

@@ -48,7 +48,7 @@ export const veDEUS: AddressMap = {
 
 // veDEUS Migrator ADDRESS
 export const veDEUSMigrator: AddressMap = {
-  [SupportedChainId.FANTOM]: '0xE9718F8e740D3Badb0EF0Ec6639778dC7F642069',
+  [SupportedChainId.FANTOM]: '0x7d06331B4F4B43F444C0f0d4Ed593De126939Dd6',
 }
 
 /* =====================================

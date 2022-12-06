@@ -18,7 +18,7 @@ import { useVestedAPY } from 'hooks/useVested'
 import { useVeDistContract } from 'hooks/useContract'
 import { useOwnerVeDeusNFTs } from 'hooks/useOwnerNfts'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
-import useDistRewards from 'hooks/useDistRewards'
+import useDistRewards, { useVeMigrationData } from 'hooks/useDistRewards'
 
 import Hero from 'components/Hero'
 import { PrimaryButtonWide } from 'components/Button'
@@ -94,6 +94,8 @@ export default function Vest() {
   const ownedNfts = useOwnerVeDeusNFTs()
   const nftIds = ownedNfts.results
   const rewards = useDistRewards()
+  const migData = useVeMigrationData(nftIds)
+
   const toggleWalletModal = useWalletModalToggle()
 
   const [showTopBanner, setShowTopBanner] = useState(true)
@@ -249,6 +251,7 @@ export default function Vest() {
           nftIds={snapshotList as number[]}
           isMobile={isMobile}
           rewards={rewards}
+          migrationAmounts={migData.migrationAmounts}
           isLoading={ownedNfts.isLoading}
         />
       </Wrapper>
@@ -256,6 +259,8 @@ export default function Vest() {
         isOpen={showMigrateAllManager}
         onDismiss={() => setShowMigrateAllManager(false)}
         nftIds={nftIds}
+        deusAmounts={migData.deusAmounts}
+        migrationAmounts={migData.migrationAmounts}
       />
     </Container>
   )

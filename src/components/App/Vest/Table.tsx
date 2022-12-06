@@ -25,7 +25,7 @@ import EMPTY_LOCK_MOBILE from '/public/static/images/pages/veDEUS/emptyLockMobil
 import LOADING_LOCK from '/public/static/images/pages/veDEUS/loadingLock.svg'
 import LOADING_LOCK_MOBILE from '/public/static/images/pages/veDEUS/loadingLockMobile.svg'
 
-import { formatAmount } from 'utils/numbers'
+import { formatAmount, formatBalance } from 'utils/numbers'
 import { DefaultHandlerError } from 'utils/parseError'
 import { ButtonText, TopBorder, TopBorderWrap } from 'components/App/Vest'
 import useWeb3React from 'hooks/useWeb3'
@@ -156,13 +156,21 @@ const MobileWrapper = styled.div`
 
 const itemsPerPage = 10
 
+const getAmountsByNftId = (nftId: number, nftIds: number[], arr: number[] | string[]): number | string => {
+  const findIndex = nftIds.indexOf(nftId)
+  if (findIndex < 0) return 0
+  return arr[findIndex]
+}
+
 export default function Table({
   nftIds,
   isMobile,
   rewards,
+  migrationAmounts,
   isLoading,
 }: {
   nftIds: number[]
+  migrationAmounts: string[]
   isMobile?: boolean
   rewards: number[]
   isLoading: boolean
@@ -188,9 +196,19 @@ export default function Table({
         <TableWrapper isEmpty={paginatedItems.length === 0}>
           <tbody>
             {paginatedItems.length > 0 &&
-              paginatedItems.map((nftId: number, index) => (
-                <TableRow key={index} index={index} nftId={nftId} isMobile={isMobile} reward={rewards[index] ?? 0} />
-              ))}
+              paginatedItems.map((nftId: number, index) => {
+                const nftIndex = nftIds.indexOf(nftId)
+                return (
+                  <TableRow
+                    key={index}
+                    index={index}
+                    nftId={nftId}
+                    isMobile={isMobile}
+                    reward={rewards[nftIndex] ?? 0}
+                    migrationAmount={formatBalance(migrationAmounts[nftIndex]) ?? '0'}
+                  />
+                )
+              })}
           </tbody>
           {paginatedItems.length === 0 && (
             <tbody>
@@ -232,11 +250,13 @@ function TableRow({
   index,
   isMobile,
   reward,
+  migrationAmount,
 }: {
   nftId: number
   index: number
   isMobile?: boolean
   reward: number
+  migrationAmount: string
 }) {
   const { chainId, account } = useWeb3React()
   const isSupportedChainId = useSupportedChainId()
@@ -285,6 +305,28 @@ function TableRow({
     }
   }, [veDistContract, nftId, addTransaction])
 
+  const onMigrate = useCallback(async () => {
+    try {
+      if (!veDEUSMigratorContract) return
+      if (reward > 0) {
+        toast.error('first claim your rewards.')
+        return
+      }
+      setClaimAwaitingConfirmation(true)
+      const response = await veDEUSMigratorContract.migrateVeDEUSToVDEUS(nftId)
+      addTransaction(response, {
+        summary: `Migrate #${nftId} to ${migrationAmount}vDEUS`,
+        vest: { hash: response.hash },
+      })
+      setPendingTxHash(response.hash)
+      setClaimAwaitingConfirmation(false)
+    } catch (err) {
+      toast.error(DefaultHandlerError(err))
+      setClaimAwaitingConfirmation(false)
+      setPendingTxHash('')
+    }
+  }, [veDEUSMigratorContract, nftId, migrationAmount, reward, addTransaction])
+
   const onWithdraw = useCallback(async () => {
     try {
       if (!veDEUSContract || !lockHasEnded) return
@@ -325,7 +367,7 @@ function TableRow({
       return (
         <PrimaryButtonWide whiteBorder active>
           <ButtonText>
-            Awaiting Confirmation <DotFlashing />
+            Approving <DotFlashing />
           </ButtonText>
         </PrimaryButtonWide>
       )
@@ -354,7 +396,7 @@ function TableRow({
     // }
 
     return (
-      <PrimaryButtonWide whiteBorder onClick={() => console.log(nftId)}>
+      <PrimaryButtonWide whiteBorder onClick={onMigrate}>
         <ButtonText>Migrate</ButtonText>
       </PrimaryButtonWide>
     )
@@ -421,7 +463,7 @@ function TableRow({
 
         <Cell>
           <Name>Migration Amount</Name>
-          <VDeusValue>N/A vDEUS</VDeusValue>
+          <VDeusValue>{migrationAmount} vDEUS</VDeusValue>
         </Cell>
 
         <Cell style={{ padding: '5px 10px' }}>{getExpirationCell()}</Cell>
@@ -463,7 +505,7 @@ function TableRow({
 
         <Cell>
           <Name>Migration Amount</Name>
-          <VDeusValue>N/A vDEUS</VDeusValue>
+          <VDeusValue>{migrationAmount} vDEUS</VDeusValue>
         </Cell>
 
         <MobileCell>{getExpirationCell()}</MobileCell>
