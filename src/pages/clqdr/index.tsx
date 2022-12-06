@@ -562,18 +562,6 @@ export default function Mint() {
                 {getApproveButton()}
                 {getActionButton()}
               </InputWrapper>
-
-              <BottomWrapper>
-                {/* <InfoItem name={'Management Fee'} value={`${burningFee}%`} /> */}
-                <InfoItem
-                  name={'Rate on Firebird'}
-                  value={
-                    amount && Number(amount) > 0
-                      ? `${formatBalance(amount, 6)} LQDR = ${formatBalance(firebird?.cLqdrAmountOut, 6)} cLQDR`
-                      : '-'
-                  }
-                />
-              </BottomWrapper>
             </Wrapper>
           </RightWrapper>
         </ContentWrapper>
