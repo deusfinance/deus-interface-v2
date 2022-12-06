@@ -148,17 +148,6 @@ const BackgroundImage = styled.div`
   filter: blur(120px);
 `
 
-const Item = styled(Row)`
-  width: 100%;
-  height: 48px;
-  padding: 16px 16px 16px 24px;
-  background: ${({ theme }) => theme.bg2};
-
-  &:hover {
-    background: ${({ theme }) => theme.border4};
-  }
-`
-
 const Dropdowns = styled.div`
   width: 100%;
   & > * {
