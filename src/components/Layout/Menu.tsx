@@ -3,14 +3,15 @@ import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import Link from 'next/link'
 import { Z_INDEX } from 'theme'
+import LEGACY_DEI_LOGO from '/public/static/images/LegacyDeiLogo.svg'
 
 import useOnOutsideClick from 'hooks/useOnOutsideClick'
-
 import { Link as LinkIcon } from 'components/Icons'
 import { NavToggle as NavToggleIcon, IconWrapper, VeDeus as VeDeusIcon } from 'components/Icons'
 import { Card } from 'components/Card'
 import { ExternalLink } from 'components/Link'
 import { RowStart } from 'components/Row'
+import Image from 'next/image'
 
 const Container = styled.div`
   overflow: hidden;
@@ -141,14 +142,6 @@ export default function Menu() {
               </ExternalItem>
             </Row>
           </ExternalLink>
-          <ExternalLink href="https://legacy.deus.finance/migrator">
-            <Row onClick={() => toggle()}>
-              <ExternalItem>
-                <div>V2 Migrator</div>
-                <ExternalLinkIcon />
-              </ExternalItem>
-            </Row>
-          </ExternalLink>
           <ExternalLink href="https://docs.deus.finance/contracts/disclaimer">
             <Row onClick={() => toggle()}>
               <ExternalItem>
@@ -182,13 +175,13 @@ export default function Menu() {
           </ExternalLink>
           <Separator />
 
-          <ExternalLink href="https://legacy.deus.finance/">
+          <ExternalLink href="https://legacy.dei.finance/">
             <Row onClick={() => toggle()}>
               <LegacyWrapper>
-                Legacy App
+                DEI Legacy App
                 <LinkIcon style={{ marginLeft: '4px' }} />
               </LegacyWrapper>
-              {/* <Image src={LEGACY_DEI_LOGO} width={'20px'} height={'15px'} alt={'dei-logo'} /> */}
+              <Image src={LEGACY_DEI_LOGO} width={'20px'} height={'15px'} alt={'dei-logo'} />
             </Row>
           </ExternalLink>
         </InlineModal>

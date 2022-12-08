@@ -162,7 +162,7 @@ export default function Mint() {
   const { chainId, account } = useWeb3React()
   const isSupportedChainId = useSupportedChainId()
 
-  const { burningFee, mintRate } = useClqdrData()
+  const { mintRate } = useClqdrData()
 
   const [isOpenReviewModal, toggleReviewModal] = useState(false)
   const [isOpenWarningModal, toggleWarningModal] = useState(false)

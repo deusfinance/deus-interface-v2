@@ -11,7 +11,7 @@ module.exports = {
       },
       {
         source: '/migrator',
-        destination: 'https://legacy.deus.finance/migrator',
+        destination: 'https://legacy.dei.finance/migration',
         permanent: false,
       },
       {
