@@ -185,17 +185,20 @@ export default function Table({
         <TableWrapper isEmpty={paginatedItems.length === 0}>
           <tbody>
             {paginatedItems.length > 0 &&
-              paginatedItems.map((nftId: number, index) => (
-                <TableRow
-                  key={index}
-                  index={index}
-                  nftId={nftId}
-                  toggleLockManager={toggleLockManager}
-                  toggleAPYManager={toggleAPYManager}
-                  isMobile={isMobile}
-                  reward={rewards[index] ?? 0}
-                />
-              ))}
+              paginatedItems.map((nftId: number, index) => {
+                const nftIndex = nftIds.indexOf(nftId)
+                return (
+                  <TableRow
+                    key={index}
+                    index={index}
+                    nftId={nftId}
+                    toggleLockManager={toggleLockManager}
+                    toggleAPYManager={toggleAPYManager}
+                    isMobile={isMobile}
+                    reward={rewards[nftIndex] ?? 0}
+                  />
+                )
+              })}
           </tbody>
           {paginatedItems.length === 0 && (
             <tbody>

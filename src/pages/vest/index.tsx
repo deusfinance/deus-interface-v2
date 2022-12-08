@@ -4,6 +4,10 @@ import styled from 'styled-components'
 import Image from 'next/image'
 import { isMobile } from 'react-device-detect'
 import toast from 'react-hot-toast'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+import utc from 'dayjs/plugin/utc'
 
 import veDEUS_LOGO from '/public/static/images/pages/veDEUS/veDEUS.svg'
 
@@ -19,7 +23,7 @@ import { useVestedAPY } from 'hooks/useVested'
 import { useVeDistContract } from 'hooks/useContract'
 import { useOwnerVeDeusNFTs } from 'hooks/useOwnerNfts'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
-import useDistRewards from 'hooks/useDistRewards'
+import useDistRewards, { useVeMigrationData } from 'hooks/useDistRewards'
 
 import Hero from 'components/Hero'
 import { PrimaryButtonWide } from 'components/Button'
@@ -30,6 +34,10 @@ import { useSearch, SearchField, Table } from 'components/App/Vest'
 import LockManager from 'components/App/Vest/LockManager'
 import APYManager from 'components/App/Vest/APYManager'
 import InfoHeader from 'components/InfoHeader'
+
+dayjs.extend(utc)
+dayjs.extend(relativeTime)
+dayjs.extend(localizedFormat)
 
 const Wrapper = styled(Container)`
   margin: 0 auto;
@@ -142,6 +150,7 @@ export default function Vest() {
   const nftIds = ownedNfts.results
   const rewards = useDistRewards()
   const toggleWalletModal = useWalletModalToggle()
+  const { lockEnds } = useVeMigrationData(nftIds)
 
   const [showTopBanner, setShowTopBanner] = useState(true)
 
@@ -170,18 +179,22 @@ export default function Vest() {
   }
 
   const [unClaimedIds, totalRewards] = useMemo(() => {
-    if (!nftIds.length || !rewards.length) return [[], 0]
+    if (!nftIds.length || !rewards.length || !lockEnds) return [[], 0]
     let total = 0
     return [
       rewards.reduce((acc: number[], value: number, index: number) => {
         if (!value) return acc
+        const lockHasEnded = dayjs.utc(lockEnds[index]).isBefore(dayjs.utc().subtract(10, 'seconds'))
+        if (lockHasEnded) {
+          return acc
+        }
         acc.push(nftIds[index])
         total += value
         return acc
       }, []),
       total,
     ]
-  }, [nftIds, rewards])
+  }, [nftIds, rewards, lockEnds])
 
   const onClaimAll = useCallback(async () => {
     try {

@@ -1,9 +1,13 @@
 import { useMemo } from 'react'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 
 import { toBN } from 'utils/numbers'
 import { useSingleContractMultipleData } from 'state/multicall/hooks'
-import { useVeDistContract } from 'hooks/useContract'
+import { useVeDistContract, useVeDeusContract } from 'hooks/useContract'
 import { useOwnerVeDeusNFTs } from 'hooks/useOwnerNfts'
+
+dayjs.extend(utc)
 
 export default function useDistRewards(): number[] {
   const veDistContract = useVeDistContract()
@@ -26,4 +30,26 @@ export default function useDistRewards(): number[] {
       return acc
     }, [])
   }, [results])
+}
+
+export function useVeMigrationData(nftIds: number[]): {
+  lockEnds: Date[]
+} {
+  const veDEUSContract = useVeDeusContract()
+
+  const nftIdsCallInputs = useMemo(() => (!nftIds.length ? [] : nftIds.map((id) => [id])), [nftIds])
+
+  const balanceOfNFTResults = useSingleContractMultipleData(veDEUSContract, 'locked', nftIdsCallInputs)
+
+  return useMemo(() => {
+    return {
+      lockEnds: balanceOfNFTResults.reduce((acc: Date[], value) => {
+        if (!value.result) return acc
+        const result = value.result[1].toString()
+        if (!result) return acc
+        acc.push(dayjs.unix(Number(result)).toDate())
+        return acc
+      }, []),
+    }
+  }, [balanceOfNFTResults])
 }
