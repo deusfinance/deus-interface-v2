@@ -3,6 +3,10 @@ import styled from 'styled-components'
 import Image from 'next/image'
 import { isMobile } from 'react-device-detect'
 import toast from 'react-hot-toast'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+import utc from 'dayjs/plugin/utc'
 
 import veDEUS_LOGO from '/public/static/images/pages/veDEUS/veDEUS.svg'
 
@@ -27,6 +31,10 @@ import StatsHeader from 'components/StatsHeader'
 import { Container } from 'components/App/StableCoin'
 import { useSearch, SearchField, Table, TopBorder, TopBorderWrap, ButtonText } from 'components/App/Vest'
 import MigrateAllManager from 'components/App/Vest/MigrateAllManager'
+
+dayjs.extend(utc)
+dayjs.extend(relativeTime)
+dayjs.extend(localizedFormat)
 
 const Wrapper = styled(Container)`
   margin: 0 auto;
@@ -60,12 +68,13 @@ const UpperRow = styled(RowBetween)`
   flex-wrap: wrap;
 
   & > * {
-    margin: 10px 10px;
+    margin: 10px;
+    margin-right: 1px;
   }
 `
 
 const ButtonWrapper = styled(RowFixed)`
-  gap: 10px;
+  gap: 4px;
   & > * {
     height: 50px;
   }
@@ -110,25 +119,29 @@ export default function Vest() {
 
   const toggleMigrateAllManager = () => {
     if (totalRewards > 0) {
-      toast.error('First "Claim all" your rewards. After migrating your unclaimed rewards will miss.')
+      toast.error('First claim all rewards. After migration, unclaimed rewards will be lost.')
       return
     }
     setShowMigrateAllManager(true)
   }
 
   const [unClaimedIds, totalRewards] = useMemo(() => {
-    if (!nftIds.length || !rewards.length) return [[], 0]
+    if (!nftIds.length || !rewards.length || !migData.lockEnds) return [[], 0]
     let total = 0
     return [
       rewards.reduce((acc: number[], value: number, index: number) => {
         if (!value) return acc
+        const lockHasEnded = dayjs.utc(migData.lockEnds[index]).isBefore(dayjs.utc().subtract(10, 'seconds'))
+        if (lockHasEnded) {
+          return acc
+        }
         acc.push(nftIds[index])
         total += value
         return acc
       }, []),
       total,
     ]
-  }, [nftIds, rewards])
+  }, [nftIds, rewards, migData])
 
   const onClaimAll = useCallback(async () => {
     try {
@@ -192,7 +205,7 @@ export default function Vest() {
         <TopBorderWrap>
           <TopBorder>
             <PrimaryButtonWide transparentBG onClick={toggleMigrateAllManager}>
-              <ButtonText gradientText>Migrate All</ButtonText>
+              <ButtonText gradientText>Migrate ALL to vDEUS</ButtonText>
             </PrimaryButtonWide>
           </TopBorder>
         </TopBorderWrap>

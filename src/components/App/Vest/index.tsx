@@ -13,8 +13,12 @@ export const ButtonText = styled.span<{ gradientText?: boolean }>`
   white-space: nowrap;
   color: ${({ theme }) => theme.text1};
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    font-size: 14px;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    font-size: 10px;
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 8px;
   `}
 
   ${({ gradientText }) =>

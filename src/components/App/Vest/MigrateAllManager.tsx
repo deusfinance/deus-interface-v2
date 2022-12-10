@@ -62,7 +62,7 @@ export default function MigrateAllManager({
 
   return (
     <StyledModal isOpen={isOpen} onBackgroundClick={onDismissProxy} onEscapeKeydown={onDismissProxy}>
-      <ModalHeader title={`Migrate All`} border onClose={onDismissProxy} />
+      <ModalHeader title={`Migrate ALL to vDEUS`} border onClose={onDismissProxy} />
       <ModalInnerWrapper>
         <IncreaseAmount nftIds={nftIds} deusAmounts={deusAmounts} migrationAmounts={migrationAmounts} />
       </ModalInnerWrapper>
@@ -98,7 +98,7 @@ function IncreaseAmount({
   }, [nftIds, count, MAX_COUNT])
 
   const migrationAmount = useMemo(() => {
-    if (!nftList.length) return '-'
+    if (!nftList.length) return '0'
     let s = 0
     migrationAmounts.slice(0, nftList.length).forEach((amount) => {
       s += Number(amount)
@@ -107,7 +107,7 @@ function IncreaseAmount({
   }, [nftList, migrationAmounts])
 
   const vestAmount = useMemo(() => {
-    if (!nftList.length) return '-'
+    if (!nftList.length) return '0'
     let s = 0
     deusAmounts.slice(0, nftList.length).forEach((amount) => {
       s += Number(amount)
@@ -135,7 +135,7 @@ function IncreaseAmount({
       if (!count || Number(count) === 0 || !nftList.length || !veDEUSMigratorContract) return
       setAwaitingConfirmation(true)
       const response = await veDEUSMigratorContract.migrateAllVeDEUSToVDEUS(nftList)
-      addTransaction(response, { summary: `Migrating ${count} veDEUS` })
+      addTransaction(response, { summary: `Migrate ${count} veDEUS NFT to ${migrationAmount} vDEUS` })
       setPendingTxHash(response.hash)
       setAwaitingConfirmation(false)
     } catch (err) {
@@ -144,7 +144,7 @@ function IncreaseAmount({
       setAwaitingConfirmation(false)
       setPendingTxHash('')
     }
-  }, [count, nftList, veDEUSMigratorContract, addTransaction])
+  }, [count, migrationAmount, nftList, veDEUSMigratorContract, addTransaction])
 
   return (
     <>

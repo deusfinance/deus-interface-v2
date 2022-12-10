@@ -7,7 +7,7 @@ import utc from 'dayjs/plugin/utc'
 import Image from 'next/image'
 import toast from 'react-hot-toast'
 
-import { useVeDeusContract, useVeDeusMigratorContract } from 'hooks/useContract'
+import { useVeDeusContract } from 'hooks/useContract'
 import { useHasPendingVest, useTransactionAdder } from 'state/transactions/hooks'
 import { useVestedInformation } from 'hooks/useVested'
 import { useVeDistContract } from 'hooks/useContract'
@@ -29,9 +29,7 @@ import { formatAmount, formatBalance } from 'utils/numbers'
 import { DefaultHandlerError } from 'utils/parseError'
 import { ButtonText, TopBorder, TopBorderWrap } from 'components/App/Vest'
 import useWeb3React from 'hooks/useWeb3'
-import { veDEUS, veDEUSMigrator } from 'constants/addresses'
-import { useERC721ApproveAllCallback, ApprovalState } from 'hooks/useApproveNftCallback2'
-import { useSupportedChainId } from 'hooks/useSupportedChainId'
+import MigrateSingleNFT from './MigrateSingleNFT'
 
 dayjs.extend(utc)
 dayjs.extend(relativeTime)
@@ -252,31 +250,15 @@ function TableRow({
   reward: number
   migrationAmount: string
 }) {
-  const { chainId, account } = useWeb3React()
-  const isSupportedChainId = useSupportedChainId()
-
+  const [showSingleMigrateNFT, setShowSingleMigrateNFT] = useState(false)
   const [awaitingConfirmation, setAwaitingConfirmation] = useState(false)
   const [ClaimAwaitingConfirmation, setClaimAwaitingConfirmation] = useState(false)
   const [pendingTxHash, setPendingTxHash] = useState('')
   const { deusAmount, lockEnd } = useVestedInformation(nftId)
   const veDEUSContract = useVeDeusContract()
-  const veDEUSMigratorContract = useVeDeusMigratorContract()
   const addTransaction = useTransactionAdder()
   const showTransactionPending = useHasPendingVest(pendingTxHash, true)
   const veDistContract = useVeDistContract()
-
-  const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
-
-  const spender = useMemo(() => (chainId ? veDEUSMigrator[chainId] : undefined), [chainId])
-
-  const [approvalState, approveCallback] = useERC721ApproveAllCallback(chainId ? veDEUS[chainId] : undefined, spender)
-  const showApprove = useMemo(() => approvalState !== ApprovalState.APPROVED, [approvalState])
-
-  const handleApprove = async () => {
-    setAwaitingApproveConfirmation(true)
-    await approveCallback()
-    setAwaitingApproveConfirmation(false)
-  }
 
   // subtracting 10 seconds to mitigate this from being true on page load
   const lockHasEnded = useMemo(() => dayjs.utc(lockEnd).isBefore(dayjs.utc().subtract(10, 'seconds')), [lockEnd])
@@ -299,27 +281,13 @@ function TableRow({
     }
   }, [veDistContract, nftId, addTransaction])
 
-  const onMigrate = useCallback(async () => {
-    try {
-      if (!veDEUSMigratorContract) return
-      if (reward > 0) {
-        toast.error('first claim your rewards.')
-        return
-      }
-      setClaimAwaitingConfirmation(true)
-      const response = await veDEUSMigratorContract.migrateVeDEUSToVDEUS(nftId)
-      addTransaction(response, {
-        summary: `Migrate #${nftId} to ${migrationAmount}vDEUS`,
-        vest: { hash: response.hash },
-      })
-      setPendingTxHash(response.hash)
-      setClaimAwaitingConfirmation(false)
-    } catch (err) {
-      toast.error(DefaultHandlerError(err))
-      setClaimAwaitingConfirmation(false)
-      setPendingTxHash('')
+  const onMigrate = useCallback(() => {
+    if (reward > 0 && !lockHasEnded) {
+      toast.error('First claim rewards. After migration, unclaimed rewards will be lost.')
+      return
     }
-  }, [veDEUSMigratorContract, nftId, migrationAmount, reward, addTransaction])
+    setShowSingleMigrateNFT(true)
+  }, [reward, lockHasEnded])
 
   const onWithdraw = useCallback(async () => {
     try {
@@ -353,34 +321,7 @@ function TableRow({
     )
   }
 
-  function getApproveButton(): JSX.Element | null {
-    if (!isSupportedChainId || !account) {
-      return null
-    }
-    if (awaitingApproveConfirmation) {
-      return (
-        <PrimaryButtonWide whiteBorder active>
-          <ButtonText>
-            Approving <DotFlashing />
-          </ButtonText>
-        </PrimaryButtonWide>
-      )
-    }
-    if (showApprove) {
-      return (
-        <PrimaryButtonWide whiteBorder onClick={handleApprove}>
-          <ButtonText>Approve NFT</ButtonText>
-        </PrimaryButtonWide>
-      )
-    }
-    return null
-  }
-
   function getMigrateCell() {
-    if (showApprove) {
-      return null
-    }
-
     // if (awaitingRedeemConfirmation) {
     //   return (
     //     <MainButton>
@@ -391,7 +332,7 @@ function TableRow({
 
     return (
       <PrimaryButtonWide whiteBorder onClick={onMigrate}>
-        <ButtonText>Migrate</ButtonText>
+        <ButtonText>Migrate to vDEUS</ButtonText>
       </PrimaryButtonWide>
     )
   }
@@ -465,7 +406,7 @@ function TableRow({
         <Cell style={{ padding: '5px 10px' }}>{getClaimWithdrawCell()}</Cell>
 
         <Cell style={{ padding: '5px 10px' }}>
-          {getApproveButton()}
+          {/* {getApproveButton()} */}
           {getMigrateCell()}
         </Cell>
       </>
@@ -486,8 +427,7 @@ function TableRow({
           <RowCenter style={{ padding: '5px 2px' }}>{getClaimWithdrawCell()}</RowCenter>
 
           <RowCenter style={{ padding: '5px 2px' }}>
-            {getApproveButton()}
-
+            {/* {getApproveButton()} */}
             {getMigrateCell()}
           </RowCenter>
         </FirstRow>
@@ -507,5 +447,16 @@ function TableRow({
     )
   }
 
-  return <ZebraStripesRow isEven={index % 2 === 0}>{isMobile ? getTableRowMobile() : getTableRow()}</ZebraStripesRow>
+  return (
+    <ZebraStripesRow isEven={index % 2 === 0}>
+      {isMobile ? getTableRowMobile() : getTableRow()}
+      <MigrateSingleNFT
+        isOpen={showSingleMigrateNFT}
+        onDismiss={() => setShowSingleMigrateNFT(false)}
+        nftId={nftId}
+        deusAmount={formatBalance(deusAmount)}
+        migrationAmount={migrationAmount}
+      />
+    </ZebraStripesRow>
+  )
 }

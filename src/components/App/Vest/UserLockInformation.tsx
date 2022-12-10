@@ -60,28 +60,39 @@ export default function UserLockInformation({
   vestAmount,
   migrationAmount,
   nftList,
+  single,
 }: {
   vestAmount: string
   migrationAmount: string
   nftList: number[]
   title?: string
+  single?: boolean
 }) {
   return (
     <Wrapper>
       {title && <Title>{title}</Title>}
       <Row active={true}>
-        <RowStart width={'unset'}>
-          <div>Selected NFTs</div>
-          <CustomTooltip id="id" />
-          <QuestionMarkWrap
-            data-for="id"
-            data-tip={`selected veDEUS for migration: ${nftList.length ? '#' : '> Nothing! <'}${nftList.join(' ,#')}`}
-          >
-            <QuestionMark width={15} height={15} />
-          </QuestionMarkWrap>
-          <div>:</div>
-        </RowStart>
-        <div>{nftList.length} veDEUS NFT(s)</div>
+        {single ? (
+          <>
+            <div>Selected NFT:</div>
+            <div>#{nftList[0]}</div>
+          </>
+        ) : (
+          <>
+            <RowStart width={'unset'}>
+              <div>Selected NFTs</div>
+              <CustomTooltip id="id" />
+              <QuestionMarkWrap
+                data-for="id"
+                data-tip={`selected veDEUS for migration: ${nftList.length ? '#' : 'Nothing!'}${nftList.join(' ,#')}`}
+              >
+                <QuestionMark width={15} height={15} />
+              </QuestionMarkWrap>
+              <div>:</div>
+            </RowStart>
+            <div>{nftList.length} veDEUS NFT(s)</div>
+          </>
+        )}
       </Row>
       <Row active={true}>
         <div>Total Vest Amount:</div>
