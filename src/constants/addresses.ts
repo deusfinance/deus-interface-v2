@@ -46,6 +46,11 @@ export const veDEUS: AddressMap = {
   [SupportedChainId.FANTOM]: '0x8b42c6cb07c8dd5fe5db3ac03693867afd11353d',
 }
 
+// veDEUS Migrator ADDRESS
+export const veDEUSMigrator: AddressMap = {
+  [SupportedChainId.FANTOM]: '0x7d06331B4F4B43F444C0f0d4Ed593De126939Dd6',
+}
+
 /* =====================================
                 PROTOCOL HOLDINGS ADDRESS
 ===================================== */

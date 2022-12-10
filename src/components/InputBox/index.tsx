@@ -64,9 +64,9 @@ export const CurrencySymbol = styled.div<{ active?: any }>`
   `}
 `
 
-export const RightWrapper = styled.div`
+export const RightWrapper = styled.div<{ borderLeft?: boolean }>`
   width: 100%;
-  border-left: 1px solid ${({ theme }) => theme.border1};
+  border-left: ${({ theme, borderLeft }) => (borderLeft ? `1px solid ${theme.border1}` : 'none')};
   padding: 5px;
   padding-left: 10px;
   height: 100%;
@@ -118,7 +118,8 @@ const Balance = styled(RowWrap)<{ disabled?: boolean }>`
     color: ${({ theme }) => theme.text1};
 
     &:hover {
-      background: ${({ theme }) => theme.primary1};
+      background: ${({ theme }) => theme.clqdrBlueColor};
+      color: ${({ theme }) => theme.black};
       cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
     }
   }
@@ -171,7 +172,7 @@ export default function InputBox({
         {onTokenSelect ? <ChevronDown /> : null}
       </LogoWrapper>
 
-      <RightWrapper>
+      <RightWrapper borderLeft={true}>
         <RowBetween>
           <CurrencySymbol
             onClick={onTokenSelect ? () => onTokenSelect() : undefined}
@@ -189,6 +190,102 @@ export default function InputBox({
             value={value || ''}
             onUserInput={onChange}
             placeholder={disabled ? '0.0' : 'Enter an amount'}
+            autoFocus
+            disabled={disabled}
+          />
+        </NumericalWrapper>
+      </RightWrapper>
+    </Wrapper>
+  )
+}
+
+export function InputBoxV2({
+  currency,
+  value,
+  onChange,
+  onTokenSelect,
+  disabled,
+}: {
+  currency: Currency
+  value: string
+  onChange(values: string): void
+  onTokenSelect?: () => void
+  disabled?: boolean
+}) {
+  const { account } = useWeb3React()
+  const logo = useCurrencyLogo((currency as Token)?.address)
+  const currencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
+
+  const [balanceExact, balanceDisplay] = useMemo(() => {
+    return [maxAmountSpend(currencyBalance)?.toExact(), currencyBalance?.toSignificant(6)]
+  }, [currencyBalance])
+
+  const placeholder = useMemo(() => (disabled ? '0.0' : 'Enter an amount'), [disabled])
+
+  return (
+    <CustomInputBox
+      balanceDisplay={balanceDisplay}
+      placeholder={placeholder}
+      value={value}
+      icon={logo}
+      name={currency?.symbol}
+      balanceExact={balanceExact}
+      onChange={onChange}
+      onSelect={onTokenSelect}
+      disabled={disabled}
+    />
+  )
+}
+
+export function CustomInputBox({
+  value,
+  icon,
+  name,
+  placeholder,
+  balanceDisplay,
+  balanceExact,
+  onChange,
+  onSelect,
+  disabled,
+}: {
+  name: string | undefined
+  value: string
+  placeholder?: string
+  balanceDisplay: string | number | undefined
+  balanceExact: string | number | undefined
+  icon?: string | StaticImageData
+  onChange(values: string): void
+  onSelect?: () => void
+  disabled?: boolean
+}) {
+  const handleClick = useCallback(() => {
+    if (!balanceExact || !onChange || disabled) return
+    onChange(balanceExact.toString())
+  }, [balanceExact, disabled, onChange])
+
+  return (
+    <Wrapper>
+      {icon && (
+        <LogoWrapper onClick={onSelect ? () => onSelect() : undefined} active={onSelect ? true : false}>
+          <ImageWithFallback src={icon} width={getImageSize()} height={getImageSize()} alt={`${name} icon`} round />
+          {onSelect ? <ChevronDown /> : null}
+        </LogoWrapper>
+      )}
+      <RightWrapper borderLeft={!!icon}>
+        <RowBetween>
+          <CurrencySymbol onClick={onSelect ? () => onSelect() : undefined} active={onSelect ? true : false}>
+            {name}
+          </CurrencySymbol>
+          <Balance disabled={disabled} onClick={handleClick}>
+            balance: {balanceDisplay ? balanceDisplay : '0.00'}
+            {!disabled && <span>MAX</span>}
+          </Balance>
+        </RowBetween>
+        <NumericalWrapper>
+          <NumericalInput
+            value={value || ''}
+            onUserInput={onChange}
+            placeholder={placeholder}
             autoFocus
             disabled={disabled}
           />

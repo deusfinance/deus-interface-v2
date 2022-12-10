@@ -83,7 +83,7 @@ const RedValue = styled(Value)`
   margin-left: 5px;
 `
 const BlueName = styled(Name)`
-  color: ${({ theme }) => theme.blueClqdrColor};
+  color: ${({ theme }) => theme.clqdrBlueColor};
   margin-left: 5px;
 `
 

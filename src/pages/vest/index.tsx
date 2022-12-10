@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import Link from 'next/link'
 import styled from 'styled-components'
 import Image from 'next/image'
 import { isMobile } from 'react-device-detect'
@@ -30,10 +29,12 @@ import { PrimaryButtonWide } from 'components/Button'
 import { RowFixed, RowBetween } from 'components/Row'
 import StatsHeader from 'components/StatsHeader'
 import { Container } from 'components/App/StableCoin'
-import { useSearch, SearchField, Table } from 'components/App/Vest'
-import LockManager from 'components/App/Vest/LockManager'
-import APYManager from 'components/App/Vest/APYManager'
-import InfoHeader from 'components/InfoHeader'
+import { useSearch, SearchField, Table, TopBorder, TopBorderWrap, ButtonText } from 'components/App/Vest'
+import MigrateAllManager from 'components/App/Vest/MigrateAllManager'
+
+dayjs.extend(utc)
+dayjs.extend(relativeTime)
+dayjs.extend(localizedFormat)
 
 dayjs.extend(utc)
 dayjs.extend(relativeTime)
@@ -71,58 +72,16 @@ const UpperRow = styled(RowBetween)`
   flex-wrap: wrap;
 
   & > * {
-    margin: 10px 10px;
+    margin: 10px;
+    margin-right: 1px;
   }
 `
 
 const ButtonWrapper = styled(RowFixed)`
-  gap: 10px;
+  gap: 4px;
   & > * {
     height: 50px;
   }
-`
-
-export const ButtonText = styled.span<{ gradientText?: boolean }>`
-  display: flex;
-  font-family: 'Inter';
-  font-weight: 600;
-  font-size: 15px;
-  white-space: nowrap;
-  color: ${({ theme }) => theme.text1};
-
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    font-size: 14px;
-  `}
-
-  ${({ gradientText }) =>
-    gradientText &&
-    `
-    background: -webkit-linear-gradient(92.33deg, #0badf4 -10.26%, #30efe4 80%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  `}
-`
-
-export const TopBorderWrap = styled.div<{ active?: boolean }>`
-  background: ${({ theme }) => theme.deusColor};
-  padding: 1px;
-  border-radius: 8px;
-  margin-right: 4px;
-  margin-left: 3px;
-  border: 1px solid ${({ theme }) => theme.cLqdrColor};
-  flex: 1;
-
-  &:hover {
-    filter: brightness(0.8);
-  }
-`
-
-export const TopBorder = styled.div`
-  background: ${({ theme }) => theme.bg0};
-  border-radius: 6px;
-  height: 100%;
-  width: 100%;
-  display: flex;
 `
 
 const FirstRowWrapper = styled.div`
@@ -135,9 +94,7 @@ const FirstRowWrapper = styled.div`
 
 export default function Vest() {
   const { chainId, account } = useWeb3React()
-  const [showLockManager, setShowLockManager] = useState(false)
-  const [showAPYManager, setShowAPYManager] = useState(false)
-  const [nftId, setNftId] = useState(0)
+  const [showMigrateAllManager, setShowMigrateAllManager] = useState(false)
   const { lockedVeDEUS } = useVestedAPY(undefined, getMaximumDate())
   const deusPrice = useDeusPrice()
   const addTransaction = useTransactionAdder()
@@ -149,10 +106,9 @@ export default function Vest() {
   const ownedNfts = useOwnerVeDeusNFTs()
   const nftIds = ownedNfts.results
   const rewards = useDistRewards()
-  const toggleWalletModal = useWalletModalToggle()
-  const { lockEnds } = useVeMigrationData(nftIds)
+  const migData = useVeMigrationData(nftIds)
 
-  const [showTopBanner, setShowTopBanner] = useState(true)
+  const toggleWalletModal = useWalletModalToggle()
 
   const { snapshot, searchProps } = useSearch()
   const snapshotList = useMemo(() => {
@@ -162,29 +118,24 @@ export default function Vest() {
   }, [snapshot])
 
   useEffect(() => {
-    setShowLockManager(false)
-    setShowAPYManager(false)
+    setShowMigrateAllManager(false)
   }, [chainId, account])
 
-  const toggleLockManager = (nftId: number) => {
-    setShowLockManager(true)
-    setShowAPYManager(false)
-    setNftId(nftId)
-  }
-
-  const toggleAPYManager = (nftId: number) => {
-    setShowLockManager(false)
-    setShowAPYManager(true)
-    setNftId(nftId)
+  const toggleMigrateAllManager = () => {
+    if (totalRewards > 0) {
+      toast.error('First claim all rewards. After migration, unclaimed rewards will be lost.')
+      return
+    }
+    setShowMigrateAllManager(true)
   }
 
   const [unClaimedIds, totalRewards] = useMemo(() => {
-    if (!nftIds.length || !rewards.length || !lockEnds) return [[], 0]
+    if (!nftIds.length || !rewards.length || !migData.lockEnds) return [[], 0]
     let total = 0
     return [
       rewards.reduce((acc: number[], value: number, index: number) => {
         if (!value) return acc
-        const lockHasEnded = dayjs.utc(lockEnds[index]).isBefore(dayjs.utc().subtract(10, 'seconds'))
+        const lockHasEnded = dayjs.utc(migData.lockEnds[index]).isBefore(dayjs.utc().subtract(10, 'seconds'))
         if (lockHasEnded) {
           return acc
         }
@@ -194,7 +145,7 @@ export default function Vest() {
       }, []),
       total,
     ]
-  }, [nftIds, rewards, lockEnds])
+  }, [nftIds, rewards, migData])
 
   const onClaimAll = useCallback(async () => {
     try {
@@ -253,22 +204,16 @@ export default function Vest() {
           </PrimaryButtonWide>
         </TopBorder>
       </TopBorderWrap>
-    ) : !!snapshotList.length ? (
-      <TopBorderWrap>
-        <TopBorder>
-          <Link href="/vest/create" passHref>
-            <PrimaryButtonWide transparentBG padding={'1rem'}>
-              <ButtonText gradientText>Create Lock</ButtonText>
-            </PrimaryButtonWide>
-          </Link>
-        </TopBorder>
-      </TopBorderWrap>
     ) : (
-      <PrimaryButtonWide>
-        <Link href="/vest/create" passHref>
-          <ButtonText>Create New Lock</ButtonText>
-        </Link>
-      </PrimaryButtonWide>
+      !!snapshotList.length && (
+        <TopBorderWrap>
+          <TopBorder>
+            <PrimaryButtonWide transparentBG onClick={toggleMigrateAllManager}>
+              <ButtonText gradientText>Migrate ALL to vDEUS</ButtonText>
+            </PrimaryButtonWide>
+          </TopBorder>
+        </TopBorderWrap>
+      )
     )
   }
 
@@ -308,12 +253,6 @@ export default function Vest() {
 
   return (
     <Container>
-      {showTopBanner && (
-        <InfoHeader
-          onClose={setShowTopBanner}
-          text={`In preparation for the launch of DEUS v3, we are currently overhauling the veDEUS’s tokenomics, fee accruing mechanisms, and reward contracts. We will release an article with more information shortly. This update especially concerns the veDEUS anti-dilution and rewards payout.`}
-        />
-      )}
       <Hero>
         <Image src={veDEUS_LOGO} height={'90px'} alt="Logo" />
         <StatsHeader items={items} />
@@ -322,19 +261,18 @@ export default function Vest() {
         {getUpperRow()}
         <Table
           nftIds={snapshotList as number[]}
-          toggleLockManager={toggleLockManager}
-          toggleAPYManager={toggleAPYManager}
           isMobile={isMobile}
           rewards={rewards}
+          migrationAmounts={migData.migrationAmounts}
           isLoading={ownedNfts.isLoading}
         />
       </Wrapper>
-      <LockManager isOpen={showLockManager} onDismiss={() => setShowLockManager(false)} nftId={nftId} />
-      <APYManager
-        isOpen={showAPYManager}
-        onDismiss={() => setShowAPYManager(false)}
-        nftId={nftId}
-        toggleLockManager={toggleLockManager}
+      <MigrateAllManager
+        isOpen={showMigrateAllManager}
+        onDismiss={() => setShowMigrateAllManager(false)}
+        nftIds={nftIds}
+        deusAmounts={migData.deusAmounts}
+        migrationAmounts={migData.migrationAmounts}
       />
     </Container>
   )

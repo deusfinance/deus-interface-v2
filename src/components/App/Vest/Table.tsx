@@ -25,10 +25,11 @@ import EMPTY_LOCK_MOBILE from '/public/static/images/pages/veDEUS/emptyLockMobil
 import LOADING_LOCK from '/public/static/images/pages/veDEUS/loadingLock.svg'
 import LOADING_LOCK_MOBILE from '/public/static/images/pages/veDEUS/loadingLockMobile.svg'
 
-import { formatAmount } from 'utils/numbers'
+import { formatAmount, formatBalance } from 'utils/numbers'
 import { DefaultHandlerError } from 'utils/parseError'
-import { ButtonText, TopBorder, TopBorderWrap } from 'pages/vest'
+import { ButtonText, TopBorder, TopBorderWrap } from 'components/App/Vest'
 import useWeb3React from 'hooks/useWeb3'
+import MigrateSingleNFT from './MigrateSingleNFT'
 
 dayjs.extend(utc)
 dayjs.extend(relativeTime)
@@ -119,6 +120,10 @@ const Value = styled.div`
   margin-top: 10px;
 `
 
+const VDeusValue = styled(Value)`
+  color: ${({ theme }) => theme.clqdrBlueColor};
+`
+
 const ZebraStripesRow = styled(Row)<{ isEven?: boolean }>`
   background: ${({ isEven, theme }) => (isEven ? theme.bg2 : theme.bg1)};
 `
@@ -151,15 +156,13 @@ const itemsPerPage = 10
 
 export default function Table({
   nftIds,
-  toggleLockManager,
-  toggleAPYManager,
   isMobile,
   rewards,
+  migrationAmounts,
   isLoading,
 }: {
   nftIds: number[]
-  toggleLockManager: (nftId: number) => void
-  toggleAPYManager: (nftId: number) => void
+  migrationAmounts: string[]
   isMobile?: boolean
   rewards: number[]
   isLoading: boolean
@@ -192,10 +195,9 @@ export default function Table({
                     key={index}
                     index={index}
                     nftId={nftId}
-                    toggleLockManager={toggleLockManager}
-                    toggleAPYManager={toggleAPYManager}
                     isMobile={isMobile}
                     reward={rewards[nftIndex] ?? 0}
+                    migrationAmount={formatBalance(migrationAmounts[nftIndex]) ?? '0'}
                   />
                 )
               })}
@@ -237,22 +239,22 @@ export default function Table({
 
 function TableRow({
   nftId,
-  toggleLockManager,
   index,
   isMobile,
   reward,
+  migrationAmount,
 }: {
   nftId: number
-  toggleLockManager: (nftId: number) => void
-  toggleAPYManager: (nftId: number) => void
   index: number
   isMobile?: boolean
   reward: number
+  migrationAmount: string
 }) {
+  const [showSingleMigrateNFT, setShowSingleMigrateNFT] = useState(false)
   const [awaitingConfirmation, setAwaitingConfirmation] = useState(false)
   const [ClaimAwaitingConfirmation, setClaimAwaitingConfirmation] = useState(false)
   const [pendingTxHash, setPendingTxHash] = useState('')
-  const { deusAmount, veDEUSAmount, lockEnd } = useVestedInformation(nftId)
+  const { deusAmount, lockEnd } = useVestedInformation(nftId)
   const veDEUSContract = useVeDeusContract()
   const addTransaction = useTransactionAdder()
   const showTransactionPending = useHasPendingVest(pendingTxHash, true)
@@ -278,6 +280,14 @@ function TableRow({
       } else toast.error(DefaultHandlerError(err))
     }
   }, [veDistContract, nftId, addTransaction])
+
+  const onMigrate = useCallback(() => {
+    if (reward > 0 && !lockHasEnded) {
+      toast.error('First claim rewards. After migration, unclaimed rewards will be lost.')
+      return
+    }
+    setShowSingleMigrateNFT(true)
+  }, [reward, lockHasEnded])
 
   const onWithdraw = useCallback(async () => {
     try {
@@ -308,6 +318,22 @@ function TableRow({
         <Name>Expired in</Name>
         <Value>{dayjs.utc(lockEnd).format('LLL')}</Value>
       </ExpirationPassed>
+    )
+  }
+
+  function getMigrateCell() {
+    // if (awaitingRedeemConfirmation) {
+    //   return (
+    //     <MainButton>
+    //       Migrating to ERC20 <DotFlashing />
+    //     </MainButton>
+    //   )
+    // }
+
+    return (
+      <PrimaryButtonWide whiteBorder onClick={onMigrate}>
+        <ButtonText>Migrate to vDEUS</ButtonText>
+      </PrimaryButtonWide>
     )
   }
 
@@ -371,8 +397,8 @@ function TableRow({
         </Cell>
 
         <Cell>
-          <Name>Vest Value</Name>
-          <Value>{formatAmount(parseFloat(veDEUSAmount), 6)} veDEUS</Value>
+          <Name>Migration Amount</Name>
+          <VDeusValue>{migrationAmount} vDEUS</VDeusValue>
         </Cell>
 
         <Cell style={{ padding: '5px 10px' }}>{getExpirationCell()}</Cell>
@@ -380,9 +406,8 @@ function TableRow({
         <Cell style={{ padding: '5px 10px' }}>{getClaimWithdrawCell()}</Cell>
 
         <Cell style={{ padding: '5px 10px' }}>
-          <PrimaryButtonWide whiteBorder onClick={() => toggleLockManager(nftId)}>
-            <ButtonText>Update Lock</ButtonText>
-          </PrimaryButtonWide>
+          {/* {getApproveButton()} */}
+          {getMigrateCell()}
         </Cell>
       </>
     )
@@ -402,9 +427,8 @@ function TableRow({
           <RowCenter style={{ padding: '5px 2px' }}>{getClaimWithdrawCell()}</RowCenter>
 
           <RowCenter style={{ padding: '5px 2px' }}>
-            <PrimaryButtonWide whiteBorder onClick={() => toggleLockManager(nftId)}>
-              <ButtonText>Update Lock</ButtonText>
-            </PrimaryButtonWide>
+            {/* {getApproveButton()} */}
+            {getMigrateCell()}
           </RowCenter>
         </FirstRow>
 
@@ -413,15 +437,26 @@ function TableRow({
           <Value>{formatAmount(parseFloat(deusAmount), 8)} DEUS</Value>
         </MobileCell>
 
-        <MobileCell>
-          <Name>Vest Value</Name>
-          <Value>{formatAmount(parseFloat(veDEUSAmount), 6)} veDEUS</Value>
-        </MobileCell>
+        <Cell>
+          <Name>Migration Amount</Name>
+          <VDeusValue>{migrationAmount} vDEUS</VDeusValue>
+        </Cell>
 
         <MobileCell>{getExpirationCell()}</MobileCell>
       </MobileWrapper>
     )
   }
 
-  return <ZebraStripesRow isEven={index % 2 === 0}>{isMobile ? getTableRowMobile() : getTableRow()}</ZebraStripesRow>
+  return (
+    <ZebraStripesRow isEven={index % 2 === 0}>
+      {isMobile ? getTableRowMobile() : getTableRow()}
+      <MigrateSingleNFT
+        isOpen={showSingleMigrateNFT}
+        onDismiss={() => setShowSingleMigrateNFT(false)}
+        nftId={nftId}
+        deusAmount={formatBalance(deusAmount)}
+        migrationAmount={migrationAmount}
+      />
+    </ZebraStripesRow>
+  )
 }
