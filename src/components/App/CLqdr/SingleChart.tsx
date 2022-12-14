@@ -118,11 +118,11 @@ const timeframeMap: Record<string, number> = {
 
 // map respective timeframe to seconds for grouping
 const secondsMap: Record<string, number> = {
-  '4H': 60, // to use 1m grouped data
-  '8H': 60, // to use 1m grouped data
-  '1D': 15 * 60, // to use 15m grouped data
-  '1W': 6 * 60 * 60, // to use 6h grouped data
-  '1M': 12 * 60 * 60, // to use 12h grouped data
+  '4H': 1 * 60 * 60, // to use 1H grouped data
+  '8H': 1 * 60 * 60, // to use 1H grouped data
+  '1D': 1 * 60 * 60, // to use 1H grouped data
+  '1W': 1 * 60 * 60, // to use 1H grouped data
+  '1M': 1 * 24 * 60 * 60, // to use 1d grouped data
   '3M': 1 * 24 * 60 * 60, // to use 1d grouped data
   '6M': 1 * 24 * 60 * 60, // to use 1d grouped data
   '1Y': 1 * 24 * 60 * 60, // to use 1d grouped data
@@ -170,8 +170,6 @@ export default function SingleChart({ label, uniqueID }: { label: string; unique
     const fetcher = async (skip: number, timestamp: number): Promise<ClqdrChartData[]> => {
       const DEFAULT_RETURN: ClqdrChartData[] = []
       try {
-        if (!chainId) return DEFAULT_RETURN
-
         const client = getCLQDRApolloClient(chainId)
         if (!client) return DEFAULT_RETURN
 
@@ -181,9 +179,24 @@ export default function SingleChart({ label, uniqueID }: { label: string; unique
           fetchPolicy: 'no-cache',
         })
 
-        return data.snapshots as ClqdrChartData[]
+        // fetch respective entity based on selected timeframe
+        switch (currentTimeFrame) {
+          case '4H':
+          case '8H':
+          case '1D':
+          case '1W':
+            return data.hourlySnapshots as ClqdrChartData[]
+          case '1M':
+          case '3M':
+          case '6M':
+          case '1Y':
+            return data.dailySnapshots as ClqdrChartData[]
+          default:
+            console.error('Invalid timeframe selected. Defaulting to daily snapshot data.')
+            return data.hourlySnapshots as ClqdrChartData[]
+        }
       } catch (error) {
-        console.log(`Unable to query ${uniqueID} data from The Graph Network`)
+        console.log(`Unable to query data from The Graph Network`)
         console.error(error)
         return []
       }
@@ -212,9 +225,8 @@ export default function SingleChart({ label, uniqueID }: { label: string; unique
       skip = 0
       timestamp = lastTimestamp
     }
-
     return data
-  }, [uniqueID, chainId, currentTimeFrame])
+  }, [chainId, currentTimeFrame])
 
   useEffect(() => {
     const getData = async () => {
@@ -238,7 +250,6 @@ export default function SingleChart({ label, uniqueID }: { label: string; unique
       if (!arr[id]) {
         arr[id] = data
       }
-      console.log({ data, id })
       return arr
     }, {})
     const result: ClqdrChartData[] = Object.values(data)
@@ -249,14 +260,28 @@ export default function SingleChart({ label, uniqueID }: { label: string; unique
   const filteredData: ClqdrChartData[] = useMemo(() => {
     const currentTimestamp = Date.now() / 1000
     const earliestTimestamp = Math.floor(currentTimestamp) - timeframeMap[currentTimeFrame]
-    const filteredData = chartData.filter((obj) => parseInt(obj.timestamp) > earliestTimestamp)
+    const data = chartData.filter((obj) => parseInt(obj.timestamp) > earliestTimestamp)
+    // When there is no CHANGE in value detected in last selected timeframe, add 2 data points same as the last recorded value but with different timestamps
+    if (!data.length) {
+      data.push(
+        {
+          ...chartData[chartData.length - 1],
+          timestamp: currentTimestamp.toString(),
+        },
+        {
+          ...chartData[chartData.length - 1],
+          timestamp: earliestTimestamp.toString(),
+        }
+      )
+    }
     // adding the latest data available as the current data. This is to handle cases where we get just 1 data point in selected timeframe.
-    filteredData.push(...filteredData, {
-      ...filteredData[filteredData.length - 1],
-      timestamp: currentTimestamp.toString(),
-    })
+    else
+      data.push({
+        ...data[data.length - 1],
+        timestamp: currentTimestamp.toString(),
+      })
     // make sure to have not more than 100 data points for any timeframe for smoother chart
-    return groupedData(filteredData, currentTimeFrame)
+    return groupedData(data, currentTimeFrame)
   }, [chartData, currentTimeFrame])
 
   // lowest and highest values for the Y-axis
@@ -281,15 +306,16 @@ export default function SingleChart({ label, uniqueID }: { label: string; unique
       const formattedDate =
         date.toLocaleString('default', { weekday: 'short' }) +
         ', ' +
-        date.getUTCDate() +
+        date.getDate() +
         '-' +
         date.toLocaleString('default', { month: 'short' }) +
         '-' +
         date.getFullYear() +
         ' ' +
-        date.getUTCHours() +
+        date.getHours() +
         ':' +
-        date.getMinutes()
+        date.getMinutes() +
+        ' Hr(s)'
 
       const formattedValue = uniqueID === 'totalSupply' ? formatAmount(parseInt(payload[0].value)) : payload[0].value
       return (
@@ -330,7 +356,7 @@ export default function SingleChart({ label, uniqueID }: { label: string; unique
         )}
       </TitleWrapper>
       <Container
-        content={loading ? 'Loading...' : filteredData.length < 1 ? 'Insufficient data' : ''}
+        content={loading ? 'Loading...' : filteredData.length < 2 ? 'Insufficient data' : ''}
         width="100%"
         height={170}
       >

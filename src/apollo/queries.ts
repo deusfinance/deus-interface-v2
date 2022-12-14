@@ -13,5 +13,29 @@ export const CLQDR_DATA = gql`
       clqdrRatio
       totalSupply
     }
+
+    hourlySnapshots(
+      first: 1000
+      skip: $skip
+      where: { timestamp_lt: $timestamp }
+      orderBy: timestamp
+      orderDirection: desc
+    ) {
+      timestamp
+      clqdrRatio
+      totalSupply
+    }
+
+    dailySnapshots(
+      first: 1000
+      skip: $skip
+      where: { timestamp_lt: $timestamp }
+      orderBy: timestamp
+      orderDirection: desc
+    ) {
+      timestamp
+      clqdrRatio
+      totalSupply
+    }
   }
 `
