@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
 
 import { useDeusPrice } from 'hooks/useCoingeckoPrice'
-import useWeb3React from 'hooks/useWeb3'
 
 import Hero from 'components/Hero'
 import StatsHeader from 'components/StatsHeader'

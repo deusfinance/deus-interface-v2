@@ -1,6 +1,5 @@
-import { getCLQDRApolloClient } from 'apollo/client/clqdr'
 import { getPoolStatsApolloClient } from 'apollo/client/poolstats'
-import { ChartData, CLQDR_DATA, VDEUS_POOL_STATS } from 'apollo/queries'
+import { ChartData, VDEUS_POOL_STATS } from 'apollo/queries'
 import Dropdown from 'components/DropDown'
 import { FALLBACK_CHAIN_ID } from 'constants/chains'
 import useWeb3React from 'hooks/useWeb3'
@@ -8,7 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { ResponsiveContainer, YAxis, AreaChart, Area, CartesianGrid, Tooltip } from 'recharts'
 import styled, { useTheme } from 'styled-components'
-import { formatAmount, toBN } from 'utils/numbers'
+import { toBN } from 'utils/numbers'
 
 const Wrapper = styled.div`
   display: flex;
