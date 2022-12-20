@@ -5,6 +5,11 @@
     "exact": true
   },
   {
+    "text": "Swap",
+    "path": "/swap",
+    "exact": true
+  },
+  {
     "text": "cLQDR",
     "path": "/clqdr",
     "exact": true
