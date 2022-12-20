@@ -11,18 +11,18 @@ import { Container, Title } from 'components/App/StableCoin'
 import SwapPage from 'components/App/Swap'
 import { useVDeusStats } from 'hooks/useVDeusStats'
 import SingleChart from 'components/App/Swap/SingleChart'
+import { Row } from 'components/Row'
 
-const Wrapper = styled(Container)`
+const Wrapper = styled(Row)`
   margin-top: 50px;
   width: clamp(500px, 90%, 1000px);
   align-items: flex-start;
   flex-direction: row;
   gap: 2rem;
-`
 
-const ChartWrapper = styled.div`
-  width: clamp(250px, 90%, 500px);
-  height: clamp(500px, 50%, 500px);
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-direction: column;
+  `};
 `
 
 export const ButtonText = styled.span<{ gradientText?: boolean }>`
@@ -87,9 +87,7 @@ export default function Vest() {
         <StatsHeader items={items} />
       </Hero>
       <Wrapper>
-        <ChartWrapper>
-          <SingleChart label={'vDEUS Peg'} uniqueID={'vDeusPerDeus'} />
-        </ChartWrapper>
+        <SingleChart label={'vDEUS Peg'} uniqueID={'vDeusPerDeus'} />
         <SwapPage />
       </Wrapper>
     </Container>

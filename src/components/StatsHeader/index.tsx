@@ -15,10 +15,6 @@ const Wrapper = styled.div`
   margin: 20px 2px 0px 2px;
   display: flex;
   justify-content: center;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    justify-content: stretch;
-  `};
 `
 
 const Item = styled.div<{ rightBorder?: boolean }>`

@@ -11,7 +11,7 @@ import { toBN } from 'utils/numbers'
 
 const Wrapper = styled.div`
   display: flex;
-  width: 100%;
+  width: clamp(250px, 75%, 500px);
   flex-flow: column nowrap;
   padding: 24px 8px;
   border-radius: 12px;
@@ -22,8 +22,8 @@ const Wrapper = styled.div`
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
   gap: 12px;
-  min-width: 250px;
-  min-height: 300px;
+  margin: 0 auto;
+  min-height: 420px;
 `};
 `
 
