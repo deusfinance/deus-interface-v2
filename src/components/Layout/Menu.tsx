@@ -115,6 +115,11 @@ export default function Menu() {
               <div>Swap</div>
             </Row>
           </Link>
+          <Link href="/stake" passHref>
+            <Row active={router.route.includes('/stake')}>
+              <div>Stake</div>
+            </Row>
+          </Link>
           <Link href="/clqdr" passHref>
             <Row active={router.route.includes('/clqdr')}>
               <div>cLQDR</div>
