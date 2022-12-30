@@ -204,7 +204,7 @@ export function usePoolInfo(stakingPool: StakingType): {
   totalDeposited: number
 } {
   const contract = useMasterChefContract(stakingPool)
-  const tokenAddress = stakingTokens[stakingPool.pid]
+  const tokenAddress = null
   const ERC20Contract = useERC20Contract(tokenAddress)
   const calls = [
     {
