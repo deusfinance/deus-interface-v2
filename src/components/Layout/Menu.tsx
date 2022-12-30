@@ -110,6 +110,13 @@ export default function Menu() {
               </IconWrapper>
             </Row>
           </Link>
+          <Link href="/stake" passHref>
+            <Row onClick={() => toggle()}>
+              <ExternalItem>
+                <div>Stake</div>
+              </ExternalItem>
+            </Row>
+          </Link>
           <Link href="/clqdr" passHref>
             <Row active={router.route.includes('/clqdr')}>
               <div>cLQDR</div>

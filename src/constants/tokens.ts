@@ -14,6 +14,22 @@ export const DEIv2_TOKEN = new Token(
   'DEI'
 )
 
+export const VDEUS_TOKEN = new Token(
+  SupportedChainId.FANTOM,
+  '0x953Cd009a490176FcEB3a26b9753e6F01645ff28',
+  18,
+  'vDEUS',
+  'vDEUS'
+)
+
+export const DEUS_VDEUS_LP_TOKEN = new Token(
+  SupportedChainId.FANTOM,
+  '0xECd9E18356bb8d72741c539e75CEAdB3C5869ea0',
+  18,
+  'DV-LP',
+  'DV-LP'
+)
+
 export const USDC_TOKEN = new Token(SupportedChainId.FANTOM, USDC_ADDRESS[SupportedChainId.FANTOM], 6, 'USDC', 'USDC')
 
 export const DEUS_TOKEN = new Token(SupportedChainId.FANTOM, DEUS_ADDRESS[SupportedChainId.FANTOM], 18, 'DEUS', 'DEUS')

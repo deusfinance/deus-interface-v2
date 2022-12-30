@@ -157,6 +157,23 @@ export const escrow: AddressMap = {
   [SupportedChainId.FANTOM]: '0xFb05aedf0caC43C6ce291D2d1be1eab568D155B4',
 }
 
+export const MasterChefV2: AddressMap = {
+  [SupportedChainId.FANTOM]: '0x67932809213AFd6bac5ECD2e4e214Fe18209c419',
+}
+
+export const MasterChefV3: AddressMap = {
+  [SupportedChainId.FANTOM]: '0x62ad8dE6740314677F06723a7A07797aE5082Dbb',
+}
+
+export const StablePool_DEUS_vDEUS: AddressMap = {
+  [SupportedChainId.FANTOM]: '0x54a5039C403fff8538fC582e0e3f07387B707381',
+}
+
+//vDEUS ERC20 Staking (proxy contract)
+export const veDEUSMultiRewarderERC20: AddressMap = {
+  [SupportedChainId.FANTOM]: '0x9909E6046A9Ca950Cd2a28071338BdcB7d33f9Cb',
+}
+
 /* =====================================
                 LQDR Tokens ADDRESS
 ===================================== */
