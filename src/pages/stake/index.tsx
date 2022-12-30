@@ -1,8 +1,5 @@
 import styled from 'styled-components'
 
-import Hero from 'components/Hero'
-import ImageWithFallback from 'components/ImageWithFallback'
-import STAKE_ICON from '/public/static/images/pages/stake/ic_stake.svg'
 import { LiquidityPool as LiquidityPoolList } from 'constants/stakingPools'
 import LiquidityPool from 'components/App/Stake/LiquidityPool'
 import PoolInfo from 'components/App/Stake/PoolInfo'
