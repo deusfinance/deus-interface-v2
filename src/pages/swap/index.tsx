@@ -83,7 +83,7 @@ export default function Vest() {
   return (
     <Container>
       <Hero>
-        <Title>vDEUS</Title>
+        <Title>vDEUS Swap</Title>
         <StatsHeader items={items} />
       </Hero>
       <Wrapper>

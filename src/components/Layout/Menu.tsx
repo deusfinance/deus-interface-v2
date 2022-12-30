@@ -112,7 +112,7 @@ export default function Menu() {
           </Link>
           <Link href="/swap" passHref>
             <Row active={router.route.includes('/swap')}>
-              <div>Swap</div>
+              <div>vDEUS Swap</div>
             </Row>
           </Link>
           <Link href="/clqdr" passHref>
