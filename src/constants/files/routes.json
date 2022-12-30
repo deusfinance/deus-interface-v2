@@ -13,5 +13,10 @@
     "text": "cLQDR",
     "path": "/clqdr",
     "exact": true
+  },
+  {
+    "text": "Thena Airdrop",
+    "path": "/thena-airdrop",
+    "exact": true
   }
 ]
