@@ -175,18 +175,6 @@ export const DEUS_VDEUS_LP_TOKEN_ADDRESS: AddressMap = {
   [SupportedChainId.FANTOM]: '0xECd9E18356bb8d72741c539e75CEAdB3C5869ea0',
 }
 
-export const MasterChefV2: AddressMap = {
-  [SupportedChainId.FANTOM]: '0x67932809213AFd6bac5ECD2e4e214Fe18209c419',
-}
-
-export const MasterChefV3: AddressMap = {
-  [SupportedChainId.FANTOM]: '0x62ad8dE6740314677F06723a7A07797aE5082Dbb',
-}
-
-//vDEUS ERC20 Staking (proxy contract)
-export const veDEUSMultiRewarderERC20: AddressMap = {
-  [SupportedChainId.FANTOM]: '0x9909E6046A9Ca950Cd2a28071338BdcB7d33f9Cb',
-}
 /* =====================================
                 LQDR Tokens ADDRESS
 ===================================== */

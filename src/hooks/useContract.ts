@@ -14,8 +14,6 @@ import VEDEUS_MIGRATOR_ABI from 'constants/abi/VEDEUS_MIGRATOR_ABI.json'
 import VE_DIST_ABI from 'constants/abi/VE_DIST.json'
 import SWAP_ABI from 'constants/abi/SWAP_ABI.json'
 import VDEUS_ABI from 'constants/abi/VDEUS.json'
-import MasterChefV2_ABI from 'constants/abi/MasterChefV2.json'
-import VEDEUS_MULTI_REWARDER_ERC20_ABI from 'constants/abi/VEDEUS_MULTI_REWARDER_ERC20.json'
 
 import CLQDR_ABI from 'constants/abi/CLQDR_ABI.json'
 import CLQDR_FULL_ABI from 'constants/abi/CLQDR_FULL_ABI.json'
@@ -30,10 +28,8 @@ import {
   CLQDR_ADDRESS,
   veDEUSMigrator,
   VDEUS_ADDRESS,
-  veDEUSMultiRewarderERC20,
 } from 'constants/addresses'
 import { StablePoolType } from 'constants/sPools'
-import { LiquidityType, StakingType } from 'constants/stakingPools'
 
 export function useContract<T extends Contract = Contract>(
   addressOrAddressMap: string | null | undefined,
@@ -138,19 +134,4 @@ export function useVDeusContract() {
   const { chainId } = useWeb3React()
   const address = useMemo(() => (chainId ? VDEUS_ADDRESS[chainId] : undefined), [chainId])
   return useContract(address, VDEUS_ABI)
-}
-
-export function useMasterChefContract(stakingPool: StakingType) {
-  const address = useMemo(() => (stakingPool ? stakingPool.masterChef : undefined), [stakingPool])
-  return useContract(address, MasterChefV2_ABI)
-}
-export function useVDeusMultiRewarderERC20Contract() {
-  const { chainId } = useWeb3React()
-  const address = useMemo(() => (chainId ? veDEUSMultiRewarderERC20[chainId] : undefined), [chainId])
-  return useContract(address, VEDEUS_MULTI_REWARDER_ERC20_ABI)
-}
-
-export function useStablePoolLiquidityContract(pool: LiquidityType) {
-  const address = useMemo(() => (pool ? pool.contract : undefined), [pool])
-  return useContract(address, SWAP_ABI)
 }
