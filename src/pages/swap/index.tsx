@@ -75,7 +75,7 @@ export default function Vest() {
   const items = useMemo(
     () => [
       { name: 'DEUS Price', value: formatDollarAmount(parseFloat(deusPrice), 2) },
-      { name: 'vDeus Peg', value: formatAmount(vDeusPeg, 2) + ' DEUS' },
+      { name: 'vDeus Ratio', value: formatAmount(vDeusPeg, 2) + ' DEUS' },
     ],
     [deusPrice, vDeusPeg]
   )
@@ -87,7 +87,7 @@ export default function Vest() {
         <StatsHeader items={items} />
       </Hero>
       <Wrapper>
-        <SingleChart label={'vDEUS Peg'} uniqueID={'vDeusPerDeus'} />
+        <SingleChart label={'vDEUS Ratio'} uniqueID={'vDeusPerDeus'} />
         <SwapPage />
       </Wrapper>
     </Container>
