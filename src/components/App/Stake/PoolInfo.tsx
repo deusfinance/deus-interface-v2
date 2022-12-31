@@ -78,7 +78,7 @@ export default function PoolInfo({ pool }: { pool: LiquidityType }) {
         </ContentTable>
 
         <ContentTable>
-          <Label> Virtual Peg: </Label>
+          <Label> Virtual Price: </Label>
           <Value> {formatAmount(poolInfo?.virtualPrice)} DEUS</Value>
         </ContentTable>
 
