@@ -129,9 +129,3 @@ export function useStablePoolContract(pool: StablePoolType) {
   const address = useMemo(() => (pool ? pool.swapFlashLoan : undefined), [pool])
   return useContract(address, SWAP_ABI)
 }
-
-export function useVDeusContract() {
-  const { chainId } = useWeb3React()
-  const address = useMemo(() => (chainId ? VDEUS_ADDRESS[chainId] : undefined), [chainId])
-  return useContract(address, VDEUS_ABI)
-}

@@ -45,7 +45,7 @@ const Wrapper = styled(Container)`
   }
 `
 
-const RedeemButton = styled(PrimaryButton)`
+const MainButton = styled(PrimaryButton)`
   border-radius: 12px;
 `
 
@@ -124,37 +124,37 @@ export default function SwapPage() {
       return null
     } else if (awaitingApproveConfirmation) {
       return (
-        <RedeemButton active>
+        <MainButton active>
           Awaiting Confirmation <DotFlashing />
-        </RedeemButton>
+        </MainButton>
       )
     } else if (showApproveLoader) {
       return (
-        <RedeemButton active>
+        <MainButton active>
           Approving <DotFlashing />
-        </RedeemButton>
+        </MainButton>
       )
     } else if (showApprove) {
-      return <RedeemButton onClick={handleApprove}>Allow us to spend {inputCurrency?.symbol}</RedeemButton>
+      return <MainButton onClick={handleApprove}>Allow us to spend {inputCurrency?.symbol}</MainButton>
     }
     return null
   }
 
   function getActionButton(): JSX.Element | null {
     if (!chainId || !account) {
-      return <RedeemButton onClick={toggleWalletModal}>Connect Wallet</RedeemButton>
+      return <MainButton onClick={toggleWalletModal}>Connect Wallet</MainButton>
     } else if (showApprove) {
       return null
     } else if (insufficientBalance) {
-      return <RedeemButton disabled>Insufficient {inputCurrency?.symbol} Balance</RedeemButton>
+      return <MainButton disabled>Insufficient {inputCurrency?.symbol} Balance</MainButton>
     } else if (awaitingRedeemConfirmation) {
       return (
-        <RedeemButton>
+        <MainButton>
           Swapping <DotFlashing />
-        </RedeemButton>
+        </MainButton>
       )
     }
-    return <RedeemButton onClick={() => handleSwap()}>Swap</RedeemButton>
+    return <MainButton onClick={() => handleSwap()}>Swap</MainButton>
   }
 
   return (

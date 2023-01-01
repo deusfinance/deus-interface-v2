@@ -59,6 +59,7 @@ export const VDEUS_POOL_STATS = gql`
       deusBalance
       vDeusPerDeus
       deusPerVDeus
+      swapRatio
     }
 
     vdeusPoolHourlySnapshots(
@@ -73,6 +74,7 @@ export const VDEUS_POOL_STATS = gql`
       deusBalance
       vDeusPerDeus
       deusPerVDeus
+      swapRatio
     }
 
     vdeusPoolDailySnapshots(
@@ -87,6 +89,7 @@ export const VDEUS_POOL_STATS = gql`
       deusBalance
       vDeusPerDeus
       deusPerVDeus
+      swapRatio
     }
   }
 `

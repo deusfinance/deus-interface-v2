@@ -1,13 +1,16 @@
-import { getPoolStatsApolloClient } from 'apollo/client/poolstats'
-import { ChartData, VDEUS_POOL_STATS } from 'apollo/queries'
-import Dropdown from 'components/DropDown'
-import { FALLBACK_CHAIN_ID } from 'constants/chains'
-import useWeb3React from 'hooks/useWeb3'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import styled, { useTheme } from 'styled-components'
 import { isMobile } from 'react-device-detect'
 import { ResponsiveContainer, YAxis, AreaChart, Area, CartesianGrid, Tooltip } from 'recharts'
-import styled, { useTheme } from 'styled-components'
+
+import { FALLBACK_CHAIN_ID } from 'constants/chains'
+
+import { getPoolStatsApolloClient } from 'apollo/client/poolstats'
+import { ChartData, VDEUS_POOL_STATS } from 'apollo/queries'
 import { toBN } from 'utils/numbers'
+
+import useWeb3React from 'hooks/useWeb3'
+import Dropdown from 'components/DropDown'
 
 const Wrapper = styled.div`
   display: flex;
@@ -153,7 +156,7 @@ const tempData: ChartData[] = [
   { timestamp: '099', value: '1.0' },
 ]
 
-export default function SingleChart({ label, uniqueID }: { label: string; uniqueID: string }) {
+export default function SingleChart({ label }: { label: string }) {
   const { chainId = FALLBACK_CHAIN_ID } = useWeb3React()
   const theme = useTheme()
 
@@ -180,17 +183,17 @@ export default function SingleChart({ label, uniqueID }: { label: string; unique
           case '8H':
           case '1D':
           case '1W':
-            return data.vdeusPoolHourlySnapshots.map((obj: { timestamp: any; deusPerVDeus: any }) => ({
+            return data.vdeusPoolHourlySnapshots.map((obj: { timestamp: any; swapRatio: any }) => ({
               timestamp: obj.timestamp,
-              value: toBN(obj.deusPerVDeus).toFixed(3),
+              value: toBN(obj.swapRatio).toFixed(3),
             })) as ChartData[]
           case '1M':
           case '3M':
           case '6M':
           case '1Y':
-            return data.vdeusPoolDailySnapshots.map((obj: { timestamp: any; deusPerVDeus: any }) => ({
+            return data.vdeusPoolDailySnapshots.map((obj: { timestamp: any; swapRatio: any }) => ({
               timestamp: obj.timestamp,
-              value: toBN(obj.deusPerVDeus).toFixed(3),
+              value: toBN(obj.swapRatio).toFixed(3),
             })) as ChartData[]
           default:
             console.error('Invalid timeframe selected. Defaulting to daily snapshot data.')

@@ -70,14 +70,14 @@ export const TopBorder = styled.div`
 
 export default function Vest() {
   const deusPrice = useDeusPrice()
-  const { vDeusPeg } = useVDeusStats()
+  const { swapRatio } = useVDeusStats()
 
   const items = useMemo(
     () => [
       { name: 'DEUS Price', value: formatDollarAmount(parseFloat(deusPrice), 2) },
-      { name: 'vDeus Ratio', value: formatAmount(vDeusPeg, 2) + ' DEUS' },
+      { name: 'vDeus Ratio', value: formatAmount(swapRatio, 2) + ' DEUS' },
     ],
-    [deusPrice, vDeusPeg]
+    [deusPrice, swapRatio]
   )
 
   return (
@@ -87,7 +87,7 @@ export default function Vest() {
         <StatsHeader items={items} />
       </Hero>
       <Wrapper>
-        <SingleChart label={'vDEUS Ratio'} uniqueID={'vDeusPerDeus'} />
+        <SingleChart label={'vDEUS Ratio'} />
         <SwapPage />
       </Wrapper>
     </Container>
