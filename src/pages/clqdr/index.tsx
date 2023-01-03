@@ -32,9 +32,9 @@ import WarningModal from 'components/ReviewModal/Warning'
 import FireBird1 from 'components/App/CLqdr/FirebirdBox1'
 import BalanceBox from 'components/App/CLqdr/BalanceBox'
 import BuyClqdrInputBox from 'components/App/CLqdr/BuyClqdrInputBox'
-import SingleChart from 'components/App/CLqdr/SingleChart'
 import DataDropdown from 'components/App/CLqdr/DataDropdown'
 import ContractsDropdown from 'components/App/CLqdr/ContractsDropdown'
+import SingleChart from 'components/App/CLqdr/SingleChart'
 
 const Wrapper = styled(MainWrapper)`
   width: 100%;

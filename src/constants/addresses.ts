@@ -40,6 +40,16 @@ export const DEUS_ADDRESS: AddressMap = {
 }
 
 /* =====================================
+                vDEUS ADDRESS (ERC20 NEW)
+===================================== */
+export const VDEUS_ADDRESS: AddressMap = {
+  ...constructSameAddressMap('0x953Cd009a490176FcEB3a26b9753e6F01645ff28', [
+    SupportedChainId.MAINNET,
+    SupportedChainId.POLYGON,
+    SupportedChainId.FANTOM,
+  ]),
+}
+/* =====================================
                 veDEUS ADDRESS (ERC721)
 ===================================== */
 export const veDEUS: AddressMap = {
@@ -155,6 +165,14 @@ export const AMO: AddressMap = {
 
 export const escrow: AddressMap = {
   [SupportedChainId.FANTOM]: '0xFb05aedf0caC43C6ce291D2d1be1eab568D155B4',
+}
+
+export const StablePool_DEUS_vDEUS: AddressMap = {
+  [SupportedChainId.FANTOM]: '0x54a5039C403fff8538fC582e0e3f07387B707381',
+}
+
+export const DEUS_VDEUS_LP_TOKEN_ADDRESS: AddressMap = {
+  [SupportedChainId.FANTOM]: '0xECd9E18356bb8d72741c539e75CEAdB3C5869ea0',
 }
 
 /* =====================================

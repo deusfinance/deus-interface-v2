@@ -1,7 +1,15 @@
 import { SupportedChainId } from 'constants/chains'
 import { Token } from '@sushiswap/core-sdk'
 import { duplicateTokenByAddressMap, duplicateTokenByChainId, TokenMap } from 'utils/token'
-import { USDC_ADDRESS, DEUS_ADDRESS, DEI_ADDRESS, LQDR_ADDRESS, CLQDR_ADDRESS } from './addresses'
+import {
+  USDC_ADDRESS,
+  DEUS_ADDRESS,
+  DEI_ADDRESS,
+  LQDR_ADDRESS,
+  CLQDR_ADDRESS,
+  VDEUS_ADDRESS,
+  DEUS_VDEUS_LP_TOKEN_ADDRESS,
+} from './addresses'
 
 export const DEI_TOKEN = new Token(SupportedChainId.FANTOM, DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'DEI', 'DEI')
 
@@ -17,6 +25,22 @@ export const DEIv2_TOKEN = new Token(
 export const USDC_TOKEN = new Token(SupportedChainId.FANTOM, USDC_ADDRESS[SupportedChainId.FANTOM], 6, 'USDC', 'USDC')
 
 export const DEUS_TOKEN = new Token(SupportedChainId.FANTOM, DEUS_ADDRESS[SupportedChainId.FANTOM], 18, 'DEUS', 'DEUS')
+
+export const VDEUS_TOKEN = new Token(
+  SupportedChainId.FANTOM,
+  VDEUS_ADDRESS[SupportedChainId.FANTOM],
+  18,
+  'vDEUS',
+  'vDEUS'
+)
+
+export const DEUS_VDEUS_LP_TOKEN = new Token(
+  SupportedChainId.FANTOM,
+  DEUS_VDEUS_LP_TOKEN_ADDRESS[SupportedChainId.FANTOM],
+  18,
+  'DV-LP',
+  'DV-LP'
+)
 
 /* =====================================
                 LQDR ADDRESS

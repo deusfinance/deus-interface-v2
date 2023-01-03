@@ -12,13 +12,24 @@ import MULTICALL2_ABI from 'constants/abi/MULTICALL2.json'
 import VEDEUS_ABI from 'constants/abi/VEDEUS.json'
 import VEDEUS_MIGRATOR_ABI from 'constants/abi/VEDEUS_MIGRATOR_ABI.json'
 import VE_DIST_ABI from 'constants/abi/VE_DIST.json'
+import SWAP_ABI from 'constants/abi/SWAP_ABI.json'
+import VDEUS_ABI from 'constants/abi/VDEUS.json'
 
 import CLQDR_ABI from 'constants/abi/CLQDR_ABI.json'
 import CLQDR_FULL_ABI from 'constants/abi/CLQDR_FULL_ABI.json'
 
 import { Providers } from 'constants/providers'
 
-import { Multicall2, ZERO_ADDRESS, veDEUS, veDist, CLQDR_ADDRESS, veDEUSMigrator } from 'constants/addresses'
+import {
+  Multicall2,
+  ZERO_ADDRESS,
+  veDEUS,
+  veDist,
+  CLQDR_ADDRESS,
+  veDEUSMigrator,
+  VDEUS_ADDRESS,
+} from 'constants/addresses'
+import { StablePoolType } from 'constants/sPools'
 
 export function useContract<T extends Contract = Contract>(
   addressOrAddressMap: string | null | undefined,
@@ -112,4 +123,9 @@ export function useCLQDRContract() {
 export function usePerpetualEscrowTokenReceiverContract() {
   const address = '0xcd3563cd8de2602701d5d9f960db30710fcc4053'
   return useContract(address, CLQDR_FULL_ABI)
+}
+
+export function useStablePoolContract(pool: StablePoolType) {
+  const address = useMemo(() => (pool ? pool.swapFlashLoan : undefined), [pool])
+  return useContract(address, SWAP_ABI)
 }

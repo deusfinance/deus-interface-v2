@@ -6,6 +6,11 @@ export interface ClqdrChartData {
   totalSupply: string
 }
 
+export interface ChartData {
+  timestamp: string
+  value: string
+}
+
 export const CLQDR_DATA = gql`
   query getCLQDRData($skip: Int!, $timestamp: Int!) {
     snapshots(first: 1000, skip: $skip, where: { timestamp_lt: $timestamp }, orderBy: timestamp, orderDirection: desc) {
@@ -36,6 +41,55 @@ export const CLQDR_DATA = gql`
       timestamp
       clqdrRatio
       totalSupply
+    }
+  }
+`
+
+export const VDEUS_POOL_STATS = gql`
+  query getPoolStats($skip: Int!, $timestamp: Int!) {
+    vdeusPoolSnapshots(
+      first: 1000
+      skip: $skip
+      where: { timestamp_lt: $timestamp }
+      orderBy: timestamp
+      orderDirection: desc
+    ) {
+      timestamp
+      vDeusBalance
+      deusBalance
+      vDeusPerDeus
+      deusPerVDeus
+      swapRatio
+    }
+
+    vdeusPoolHourlySnapshots(
+      first: 1000
+      skip: $skip
+      where: { timestamp_lt: $timestamp }
+      orderBy: timestamp
+      orderDirection: desc
+    ) {
+      timestamp
+      vDeusBalance
+      deusBalance
+      vDeusPerDeus
+      deusPerVDeus
+      swapRatio
+    }
+
+    vdeusPoolDailySnapshots(
+      first: 1000
+      skip: $skip
+      where: { timestamp_lt: $timestamp }
+      orderBy: timestamp
+      orderDirection: desc
+    ) {
+      timestamp
+      vDeusBalance
+      deusBalance
+      vDeusPerDeus
+      deusPerVDeus
+      swapRatio
     }
   }
 `
