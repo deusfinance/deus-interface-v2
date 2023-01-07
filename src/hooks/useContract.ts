@@ -13,22 +13,14 @@ import VEDEUS_ABI from 'constants/abi/VEDEUS.json'
 import VEDEUS_MIGRATOR_ABI from 'constants/abi/VEDEUS_MIGRATOR_ABI.json'
 import VE_DIST_ABI from 'constants/abi/VE_DIST.json'
 import SWAP_ABI from 'constants/abi/SWAP_ABI.json'
-import VDEUS_ABI from 'constants/abi/VDEUS.json'
+// import VDEUS_ABI from 'constants/abi/VDEUS.json'
 
 import CLQDR_ABI from 'constants/abi/CLQDR_ABI.json'
 import CLQDR_FULL_ABI from 'constants/abi/CLQDR_FULL_ABI.json'
 
 import { Providers } from 'constants/providers'
 
-import {
-  Multicall2,
-  ZERO_ADDRESS,
-  veDEUS,
-  veDist,
-  CLQDR_ADDRESS,
-  veDEUSMigrator,
-  VDEUS_ADDRESS,
-} from 'constants/addresses'
+import { Multicall2, ZERO_ADDRESS, veDEUS, veDist, CLQDR_ADDRESS, veDEUSMigrator } from 'constants/addresses'
 import { StablePoolType } from 'constants/sPools'
 
 export function useContract<T extends Contract = Contract>(

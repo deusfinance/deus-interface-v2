@@ -40,9 +40,9 @@ export const DEUS_ADDRESS: AddressMap = {
 }
 
 /* =====================================
-                vDEUS ADDRESS (ERC20 NEW)
+                xDEUS ADDRESS (ERC20 NEW)
 ===================================== */
-export const VDEUS_ADDRESS: AddressMap = {
+export const XDEUS_ADDRESS: AddressMap = {
   ...constructSameAddressMap('0x953Cd009a490176FcEB3a26b9753e6F01645ff28', [
     SupportedChainId.MAINNET,
     SupportedChainId.POLYGON,

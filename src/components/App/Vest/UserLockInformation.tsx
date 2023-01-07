@@ -100,7 +100,7 @@ export default function UserLockInformation({
       </Row>
       <Row active={true}>
         <div>Total Migration Amount:</div>
-        <div>{migrationAmount} vDEUS</div>
+        <div>{migrationAmount} xDEUS</div>
       </Row>
     </Wrapper>
   )
