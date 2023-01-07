@@ -102,7 +102,7 @@ export default function MigrateSingleNFT({
       if (!nftId || !veDEUSMigratorContract) return
       setAwaitingConfirmation(true)
       const response = await veDEUSMigratorContract.migrateVeDEUSToVDEUS(nftId)
-      addTransaction(response, { summary: `Migrate #${nftId} to ${migrationAmount} vDEUS` })
+      addTransaction(response, { summary: `Migrate #${nftId} to ${migrationAmount} xDEUS` })
       setPendingTxHash(response.hash)
       setAwaitingConfirmation(false)
     } catch (err) {
@@ -115,7 +115,7 @@ export default function MigrateSingleNFT({
 
   return (
     <StyledModal isOpen={isOpen} onBackgroundClick={onDismissProxy} onEscapeKeydown={onDismissProxy}>
-      <ModalHeader title={`Migrate to vDEUS`} border onClose={onDismissProxy} />
+      <ModalHeader title={`Migrate to xDEUS`} border onClose={onDismissProxy} />
       <ModalInnerWrapper>
         <>
           <UserLockInformation

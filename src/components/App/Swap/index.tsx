@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import { ArrowDown } from 'react-feather'
 
-import { DEUS_TOKEN, VDEUS_TOKEN } from 'constants/tokens'
+import { DEUS_TOKEN, XDEUS_TOKEN } from 'constants/tokens'
 import { StablePools } from 'constants/sPools'
 import { tryParseAmount } from 'utils/parse'
 
@@ -57,7 +57,7 @@ export default function SwapPage() {
   const [slippage, setSlippage] = useState(0.5)
   const debouncedAmountIn = useDebounce(amountIn, 500)
   const [inputCurrency, setInputCurrency] = useState(DEUS_TOKEN)
-  const [outputCurrency, setOutputCurrency] = useState(VDEUS_TOKEN)
+  const [outputCurrency, setOutputCurrency] = useState(XDEUS_TOKEN)
 
   //get stable pool info
   const pool = StablePools[0]

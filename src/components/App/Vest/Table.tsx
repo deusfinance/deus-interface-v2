@@ -332,7 +332,7 @@ function TableRow({
 
     return (
       <PrimaryButtonWide whiteBorder onClick={onMigrate}>
-        <ButtonText>Migrate to vDEUS</ButtonText>
+        <ButtonText>Migrate to xDEUS</ButtonText>
       </PrimaryButtonWide>
     )
   }
@@ -398,7 +398,7 @@ function TableRow({
 
         <Cell>
           <Name>Migration Amount</Name>
-          <VDeusValue>{migrationAmount} vDEUS</VDeusValue>
+          <VDeusValue>{migrationAmount} xDEUS</VDeusValue>
         </Cell>
 
         <Cell style={{ padding: '5px 10px' }}>{getExpirationCell()}</Cell>
@@ -439,7 +439,7 @@ function TableRow({
 
         <Cell>
           <Name>Migration Amount</Name>
-          <VDeusValue>{migrationAmount} vDEUS</VDeusValue>
+          <VDeusValue>{migrationAmount} xDEUS</VDeusValue>
         </Cell>
 
         <MobileCell>{getExpirationCell()}</MobileCell>

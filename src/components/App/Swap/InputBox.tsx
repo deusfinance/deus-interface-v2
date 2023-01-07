@@ -167,7 +167,7 @@ export default function InputBox({
             round
           />
           <Name>
-            {!disable_vdeus && currency?.symbol == 'DEUS' && 'v'}
+            {!disable_vdeus && currency?.symbol == 'DEUS' && 'x'}
             {currency?.symbol}
           </Name>
           {onTokenSelect && <ChevronDown />}
