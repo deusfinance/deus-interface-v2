@@ -5,14 +5,12 @@
     "exact": true
   },
   {
-    "text": "xDEUS Swap",
-    "path": "/xdeus/swap",
-    "exact": true
-  },
-  {
-    "text": "xDEUS Stake",
-    "path": "/xdeus/stake",
-    "exact": true
+    "id": "6",
+    "text": "xDEUS",
+    "children": [
+      { "id": "62", "text": "xDEUS Swap", "path": "/xdeus/swap" },
+      { "id": "61", "text": "xDEUS Stake", "path": "/xdeus/stake" }
+    ]
   },
   {
     "text": "cLQDR",
