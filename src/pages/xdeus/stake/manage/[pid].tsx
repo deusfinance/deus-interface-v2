@@ -17,6 +17,9 @@ import Hero from 'components/Hero'
 import StatsHeader from 'components/StatsHeader'
 import { Title } from 'components/App/StableCoin'
 import BalanceToken from 'components/App/Staking/BalanceToken'
+import { useMemo } from 'react'
+import { useUserInfo } from 'hooks/useStakingInfo'
+import { useVDeusStats } from 'hooks/useVDeusStats'
 
 export const Container = styled.div`
   display: flex;
@@ -28,6 +31,7 @@ export const Container = styled.div`
 const TopWrapper = styled.div<{ isMultipleColumns: boolean }>`
   display: ${({ isMultipleColumns }) => (isMultipleColumns ? 'grid' : 'flex')};
   grid-template-columns: 480px 480px;
+  min-width: 480px;
   margin: auto;
   ${({ theme }) => theme.mediaWidth.upToMedium`
    display: flex;
@@ -66,6 +70,18 @@ export default function StakingPage() {
 
   const toolTipInfo = primaryTooltipInfo + secondaryTooltipInfo
 
+  const isSingleStakingPool = useMemo(() => {
+    return stakingPool.isSingleStaking
+  }, [stakingPool])
+
+  const { totalDepositedAmount } = useUserInfo(stakingPool)
+
+  const { swapRatio } = useVDeusStats()
+
+  const totalDepositedValue = useMemo(() => {
+    return totalDepositedAmount * swapRatio * parseFloat(price)
+  }, [price, totalDepositedAmount, swapRatio])
+
   function onSelect(pid: number) {
     router.push(`/xdeus/stake/manage/${pid}`)
   }
@@ -77,7 +93,7 @@ export default function StakingPage() {
       hasTooltip: true,
       toolTipInfo,
     },
-    { name: 'TVL', value: formatDollarAmount(totalLockedValue) },
+    { name: 'TVL', value: formatDollarAmount(isSingleStakingPool ? totalDepositedValue : totalLockedValue) },
     { name: priceToken + ' Price', value: formatDollarAmount(parseFloat(price)) },
   ]
 
@@ -88,20 +104,20 @@ export default function StakingPage() {
         <StatsHeader pid={pidNumber} onSelectDropDown={onSelect} items={items} />
       </Hero>
 
-      <TopWrapper isMultipleColumns={liquidityPool?.tokens.length > 1}>
-        {liquidityPool?.tokens.length > 1 && (
+      <TopWrapper isMultipleColumns={!isSingleStakingPool}>
+        {!isSingleStakingPool && (
           <VStack style={{ width: '100%' }}>
             <BalanceToken pool={liquidityPool} />
             <LiquidityPool pool={liquidityPool} />
           </VStack>
         )}
-        <div style={{ width: '100%' }}>
+        <VStack style={{ width: '100%' }}>
           <AvailableLP pool={liquidityPool} />
           <StakedLP pid={pidNumber} />
           <PoolShare pool={liquidityPool} />
           <PoolInfo pool={liquidityPool} />
           {/* <Reading /> */}
-        </div>
+        </VStack>
       </TopWrapper>
     </Container>
   )

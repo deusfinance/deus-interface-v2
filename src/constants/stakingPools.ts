@@ -30,6 +30,7 @@ export type StakingType = {
   active: boolean
   hasSecondaryApy?: boolean
   version: StakingVersion
+  isSingleStaking?: boolean
 }
 
 export type LiquidityType = {
@@ -85,12 +86,13 @@ export const Stakings: StakingType[] = [
   {
     id: 1,
     name: 'xDEUS (ERC20)',
-    rewardTokens: [DEUS_TOKEN],
+    rewardTokens: [XDEUS_TOKEN],
     aprHook: useV2GetApy,
     secondaryAprHook: () => 0,
     masterChef: MasterChefV3[SupportedChainId.FANTOM],
     pid: 0,
     active: true,
     version: StakingVersion.V2,
+    isSingleStaking: true,
   },
 ]
