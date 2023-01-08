@@ -87,6 +87,7 @@ export const Stakings: StakingType[] = [
     id: 1,
     name: 'xDEUS (ERC20)',
     rewardTokens: [XDEUS_TOKEN],
+    token: XDEUS_TOKEN,
     aprHook: useV2GetApy,
     secondaryAprHook: () => 0,
     masterChef: MasterChefV3[SupportedChainId.FANTOM],
