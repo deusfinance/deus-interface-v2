@@ -115,6 +115,11 @@ export default function Menu() {
               <div>xDEUS Swap</div>
             </Row>
           </Link>
+          <Link href="/xdeus/swap" passHref>
+            <Row active={router.route.includes('/xdeus/stake')}>
+              <div>xDEUS Stake</div>
+            </Row>
+          </Link>
           <Link href="/clqdr" passHref>
             <Row active={router.route.includes('/clqdr')}>
               <div>cLQDR</div>

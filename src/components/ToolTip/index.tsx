@@ -8,7 +8,7 @@ export const ToolTip = styled(ReactTooltip).attrs({
   multiline: true,
 })`
   color: ${({ theme }) => theme.text1} !important;
-  background: ${({ theme }) => theme.primary1} !important;
+  background: ${({ theme }) => theme.bg2} !important;
   opacity: 1 !important;
   padding: 3px 7px !important;
   font-size: 0.6rem !important;

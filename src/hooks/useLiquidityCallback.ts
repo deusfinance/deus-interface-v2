@@ -1,64 +1,65 @@
 import { useCallback, useMemo } from 'react'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
-import { Currency, CurrencyAmount, NativeCurrency, Token } from '@sushiswap/core-sdk'
 import toast from 'react-hot-toast'
 
 import { useTransactionAdder } from 'state/transactions/hooks'
 import useWeb3React from 'hooks/useWeb3'
 import { useStablePoolContract } from 'hooks/useContract'
 import { calculateGasMargin } from 'utils/web3'
-import { toHex } from 'utils/hex'
 import { DefaultHandlerError } from 'utils/parseError'
-import { toBN } from 'utils/numbers'
-import { getTokenIndex, StablePoolType } from 'constants/sPools'
-import { LiquidityPool } from 'constants/stakingPools'
+import { BN_TEN, toBN } from 'utils/numbers'
+import { LiquidityType } from 'constants/stakingPools'
 
-export enum TransactionCallbackState {
+export enum LiquidityCallbackState {
   INVALID = 'INVALID',
   VALID = 'VALID',
 }
 
-export default function useSwapCallback(
-  inputCurrency: Currency,
-  outputCurrency: Currency,
-  inputAmount: CurrencyAmount<NativeCurrency | Token> | null | undefined,
-  outputAmount: CurrencyAmount<NativeCurrency | Token> | null | undefined,
-  pool: StablePoolType,
+export default function useManageLiquidity(
+  amounts: string[],
+  minAmountOut: string,
+  pool: LiquidityType,
   slippage: number,
-  deadline: number
+  deadline: number,
+  isRemove: boolean
 ): {
-  state: TransactionCallbackState
+  state: LiquidityCallbackState
   callback: null | (() => Promise<string>)
   error: string | null
 } {
   const { account, chainId, library } = useWeb3React()
   const addTransaction = useTransactionAdder()
-  const liquidityPool = LiquidityPool.find((liqPool) => liqPool.id === pool.id) || LiquidityPool[0]
-  const swapContract = useStablePoolContract(liquidityPool)
+  const swapContract = useStablePoolContract(pool)
+
   const deadlineValue = Math.round(new Date().getTime() / 1000 + 60 * deadline)
-
-  const [inputIndex, outputIndex] = useMemo(() => {
-    return [getTokenIndex(inputCurrency.wrapped.address, pool), getTokenIndex(outputCurrency.wrapped.address, pool)]
-  }, [inputCurrency, outputCurrency, pool])
-
-  const positions = useMemo(() => {
-    if (inputIndex !== null && outputIndex !== null) return [inputIndex, outputIndex]
-    return null
-  }, [inputIndex, outputIndex])
+  const minAmountOutBN = toBN(minAmountOut).times(1e18).toFixed(0, 1)
+  const amountsInBN = amounts.map((amount, index) => {
+    if (amount == '') return '0'
+    return toBN(amount).times(BN_TEN.pow(pool.tokens[index].decimals)).toFixed(0, 1)
+  })
 
   const constructCall = useCallback(() => {
     try {
-      if (!account || !library || !swapContract || !outputAmount || !inputAmount || !positions) {
+      if (!account || !library || !swapContract || !amounts || !amounts.length) {
         throw new Error('Missing dependencies.')
       }
+      let args = []
+      const methodName = isRemove ? 'removeLiquidity' : 'addLiquidity'
 
-      const methodName = 'swap'
-
-      const subtractSlippage = toBN(toHex(outputAmount.quotient))
-        .multipliedBy((100 - Number(slippage)) / 100)
-        .toFixed(0, 1)
-
-      const args = [...positions, toHex(inputAmount.quotient), subtractSlippage, deadlineValue]
+      if (isRemove) {
+        const minAmountsBN = amountsInBN.map((amount) => {
+          return toBN(amount)
+            .multipliedBy((100 - Number(slippage)) / 100)
+            .toFixed(0, 1)
+        })
+        args = [minAmountOutBN, minAmountsBN, deadlineValue]
+      } else {
+        const minToMint = toBN(minAmountOutBN)
+          .multipliedBy((100 - Number(slippage)) / 100)
+          .toFixed(0, 1)
+        args = [amountsInBN, minToMint, deadlineValue]
+      }
+      console.log({ args })
 
       return {
         address: swapContract.address,
@@ -70,26 +71,26 @@ export default function useSwapCallback(
         error,
       }
     }
-  }, [account, library, swapContract, outputAmount, positions, inputAmount, slippage, deadlineValue])
+  }, [account, library, swapContract, amounts, slippage, isRemove, minAmountOutBN, amountsInBN, deadlineValue])
 
   return useMemo(() => {
-    if (!account || !chainId || !library || !swapContract || !inputCurrency || !outputCurrency || !outputAmount) {
+    if (!account || !chainId || !library || !swapContract || !pool || !slippage || !deadline) {
       return {
-        state: TransactionCallbackState.INVALID,
+        state: LiquidityCallbackState.INVALID,
         callback: null,
         error: 'Missing dependencies',
       }
     }
-    if (!inputAmount || !outputAmount) {
+    if (!amounts || !amounts.length || !minAmountOut) {
       return {
-        state: TransactionCallbackState.INVALID,
+        state: LiquidityCallbackState.INVALID,
         callback: null,
         error: 'No amount provided',
       }
     }
 
     return {
-      state: TransactionCallbackState.VALID,
+      state: LiquidityCallbackState.VALID,
       error: null,
       callback: async function onSwap(): Promise<string> {
         console.log('onSwap callback')
@@ -144,9 +145,11 @@ export default function useSwapCallback(
           })
           .then((response: TransactionResponse) => {
             console.log(response)
-            const summary = `Swap ${inputAmount?.toSignificant()} ${
-              inputCurrency?.symbol
-            } for ${outputAmount?.toSignificant()} ${outputCurrency?.symbol}`
+            const lpSymbol = pool.lpToken.symbol
+            const summary = isRemove
+              ? `Remove ${minAmountOut} ${lpSymbol} from pool`
+              : `Deposit into pool for ${minAmountOut} ${lpSymbol}`
+            // TODO: add different summary
             addTransaction(response, { summary })
 
             return response.hash
@@ -167,12 +170,14 @@ export default function useSwapCallback(
     account,
     chainId,
     library,
+    amounts,
+    deadline,
+    minAmountOut,
+    pool,
+    slippage,
     addTransaction,
     constructCall,
     swapContract,
-    inputCurrency,
-    outputCurrency,
-    inputAmount,
-    outputAmount,
+    isRemove,
   ])
 }

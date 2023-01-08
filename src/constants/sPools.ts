@@ -4,6 +4,7 @@ import { DEUS_TOKEN, DEUS_VDEUS_LP_TOKEN, XDEUS_TOKEN } from 'constants/tokens'
 import { StablePool_DEUS_vDEUS } from './addresses'
 
 export type StablePoolType = {
+  id: number
   name: string
   swapFlashLoan: string
   liquidityTokens: Token[]
@@ -13,6 +14,7 @@ export type StablePoolType = {
 
 export const StablePools: StablePoolType[] = [
   {
+    id: 0,
     name: 'DEUS-xDEUS',
     swapFlashLoan: StablePool_DEUS_vDEUS[SupportedChainId.FANTOM],
     liquidityTokens: [XDEUS_TOKEN, DEUS_TOKEN],

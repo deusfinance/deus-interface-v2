@@ -2,9 +2,9 @@ import { useMemo } from 'react'
 
 import { useStablePoolContract } from 'hooks/useContract'
 import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
-import { StablePools } from 'constants/sPools'
 import { formatUnits } from '@ethersproject/units'
 import { BN_TEN, toBN } from 'utils/numbers'
+import { LiquidityPool } from 'constants/stakingPools'
 
 const VDEUS_TOKEN_INDEX = 0
 const DEUS_TOKEN_INDEX = 1
@@ -15,7 +15,7 @@ export function useVDeusStats(): {
   vDeusBalance: number
   deusBalance: number
 } {
-  const contract = useStablePoolContract(StablePools[0])
+  const contract = useStablePoolContract(LiquidityPool[0])
 
   const methodCalls = useMemo(
     () => [

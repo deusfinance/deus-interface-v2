@@ -20,6 +20,11 @@ module.exports = {
         permanent: false,
       },
       {
+        source: '/vdeus/stake',
+        destination: '/xdeus/stake',
+        permanent: false,
+      },
+      {
         source: '/migrator',
         destination: 'https://legacy.dei.finance/migration',
         permanent: false,
