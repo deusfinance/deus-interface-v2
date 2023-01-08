@@ -7,7 +7,7 @@ import {
   DEI_ADDRESS,
   LQDR_ADDRESS,
   CLQDR_ADDRESS,
-  VDEUS_ADDRESS,
+  XDEUS_ADDRESS,
   DEUS_VDEUS_LP_TOKEN_ADDRESS,
 } from './addresses'
 
@@ -26,12 +26,12 @@ export const USDC_TOKEN = new Token(SupportedChainId.FANTOM, USDC_ADDRESS[Suppor
 
 export const DEUS_TOKEN = new Token(SupportedChainId.FANTOM, DEUS_ADDRESS[SupportedChainId.FANTOM], 18, 'DEUS', 'DEUS')
 
-export const VDEUS_TOKEN = new Token(
+export const XDEUS_TOKEN = new Token(
   SupportedChainId.FANTOM,
-  VDEUS_ADDRESS[SupportedChainId.FANTOM],
+  XDEUS_ADDRESS[SupportedChainId.FANTOM],
   18,
-  'vDEUS',
-  'vDEUS'
+  'xDEUS',
+  'xDEUS'
 )
 
 export const DEUS_VDEUS_LP_TOKEN = new Token(

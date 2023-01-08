@@ -110,9 +110,9 @@ export default function Menu() {
               </IconWrapper>
             </Row>
           </Link>
-          <Link href="/vdeus/swap" passHref>
-            <Row active={router.route.includes('/vdeus/swap')}>
-              <div>vDEUS Swap</div>
+          <Link href="/xdeus/swap" passHref>
+            <Row active={router.route.includes('/xdeus/swap')}>
+              <div>xDEUS Swap</div>
             </Row>
           </Link>
           <Link href="/vdeus/swap" passHref>

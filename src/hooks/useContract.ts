@@ -30,7 +30,6 @@ import {
   veDEUSMigrator,
   veDEUSMultiRewarderERC20,
 } from 'constants/addresses'
-import { StablePoolType } from 'constants/sPools'
 import { LiquidityType, StakingType } from 'constants/stakingPools'
 
 export function useContract<T extends Contract = Contract>(

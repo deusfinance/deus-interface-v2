@@ -209,7 +209,7 @@ export default function Vest() {
         <TopBorderWrap>
           <TopBorder>
             <PrimaryButtonWide transparentBG onClick={toggleMigrateAllManager}>
-              <ButtonText gradientText>Migrate ALL to vDEUS</ButtonText>
+              <ButtonText gradientText>Migrate ALL to xDEUS</ButtonText>
             </PrimaryButtonWide>
           </TopBorder>
         </TopBorderWrap>
