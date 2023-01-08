@@ -237,7 +237,7 @@ export default function StatsHeader({
             defaultValue={pid}
             placeholder={''}
             onSelect={onSelectDropDown}
-            width={'250px'}
+            width={'300px'}
           />
         </ItemBox2>
       )}

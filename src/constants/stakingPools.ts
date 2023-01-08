@@ -85,7 +85,7 @@ export const Stakings: StakingType[] = [
   },
   {
     id: 1,
-    name: 'xDEUS (ERC20)',
+    name: 'xDEUS',
     rewardTokens: [XDEUS_TOKEN],
     token: XDEUS_TOKEN,
     aprHook: useV2GetApy,

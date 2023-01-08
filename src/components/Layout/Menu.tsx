@@ -7,7 +7,7 @@ import LEGACY_DEI_LOGO from '/public/static/images/LegacyDeiLogo.svg'
 
 import useOnOutsideClick from 'hooks/useOnOutsideClick'
 import { Link as LinkIcon } from 'components/Icons'
-import { NavToggle as NavToggleIcon, IconWrapper, VeDeus as VeDeusIcon } from 'components/Icons'
+import { NavToggle as NavToggleIcon } from 'components/Icons'
 import { Card } from 'components/Card'
 import { ExternalLink } from 'components/Link'
 import { RowStart } from 'components/Row'
@@ -102,14 +102,6 @@ export default function Menu() {
       {/* <Image src={BURGER_ICON} alt="burger-icon" onClick={() => toggle()} /> */}
       <div>
         <InlineModal isOpen={isOpen}>
-          <Link href="/vest" passHref>
-            <Row active={router.route.includes('/vest')}>
-              <div>veDEUS</div>
-              <IconWrapper>
-                <VeDeusIcon size={20} />
-              </IconWrapper>
-            </Row>
-          </Link>
           <Link href="/xdeus/swap" passHref>
             <Row active={router.route.includes('/xdeus/swap')}>
               <div>xDEUS Swap</div>
@@ -123,20 +115,18 @@ export default function Menu() {
           <Link href="/clqdr" passHref>
             <Row active={router.route.includes('/clqdr')}>
               <div>cLQDR</div>
-              {/* <IconWrapper>
-                <VeDeusIcon size={20} />
-              </IconWrapper> */}
             </Row>
           </Link>
-          <Link href="/thena-airdrop" passHref>
-            <Row active={router.route.includes('/thena-airdrop')}>
-              <div>Thena Airdrop</div>
+
+          <Link href="/vest" passHref>
+            <Row active={router.route.includes('/vest')}>
+              <div>veDEUS(migrator)</div>
             </Row>
           </Link>
           <ExternalLink href="https://app.firebird.finance/swap?inputCurrency=FTM&outputCurrency=0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44&net=250">
             <Row onClick={() => toggle()}>
               <ExternalItem>
-                <div>Buy $DEUS</div>
+                <div>Buy $DEUS (firebird)</div>
                 <ExternalLinkIcon />
               </ExternalItem>
             </Row>
@@ -144,7 +134,7 @@ export default function Menu() {
           <ExternalLink href="https://app.multichain.org/#/router">
             <Row onClick={() => toggle()}>
               <ExternalItem>
-                <div>Bridge</div>
+                <div>Bridge (multichain)</div>
                 <ExternalLinkIcon />
               </ExternalItem>
             </Row>

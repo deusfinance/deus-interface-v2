@@ -90,7 +90,7 @@ export default function Stake() {
   return (
     <Container>
       <Hero>
-        <Title>xDEUS Stake</Title>
+        <Title> Stake xDEUS</Title>
       </Hero>
       <Wrapper>
         {getUpperRow()}

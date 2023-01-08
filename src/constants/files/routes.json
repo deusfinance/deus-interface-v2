@@ -1,25 +1,11 @@
 [
   {
-    "text": "veDEUS",
-    "path": "/vest",
-    "exact": true
-  },
-  {
     "id": "6",
-    "text": "xDEUS",
+    "text": "Stake DEUS",
+    "path": "",
     "children": [
-      { "id": "62", "text": "xDEUS Swap", "path": "/xdeus/swap" },
-      { "id": "61", "text": "xDEUS Stake", "path": "/xdeus/stake" }
+      { "id": "62", "text": "Convert DEUS", "path": "/xdeus/swap" },
+      { "id": "61", "text": "Stake xDEUS", "path": "/xdeus/stake" }
     ]
-  },
-  {
-    "text": "cLQDR",
-    "path": "/clqdr",
-    "exact": true
-  },
-  {
-    "text": "Thena Airdrop",
-    "path": "/thena-airdrop",
-    "exact": true
   }
 ]

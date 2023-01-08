@@ -272,7 +272,7 @@ export default function NavBar() {
               'Buy $DEUS',
               'https://app.firebird.finance/swap?inputCurrency=FTM&outputCurrency=0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44&net=250'
             )}
-            {getExternalNavBar('Bridge', 'https://app.multichain.org/#/router')}
+            {getExternalNavBar('Bridge $DEUS', 'https://app.multichain.org/#/router')}
             {getExternalNavBar('Terms', 'https://docs.deus.finance/contracts/disclaimer')}
           </Routes>
           <Items>

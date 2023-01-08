@@ -101,7 +101,7 @@ export default function StakingPage() {
   return (
     <Container>
       <Hero>
-        <Title>xDEUS Stake</Title>
+        <Title> Stake xDEUS</Title>
         <StatsHeader pid={pidNumber} onSelectDropDown={onSelect} items={items} />
       </Hero>
 
