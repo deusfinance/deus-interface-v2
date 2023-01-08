@@ -1,14 +1,14 @@
 import styled, { useTheme } from 'styled-components'
-import { Fantom, Token } from '@sushiswap/core-sdk'
+import { Token } from '@sushiswap/core-sdk'
 import { isMobile } from 'react-device-detect'
 
 import { ChainInfo } from 'constants/chainInfo'
+import { SupportedChainId } from 'constants/chains'
 
 import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
 import useWeb3React from 'hooks/useWeb3'
 
 import ImageWithFallback from 'components/ImageWithFallback'
-import { FALLBACK_CHAIN_ID, SupportedChainId } from 'constants/chains'
 
 const TokenCell = styled.div`
   display: flex;

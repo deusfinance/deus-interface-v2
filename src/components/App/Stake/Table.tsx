@@ -8,6 +8,7 @@ import EMPTY_LOCK_MOBILE from '/public/static/images/pages/veDEUS/emptyLockMobil
 import LOADING_LOCK from '/public/static/images/pages/veDEUS/loadingLock.svg'
 import LOADING_LOCK_MOBILE from '/public/static/images/pages/veDEUS/loadingLockMobile.svg'
 
+import { SupportedChainId } from 'constants/chains'
 import { LiquidityPool, StakingType, StakingVersion } from 'constants/stakingPools'
 import { useRouter } from 'next/router'
 
@@ -24,8 +25,6 @@ import RewardBox from 'components/App/Stake/RewardBox'
 import { ExternalLink } from 'components/Link'
 import { Divider, HStack, VStack } from '../Staking/common/Layout'
 import { PrimaryButtonWide } from 'components/Button'
-import { UnsupportedChainIdError } from '@web3-react/core'
-import { SupportedChainId } from 'constants/chains'
 
 const Wrapper = styled.div`
   display: flex;
