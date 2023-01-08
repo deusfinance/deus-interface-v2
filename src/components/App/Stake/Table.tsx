@@ -8,7 +8,7 @@ import EMPTY_LOCK_MOBILE from '/public/static/images/pages/veDEUS/emptyLockMobil
 import LOADING_LOCK from '/public/static/images/pages/veDEUS/loadingLock.svg'
 import LOADING_LOCK_MOBILE from '/public/static/images/pages/veDEUS/loadingLockMobile.svg'
 
-import { SupportedChainId } from 'constants/chains'
+import { FALLBACK_CHAIN_ID, SupportedChainId } from 'constants/chains'
 import { LiquidityPool, StakingType, StakingVersion } from 'constants/stakingPools'
 import { useRouter } from 'next/router'
 
@@ -17,6 +17,7 @@ import { useCustomCoingeckoPrice } from 'hooks/useCoingeckoPrice'
 import { usePoolBalances } from 'hooks/useStablePoolInfo'
 import { useVDeusStats } from 'hooks/useVDeusStats'
 import { useUserInfo } from 'hooks/useStakingInfo'
+import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 
 import { formatDollarAmount } from 'utils/numbers'
 
@@ -280,6 +281,7 @@ interface ITableRowContent {
   provideLink?: string
   version: StakingVersion
   chainIdError: boolean
+  rpcChangerCallback: (chainId: any) => void
 }
 
 const TableRowMiniContent = ({
@@ -293,6 +295,7 @@ const TableRowMiniContent = ({
   provideLink,
   version,
   chainIdError,
+  rpcChangerCallback,
 }: ITableRowContent) => {
   return (
     <MiniStakeContainer>
@@ -306,7 +309,7 @@ const TableRowMiniContent = ({
               })}
             >
               {chainIdError ? (
-                <PrimaryButtonWide transparentBG disabled>
+                <PrimaryButtonWide transparentBG onClick={() => rpcChangerCallback(FALLBACK_CHAIN_ID)}>
                   <ButtonText gradientText={chainIdError}>Switch to Fantom</ButtonText>
                 </PrimaryButtonWide>
               ) : version === StakingVersion.EXTERNAL && provideLink ? (
@@ -349,6 +352,7 @@ const TableRowLargeContent = ({
   provideLink,
   version,
   chainIdError,
+  rpcChangerCallback,
 }: ITableRowContent) => {
   return (
     <>
@@ -378,7 +382,7 @@ const TableRowLargeContent = ({
         >
           <TopBorder>
             {chainIdError ? (
-              <PrimaryButtonWide transparentBG disabled>
+              <PrimaryButtonWide transparentBG onClick={() => rpcChangerCallback(FALLBACK_CHAIN_ID)}>
                 <ButtonText gradientText={chainIdError}>Switch to Fantom</ButtonText>
               </PrimaryButtonWide>
             ) : version === StakingVersion.EXTERNAL && provideLink ? (
@@ -397,6 +401,7 @@ const TableRowLargeContent = ({
 
 const TableRowContent = ({ staking }: { staking: StakingType }) => {
   const { chainId, account } = useWeb3React()
+  const rpcChangerCallback = useRpcChangerCallback()
   const { id, rewardTokens, active, name, provideLink = undefined, version } = staking
   const liquidityPool = LiquidityPool.find((p) => p.id === staking.id) || LiquidityPool[0]
   const tokens = liquidityPool?.tokens
@@ -452,6 +457,7 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
           provideLink={provideLink}
           version={version}
           chainIdError={!supportedChainId}
+          rpcChangerCallback={rpcChangerCallback}
         />
       </TableRowLargeContainer>
       <TableRowMiniContent
@@ -465,6 +471,7 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
         provideLink={provideLink}
         version={version}
         chainIdError={!supportedChainId}
+        rpcChangerCallback={rpcChangerCallback}
       />
     </>
   )
