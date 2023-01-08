@@ -24,6 +24,8 @@ import RewardBox from 'components/App/Stake/RewardBox'
 import { ExternalLink } from 'components/Link'
 import { Divider, HStack, VStack } from '../Staking/common/Layout'
 import { PrimaryButtonWide } from 'components/Button'
+import { UnsupportedChainIdError } from '@web3-react/core'
+import { SupportedChainId } from 'constants/chains'
 
 const Wrapper = styled.div`
   display: flex;
@@ -122,7 +124,7 @@ const ButtonText = styled.span<{ gradientText?: boolean }>`
 `
 
 const TopBorderWrap = styled.div<{ active?: boolean }>`
-  background: ${({ theme }) => theme.deusColor};
+  background: ${({ theme, active }) => (active ? theme.deusColor : theme.white)};
   padding: 2px;
   border-radius: 12px;
   margin-right: 4px;
@@ -131,7 +133,7 @@ const TopBorderWrap = styled.div<{ active?: boolean }>`
   flex: 1;
 
   &:hover {
-    border: 1px solid ${({ theme, active }) => (active ? theme.bg0 : theme.clqdrBlueColor)};
+    border: 1px solid ${({ theme, active }) => (active ? theme.clqdrBlueColor : theme.white)};
   }
 `
 
@@ -278,6 +280,7 @@ interface ITableRowContent {
   tvl: number
   provideLink?: string
   version: StakingVersion
+  chainIdError: boolean
 }
 
 const TableRowMiniContent = ({
@@ -290,6 +293,7 @@ const TableRowMiniContent = ({
   tvl,
   provideLink,
   version,
+  chainIdError,
 }: ITableRowContent) => {
   return (
     <MiniStakeContainer>
@@ -297,8 +301,16 @@ const TableRowMiniContent = ({
         <TokenBox tokens={tokens} title={name} active={active} />
         <div>
           <MiniTopBorderWrap>
-            <TopBorder {...(version !== StakingVersion.EXTERNAL && { onClick: active ? handleClick : undefined })}>
-              {version === StakingVersion.EXTERNAL && provideLink ? (
+            <TopBorder
+              {...(version !== StakingVersion.EXTERNAL && {
+                onClick: active && !chainIdError ? handleClick : undefined,
+              })}
+            >
+              {chainIdError ? (
+                <PrimaryButtonWide transparentBG disabled>
+                  <ButtonText gradientText={chainIdError}>Switch to Fantom</ButtonText>
+                </PrimaryButtonWide>
+              ) : version === StakingVersion.EXTERNAL && provideLink ? (
                 <CustomButtonWrapper isActive={active} href={provideLink} type={BUTTON_TYPE.MINI} />
               ) : (
                 <PrimaryButtonWide transparentBG>
@@ -337,6 +349,7 @@ const TableRowLargeContent = ({
   tvl,
   provideLink,
   version,
+  chainIdError,
 }: ITableRowContent) => {
   return (
     <>
@@ -360,9 +373,16 @@ const TableRowLargeContent = ({
       </Cell>
 
       <Cell width={'20%'} style={{ padding: '5px 10px' }}>
-        <TopBorderWrap {...(version !== StakingVersion.EXTERNAL && { onClick: active ? handleClick : undefined })}>
+        <TopBorderWrap
+          active={!chainIdError}
+          {...(version !== StakingVersion.EXTERNAL && { onClick: active && !chainIdError ? handleClick : undefined })}
+        >
           <TopBorder>
-            {version === StakingVersion.EXTERNAL && provideLink ? (
+            {chainIdError ? (
+              <PrimaryButtonWide transparentBG disabled>
+                <ButtonText gradientText={chainIdError}>Switch to Fantom</ButtonText>
+              </PrimaryButtonWide>
+            ) : version === StakingVersion.EXTERNAL && provideLink ? (
               <CustomButtonWrapper isActive={active} href={provideLink} type={BUTTON_TYPE.MINI} />
             ) : (
               <PrimaryButtonWide style={{ backgroundColor: '#101116' }} transparentBG>
@@ -377,6 +397,7 @@ const TableRowLargeContent = ({
 }
 
 const TableRowContent = ({ staking }: { staking: StakingType }) => {
+  const { chainId, account } = useWeb3React()
   const { id, rewardTokens, active, name, provideLink = undefined, version } = staking
   const liquidityPool = LiquidityPool.find((p) => p.id === staking.id) || LiquidityPool[0]
   const tokens = liquidityPool?.tokens
@@ -409,6 +430,11 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
     return totalDepositedAmount * swapRatio * parseFloat(price)
   }, [price, totalDepositedAmount, swapRatio])
 
+  const supportedChainId: boolean = useMemo(() => {
+    if (!chainId || !account) return false
+    return chainId === SupportedChainId.FANTOM
+  }, [chainId, account])
+
   const router = useRouter()
   const handleClick = useCallback(() => {
     router.push(`/xdeus/stake/manage/${id}`)
@@ -426,6 +452,7 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
           tvl={isSingleStakingPool ? totalDepositedValue : totalLockedValue}
           provideLink={provideLink}
           version={version}
+          chainIdError={!supportedChainId}
         />
       </TableRowLargeContainer>
       <TableRowMiniContent
@@ -438,6 +465,7 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
         tvl={isSingleStakingPool ? totalDepositedValue : totalLockedValue}
         provideLink={provideLink}
         version={version}
+        chainIdError={!supportedChainId}
       />
     </>
   )
