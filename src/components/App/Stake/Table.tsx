@@ -229,14 +229,10 @@ const CustomButton = styled(ExternalLink)`
 `
 
 enum BUTTON_TYPE {
-  BEETHOVEN = 'BEETHOVEN',
-  SPOOKY_SWAP = 'SPOOKY_SWAP',
   MINI = 'MINI',
 }
 
 const titles = {
-  beethoven: 'beethoven-',
-  spookySwap: 'SpookySwap',
   mini: 'Manage',
 }
 const CustomButtonWrapper = ({ type, href, isActive }: { type: BUTTON_TYPE; href: string; isActive: boolean }) => {
@@ -245,18 +241,7 @@ const CustomButtonWrapper = ({ type, href, isActive }: { type: BUTTON_TYPE; href
       <ButtonText>
         {type === BUTTON_TYPE.MINI ? titles.mini : 'Farm on'}
         <HStack style={{ marginLeft: '1ch', alignItems: 'flex-end' }}>
-          <Image
-            width={type === BUTTON_TYPE.BEETHOVEN ? 102 : type === BUTTON_TYPE.MINI ? 8 : 110}
-            height={type === BUTTON_TYPE.BEETHOVEN ? 16 : type === BUTTON_TYPE.MINI ? 8 : 19}
-            src={type === BUTTON_TYPE.BEETHOVEN ? Beethoven : type === BUTTON_TYPE.MINI ? ExternalIcon : Spooky}
-            alt={
-              type === BUTTON_TYPE.BEETHOVEN
-                ? titles.beethoven
-                : type === BUTTON_TYPE.MINI
-                ? titles.mini
-                : titles.spookySwap
-            }
-          />
+          <Image width={8} height={8} src={BUTTON_TYPE.MINI} alt={titles.mini} />
         </HStack>
       </ButtonText>
     </CustomButton>
@@ -388,11 +373,7 @@ const TableRowLargeContent = ({
         <TopBorderWrap {...(version !== StakingVersion.EXTERNAL && { onClick: active ? handleClick : undefined })}>
           <TopBorder>
             {version === StakingVersion.EXTERNAL && provideLink ? (
-              <CustomButtonWrapper
-                isActive={active}
-                href={provideLink}
-                type={provideLink.includes('spooky') ? BUTTON_TYPE.SPOOKY_SWAP : BUTTON_TYPE.BEETHOVEN}
-              />
+              <CustomButtonWrapper isActive={active} href={provideLink} type={BUTTON_TYPE.MINI} />
             ) : (
               <PrimaryButtonWide style={{ backgroundColor: '#101116' }} transparentBG>
                 <ButtonText gradientText={!active}>{active ? 'Manage' : 'Withdraw'}</ButtonText>

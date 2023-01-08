@@ -11,6 +11,7 @@ import { toHex } from 'utils/hex'
 import { DefaultHandlerError } from 'utils/parseError'
 import { toBN } from 'utils/numbers'
 import { getTokenIndex, StablePoolType } from 'constants/sPools'
+import { LiquidityPool } from 'constants/stakingPools'
 
 export enum TransactionCallbackState {
   INVALID = 'INVALID',
@@ -32,7 +33,8 @@ export default function useSwapCallback(
 } {
   const { account, chainId, library } = useWeb3React()
   const addTransaction = useTransactionAdder()
-  const swapContract = useStablePoolContract(pool)
+  const liquidityPool = LiquidityPool.find((liqPool) => liqPool.id === pool.id) || LiquidityPool[0]
+  const swapContract = useStablePoolContract(liquidityPool)
   const deadlineValue = Math.round(new Date().getTime() / 1000 + 60 * deadline)
 
   const [inputIndex, outputIndex] = useMemo(() => {

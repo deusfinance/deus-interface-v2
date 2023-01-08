@@ -6,6 +6,7 @@ import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
 import { BN_TEN, toBN } from 'utils/numbers'
 import { useStablePoolContract } from 'hooks/useContract'
 import { getTokenIndex, StablePoolType } from 'constants/sPools'
+import { LiquidityPool } from 'constants/stakingPools'
 
 export function useSwapAmountsOut(
   amountIn: string,
@@ -16,7 +17,8 @@ export function useSwapAmountsOut(
   amountOut: string
 } {
   const amountInBN = amountIn ? toBN(amountIn).times(BN_TEN.pow(tokenIn.decimals)).toFixed(0) : ''
-  const contract = useStablePoolContract(pool)
+  const liquidityPool = LiquidityPool.find((liqPool) => liqPool.id === pool.id) || LiquidityPool[0]
+  const contract = useStablePoolContract(liquidityPool)
 
   const [inputIndex, outputIndex] = useMemo(() => {
     return [getTokenIndex(tokenIn.address, pool), getTokenIndex(tokenOut.address, pool)]

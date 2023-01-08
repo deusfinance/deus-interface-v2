@@ -19,6 +19,7 @@ import { DotFlashing } from 'components/Icons'
 import { useSwapAmountsOut } from 'hooks/useSwapPage'
 import AdvancedOptions from './AdvancedOptions'
 import InputBox from './InputBox'
+import { LiquidityPool } from 'constants/stakingPools'
 
 const Container = styled.div`
   display: flex;
@@ -61,6 +62,7 @@ export default function SwapPage() {
 
   //get stable pool info
   const pool = StablePools[0]
+  const liquidityPool = LiquidityPool[0]
   const inputBalance = useCurrencyBalance(account ?? undefined, inputCurrency)
 
   //todo fix me in dei bond
