@@ -10,6 +10,11 @@
     "exact": true
   },
   {
+    "text": "vDEUS Stake",
+    "path": "/vdeus/stake",
+    "exact": true
+  },
+  {
     "text": "cLQDR",
     "path": "/clqdr",
     "exact": true
