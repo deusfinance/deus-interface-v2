@@ -72,7 +72,10 @@ export default function Stake() {
     return (
       <UpperRow>
         <Row>
-          <Cell style={{ height: 'fit-content', color: '#FFBA93', fontWeight: 'medium' }} width="10%">
+          <Cell style={{ height: 'fit-content', color: '#6F7380', fontWeight: 'medium' }} width="25%">
+            Pools
+          </Cell>
+          <Cell style={{ height: 'fit-content', color: '#6F7380', fontWeight: 'medium' }} width="10%">
             APR
           </Cell>
           <Cell style={{ height: 'fit-content', color: '#6F7380' }} width="18%">

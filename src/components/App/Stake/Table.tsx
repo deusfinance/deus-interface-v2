@@ -132,7 +132,7 @@ const ButtonText = styled.span<{ gradientText?: boolean }>`
 `
 
 const TopBorderWrap = styled.div<{ active?: boolean }>`
-  background: ${({ theme }) => theme.primary2};
+  background: ${({ theme }) => theme.deusColor};
   padding: 2px;
   border-radius: 12px;
   margin-right: 4px;
@@ -141,7 +141,7 @@ const TopBorderWrap = styled.div<{ active?: boolean }>`
   flex: 1;
 
   &:hover {
-    border: 1px solid ${({ theme, active }) => (active ? theme.bg0 : theme.warning)};
+    border: 1px solid ${({ theme, active }) => (active ? theme.bg0 : theme.clqdrBlueColor)};
   }
 `
 
