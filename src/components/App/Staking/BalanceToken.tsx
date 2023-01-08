@@ -1,17 +1,21 @@
-import ImageWithFallback from 'components/ImageWithFallback'
-import styled, { css } from 'styled-components'
-import Container from './common/Container'
-import { Divider, HStack } from './common/Layout'
 import React, { useState } from 'react'
-import { ChevronDown } from 'components/Icons'
-import useWeb3React from 'hooks/useWeb3'
-import { LiquidityType } from 'constants/stakingPools'
-import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
+import styled, { css } from 'styled-components'
 import Link from 'next/link'
-import { ExternalLink } from 'components/Link'
+
+import { LiquidityType } from 'constants/stakingPools'
+
 import { useCurrencyBalance } from 'state/wallet/hooks'
+
+import useWeb3React from 'hooks/useWeb3'
+import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
 import { useDeiPrice, useDeusPrice } from 'hooks/useCoingeckoPrice'
 import { usePoolBalances } from 'hooks/useStablePoolInfo'
+
+import ImageWithFallback from 'components/ImageWithFallback'
+import { ChevronDown } from 'components/Icons'
+import Container from './common/Container'
+import { Divider, HStack } from './common/Layout'
+import { ExternalLink } from 'components/Link'
 
 const Wrapper = styled(HStack)`
   justify-content: space-between;

@@ -1,8 +1,11 @@
-import { Token } from '@sushiswap/core-sdk'
-import ImageWithFallback from 'components/ImageWithFallback'
-import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
+
+import { Token } from '@sushiswap/core-sdk'
+
+import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
+
+import ImageWithFallback from 'components/ImageWithFallback'
 
 const TokenCell = styled.div`
   display: flex;

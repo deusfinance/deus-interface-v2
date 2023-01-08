@@ -1,8 +1,13 @@
+import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 
 import { LiquidityPool as LiquidityPoolList, Stakings } from 'constants/stakingPools'
 
+import { formatDollarAmount } from 'utils/numbers'
+
+import { useUserInfo } from 'hooks/useStakingInfo'
+import { useVDeusStats } from 'hooks/useVDeusStats'
 import { useCustomCoingeckoPrice } from 'hooks/useCoingeckoPrice'
 import { usePoolBalances } from 'hooks/useStablePoolInfo'
 
@@ -12,14 +17,10 @@ import PoolShare from 'components/App/Staking/PoolShare'
 import AvailableLP from 'components/App/Staking/AvailableLP'
 import StakedLP from 'components/App/Staking/LPStaked'
 import { VStack } from 'components/App/Staking/common/Layout'
-import { formatDollarAmount } from 'utils/numbers'
 import Hero from 'components/Hero'
 import StatsHeader from 'components/StatsHeader'
 import { Title } from 'components/App/StableCoin'
 import BalanceToken from 'components/App/Staking/BalanceToken'
-import { useMemo } from 'react'
-import { useUserInfo } from 'hooks/useStakingInfo'
-import { useVDeusStats } from 'hooks/useVDeusStats'
 
 export const Container = styled.div`
   display: flex;

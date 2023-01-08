@@ -1,39 +1,29 @@
 import React, { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import Image from 'next/image'
-// import toast from 'react-hot-toast'
+import { Token } from '@sushiswap/core-sdk'
 
-// import { useVeDeusContract } from 'hooks/useContract'
-// import { useHasPendingVest, useTransactionAdder } from 'state/transactions/hooks'
-// import { useVestedInformation } from 'hooks/useVested'
-// import { useVeDistContract } from 'hooks/useContract'
-
-// import ImageWithFallback from 'components/ImageWithFallback'
-// import { RowCenter } from 'components/Row'
-import { PrimaryButtonWide } from 'components/Button'
-// import { DotFlashing } from 'components/Icons'
-
-// import DEUS_LOGO from '/public/static/images/tokens/deus.svg'
 import EMPTY_LOCK from '/public/static/images/pages/veDEUS/emptyLock.svg'
 import EMPTY_LOCK_MOBILE from '/public/static/images/pages/veDEUS/emptyLockMobile.svg'
 import LOADING_LOCK from '/public/static/images/pages/veDEUS/loadingLock.svg'
 import LOADING_LOCK_MOBILE from '/public/static/images/pages/veDEUS/loadingLockMobile.svg'
 
-// import { formatAmount } from 'utils/numbers'
-// import { DefaultHandlerError } from 'utils/parseError'
-import useWeb3React from 'hooks/useWeb3'
 import { LiquidityPool, StakingType, StakingVersion } from 'constants/stakingPools'
+import { useRouter } from 'next/router'
+
+import useWeb3React from 'hooks/useWeb3'
+import { useCustomCoingeckoPrice } from 'hooks/useCoingeckoPrice'
+import { usePoolBalances } from 'hooks/useStablePoolInfo'
+import { useVDeusStats } from 'hooks/useVDeusStats'
+import { useUserInfo } from 'hooks/useStakingInfo'
+
+import { formatDollarAmount } from 'utils/numbers'
 
 import TokenBox from 'components/App/Stake/TokenBox'
 import RewardBox from 'components/App/Stake/RewardBox'
-import { useRouter } from 'next/router'
 import { ExternalLink } from 'components/Link'
 import { Divider, HStack, VStack } from '../Staking/common/Layout'
-
-import { Token } from '@sushiswap/core-sdk'
-import { useDeiPrice, useDeusPrice } from 'hooks/useCoingeckoPrice'
-import { usePoolBalances } from 'hooks/useStablePoolInfo'
-import { formatDollarAmount } from 'utils/numbers'
+import { PrimaryButtonWide } from 'components/Button'
 
 const Wrapper = styled.div`
   display: flex;
@@ -398,14 +388,26 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
   const secondaryApy = staking.hasSecondaryApy ? staking.secondaryAprHook(liquidityPool, staking) : 0
   const apr = primaryApy + secondaryApy
 
-  const deusPrice = useDeusPrice()
-  const deiPrice = useDeiPrice()
+  const priceToken = liquidityPool.priceToken?.symbol ?? ''
+  const price = useCustomCoingeckoPrice(priceToken) ?? '0'
 
   const poolBalances = usePoolBalances(liquidityPool)
 
   const totalLockedValue = useMemo(() => {
-    return poolBalances[1] * 2 * Number(staking.name === 'DEI-bDEI' ? deiPrice : deusPrice)
-  }, [deiPrice, deusPrice, poolBalances, staking.name])
+    return poolBalances[1] * 2 * parseFloat(price)
+  }, [price, poolBalances])
+
+  const isSingleStakingPool = useMemo(() => {
+    return staking.isSingleStaking
+  }, [staking])
+
+  const { totalDepositedAmount } = useUserInfo(staking)
+
+  const { swapRatio } = useVDeusStats()
+
+  const totalDepositedValue = useMemo(() => {
+    return totalDepositedAmount * swapRatio * parseFloat(price)
+  }, [price, totalDepositedAmount, swapRatio])
 
   const router = useRouter()
   const handleClick = useCallback(() => {
@@ -421,7 +423,7 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
           rewardTokens={rewardTokens}
           tokens={tokens}
           apr={apr}
-          tvl={totalLockedValue}
+          tvl={isSingleStakingPool ? totalDepositedValue : totalLockedValue}
           provideLink={provideLink}
           version={version}
         />
@@ -433,7 +435,7 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
         rewardTokens={rewardTokens}
         tokens={tokens}
         apr={apr}
-        tvl={totalLockedValue}
+        tvl={isSingleStakingPool ? totalDepositedValue : totalLockedValue}
         provideLink={provideLink}
         version={version}
       />

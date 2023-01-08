@@ -2,6 +2,8 @@ import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import toast from 'react-hot-toast'
 
+import { LiquidityType, Stakings } from 'constants/stakingPools'
+
 import { tryParseAmount } from 'utils/parse'
 import { maxAmountSpend } from 'utils/currency'
 import { toBN } from 'utils/numbers'
@@ -18,7 +20,6 @@ import useApproveCallback, { ApprovalState } from 'hooks/useApproveCallback'
 
 import { PrimaryButton } from 'components/Button'
 import { InputField } from 'components/Input'
-import { LiquidityType, Stakings } from 'constants/stakingPools'
 import Container from './common/Container'
 import { Divider, HStack } from './common/Layout'
 import { DotFlashing } from 'components/Icons'

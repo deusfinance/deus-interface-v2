@@ -1,17 +1,22 @@
-import { InputField } from 'components/Input'
+import React, { useCallback, useState } from 'react'
+import toast from 'react-hot-toast'
+import styled from 'styled-components'
+
 import { Stakings } from 'constants/stakingPools'
+
+import { useTransactionAdder } from 'state/transactions/hooks'
+
 import { useMasterChefContract } from 'hooks/useContract'
 import { useUserInfo } from 'hooks/useStakingInfo'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
 import useWeb3React from 'hooks/useWeb3'
-import React, { useCallback, useState } from 'react'
-import toast from 'react-hot-toast'
-import { useTransactionAdder } from 'state/transactions/hooks'
-import styled from 'styled-components'
+
 import { toBN } from 'utils/numbers'
 import { DefaultHandlerError } from 'utils/parseError'
+
 import Container from './common/Container'
 import { Divider, HStack, VStack } from './common/Layout'
+import { InputField } from 'components/Input'
 
 const Wrapper = styled(HStack)`
   justify-content: space-between;

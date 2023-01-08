@@ -1,19 +1,20 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import { LiquidityType, Stakings } from 'constants/stakingPools'
+
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import useWeb3React from 'hooks/useWeb3'
 import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
 import { usePoolInfo, useRemoveLiquidity } from 'hooks/useStablePoolInfo'
+import { useUserInfo } from 'hooks/useStakingInfo'
+import { useCustomCoingeckoPrice } from 'hooks/useCoingeckoPrice'
 
 import { formatBalance, formatDollarAmount } from 'utils/numbers'
 
 import ImageWithFallback from 'components/ImageWithFallback'
-import { LiquidityType, Stakings } from 'constants/stakingPools'
 import { ContentTable, Label, TableHeader, Value, VStack } from './common/Layout'
 import Container from './common/Container'
-import { useUserInfo } from 'hooks/useStakingInfo'
-import { useCustomCoingeckoPrice } from 'hooks/useCoingeckoPrice'
 
 const Wrapper = styled(VStack)`
   padding: 12px;

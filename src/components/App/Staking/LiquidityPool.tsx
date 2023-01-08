@@ -1,5 +1,10 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
+import { useRouter } from 'next/router'
+import { Token } from '@sushiswap/core-sdk'
+
+import { LiquidityType } from 'constants/stakingPools'
+import { LiquidityPool as LiquidityPoolList } from 'constants/stakingPools'
 
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
@@ -12,16 +17,13 @@ import useManageLiquidity from 'hooks/useLiquidityCallback'
 
 import { tryParseAmount } from 'utils/parse'
 
-import { PrimaryButton } from 'components/Button'
-import { DotFlashing } from 'components/Icons'
-import { LiquidityType } from 'constants/stakingPools'
 import { Divider, HStack } from './common/Layout'
-import { LiquidityPool as LiquidityPoolList } from 'constants/stakingPools'
-import { useRouter } from 'next/router'
-import { Token } from '@sushiswap/core-sdk'
+
 import InputBox from './common/Input'
 import AddInputBox from 'components/InputBox'
 import { maxAmountSpend } from 'utils/currency'
+import { PrimaryButton } from 'components/Button'
+import { DotFlashing } from 'components/Icons'
 import ActionSetter, { ActionTypes } from './ActionSetter'
 
 const Wrapper = styled.div`
