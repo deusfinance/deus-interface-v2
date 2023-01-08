@@ -38,8 +38,8 @@ const Icon = styled(ImageWithFallback)`
   width: 12px;
   height: 12px;
 `
-const HeaderTextLabel = styled.p<{ isDeus: boolean }>`
-  background: ${({ isDeus, theme }) => (isDeus ? theme.deusColor : theme.deiColor)};
+const HeaderTextLabel = styled.p`
+  background: ${({ theme }) => theme.deusColor};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-size: 0.875rem;
@@ -173,9 +173,7 @@ const BalanceToken = ({ pool }: { pool: LiquidityType }) => {
             <IconContainer>
               <Icon src={tokensLogo[0]} width={24} height={24} />
             </IconContainer>
-            <HeaderTextLabel isDeus={pool?.tokens[0]?.symbol === 'DEUS'}>
-              Your {pool?.tokens[0]?.symbol} Balance:
-            </HeaderTextLabel>
+            <HeaderTextLabel>Your {pool?.tokens[0]?.symbol} Balance:</HeaderTextLabel>
           </HStack>
           <HeaderTextValue>
             {account ? (

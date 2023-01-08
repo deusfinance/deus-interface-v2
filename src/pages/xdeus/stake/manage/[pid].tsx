@@ -67,7 +67,7 @@ export default function StakingPage() {
   const toolTipInfo = primaryTooltipInfo + secondaryTooltipInfo
 
   function onSelect(pid: number) {
-    router.push(`/vdeus/stake/manage/${pid}`)
+    router.push(`/xdeus/stake/manage/${pid}`)
   }
 
   const items = [
@@ -84,7 +84,7 @@ export default function StakingPage() {
   return (
     <Container>
       <Hero>
-        <Title>vDEUS Stake</Title>
+        <Title>xDEUS Stake</Title>
         <StatsHeader pid={pidNumber} onSelectDropDown={onSelect} items={items} />
       </Hero>
 

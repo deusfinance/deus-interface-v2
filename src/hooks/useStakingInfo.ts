@@ -74,7 +74,7 @@ export function useUserInfo(stakingPool: StakingType): {
   const { id: stakingPoolId, pid, version, rewardTokens } = stakingPool
   const token = LiquidityPool.find((pool) => pool.id === pool.id)?.lpToken || LiquidityPool[0]?.lpToken
   const rewards: number[] = []
-  const deusReward = useGetDeusReward() // use this deus reward for only vdeus-deus pool
+  const deusReward = useGetDeusReward() // use this deus reward for only xdeus-deus pool
 
   const additionalCall =
     version === StakingVersion.V2
@@ -117,7 +117,7 @@ export function useUserInfo(stakingPool: StakingType): {
       depositedValue: userInfo?.result
         ? toBN(formatUnits(userInfo.result[0].toString(), token.decimals)).toFixed(token.decimals, BigNumber.ROUND_DOWN)
         : '0',
-      reward: pendingTokens?.result ? toBN(formatUnits(pendingTokens.result[0], 18)).toNumber() : 0, //vDEUS reward
+      reward: pendingTokens?.result ? toBN(formatUnits(pendingTokens.result[0], 18)).toNumber() : 0, //xDEUS reward
       totalDepositedAmountValue:
         version === StakingVersion.V1
           ? tokenBalance?.result
@@ -132,7 +132,7 @@ export function useUserInfo(stakingPool: StakingType): {
   // for pools that only have 1 reward token
   rewards.push(reward)
 
-  // for vdeus-deus pools that has deus reward tokens too
+  // for xdeus-deus pools that has deus reward tokens too
   if (stakingPoolId == 0) {
     rewards.push(deusReward)
   }
@@ -183,7 +183,7 @@ export function useUserInfo(stakingPool: StakingType): {
 //   // return (retrieveTokenPerBlockValue * parseFloat(deusPrice) * 365 * 24 * 60 * 60 * 100) / totalDeposited
 // }
 
-//get deus reward for deus-vdeus lp pool user
+//get deus reward for deus-xdeus lp pool user
 export function useGetDeusReward(): number {
   const contract = useVDeusMultiRewarderERC20Contract()
   const { account } = useWeb3React()
@@ -287,7 +287,7 @@ export function useGetApy(stakingPool: StakingType): number {
 //   return stakingPool.pid === 0 ? 25 : 33
 // }
 
-//get vdeus staking rewards
+//get xdeus staking rewards
 export function useV2GetApy(stakingPool: StakingType): number {
   const { tokenPerBlock: tokenPerSecond, totalAllocPoint } = useGlobalMasterChefData(stakingPool)
   const { totalDeposited, allocPoint } = usePoolInfo(stakingPool)
@@ -296,7 +296,7 @@ export function useV2GetApy(stakingPool: StakingType): number {
   return (tokenPerSecond * (allocPoint / totalAllocPoint) * 365 * 24 * 60 * 60 * 100) / totalDeposited
 }
 
-//get deus reward apy for deus-vdeus lp pool
+//get deus reward apy for deus-xdeus lp pool
 export function useGetDeusApy(pool: LiquidityType, stakingPool: StakingType): number {
   const contract = useVDeusMultiRewarderERC20Contract()
 

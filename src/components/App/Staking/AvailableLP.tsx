@@ -56,12 +56,26 @@ const AmountInput = styled(InputField)`
   font-weight: medium;
 `
 const ActionButton = styled(PrimaryButton)`
+  color: ${({ theme, disabled }) => (disabled ? theme.white : theme.black)};
   height: 36px !important;
   width: 104px !important;
   font-size: 0.875rem;
   font-weight: bold;
   backdrop-filter: blur(9px);
   border-radius: 8px;
+
+  ${({ theme, disabled }) =>
+    disabled &&
+    `
+      background: ${theme.bg2};
+      border: 1px solid ${theme.border1};
+      cursor: default;
+
+      &:focus,
+      &:hover {
+        background: ${theme.bg2};
+      }
+  `}
 `
 
 const AvailableLP = ({ pool }: { pool: LiquidityType }) => {

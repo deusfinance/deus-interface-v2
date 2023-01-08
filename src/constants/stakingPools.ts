@@ -1,5 +1,5 @@
 import { Token } from '@sushiswap/core-sdk'
-import { DEUS_TOKEN, DEUS_VDEUS_LP_TOKEN, VDEUS_TOKEN } from 'constants/tokens'
+import { DEUS_TOKEN, DEUS_VDEUS_LP_TOKEN, XDEUS_TOKEN } from 'constants/tokens'
 import { useGetDeusApy, useV2GetApy } from 'hooks/useStakingInfo'
 import { MasterChefV3, StablePool_DEUS_vDEUS } from './addresses'
 import { SupportedChainId } from './chains'
@@ -45,8 +45,8 @@ export type LiquidityType = {
 export const LiquidityPool: LiquidityType[] = [
   {
     id: 0,
-    label: 'vDEUS - DEUS Staking',
-    tokens: [VDEUS_TOKEN, DEUS_TOKEN],
+    label: 'xDEUS - DEUS Staking',
+    tokens: [XDEUS_TOKEN, DEUS_TOKEN],
     provideLinks: [
       { id: 0, title: 'Go to Swap Page', link: '/swap' },
       {
@@ -61,9 +61,9 @@ export const LiquidityPool: LiquidityType[] = [
   },
   {
     id: 1,
-    label: 'vDEUS Single Staking',
-    tokens: [VDEUS_TOKEN], // TODO: remove
-    lpToken: VDEUS_TOKEN,
+    label: 'xDEUS Single Staking',
+    tokens: [XDEUS_TOKEN], // TODO: remove
+    lpToken: XDEUS_TOKEN,
     priceToken: DEUS_TOKEN,
   },
 ]
@@ -71,8 +71,8 @@ export const LiquidityPool: LiquidityType[] = [
 export const Stakings: StakingType[] = [
   {
     id: 0,
-    name: 'DEUS-vDEUS',
-    rewardTokens: [VDEUS_TOKEN, DEUS_TOKEN],
+    name: 'DEUS-xDEUS',
+    rewardTokens: [XDEUS_TOKEN, DEUS_TOKEN],
     token: DEUS_VDEUS_LP_TOKEN,
     aprHook: useV2GetApy,
     secondaryAprHook: useGetDeusApy,
@@ -84,7 +84,7 @@ export const Stakings: StakingType[] = [
   },
   {
     id: 1,
-    name: 'vDEUS (ERC20)',
+    name: 'xDEUS (ERC20)',
     rewardTokens: [DEUS_TOKEN],
     aprHook: useV2GetApy,
     secondaryAprHook: () => 0,

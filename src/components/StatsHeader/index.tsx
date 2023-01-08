@@ -61,7 +61,7 @@ const Name = styled.div`
 const Value = styled.div`
   font-weight: 500;
   font-size: 24px;
-  background: ${({ theme }) => theme.deiColor};
+  background: ${({ theme }) => theme.deusColor};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 `
@@ -87,7 +87,7 @@ const CustomTooltip = styled(ToolTip)`
 `
 
 const InfoIcon = styled(Info)`
-  color: ${({ theme }) => theme.yellow4};
+  color: ${({ theme }) => theme.clqdrBlueColor};
   margin: auto 8px;
 `
 

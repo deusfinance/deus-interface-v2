@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { StablePools } from 'constants/sPools'
 import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
 import { useStablePoolContract } from 'hooks/useContract'
 

@@ -428,7 +428,7 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
 
   const router = useRouter()
   const handleClick = useCallback(() => {
-    router.push(`/vdeus/stake/manage/${id}`)
+    router.push(`/xdeus/stake/manage/${id}`)
   }, [id, router])
   return (
     <>

@@ -87,7 +87,7 @@ export default function Stake() {
   return (
     <Container>
       <Hero>
-        <Title>vDEUS Stake</Title>
+        <Title>xDEUS Stake</Title>
       </Hero>
       <Wrapper>
         {getUpperRow()}
