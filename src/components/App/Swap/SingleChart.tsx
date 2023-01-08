@@ -285,8 +285,8 @@ export default function SingleChart({ label }: { label: string }) {
   // lowest and highest values for the Y-axis
   const [lowest = 0, highest = 2000] = useMemo(
     () => [
-      Math.floor(Math.min(...filteredData.map((obj) => parseInt(obj.value))) * 100) / 100, // min is rounded to nearest 0.01
-      Math.ceil(Math.max(...filteredData.map((obj) => parseInt(obj.value))) * 100) / 100, // max is rounded to nearest 0.01
+      Math.floor(Math.min(...filteredData.map((obj) => parseFloat(obj.value))) * 100) / 100, // min is rounded to nearest 0.01
+      Math.ceil(Math.max(...filteredData.map((obj) => parseFloat(obj.value))) * 100) / 100, // max is rounded to nearest 0.01
     ],
     [filteredData]
   )
