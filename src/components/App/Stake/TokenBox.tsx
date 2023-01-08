@@ -3,6 +3,7 @@ import { Token } from '@sushiswap/core-sdk'
 import { isMobile } from 'react-device-detect'
 
 import { ChainInfo } from 'constants/chainInfo'
+import { SupportedChainId } from 'constants/chains'
 
 import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
 import useWeb3React from 'hooks/useWeb3'
@@ -93,14 +94,14 @@ export default function TokenBox({ tokens, title, active }: { tokens: Token[]; t
       </MultipleImageWrapper>
       <TokensWrap>
         <span style={{ textAlign: 'left' }}>{title}</span>
-        {active && chainId ? (
+        {active && chainId === SupportedChainId.FANTOM ? (
           <div>
             <span style={{ color: theme.blue2 }}>{ChainInfo[chainId].label}</span>
             <span> | </span>
             <span style={{ color: theme.green1 }}>Live</span>
           </div>
         ) : (
-          <span style={{ color: theme.red1 }}>Closed.</span>
+          <span style={{ color: theme.red1 }}>Inactive</span>
         )}
       </TokensWrap>
     </TokenCell>
