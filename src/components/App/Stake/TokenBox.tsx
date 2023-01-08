@@ -94,14 +94,14 @@ export default function TokenBox({ tokens, title, active }: { tokens: Token[]; t
       </MultipleImageWrapper>
       <TokensWrap>
         <span style={{ textAlign: 'left' }}>{title}</span>
-        {active && chainId === SupportedChainId.FANTOM ? (
+        {chainId === SupportedChainId.FANTOM && active ? (
           <div>
             <span style={{ color: theme.blue2 }}>{ChainInfo[chainId].label}</span>
             <span> | </span>
             <span style={{ color: theme.green1 }}>Live</span>
           </div>
         ) : (
-          <span style={{ color: theme.red1 }}>Inactive</span>
+          <span style={{ color: theme.red1 }}>{!active ? 'Inactive' : 'Wrong Network'}</span>
         )}
       </TokensWrap>
     </TokenCell>
