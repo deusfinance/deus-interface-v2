@@ -103,23 +103,23 @@ export default function Menu() {
       <div>
         <InlineModal isOpen={isOpen}>
           <Link href="/xdeus/swap" passHref>
-            <Row active={router.route.includes('/xdeus/swap')}>
+            <Row active={router.route.includes('/xdeus/swap')} onClick={() => toggle()}>
               <div>xDEUS Swap</div>
             </Row>
           </Link>
           <Link href="/xdeus/stake" passHref>
-            <Row active={router.route.includes('/xdeus/stake')}>
+            <Row active={router.route.includes('/xdeus/stake')} onClick={() => toggle()}>
               <div>xDEUS Stake</div>
             </Row>
           </Link>
           <Link href="/clqdr" passHref>
-            <Row active={router.route.includes('/clqdr')}>
+            <Row active={router.route.includes('/clqdr')} onClick={() => toggle()}>
               <div>cLQDR</div>
             </Row>
           </Link>
 
           <Link href="/vest" passHref>
-            <Row active={router.route.includes('/vest')}>
+            <Row active={router.route.includes('/vest')} onClick={() => toggle()}>
               <div>veDEUS(migrator)</div>
             </Row>
           </Link>
