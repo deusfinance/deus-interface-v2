@@ -34,6 +34,10 @@ const Item = styled.div<{ rightBorder?: boolean }>`
   display: inline-block;
   padding: 0 75px;
   border-right: ${({ theme, rightBorder }) => (rightBorder ? `1px solid ${theme.border1}` : 'unset')};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 0 15px;
+  `};
 `
 
 const Item2 = styled.div`
@@ -56,6 +60,10 @@ const Name = styled.div`
   font-size: 16px;
   color: ${({ theme }) => theme.text1};
   white-space: nowrap;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 14px;
+  `};
 `
 
 const Value = styled.div`
@@ -64,6 +72,10 @@ const Value = styled.div`
   background: ${({ theme }) => theme.deusColor};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 16px;
+  `};
 `
 
 const ValueLink = styled(Value)`
@@ -231,7 +243,7 @@ export default function StatsHeader({
   return (
     <Wrapper>
       {onSelectDropDown && (
-        <ItemBox2 rightBorder={!!items}>
+        <ItemBox2>
           <Dropdown2
             options={dropDownOptions}
             defaultValue={pid}
