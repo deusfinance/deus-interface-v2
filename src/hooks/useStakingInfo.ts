@@ -97,10 +97,11 @@ export function useUserInfo(stakingPool: StakingType): {
           methodName: 'pendingTokens',
           callInputs: [pid.toString(), account],
         },
-        ...additionalCall,
       ]
 
-  const [userInfo, pendingTokens, totalDepositedAmount] = useSingleContractMultipleMethods(contract, calls)
+  const [userInfo, pendingTokens] = useSingleContractMultipleMethods(contract, calls)
+
+  const [totalDepositedAmount] = useSingleContractMultipleMethods(contract, additionalCall)
 
   const balanceCall = [
     {

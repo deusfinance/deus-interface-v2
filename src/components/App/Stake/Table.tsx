@@ -26,6 +26,7 @@ import RewardBox from 'components/App/Stake/RewardBox'
 import { ExternalLink } from 'components/Link'
 import { Divider, HStack, VStack } from '../Staking/common/Layout'
 import { PrimaryButtonWide } from 'components/Button'
+import { useWalletModalToggle } from 'state/application/hooks'
 
 const Wrapper = styled.div`
   display: flex;
@@ -282,6 +283,8 @@ interface ITableRowContent {
   version: StakingVersion
   chainIdError: boolean
   rpcChangerCallback: (chainId: any) => void
+  account: string | null | undefined
+  toggleWalletModal: () => void
 }
 
 const TableRowMiniContent = ({
@@ -296,6 +299,8 @@ const TableRowMiniContent = ({
   version,
   chainIdError,
   rpcChangerCallback,
+  account,
+  toggleWalletModal,
 }: ITableRowContent) => {
   return (
     <MiniStakeContainer>
@@ -308,7 +313,11 @@ const TableRowMiniContent = ({
                 onClick: active && !chainIdError ? handleClick : undefined,
               })}
             >
-              {chainIdError ? (
+              {!account ? (
+                <PrimaryButtonWide transparentBG onClick={toggleWalletModal}>
+                  <ButtonText gradientText={chainIdError}>Connect Wallet</ButtonText>
+                </PrimaryButtonWide>
+              ) : chainIdError ? (
                 <PrimaryButtonWide transparentBG onClick={() => rpcChangerCallback(FALLBACK_CHAIN_ID)}>
                   <ButtonText gradientText={chainIdError}>Switch to Fantom</ButtonText>
                 </PrimaryButtonWide>
@@ -353,6 +362,8 @@ const TableRowLargeContent = ({
   version,
   chainIdError,
   rpcChangerCallback,
+  account,
+  toggleWalletModal,
 }: ITableRowContent) => {
   return (
     <>
@@ -381,7 +392,11 @@ const TableRowLargeContent = ({
           {...(version !== StakingVersion.EXTERNAL && { onClick: active && !chainIdError ? handleClick : undefined })}
         >
           <TopBorder>
-            {chainIdError ? (
+            {!account ? (
+              <PrimaryButtonWide transparentBG onClick={toggleWalletModal}>
+                <ButtonText gradientText={chainIdError}>Connect Wallet</ButtonText>
+              </PrimaryButtonWide>
+            ) : chainIdError ? (
               <PrimaryButtonWide transparentBG onClick={() => rpcChangerCallback(FALLBACK_CHAIN_ID)}>
                 <ButtonText gradientText={chainIdError}>Switch to Fantom</ButtonText>
               </PrimaryButtonWide>
@@ -402,6 +417,7 @@ const TableRowLargeContent = ({
 const TableRowContent = ({ staking }: { staking: StakingType }) => {
   const { chainId, account } = useWeb3React()
   const rpcChangerCallback = useRpcChangerCallback()
+  const toggleWalletModal = useWalletModalToggle()
   const { id, rewardTokens, active, name, provideLink = undefined, version } = staking
   const liquidityPool = LiquidityPool.find((p) => p.id === staking.id) || LiquidityPool[0]
   const tokens = liquidityPool?.tokens
@@ -458,6 +474,8 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
           version={version}
           chainIdError={!supportedChainId}
           rpcChangerCallback={rpcChangerCallback}
+          account={account}
+          toggleWalletModal={toggleWalletModal}
         />
       </TableRowLargeContainer>
       <TableRowMiniContent
@@ -472,6 +490,8 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
         version={version}
         chainIdError={!supportedChainId}
         rpcChangerCallback={rpcChangerCallback}
+        account={account}
+        toggleWalletModal={toggleWalletModal}
       />
     </>
   )
