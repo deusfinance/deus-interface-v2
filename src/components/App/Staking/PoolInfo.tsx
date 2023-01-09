@@ -96,7 +96,7 @@ export default function PoolInfo({ pool }: { pool: LiquidityType }) {
         <PoolBalance totalLocked={isSingleStakingPool ? totalDepositedAmount : totalLocked} />
         <ContentTable>
           <Label> Swap Fee: </Label>
-          <Value> {formatAmount(poolInfo?.swapFee, 0)} %</Value>
+          <Value> {formatAmount(poolInfo?.swapFee, 0)}%</Value>
         </ContentTable>
         {!isSingleStakingPool ? (
           <ContentTable>

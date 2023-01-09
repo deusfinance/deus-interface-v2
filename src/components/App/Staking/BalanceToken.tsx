@@ -98,8 +98,8 @@ const DropDownContentOption = styled(HStack)`
       display: flex;
       align-items: center;
       column-gap: 4px;
-      background: -webkit-linear-gradient(left, #f78c2a, #f34038);
-      border-image: -webkit-linear-gradient(left, #f78c2a, #f34038) 1;
+      background: -webkit-linear-gradient(90deg, #0badf4 0%, #30efe4 93.4%);
+      border-image: -webkit-linear-gradient(90deg, #0badf4 0%, #30efe4 93.4%) 1;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
