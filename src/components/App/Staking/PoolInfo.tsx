@@ -45,7 +45,7 @@ export const APR = React.memo(
   ({ stakingPool, liquidityPool }: { stakingPool: StakingType; liquidityPool: LiquidityType }) => {
     // generate total APR if pools have secondary APRs
     const primaryApy = stakingPool.aprHook(stakingPool)
-    const secondaryApy = stakingPool.hasSecondaryApy ? stakingPool.secondaryAprHook(liquidityPool, stakingPool) : 0
+    const secondaryApy = stakingPool.secondaryAprHook(liquidityPool, stakingPool)
     const apr = primaryApy + secondaryApy
     return (
       <ContentTable>

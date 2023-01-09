@@ -48,19 +48,27 @@ export default function StakingPage() {
   const router = useRouter()
   const { pid } = router.query
   const pidNumber = Number(pid)
-  const liquidityPool = LiquidityPoolList.find((pool) => pool.id === pidNumber) || LiquidityPoolList[0]
-  const stakingPool = Stakings.find((p) => p.id === liquidityPool.id) || Stakings[0]
+
+  const liquidityPool = useMemo(() => {
+    return LiquidityPoolList.find((pool) => pool.id === pidNumber) || LiquidityPoolList[0]
+  }, [pidNumber])
+
+  const stakingPool = useMemo(() => {
+    return Stakings.find((p) => p.id === liquidityPool.id) || Stakings[0]
+  }, [liquidityPool])
+
   const poolBalances = usePoolBalances(liquidityPool)
+  const { totalDepositedAmount } = useUserInfo(stakingPool)
+  const { swapRatio } = useVDeusStats()
 
   const priceToken = liquidityPool.priceToken?.symbol ?? ''
   const price = useCustomCoingeckoPrice(priceToken) ?? '0'
-  // FIXME: check this for single stakings
-  const totalLockedValue =
-    poolBalances[1] * 2 * Number(useCustomCoingeckoPrice(liquidityPool.priceToken?.symbol ?? 'DEI'))
+
+  const totalLockedValue = poolBalances[1] * 2 * Number(price)
 
   // generate total APR if pools have secondary APRs
   const primaryApy = stakingPool.aprHook(stakingPool)
-  const secondaryApy = stakingPool.hasSecondaryApy ? stakingPool.secondaryAprHook(liquidityPool, stakingPool) : 0
+  const secondaryApy = stakingPool.secondaryAprHook(liquidityPool, stakingPool)
   const totalApy = primaryApy + secondaryApy
 
   // generate respective tooltip info if pools have more than 1 reward tokens
@@ -71,21 +79,18 @@ export default function StakingPage() {
 
   const toolTipInfo = primaryTooltipInfo + secondaryTooltipInfo
 
+  // fetch TVL for xDEUS single staking pool
   const isSingleStakingPool = useMemo(() => {
     return stakingPool.isSingleStaking
   }, [stakingPool])
-
-  const { totalDepositedAmount } = useUserInfo(stakingPool)
-
-  const { swapRatio } = useVDeusStats()
 
   const totalDepositedValue = useMemo(() => {
     return totalDepositedAmount * swapRatio * parseFloat(price)
   }, [price, totalDepositedAmount, swapRatio])
 
-  function onSelect(pid: number) {
-    router.push(`/xdeus/stake/manage/${pid}`)
-  }
+  const tvl = useMemo(() => {
+    return isSingleStakingPool ? formatDollarAmount(totalDepositedValue) : formatDollarAmount(totalLockedValue)
+  }, [isSingleStakingPool, totalDepositedValue, totalLockedValue])
 
   const items = [
     {
@@ -94,9 +99,13 @@ export default function StakingPage() {
       hasTooltip: true,
       toolTipInfo,
     },
-    { name: 'TVL', value: formatDollarAmount(isSingleStakingPool ? totalDepositedValue : totalLockedValue) },
+    { name: 'TVL', value: tvl },
     { name: priceToken + ' Price', value: formatDollarAmount(parseFloat(price)) },
   ]
+
+  function onSelect(pid: number) {
+    router.push(`/xdeus/stake/manage/${pid}`)
+  }
 
   return (
     <Container>

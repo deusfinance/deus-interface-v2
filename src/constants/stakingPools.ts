@@ -49,7 +49,7 @@ export const LiquidityPool: LiquidityType[] = [
     label: 'xDEUS - DEUS Staking',
     tokens: [XDEUS_TOKEN, DEUS_TOKEN],
     provideLinks: [
-      { id: 0, title: 'Go to Swap Page', link: '/swap' },
+      { id: 0, title: 'Go to Swap Page', link: '/xdeus/swap' },
       {
         id: 1,
         title: 'Buy on Firebird',
@@ -89,10 +89,11 @@ export const Stakings: StakingType[] = [
     rewardTokens: [XDEUS_TOKEN],
     token: XDEUS_TOKEN,
     aprHook: useV2GetApy,
-    secondaryAprHook: () => 0,
+    secondaryAprHook: useGetDeusApy, // it doesn't return any deus reward for this pool, but you can't have conditional hooks. But the hook handles this scenario internally
     masterChef: MasterChefV3[SupportedChainId.FANTOM],
     pid: 0,
     active: true,
+    hasSecondaryApy: false,
     version: StakingVersion.V2,
     isSingleStaking: true,
   },

@@ -331,6 +331,8 @@ export function useGetDeusApy(pool: LiquidityType, stakingPool: StakingType): nu
 
   //console.log({ avgBlockTime, ratio, totalBalance, myShare, retrieveTokenPerYearValue, myAprShare })
 
+  if (pool.id === 1) return 0 // for non xdeus-deus pools, there is no deus rewards. Hence return 0 for those pools
+
   if (!myShare || myShare === 0) return (retrieveTokenPerYearValue / totalBalance) * 100
   return (myAprShare / myShare) * 100
 
