@@ -75,6 +75,18 @@ const DepositButton = styled(PrimaryButton)`
       -webkit-text-fill-color: transparent;
     }
   }
+  ${({ theme, disabled }) =>
+    disabled &&
+    `
+    background: ${theme.bg2};
+    border: 1px solid ${theme.border1};
+    cursor: default;
+
+    &:focus,
+    &:hover {
+      background: ${theme.bg2};
+    }
+`}
 `
 
 const BetweenStack = styled(HStack)`
@@ -144,6 +156,14 @@ const Input = styled.input`
   border: none;
   outline: none;
 `
+
+const AmountWrapper = styled(HStack)`
+  justify-content: space-between;
+  margin-top: 16px;
+  min-height: 50px;
+  border-radius: 12px;
+  background-color: ${({ theme }) => theme.bg2};
+`
 const WithdrawHeading = styled.p`
   font-size: 1rem;
   font-weight: medium;
@@ -199,7 +219,7 @@ const PercentBox = ({
   setPercent: (value: string) => void
 }) => {
   const percentValue: string[] = ['25', '50', '75', '100']
-  const [inputValue, setInputValue] = useState<string>('25')
+  const [inputValue, setInputValue] = useState<string>('0')
 
   useEffect(() => {
     const isSelectedExist = percentValue.find((value) => value === inputValue)
@@ -234,6 +254,7 @@ const PercentBox = ({
               onChange={(e) => {
                 if (+e.target.value >= 0 && +e.target.value <= 100) {
                   setInputValue(e.target.value)
+                  setPercent(e.target.value)
                 } else if (e.target.value === '') {
                   setInputValue('')
                 }
@@ -308,7 +329,7 @@ export default function LiquidityPool({ pool }: { pool: LiquidityType }) {
   const [selected, setSelected] = useState<ActionTypes>(ActionTypes.ADD)
   const isRemove = useMemo(() => selected == ActionTypes.REMOVE, [selected])
   const [slippage, setSlippage] = useState(0.5)
-  const [selectedPercent, setPercent] = useState<string>('25')
+  const [selectedPercent, setPercent] = useState<string>('0')
   const [selectedValue, setSelectedValue] = useState<number>(0)
 
   const stakingPool = pool
@@ -344,12 +365,6 @@ export default function LiquidityPool({ pool }: { pool: LiquidityType }) {
       setLPAmountIn('')
     }
   }, [selected])
-
-  useEffect(() => {
-    if (selected === ActionTypes.REMOVE && lpCurrencyBalance) {
-      setLPAmountIn(((Number(maxAmountSpend(lpCurrencyBalance)?.toExact()) * Number(selectedPercent)) / 100).toString())
-    }
-  }, [lpCurrencyBalance, selected, selectedPercent])
 
   const token0Amount = useMemo(() => {
     return tryParseAmount(amountIn, token0Currency || undefined)
@@ -430,6 +445,15 @@ export default function LiquidityPool({ pool }: { pool: LiquidityType }) {
     setAwaitingApproveConfirmation(true)
     await approveCallback3()
     setAwaitingApproveConfirmation(false)
+  }
+
+  const handlePercent = (value: string) => {
+    if (!!value) {
+      setPercent(value)
+      setLPAmountIn(
+        ((Number(maxAmountSpend(lpCurrencyBalance)?.toExact()) * Number(value)) / 100).toFixed(18).toString()
+      )
+    }
   }
 
   const handleLiquidity = useCallback(async () => {
@@ -579,10 +603,12 @@ export default function LiquidityPool({ pool }: { pool: LiquidityType }) {
         <>
           {/* <InputBox currency={lpCurrency} value={lpAmountIn} onChange={(value: string) => setLPAmountIn(value)} /> */}
           <BetweenStack>
-            <WithdrawText>Withdraw percentage</WithdrawText>
-            <WithdrawText>LP Balance: {lpCurrencyBalance?.toSignificant(6)}</WithdrawText>
+            <WithdrawHeading>Withdraw percentage</WithdrawHeading>
           </BetweenStack>
-          <PercentBox selectedPercent={selectedPercent} setPercent={setPercent} />
+          <PercentBox selectedPercent={selectedPercent} setPercent={handlePercent} />
+          <AmountWrapper>
+            <AddInputBox currency={lpCurrency} value={lpAmountIn} onChange={(value: string) => setLPAmountIn(value)} />
+          </AmountWrapper>
           <WithdrawCombo selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
 
           <InputBox
