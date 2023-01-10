@@ -24,6 +24,7 @@ const LogoMap: { [contractOrSymbol: string]: string } = {
   '0x953Cd009a490176FcEB3a26b9753e6F01645ff28': xDEUS_LOGO,
   '0x10b620b2dbAC4Faa7D7FFD71Da486f5D44cd86f9': LQDR_ICON,
   '0x814c66594a22404e101FEcfECac1012D8d75C156': CLQDR_ICON,
+  '0xECd9E18356bb8d72741c539e75CEAdB3C5869ea0': NotFound.src, // default the logo of dv-lp token address to that of a not found one
   usdc: USDC_LOGO,
   deus: DEUS_LOGO,
 }
