@@ -12,6 +12,9 @@ import SwapPage from 'components/App/Swap'
 import { useVDeusStats } from 'hooks/useVDeusStats'
 import SingleChart from 'components/App/Swap/SingleChart'
 import { Row } from 'components/Row'
+import { ExternalLink } from 'components/Link'
+import Image from 'next/image'
+import ExternalLinkImage from '/public/static/images/pages/common/down.svg'
 
 const Wrapper = styled(Row)`
   margin-top: 50px;
@@ -76,6 +79,16 @@ export default function Vest() {
     () => [
       { name: 'DEUS Price', value: formatDollarAmount(parseFloat(deusPrice), 2) },
       { name: 'xDeus Ratio', value: formatAmount(swapRatio, 2) + ' DEUS' },
+      {
+        name: '',
+        value: (
+          <div style={{ alignSelf: 'center', display: 'flex' }}>
+            <ExternalLink href="https://docs.deus.finance/xdeus/xdeus">
+              Read more <Image width={10} height={10} src={ExternalLinkImage} />
+            </ExternalLink>
+          </div>
+        ),
+      },
     ],
     [deusPrice, swapRatio]
   )

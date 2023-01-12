@@ -10,6 +10,7 @@ import Discord from '/public/static/images/footer/Discord.svg'
 import Twitter from '/public/static/images/footer/Twitter.svg'
 import Github from '/public/static/images/footer/Github.svg'
 import Telegram from '/public/static/images/footer/Telegram.svg'
+import Docs from '/public/static/images/footer/Docs.svg'
 
 const Wrapper = styled(RowCenter)`
   color: ${({ theme }) => theme.text3};
@@ -18,7 +19,9 @@ const Wrapper = styled(RowCenter)`
   gap: 20px;
   font-size: 13px;
   padding: 12px 100px;
-
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    padding: 12px 40px;
+`}
   ${({ theme }) => theme.mediaWidth.upToMedium`
     flex-direction: column;
     margin-top: 20px;
@@ -59,6 +62,9 @@ export default function Disclaimer() {
         </ExternalLink>
       </Text>
       <Logos>
+        <ExternalLink href="https://docs.deus.finance/">
+          <Image src={Docs} alt="Docs Logo" width={getImageSize()} height={getImageSize()} />
+        </ExternalLink>
         <ExternalLink href="https://discord.gg/xTTaBBAMgG">
           <Image src={Discord} alt="Discord Logo" width={getImageSize()} height={getImageSize()} />
         </ExternalLink>

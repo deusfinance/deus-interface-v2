@@ -26,11 +26,13 @@ import useDistRewards, { useVeMigrationData } from 'hooks/useDistRewards'
 
 import Hero from 'components/Hero'
 import { PrimaryButtonWide } from 'components/Button'
-import { RowFixed, RowBetween } from 'components/Row'
+import { RowFixed, RowBetween, Row } from 'components/Row'
 import StatsHeader from 'components/StatsHeader'
 import { Container } from 'components/App/StableCoin'
 import { useSearch, SearchField, Table, TopBorder, TopBorderWrap, ButtonText } from 'components/App/Vest'
 import MigrateAllManager from 'components/App/Vest/MigrateAllManager'
+import { ExternalLink } from 'components/Link'
+import ExternalLinkImage from '/public/static/images/pages/common/down.svg'
 
 dayjs.extend(utc)
 dayjs.extend(relativeTime)
@@ -90,7 +92,25 @@ const FirstRowWrapper = styled.div`
   justify-content: space-between;
   width: 100%;
   gap: 10px;
+  align-items: center;
+  div {
+    width: fit-content;
+  }
+  a {
+    margin-right: 20px;
+    color: ${({ theme }) => theme.text2};
+    &:hover {
+      color: ${({ theme }) => theme.text2};
+      text-decoration: underline;
+    }
+  }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+   a {
+    font-size:14px;
+  }
+  `}
 `
+const RightSideContainer = styled(Row)``
 
 export default function Vest() {
   const { chainId, account } = useWeb3React()
@@ -223,7 +243,12 @@ export default function Vest() {
         <UpperRow>
           <FirstRowWrapper>
             <SearchField searchProps={searchProps} />
-            {getMainContent()}
+            <RightSideContainer>
+              <ExternalLink href="https://docs.deus.finance/xdeus/vedeus-greater-than-xdeus-migrator">
+                Read more <Image width={10} height={10} src={ExternalLinkImage} />
+              </ExternalLink>
+              {getMainContent()}
+            </RightSideContainer>
           </FirstRowWrapper>
           {getClaimAllButton()}
         </UpperRow>
@@ -231,13 +256,18 @@ export default function Vest() {
     } else {
       return (
         <UpperRow>
-          <div>
+          <FirstRowWrapper>
             <SearchField searchProps={searchProps} />
-          </div>
-          <ButtonWrapper>
-            {getClaimAllButton()}
-            {getMainContent()}
-          </ButtonWrapper>
+            <RightSideContainer>
+              <ExternalLink href="https://docs.deus.finance/xdeus/vedeus-greater-than-xdeus-migrator">
+                Read more <Image width={10} height={10} src={ExternalLinkImage} />
+              </ExternalLink>
+              <ButtonWrapper>
+                {getClaimAllButton()}
+                {getMainContent()}
+              </ButtonWrapper>
+            </RightSideContainer>
+          </FirstRowWrapper>
         </UpperRow>
       )
     }
