@@ -84,7 +84,7 @@ export const LiquidityPool: LiquidityType[] = [
 export const Stakings: StakingType[] = [
   {
     id: 0,
-    name: 'DEUS-xDEUS',
+    name: 'xDEUS-DEUS',
     rewardTokens: [XDEUS_TOKEN, DEUS_TOKEN],
     token: DEUS_VDEUS_LP_TOKEN,
     aprHook: useV2GetApy,
