@@ -116,7 +116,7 @@ export const Stakings: StakingType[] = [
 export const ExternalStakings: ExternalStakingType[] = [
   {
     id: 2,
-    name: 'XDEUS-DEUS',
+    name: 'xDEUS-DEUS',
     rewardTokens: [XDEUS_TOKEN],
     provideLink: 'https://solidly.com/liquidity/0x4EF3fF9dadBa30cff48133f5Dc780A28fc48693F',
     active: true,
