@@ -2,6 +2,7 @@ import { Token } from '@sushiswap/core-sdk'
 import { DEUS_TOKEN, DEUS_VDEUS_LP_TOKEN, XDEUS_TOKEN } from 'constants/tokens'
 import { useGetDeusApy, useV2GetApy } from 'hooks/useStakingInfo'
 import { MasterChefV3, StablePool_DEUS_vDEUS } from './addresses'
+import { ChainInfo } from './chainInfo'
 import { SupportedChainId } from './chains'
 
 export enum StakingVersion {
@@ -31,6 +32,17 @@ export type StakingType = {
   hasSecondaryApy?: boolean
   version: StakingVersion
   isSingleStaking?: boolean
+  chain: string
+}
+
+export type ExternalStakingType = {
+  id: number
+  name: string
+  rewardTokens: Token[]
+  provideLink: string
+  active: boolean
+  version: StakingVersion
+  chain: string
 }
 
 export type LiquidityType = {
@@ -72,7 +84,7 @@ export const LiquidityPool: LiquidityType[] = [
 export const Stakings: StakingType[] = [
   {
     id: 0,
-    name: 'DEUS-xDEUS',
+    name: 'xDEUS-DEUS',
     rewardTokens: [XDEUS_TOKEN, DEUS_TOKEN],
     token: DEUS_VDEUS_LP_TOKEN,
     aprHook: useV2GetApy,
@@ -82,6 +94,7 @@ export const Stakings: StakingType[] = [
     active: true,
     hasSecondaryApy: true,
     version: StakingVersion.V2,
+    chain: ChainInfo[SupportedChainId.FANTOM].label,
   },
   {
     id: 1,
@@ -96,5 +109,18 @@ export const Stakings: StakingType[] = [
     hasSecondaryApy: false,
     version: StakingVersion.V2,
     isSingleStaking: true,
+    chain: ChainInfo[SupportedChainId.FANTOM].label,
+  },
+]
+
+export const ExternalStakings: ExternalStakingType[] = [
+  {
+    id: 2,
+    name: 'xDEUS-DEUS',
+    rewardTokens: [XDEUS_TOKEN],
+    provideLink: 'https://solidly.com/liquidity/0x4EF3fF9dadBa30cff48133f5Dc780A28fc48693F',
+    active: true,
+    version: StakingVersion.EXTERNAL,
+    chain: ChainInfo[SupportedChainId.MAINNET].label,
   },
 ]

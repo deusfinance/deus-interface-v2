@@ -7,6 +7,8 @@ import EMPTY_LOCK from '/public/static/images/pages/veDEUS/emptyLock.svg'
 import EMPTY_LOCK_MOBILE from '/public/static/images/pages/veDEUS/emptyLockMobile.svg'
 import LOADING_LOCK from '/public/static/images/pages/veDEUS/loadingLock.svg'
 import LOADING_LOCK_MOBILE from '/public/static/images/pages/veDEUS/loadingLockMobile.svg'
+import ExternalIcon from '/public/static/images/pages/stake/down.svg'
+import Solidly from '/public/static/images/pages/stake/solid.png'
 
 import { FALLBACK_CHAIN_ID, SupportedChainId } from 'constants/chains'
 import { LiquidityPool, StakingType, StakingVersion } from 'constants/stakingPools'
@@ -222,19 +224,26 @@ const CustomButton = styled(ExternalLink)`
 `
 
 enum BUTTON_TYPE {
+  SOLIDLY = 'SOLIDLY',
   MINI = 'MINI',
 }
 
 const titles = {
+  solidly: 'Solidly',
   mini: 'Manage',
 }
 const CustomButtonWrapper = ({ type, href, isActive }: { type: BUTTON_TYPE; href: string; isActive: boolean }) => {
   return (
     <CustomButton transparentBG href={isActive && href}>
       <ButtonText>
-        {type === BUTTON_TYPE.MINI ? titles.mini : 'Farm on'}
+        {type === BUTTON_TYPE.MINI ? titles.mini : 'Farm on ' + titles.solidly}
         <HStack style={{ marginLeft: '1ch', alignItems: 'flex-end' }}>
-          <Image width={8} height={8} src={BUTTON_TYPE.MINI} alt={titles.mini} />
+          <Image
+            width={type === BUTTON_TYPE.SOLIDLY ? 24 : 8}
+            height={type === BUTTON_TYPE.SOLIDLY ? 24 : 8}
+            src={type === BUTTON_TYPE.SOLIDLY ? Solidly : ExternalIcon}
+            alt={type === BUTTON_TYPE.SOLIDLY ? titles.solidly : titles.mini}
+          />
         </HStack>
       </ButtonText>
     </CustomButton>
@@ -275,6 +284,7 @@ interface ITableRowContent {
   tokens: Token[]
   name: StakingType['name']
   active: StakingType['active']
+  chain: string
   rewardTokens: StakingType['rewardTokens']
   handleClick: () => void
   apr: number
@@ -291,6 +301,7 @@ const TableRowMiniContent = ({
   tokens,
   name,
   active,
+  chain,
   rewardTokens,
   handleClick,
   apr,
@@ -305,7 +316,7 @@ const TableRowMiniContent = ({
   return (
     <MiniStakeContainer>
       <MiniStakeHeaderContainer>
-        <TokenBox tokens={tokens} title={name} active={active} />
+        <TokenBox tokens={tokens} chain={chain} title={name} active={active} />
         <div>
           <MiniTopBorderWrap>
             <TopBorder
@@ -335,11 +346,11 @@ const TableRowMiniContent = ({
       <MiniStakeContentContainer>
         <SpaceBetween>
           <Name>TVL</Name>
-          <Value>{formatDollarAmount(tvl)}</Value>
+          <Value>{tvl ? formatDollarAmount(tvl) : 'N/A'}</Value>
         </SpaceBetween>
         <SpaceBetween>
           <Name>APR</Name>
-          <Value> {apr !== -1 ? apr.toFixed(0) + '%' : 'N/A'} </Value>
+          <Value> {apr ? apr.toFixed(0) + '%' : 'N/A'} </Value>
         </SpaceBetween>
         <SpaceBetween>
           <Name>Reward Tokens</Name>
@@ -354,6 +365,7 @@ const TableRowLargeContent = ({
   tokens,
   name,
   active,
+  chain,
   rewardTokens,
   handleClick,
   apr,
@@ -368,17 +380,17 @@ const TableRowLargeContent = ({
   return (
     <>
       <Cell width={'25%'}>
-        <TokenBox tokens={tokens} title={name} active={active} />
+        <TokenBox tokens={tokens} title={name} chain={chain} active={active} />
       </Cell>
 
       <Cell width={'10%'}>
         <Name>APR</Name>
-        <Value> {apr !== -1 ? apr.toFixed(0) + '%' : 'N/A'} </Value>
+        <Value> {apr ? apr.toFixed(0) + '%' : 'N/A'} </Value>
       </Cell>
 
       <Cell width={'18%'}>
         <Name>TVL</Name>
-        <Value>{formatDollarAmount(tvl)}</Value>
+        <Value>{tvl ? formatDollarAmount(tvl) : 'N/A'}</Value>
       </Cell>
 
       <Cell style={{ textAlign: 'start' }}>
@@ -401,7 +413,11 @@ const TableRowLargeContent = ({
                 <ButtonText gradientText={chainIdError}>Switch to Fantom</ButtonText>
               </PrimaryButtonWide>
             ) : version === StakingVersion.EXTERNAL && provideLink ? (
-              <CustomButtonWrapper isActive={active} href={provideLink} type={BUTTON_TYPE.MINI} />
+              <CustomButtonWrapper
+                isActive={active}
+                href={provideLink}
+                type={provideLink.includes('solidly') ? BUTTON_TYPE.SOLIDLY : BUTTON_TYPE.MINI}
+              />
             ) : (
               <PrimaryButtonWide style={{ backgroundColor: '#101116' }} transparentBG>
                 <ButtonText gradientText={!active}>{active ? 'Manage' : 'Withdraw'}</ButtonText>
@@ -418,7 +434,7 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
   const { chainId, account } = useWeb3React()
   const rpcChangerCallback = useRpcChangerCallback()
   const toggleWalletModal = useWalletModalToggle()
-  const { id, rewardTokens, active, name, provideLink = undefined, version } = staking
+  const { id, rewardTokens, active, name, provideLink = undefined, version, chain } = staking
   const liquidityPool = LiquidityPool.find((p) => p.id === staking.id) || LiquidityPool[0]
   const tokens = liquidityPool?.tokens
 
@@ -426,7 +442,9 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
 
   // generate total APR if pools have secondary APRs
   const primaryApy = staking.version === StakingVersion.EXTERNAL ? 0 : staking?.aprHook(staking)
-  const secondaryApy = staking.hasSecondaryApy ? staking.secondaryAprHook(liquidityPool, staking) : 0
+  const secondaryApy =
+    staking.version === StakingVersion.EXTERNAL ? 0 : staking.secondaryAprHook(liquidityPool, staking)
+
   const apr = primaryApy + secondaryApy
 
   const priceToken = liquidityPool.priceToken?.symbol ?? ''
@@ -455,6 +473,9 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
     return chainId === SupportedChainId.FANTOM
   }, [chainId, account])
 
+  const tvl =
+    staking.version === StakingVersion.EXTERNAL ? 0 : isSingleStakingPool ? totalDepositedValue : totalLockedValue
+
   const router = useRouter()
   const handleClick = useCallback(() => {
     router.push(`/xdeus/stake/manage/${id}`)
@@ -464,12 +485,13 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
       <TableRowLargeContainer>
         <TableRowLargeContent
           active={active}
+          chain={chain}
           handleClick={handleClick}
           name={name}
           rewardTokens={rewardTokens}
           tokens={tokens}
           apr={apr}
-          tvl={isSingleStakingPool ? totalDepositedValue : totalLockedValue}
+          tvl={tvl}
           provideLink={provideLink}
           version={version}
           chainIdError={!supportedChainId}
@@ -480,12 +502,13 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
       </TableRowLargeContainer>
       <TableRowMiniContent
         active={active}
+        chain={chain}
         handleClick={handleClick}
         name={name}
         rewardTokens={rewardTokens}
         tokens={tokens}
         apr={apr}
-        tvl={isSingleStakingPool ? totalDepositedValue : totalLockedValue}
+        tvl={tvl}
         provideLink={provideLink}
         version={version}
         chainIdError={!supportedChainId}

@@ -71,7 +71,7 @@ export function useUserInfo(stakingPool: StakingType): {
 } {
   const contract = useMasterChefContract(stakingPool)
   const { account } = useWeb3React()
-  const { id: stakingPoolId, pid, version, rewardTokens } = stakingPool
+  const { id: stakingPoolId, pid = '', version, rewardTokens } = stakingPool
   const token = LiquidityPool.find((pool) => pool.id === pool.id)?.lpToken || LiquidityPool[0]?.lpToken
   const rewards: number[] = []
   const deusReward = useGetDeusReward() // use this deus reward for only xdeus-deus pool
@@ -137,6 +137,15 @@ export function useUserInfo(stakingPool: StakingType): {
   if (stakingPoolId == 0) {
     rewards.push(deusReward)
   }
+
+  if (stakingPool.version === StakingVersion.EXTERNAL)
+    return {
+      depositAmount: '',
+      rewardAmounts: [],
+      totalDepositedAmount: 0,
+      rewardTokens: [],
+    }
+
   return {
     depositAmount: depositedValue,
     rewardAmounts: rewards,

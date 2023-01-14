@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { isMobile } from 'react-device-detect'
 
-import { Stakings } from 'constants/stakingPools'
+import { ExternalStakings, Stakings, StakingType } from 'constants/stakingPools'
 
 import { Row, RowBetween } from 'components/Row'
 import Table, { Cell } from 'components/App/Stake/Table'
@@ -68,6 +68,11 @@ const FirstRowWrapper = styled.div`
 `
 
 export default function Stake() {
+  const list = useMemo(() => {
+    const allStakings = Stakings.concat(ExternalStakings as unknown as StakingType)
+    return allStakings.map((pool) => ({ ...pool, value: pool.name }))
+  }, [])
+
   function getUpperRow() {
     return (
       <UpperRow>
@@ -94,7 +99,7 @@ export default function Stake() {
       </Hero>
       <Wrapper>
         {getUpperRow()}
-        <Table isMobile={isMobile} stakings={Stakings} />
+        <Table isMobile={isMobile} stakings={list as unknown as StakingType[]} />
       </Wrapper>
     </Container>
   )

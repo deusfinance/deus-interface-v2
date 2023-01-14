@@ -2,7 +2,6 @@ import styled, { useTheme } from 'styled-components'
 import { Token } from '@sushiswap/core-sdk'
 import { isMobile } from 'react-device-detect'
 
-import { ChainInfo } from 'constants/chainInfo'
 import { SupportedChainId } from 'constants/chains'
 
 import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
@@ -70,7 +69,17 @@ function getImageSize() {
   return isMobile ? 22 : 30
 }
 
-export default function TokenBox({ tokens, title, active }: { tokens: Token[]; title: string; active: boolean }) {
+export default function TokenBox({
+  tokens,
+  title,
+  chain,
+  active,
+}: {
+  tokens: Token[]
+  title: string
+  chain: string
+  active: boolean
+}) {
   const tokensAddress = tokens.map((token) => token.address)
   const logos = useCurrencyLogos(tokensAddress)
   const theme = useTheme()
@@ -96,7 +105,7 @@ export default function TokenBox({ tokens, title, active }: { tokens: Token[]; t
         <span style={{ textAlign: 'left' }}>{title}</span>
         {chainId === SupportedChainId.FANTOM && active ? (
           <div>
-            <span style={{ color: theme.blue2 }}>{ChainInfo[chainId].label}</span>
+            <span style={{ color: theme.blue2 }}>{chain}</span>
             <span> | </span>
             <span style={{ color: theme.green1 }}>Live</span>
           </div>
