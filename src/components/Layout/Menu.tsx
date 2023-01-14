@@ -180,7 +180,7 @@ export default function Menu() {
           </ExternalLink>
           <ExternalLink href="https://docs.deus.finance/">
             <Row onClick={() => toggle()}>
-              <div>Docs</div>
+              <div>GitBook</div>
             </Row>
           </ExternalLink>
           <Separator />

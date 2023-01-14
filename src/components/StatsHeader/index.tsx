@@ -69,13 +69,16 @@ const Name = styled.div`
 
 const Value = styled.div<{ hasOwnColor?: boolean }>`
   font-weight: 500;
-  font-size: 24px;
+  font-size: 18px;
 
   ${({ hasOwnColor, theme }) =>
     !hasOwnColor &&
-    `background: ${theme.deusColor};
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;`}
+    `
+    background: ${theme.deusColor};
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 24px;
+    `}
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 16px;
