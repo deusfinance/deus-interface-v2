@@ -346,11 +346,11 @@ const TableRowMiniContent = ({
       <MiniStakeContentContainer>
         <SpaceBetween>
           <Name>TVL</Name>
-          <Value>{formatDollarAmount(tvl)}</Value>
+          <Value>{tvl ? formatDollarAmount(tvl) : 'N/A'}</Value>
         </SpaceBetween>
         <SpaceBetween>
           <Name>APR</Name>
-          <Value> {apr !== -1 ? apr.toFixed(0) + '%' : 'N/A'} </Value>
+          <Value> {apr ? apr.toFixed(0) + '%' : 'N/A'} </Value>
         </SpaceBetween>
         <SpaceBetween>
           <Name>Reward Tokens</Name>
@@ -385,12 +385,12 @@ const TableRowLargeContent = ({
 
       <Cell width={'10%'}>
         <Name>APR</Name>
-        <Value> {apr !== -1 ? apr.toFixed(0) + '%' : 'N/A'} </Value>
+        <Value> {apr ? apr.toFixed(0) + '%' : 'N/A'} </Value>
       </Cell>
 
       <Cell width={'18%'}>
         <Name>TVL</Name>
-        <Value>{formatDollarAmount(tvl)}</Value>
+        <Value>{tvl ? formatDollarAmount(tvl) : 'N/A'}</Value>
       </Cell>
 
       <Cell style={{ textAlign: 'start' }}>
