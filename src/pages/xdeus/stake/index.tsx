@@ -8,6 +8,9 @@ import { Row, RowBetween } from 'components/Row'
 import Table, { Cell } from 'components/App/Stake/Table'
 import Hero from 'components/Hero'
 import { Title } from 'components/App/StableCoin'
+import { ExternalLink } from 'components/Link'
+import ExternalLinkImage from '/public/static/images/pages/common/down.svg'
+import Image from 'next/image'
 
 export const Container = styled.div`
   display: flex;
@@ -66,6 +69,25 @@ const FirstRowWrapper = styled.div`
     width: 50%;
   `};
 `
+const ReadMoreContainer = styled(Cell)`
+  width: fit-content;
+  align-items: center;
+  display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  position: absolute;
+  right: 10px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+  position: relative;
+  `};
+  a {
+    color: ${({ theme }) => theme.text2};
+    &:hover {
+      color: ${({ theme }) => theme.text2};
+      text-decoration: underline;
+    }
+  }
+`
 
 export default function Stake() {
   const list = useMemo(() => {
@@ -76,7 +98,7 @@ export default function Stake() {
   function getUpperRow() {
     return (
       <UpperRow>
-        <Row>
+        <Row style={{ position: 'relative' }}>
           <Cell style={{ height: 'fit-content', color: '#6F7380', fontWeight: 'medium' }} width="25%">
             Pools
           </Cell>
@@ -87,6 +109,11 @@ export default function Stake() {
             TVL
           </Cell>
           <Cell style={{ height: 'fit-content', textAlign: 'left', color: '#6F7380' }}>Reward Tokens</Cell>
+          <ReadMoreContainer>
+            <ExternalLink href="https://docs.deus.finance/staking-and-farming/deus-finance">
+              Read more <Image alt="read more" width={10} height={10} src={ExternalLinkImage} />
+            </ExternalLink>
+          </ReadMoreContainer>
         </Row>
       </UpperRow>
     )

@@ -178,6 +178,11 @@ export default function Menu() {
               <div>Github</div>
             </Row>
           </ExternalLink>
+          <ExternalLink href="https://docs.deus.finance/">
+            <Row onClick={() => toggle()}>
+              <div>Docs</div>
+            </Row>
+          </ExternalLink>
           <Separator />
 
           <ExternalLink href="https://legacy.dei.finance/">
