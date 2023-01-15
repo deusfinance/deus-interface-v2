@@ -35,6 +35,7 @@ import BuyClqdrInputBox from 'components/App/CLqdr/BuyClqdrInputBox'
 import DataDropdown from 'components/App/CLqdr/DataDropdown'
 import ContractsDropdown from 'components/App/CLqdr/ContractsDropdown'
 import SingleChart from 'components/App/CLqdr/SingleChart'
+import ReadMore from 'components/App/CLqdr/ReadMore'
 
 const Wrapper = styled(MainWrapper)`
   width: 100%;
@@ -349,6 +350,7 @@ export default function Mint() {
                 {getActionButton()}
               </InputWrapper>
             </Wrapper>
+            <ReadMore />
           </RightWrapper>
         </ContentWrapper>
       </Container>

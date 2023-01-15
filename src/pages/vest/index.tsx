@@ -31,6 +31,8 @@ import StatsHeader from 'components/StatsHeader'
 import { Container } from 'components/App/StableCoin'
 import { useSearch, SearchField, Table, TopBorder, TopBorderWrap, ButtonText } from 'components/App/Vest'
 import MigrateAllManager from 'components/App/Vest/MigrateAllManager'
+import { ExternalLink } from 'components/Link'
+import ExternalLinkImage from '/public/static/images/pages/common/down.svg'
 
 dayjs.extend(utc)
 dayjs.extend(relativeTime)
@@ -90,6 +92,18 @@ const FirstRowWrapper = styled.div`
   justify-content: space-between;
   width: 100%;
   gap: 10px;
+`
+const ExternalLinkContainer = styled.div`
+  align-self: center;
+  display: flex;
+  background: none;
+  a {
+    color: ${({ theme }) => theme.text2};
+    &:hover {
+      color: ${({ theme }) => theme.text2};
+      text-decoration: underline;
+    }
+  }
 `
 
 export default function Vest() {
@@ -247,6 +261,17 @@ export default function Vest() {
     () => [
       { name: 'DEUS Price', value: formatDollarAmount(parseFloat(deusPrice), 2) },
       { name: 'veDEUS Supply', value: formatAmount(parseFloat(lockedVeDEUS), 0) },
+      {
+        name: '',
+        value: (
+          <ExternalLinkContainer>
+            <ExternalLink href="https://docs.deus.finance/xdeus/vedeus-greater-than-xdeus-migrator">
+              Read more <Image alt="read more" width={10} height={10} src={ExternalLinkImage} />
+            </ExternalLink>
+          </ExternalLinkContainer>
+        ),
+        hasOwnColor: true,
+      },
     ],
     [deusPrice, lockedVeDEUS]
   )

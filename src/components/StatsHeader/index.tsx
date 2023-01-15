@@ -33,6 +33,7 @@ const Wrapper = styled.div`
 const Item = styled.div<{ rightBorder?: boolean }>`
   display: inline-block;
   padding: 0 75px;
+  height: 100%;
   border-right: ${({ theme, rightBorder }) => (rightBorder ? `1px solid ${theme.border1}` : 'unset')};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -66,12 +67,18 @@ const Name = styled.div`
   `};
 `
 
-const Value = styled.div`
+const Value = styled.div<{ hasOwnColor?: boolean }>`
   font-weight: 500;
-  font-size: 24px;
-  background: ${({ theme }) => theme.deusColor};
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-size: 18px;
+
+  ${({ hasOwnColor, theme }) =>
+    !hasOwnColor &&
+    `
+    background: ${theme.deusColor};
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 24px;
+    `}
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 16px;
@@ -224,10 +231,11 @@ export default function StatsHeader({
 }: {
   items?: {
     name: string
-    value: string | number
+    value: string | number | JSX.Element
     link?: string
     hasTooltip?: boolean
     toolTipInfo?: string
+    hasOwnColor?: boolean
   }[]
   hasBox?: boolean
   pid?: number
@@ -253,14 +261,24 @@ export default function StatsHeader({
           />
         </ItemBox2>
       )}
-      <div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {items &&
           items.map((item, index) => (
             <Item key={index} rightBorder={index < items.length - 1 || hasBox}>
               <Name>{item.name}</Name>
               {!item.link ? (
-                <ValueBox data-for="id" data-tip={item.hasTooltip ? item.toolTipInfo : null}>
-                  <Value>{item.value}</Value>
+                <ValueBox
+                  data-for="id"
+                  data-tip={item.hasTooltip ? item.toolTipInfo : null}
+                  {...(!item.name && {
+                    style: {
+                      marginTop: 0,
+                    },
+                  })}
+                >
+                  <Value hasOwnColor={item.hasOwnColor} style={{ alignSelf: 'center' }}>
+                    {item.value}
+                  </Value>
                   {item.hasTooltip ? (
                     <>
                       <InfoIcon size={24} />
