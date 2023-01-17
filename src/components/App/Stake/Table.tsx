@@ -15,13 +15,9 @@ import { LiquidityPool, StakingType, StakingVersion } from 'constants/stakingPoo
 import { useRouter } from 'next/router'
 
 import useWeb3React from 'hooks/useWeb3'
-import { useCustomCoingeckoPrice } from 'hooks/useCoingeckoPrice'
-import { usePoolBalances } from 'hooks/useStablePoolInfo'
-import { useVDeusStats } from 'hooks/useVDeusStats'
-import { useUserInfo } from 'hooks/useStakingInfo'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 
-import { formatDollarAmount } from 'utils/numbers'
+import { formatAmount, formatDollarAmount } from 'utils/numbers'
 
 import TokenBox from 'components/App/Stake/TokenBox'
 import RewardBox from 'components/App/Stake/RewardBox'
@@ -350,7 +346,7 @@ const TableRowMiniContent = ({
         </SpaceBetween>
         <SpaceBetween>
           <Name>APR</Name>
-          <Value> {apr ? apr.toFixed(0) + '%' : 'N/A'} </Value>
+          <Value> {apr ? formatAmount(apr, 0) + '%' : 'N/A'} </Value>
         </SpaceBetween>
         <SpaceBetween>
           <Name>Reward Tokens</Name>
@@ -385,7 +381,7 @@ const TableRowLargeContent = ({
 
       <Cell width={'10%'}>
         <Name>APR</Name>
-        <Value> {apr ? apr.toFixed(0) + '%' : 'N/A'} </Value>
+        <Value> {apr ? formatAmount(apr, 0) + '%' : 'N/A'} </Value>
       </Cell>
 
       <Cell width={'18%'}>
@@ -438,43 +434,19 @@ const TableRowContent = ({ staking }: { staking: StakingType }) => {
   const liquidityPool = LiquidityPool.find((p) => p.id === staking.id) || LiquidityPool[0]
   const tokens = liquidityPool?.tokens
 
-  //const apr = staking.version === StakingVersion.EXTERNAL ? 0 : staking?.aprHook(staking)
-
   // generate total APR if pools have secondary APRs
-  const primaryApy = staking.version === StakingVersion.EXTERNAL ? 0 : staking?.aprHook(staking)
+  const primaryApy = staking.aprHook(staking)
   const secondaryApy =
     staking.version === StakingVersion.EXTERNAL ? 0 : staking.secondaryAprHook(liquidityPool, staking)
 
   const apr = primaryApy + secondaryApy
 
-  const priceToken = liquidityPool.priceToken?.symbol ?? ''
-  const price = useCustomCoingeckoPrice(priceToken) ?? '0'
-
-  const poolBalances = usePoolBalances(liquidityPool)
-
-  const totalLockedValue = useMemo(() => {
-    return poolBalances[1] * 2 * parseFloat(price)
-  }, [price, poolBalances])
-
-  const isSingleStakingPool = useMemo(() => {
-    return staking.isSingleStaking
-  }, [staking])
-
-  const { totalDepositedAmount } = useUserInfo(staking)
-
-  const { swapRatio } = useVDeusStats()
-
-  const totalDepositedValue = useMemo(() => {
-    return totalDepositedAmount * swapRatio * parseFloat(price)
-  }, [price, totalDepositedAmount, swapRatio])
+  const tvl = staking.tvlHook(staking)
 
   const supportedChainId: boolean = useMemo(() => {
     if (!chainId || !account) return false
     return chainId === SupportedChainId.FANTOM
   }, [chainId, account])
-
-  const tvl =
-    staking.version === StakingVersion.EXTERNAL ? 0 : isSingleStakingPool ? totalDepositedValue : totalLockedValue
 
   const router = useRouter()
   const handleClick = useCallback(() => {

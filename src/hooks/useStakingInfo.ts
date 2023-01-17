@@ -4,7 +4,7 @@ import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
 import { toBN } from 'utils/numbers'
 import useWeb3React from './useWeb3'
 import { formatUnits } from '@ethersproject/units'
-import { useDeusPrice } from './useCoingeckoPrice'
+import { useCustomCoingeckoPrice, useDeusPrice } from './useCoingeckoPrice'
 import { MasterChefV2 } from 'constants/addresses'
 import { SupportedChainId } from 'constants/chains'
 import { useVDeusMultiRewarderERC20Contract } from './useContract'
@@ -15,6 +15,7 @@ import { Token } from '@sushiswap/core-sdk'
 import BigNumber from 'bignumber.js'
 import { usePoolBalances } from './useStablePoolInfo'
 import { useAverageBlockTime } from 'state/application/hooks'
+import { useVDeusStats } from './useVDeusStats'
 
 //TODO: should remove all and put it in /constants
 const pids = [0, 1]
@@ -304,6 +305,31 @@ export function useV2GetApy(stakingPool: StakingType): number {
   if (totalDeposited === 0) return 0
 
   return (tokenPerSecond * (allocPoint / totalAllocPoint) * 365 * 24 * 60 * 60 * 100) / totalDeposited
+}
+
+export function useGetTvl(stakingPool: StakingType): number {
+  const liquidityPool = LiquidityPool.find((p) => p.id === stakingPool.id) || LiquidityPool[0]
+  const priceToken = liquidityPool.priceToken?.symbol ?? ''
+  const price = useCustomCoingeckoPrice(priceToken) ?? '0'
+  const poolBalances = usePoolBalances(liquidityPool)
+
+  const totalLockedValue = useMemo(() => {
+    return poolBalances[1] * 2 * parseFloat(price)
+  }, [price, poolBalances])
+
+  const isSingleStakingPool = useMemo(() => {
+    return stakingPool.isSingleStaking
+  }, [stakingPool])
+
+  const { swapRatio } = useVDeusStats()
+
+  const { totalDepositedAmount } = useUserInfo(stakingPool)
+
+  const totalDepositedValue = useMemo(() => {
+    return totalDepositedAmount * swapRatio * parseFloat(price)
+  }, [price, totalDepositedAmount, swapRatio])
+
+  return isSingleStakingPool ? totalDepositedValue : totalLockedValue
 }
 
 //get deus reward apy for deus-xdeus lp pool

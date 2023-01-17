@@ -1,6 +1,7 @@
 import { Token } from '@sushiswap/core-sdk'
-import { DEUS_TOKEN, DEUS_VDEUS_LP_TOKEN, XDEUS_TOKEN } from 'constants/tokens'
-import { useGetDeusApy, useV2GetApy } from 'hooks/useStakingInfo'
+import { DEUS_TOKEN, DEUS_VDEUS_LP_TOKEN, XDEUS_DEUS_SOLIDLY_LP, XDEUS_TOKEN } from 'constants/tokens'
+import { useSolidlyApy, useSolidlyTvl } from 'hooks/useSolidlyPoolStats'
+import { useGetDeusApy, useGetTvl, useV2GetApy } from 'hooks/useStakingInfo'
 import { MasterChefV3, StablePool_DEUS_vDEUS } from './addresses'
 import { ChainInfo } from './chainInfo'
 import { SupportedChainId } from './chains'
@@ -25,6 +26,7 @@ export type StakingType = {
   token?: Token
   provideLink?: string
   aprHook: (h: StakingType) => number
+  tvlHook: (h: StakingType) => number
   secondaryAprHook: (liqPool?: any, stakingPool?: any) => number
   masterChef: string
   pid: number
@@ -43,6 +45,9 @@ export type ExternalStakingType = {
   active: boolean
   version: StakingVersion
   chain: string
+  contract: Token
+  aprHook: (h: any) => number
+  tvlHook: (h: any) => number
 }
 
 export type LiquidityType = {
@@ -88,6 +93,7 @@ export const Stakings: StakingType[] = [
     rewardTokens: [XDEUS_TOKEN, DEUS_TOKEN],
     token: DEUS_VDEUS_LP_TOKEN,
     aprHook: useV2GetApy,
+    tvlHook: useGetTvl,
     secondaryAprHook: useGetDeusApy,
     masterChef: MasterChefV3[SupportedChainId.FANTOM],
     pid: 2,
@@ -102,6 +108,7 @@ export const Stakings: StakingType[] = [
     rewardTokens: [XDEUS_TOKEN],
     token: XDEUS_TOKEN,
     aprHook: useV2GetApy,
+    tvlHook: useGetTvl,
     secondaryAprHook: useGetDeusApy, // it doesn't return any deus reward for this pool, but you can't have conditional hooks. But the hook handles this scenario internally
     masterChef: MasterChefV3[SupportedChainId.FANTOM],
     pid: 0,
@@ -120,6 +127,9 @@ export const ExternalStakings: ExternalStakingType[] = [
     rewardTokens: [XDEUS_TOKEN],
     provideLink: 'https://solidly.com/liquidity/0x4EF3fF9dadBa30cff48133f5Dc780A28fc48693F',
     active: true,
+    contract: XDEUS_DEUS_SOLIDLY_LP,
+    aprHook: useSolidlyApy,
+    tvlHook: useSolidlyTvl,
     version: StakingVersion.EXTERNAL,
     chain: ChainInfo[SupportedChainId.MAINNET].label,
   },

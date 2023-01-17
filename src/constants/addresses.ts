@@ -175,6 +175,10 @@ export const DEUS_VDEUS_LP_TOKEN_ADDRESS: AddressMap = {
   [SupportedChainId.FANTOM]: '0xECd9E18356bb8d72741c539e75CEAdB3C5869ea0',
 }
 
+export const XDEUS_DEUS_SOLIDLY_LP_ADDRESS: AddressMap = {
+  [SupportedChainId.MAINNET]: '0x4EF3fF9dadBa30cff48133f5Dc780A28fc48693F',
+}
+
 export const MasterChefV3: AddressMap = {
   [SupportedChainId.FANTOM]: '0x62ad8dE6740314677F06723a7A07797aE5082Dbb',
 }

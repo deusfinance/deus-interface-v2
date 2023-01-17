@@ -9,6 +9,7 @@ import {
   CLQDR_ADDRESS,
   XDEUS_ADDRESS,
   DEUS_VDEUS_LP_TOKEN_ADDRESS,
+  XDEUS_DEUS_SOLIDLY_LP_ADDRESS,
 } from './addresses'
 
 export const DEI_TOKEN = new Token(SupportedChainId.FANTOM, DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'DEI', 'DEI')
@@ -40,6 +41,14 @@ export const DEUS_VDEUS_LP_TOKEN = new Token(
   18,
   'DV-LP',
   'DV-LP'
+)
+
+export const XDEUS_DEUS_SOLIDLY_LP = new Token(
+  SupportedChainId.MAINNET,
+  XDEUS_DEUS_SOLIDLY_LP_ADDRESS[SupportedChainId.MAINNET],
+  18,
+  'vAMM-xDEUS/DEUS',
+  'vAMM-xDEUS/DEUS'
 )
 
 /* =====================================
