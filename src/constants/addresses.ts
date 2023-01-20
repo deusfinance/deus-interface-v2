@@ -191,6 +191,10 @@ export const MasterChefV2: AddressMap = {
 export const veDEUSMultiRewarderERC20: AddressMap = {
   [SupportedChainId.FANTOM]: '0x9909E6046A9Ca950Cd2a28071338BdcB7d33f9Cb',
 }
+
+export const SOLID_TOKEN_ADDRESS: AddressMap = {
+  [SupportedChainId.MAINNET]: '0x777172D858dC1599914a1C4c6c9fC48c99a60990',
+}
 /* =====================================
                 LQDR Tokens ADDRESS
 ===================================== */
