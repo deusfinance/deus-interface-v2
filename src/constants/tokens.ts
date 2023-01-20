@@ -10,6 +10,7 @@ import {
   XDEUS_ADDRESS,
   DEUS_VDEUS_LP_TOKEN_ADDRESS,
   XDEUS_DEUS_SOLIDLY_LP_ADDRESS,
+  SOLID_TOKEN_ADDRESS,
 } from './addresses'
 
 export const DEI_TOKEN = new Token(SupportedChainId.FANTOM, DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'DEI', 'DEI')
@@ -49,6 +50,14 @@ export const XDEUS_DEUS_SOLIDLY_LP = new Token(
   18,
   'vAMM-xDEUS/DEUS',
   'vAMM-xDEUS/DEUS'
+)
+
+export const SOLID_TOKEN = new Token(
+  SupportedChainId.MAINNET,
+  SOLID_TOKEN_ADDRESS[SupportedChainId.MAINNET],
+  18,
+  'SOLID',
+  'SOLID'
 )
 
 /* =====================================
