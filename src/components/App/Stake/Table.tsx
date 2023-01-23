@@ -8,7 +8,8 @@ import EMPTY_LOCK_MOBILE from '/public/static/images/pages/veDEUS/emptyLockMobil
 import LOADING_LOCK from '/public/static/images/pages/veDEUS/loadingLock.svg'
 import LOADING_LOCK_MOBILE from '/public/static/images/pages/veDEUS/loadingLockMobile.svg'
 import ExternalIcon from '/public/static/images/pages/stake/down.svg'
-import Solidly from '/public/static/images/pages/stake/solid.png'
+//import Solidly from '/public/static/images/pages/stake/solid.png'
+import Solidly from '/public/static/images/pages/stake/solidly.svg'
 
 import { FALLBACK_CHAIN_ID, SupportedChainId } from 'constants/chains'
 import { LiquidityPool, StakingType, StakingVersion } from 'constants/stakingPools'
@@ -232,11 +233,11 @@ const CustomButtonWrapper = ({ type, href, isActive }: { type: BUTTON_TYPE; href
   return (
     <CustomButton transparentBG href={isActive && href}>
       <ButtonText>
-        {type === BUTTON_TYPE.MINI ? titles.mini : 'Farm on ' + titles.solidly}
+        {type === BUTTON_TYPE.MINI ? titles.mini : 'Farm on '}
         <HStack style={{ marginLeft: '1ch', alignItems: 'flex-end' }}>
           <Image
-            width={type === BUTTON_TYPE.SOLIDLY ? 24 : 8}
-            height={type === BUTTON_TYPE.SOLIDLY ? 24 : 8}
+            width={type === BUTTON_TYPE.SOLIDLY ? 64 : 0}
+            height={type === BUTTON_TYPE.SOLIDLY ? 24 : 0}
             src={type === BUTTON_TYPE.SOLIDLY ? Solidly : ExternalIcon}
             alt={type === BUTTON_TYPE.SOLIDLY ? titles.solidly : titles.mini}
           />
