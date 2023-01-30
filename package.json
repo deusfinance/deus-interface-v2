@@ -52,7 +52,7 @@
     "react-tooltip": "^4.2.21",
     "react-window": "^1.8.6",
     "rebass": "^4.0.7",
-    "recharts": "^2.1.16",
+    "recharts": "^2.3.2",
     "redux": "^4.1.1",
     "redux-localstorage-simple": "^2.4.1",
     "redux-persist": "^6.0.0",
@@ -117,6 +117,8 @@
   },
   "resolutions": {
     "@walletconnect/ethereum-provider": "1.7.1",
-    "minimist": "1.2.6"
+    "minimist": "1.2.6",
+    "ua-parser-js": "^0.7.33",
+    "json5": "1.0.2"
   }
 }
