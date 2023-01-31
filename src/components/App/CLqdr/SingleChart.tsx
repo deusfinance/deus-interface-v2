@@ -289,8 +289,8 @@ export default function SingleChart({ label, uniqueID }: { label: string; unique
     () =>
       uniqueID === 'totalSupply'
         ? [
-            Math.floor(Math.min(...filteredData.map((obj) => parseInt(obj.totalSupply))) / 10) * 10, // min is rounded to nearest 10
-            Math.ceil(Math.max(...filteredData.map((obj) => parseInt(obj.totalSupply))) / 10) * 10, // max is rounded to nearest 10
+            Math.floor(Math.min(...filteredData.map((obj) => parseInt(obj.totalSupply))) / 1000) * 1000, // min is rounded to nearest 1000
+            Math.ceil(Math.max(...filteredData.map((obj) => parseInt(obj.totalSupply))) / 1000) * 1000, // max is rounded to nearest 1000
           ]
         : [
             Math.floor(Math.min(...filteredData.map((obj) => parseFloat(obj.clqdrRatio))) * 100) / 100, // min is rounded to nearest 0.01
@@ -298,6 +298,11 @@ export default function SingleChart({ label, uniqueID }: { label: string; unique
           ],
     [uniqueID, filteredData]
   )
+
+  const tickFomatter = (value: any): any => {
+    if (uniqueID === 'totalSupply') return formatAmount(value, 0)
+    return value
+  }
 
   const CustomTooltip = ({ payload }: { payload: any }) => {
     if (payload && payload.length) {
@@ -370,6 +375,7 @@ export default function SingleChart({ label, uniqueID }: { label: string; unique
           <YAxis
             dataKey={dataKey}
             tick={{ fontSize: '12px' }}
+            tickFormatter={tickFomatter}
             interval={0}
             tickLine={false}
             axisLine={false}
