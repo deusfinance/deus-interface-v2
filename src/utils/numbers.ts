@@ -29,7 +29,7 @@ export const formatAmount = (num: number | undefined, digits = 2, thousandSepara
   return numbro(num).format({
     thousandSeparated: !!thousandSeparated,
     average: !thousandSeparated,
-    mantissa: num > 1000 ? 2 : digits,
+    mantissa: digits,
     abbreviations: {
       million: 'M',
       billion: 'B',
