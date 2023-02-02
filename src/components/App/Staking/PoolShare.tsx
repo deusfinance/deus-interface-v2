@@ -8,7 +8,6 @@ import useWeb3React from 'hooks/useWeb3'
 import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
 import { usePoolInfo, useRemoveLiquidity } from 'hooks/useStablePoolInfo'
 import { useUserInfo } from 'hooks/useStakingInfo'
-import { useCustomCoingeckoPrice } from 'hooks/useCoingeckoPrice'
 
 import { formatBalance, formatDollarAmount } from 'utils/numbers'
 
@@ -32,7 +31,7 @@ export default function PoolShare({ pool }: { pool: LiquidityType }) {
   const currencyBalance = useCurrencyBalance(account ?? undefined, currency)?.toSignificant()
   const poolInfo = usePoolInfo(pool)
   const virtualPrice = poolInfo?.virtualPrice || 1
-  const tokenPrice = useCustomCoingeckoPrice(pool.priceToken?.symbol ?? 'DEUS')
+  const tokenPrice = pool.priceHook()
   const stakingPool = Stakings.find((p) => p.id === pool.id) || Stakings[0]
   const { depositAmount, totalDepositedAmount } = useUserInfo(stakingPool)
 
