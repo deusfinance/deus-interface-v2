@@ -2,6 +2,7 @@ import { Token } from '@sushiswap/core-sdk'
 import { DEUS_TOKEN, DEUS_VDEUS_LP_TOKEN, SOLID_TOKEN, XDEUS_DEUS_SOLIDLY_LP, XDEUS_TOKEN } from 'constants/tokens'
 import { useSolidlyApy, useSolidlyTvl } from 'hooks/useSolidlyPoolStats'
 import { useGetDeusApy, useGetTvl, useV2GetApy } from 'hooks/useStakingInfo'
+import { useDeusPrice } from 'state/dashboard/hooks'
 import { MasterChefV3, StablePool_DEUS_vDEUS } from './addresses'
 import { ChainInfo } from './chainInfo'
 import { SupportedChainId } from './chains'
@@ -58,6 +59,7 @@ export type LiquidityType = {
   lpToken: Token
   contract?: string
   priceToken?: Token
+  priceHook: () => string
 }
 
 export const LiquidityPool: LiquidityType[] = [
@@ -76,6 +78,7 @@ export const LiquidityPool: LiquidityType[] = [
     lpToken: DEUS_VDEUS_LP_TOKEN,
     contract: StablePool_DEUS_vDEUS[SupportedChainId.FANTOM],
     priceToken: DEUS_TOKEN,
+    priceHook: useDeusPrice,
   },
   {
     id: 1,
@@ -83,6 +86,7 @@ export const LiquidityPool: LiquidityType[] = [
     tokens: [XDEUS_TOKEN], // TODO: remove
     lpToken: XDEUS_TOKEN,
     priceToken: DEUS_TOKEN,
+    priceHook: useDeusPrice,
   },
 ]
 

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
 
-import { useDeusPrice } from 'hooks/useCoingeckoPrice'
+import { useDeusPrice } from 'state/dashboard/hooks'
 
 import Hero from 'components/Hero'
 import StatsHeader from 'components/StatsHeader'
