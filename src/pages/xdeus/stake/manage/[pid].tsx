@@ -8,7 +8,6 @@ import { formatDollarAmount } from 'utils/numbers'
 
 import { useUserInfo } from 'hooks/useStakingInfo'
 import { useVDeusStats } from 'hooks/useVDeusStats'
-import { useCustomCoingeckoPrice } from 'hooks/useCoingeckoPrice'
 import { usePoolBalances } from 'hooks/useStablePoolInfo'
 
 import LiquidityPool from 'components/App/Staking/LiquidityPool'
@@ -62,7 +61,7 @@ export default function StakingPage() {
   const { swapRatio } = useVDeusStats()
 
   const priceToken = liquidityPool.priceToken?.symbol ?? ''
-  const price = useCustomCoingeckoPrice(priceToken) ?? '0'
+  const price = liquidityPool.priceHook()
 
   const totalLockedValue = poolBalances[1] * 2 * Number(price)
 

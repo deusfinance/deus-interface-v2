@@ -5,10 +5,10 @@ import Link from 'next/link'
 import { LiquidityType } from 'constants/stakingPools'
 
 import { useCurrencyBalance } from 'state/wallet/hooks'
+import { useDeiPrice, useDeusPrice } from 'state/dashboard/hooks'
 
 import useWeb3React from 'hooks/useWeb3'
 import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
-import { useDeiPrice, useDeusPrice } from 'hooks/useCoingeckoPrice'
 import { usePoolBalances } from 'hooks/useStablePoolInfo'
 
 import ImageWithFallback from 'components/ImageWithFallback'

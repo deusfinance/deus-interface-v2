@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 import { useERC20Contract, useMasterChefContract } from 'hooks/useContract'
 import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
+import { useDeusPrice } from 'state/dashboard/hooks'
 import { toBN } from 'utils/numbers'
 import useWeb3React from './useWeb3'
 import { formatUnits } from '@ethersproject/units'
-import { useCustomCoingeckoPrice, useDeusPrice } from './useCoingeckoPrice'
 import { MasterChefV2 } from 'constants/addresses'
 import { SupportedChainId } from 'constants/chains'
 import { useVDeusMultiRewarderERC20Contract } from './useContract'
@@ -309,13 +309,10 @@ export function useV2GetApy(stakingPool: StakingType): number {
 
 export function useGetTvl(stakingPool: StakingType): number {
   const liquidityPool = LiquidityPool.find((p) => p.id === stakingPool.id) || LiquidityPool[0]
-  const priceToken = liquidityPool.priceToken?.symbol ?? ''
-  const price = useCustomCoingeckoPrice(priceToken) ?? '0'
+  //const priceToken = liquidityPool.priceToken?.symbol ?? ''
+  const price = liquidityPool.priceHook()
   const poolBalances = usePoolBalances(liquidityPool)
-
-  const totalLockedValue = useMemo(() => {
-    return poolBalances[1] * 2 * parseFloat(price)
-  }, [price, poolBalances])
+  const totalLockedValue = poolBalances[1] * 2 * parseFloat(price)
 
   const isSingleStakingPool = useMemo(() => {
     return stakingPool.isSingleStaking

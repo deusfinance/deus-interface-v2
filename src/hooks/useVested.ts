@@ -8,7 +8,7 @@ import { useDeusMetrics } from 'state/dashboard/hooks'
 import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
 import { useSupportedChainId } from './useSupportedChainId'
 import { useVeDeusContract } from './useContract'
-import { useDeusPrice } from './useCoingeckoPrice'
+import { useDeusPrice } from 'state/dashboard/hooks'
 
 dayjs.extend(utc)
 

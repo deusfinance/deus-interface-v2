@@ -3,10 +3,11 @@ import styled from 'styled-components'
 
 import { LiquidityType, StakingType, Stakings } from 'constants/stakingPools'
 
+import { useDeiPrice, useDeusPrice } from 'state/dashboard/hooks'
+
 import { truncateAddress } from 'utils/address'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
 
-import { useDeiPrice, useDeusPrice } from 'hooks/useCoingeckoPrice'
 import { useUserInfo } from 'hooks/useStakingInfo'
 import { useVDeusStats } from 'hooks/useVDeusStats'
 import { usePoolBalances, usePoolInfo } from 'hooks/useStablePoolInfo'

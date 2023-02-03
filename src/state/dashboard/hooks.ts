@@ -49,11 +49,21 @@ export const useDeiMetrics = () => {
   }, [deiMarketCap, deiTotalSupply, deiDexLiquidity, mintedDei, stakedDeiLiquidity])
 }
 
+// export const useDeusPrice = () => {
+//   const { deusPrice } = useDeusMetrics()
+//   return useMemo(() => {
+//     return deusPrice
+//   }, [deusPrice])
+// }
+
 export const useDeusPrice = () => {
-  const { deusPrice } = useDeusMetrics()
-  return useMemo(() => {
-    return deusPrice
-  }, [deusPrice])
+  const dashboardState = useDashboardState()
+  return dashboardState.deusPrice
+}
+
+export const useDeiPrice = () => {
+  const dashboardState = useDashboardState()
+  return dashboardState.deiPrice
 }
 
 export const useDeiMarketCap = () => {
