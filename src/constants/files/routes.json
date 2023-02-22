@@ -7,10 +7,5 @@
       { "id": "62", "text": "Convert DEUS", "path": "/xdeus/swap" },
       { "id": "61", "text": "Stake xDEUS", "path": "/xdeus/stake" }
     ]
-  },
-  {
-    "id": "7",
-    "text": "veDeus Migrator",
-    "path": "/vest"
   }
 ]
