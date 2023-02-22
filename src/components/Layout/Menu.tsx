@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import Link from 'next/link'
 import { Z_INDEX } from 'theme'
-import LEGACY_DEI_LOGO from '/public/static/images/LegacyDeiLogo.svg'
+import DEI_LOGO from '/public/static/images/DeiLogo.svg'
 
 import useOnOutsideClick from 'hooks/useOnOutsideClick'
 import { Link as LinkIcon } from 'components/Icons'
@@ -117,12 +117,6 @@ export default function Menu() {
               <div>cLQDR</div>
             </Row>
           </Link>
-
-          <Link href="/vest" passHref>
-            <Row active={router.route.includes('/vest')} onClick={() => toggle()}>
-              <div>veDEUS(migrator)</div>
-            </Row>
-          </Link>
           <ExternalLink href="https://app.firebird.finance/swap?inputCurrency=FTM&outputCurrency=0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44&net=250">
             <Row onClick={() => toggle()}>
               <ExternalItem>
@@ -185,13 +179,13 @@ export default function Menu() {
           </ExternalLink>
           <Separator />
 
-          <ExternalLink href="https://legacy.dei.finance/">
+          <ExternalLink href="https://app.dei.finance/">
             <Row onClick={() => toggle()}>
               <LegacyWrapper>
-                DEI Legacy App
+                DEI App
                 <LinkIcon style={{ marginLeft: '4px' }} />
               </LegacyWrapper>
-              <Image src={LEGACY_DEI_LOGO} width={'20px'} height={'15px'} alt={'dei-logo'} />
+              <Image src={DEI_LOGO} width={'20px'} height={'15px'} alt={'dei-logo'} />
             </Row>
           </ExternalLink>
         </InlineModal>
