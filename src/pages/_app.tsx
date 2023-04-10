@@ -11,6 +11,7 @@ import Popups from '../components/Popups'
 import Layout from '../components/Layout'
 import { ModalBackground } from '../components/Modal'
 import { useAnalyticsReporter } from '../components/analytics'
+import LiveChat from 'components/LiveChat'
 
 import store from '../state'
 import { getLibrary } from '../utils/library'
@@ -35,6 +36,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
               <ThemedGlobalStyle />
               <ModalProvider backgroundComponent={ModalBackground}>
                 <Toaster position="bottom-center" />
+                <LiveChat />
                 <Popups />
                 <Updaters />
                 <Layout>
