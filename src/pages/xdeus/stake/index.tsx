@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { isMobile } from 'react-device-detect'
 
-import { ExternalStakings, Stakings, StakingType } from 'constants/stakingPools'
+import { Stakings, StakingType } from 'constants/stakingPools'
 
 import { Row, RowBetween } from 'components/Row'
 import Table, { Cell } from 'components/App/Stake/Table'
