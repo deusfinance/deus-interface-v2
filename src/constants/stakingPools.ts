@@ -124,17 +124,17 @@ export const Stakings: StakingType[] = [
   },
 ]
 
-export const ExternalStakings: ExternalStakingType[] = [
-  {
-    id: 2,
-    name: 'xDEUS-DEUS',
-    rewardTokens: [XDEUS_TOKEN, SOLID_TOKEN],
-    provideLink: 'https://solidly.com/liquidity/0x4EF3fF9dadBa30cff48133f5Dc780A28fc48693F',
-    active: true,
-    contract: XDEUS_DEUS_SOLIDLY_LP,
-    aprHook: useSolidlyApy,
-    tvlHook: useSolidlyTvl,
-    version: StakingVersion.EXTERNAL,
-    chain: ChainInfo[SupportedChainId.MAINNET].label,
-  },
-]
+// export const ExternalStakings: ExternalStakingType[] = [
+//   {
+//     id: 2,
+//     name: 'xDEUS-DEUS',
+//     rewardTokens: [XDEUS_TOKEN, SOLID_TOKEN],
+//     provideLink: 'https://solidly.com/liquidity/0x4EF3fF9dadBa30cff48133f5Dc780A28fc48693F',
+//     active: true,
+//     contract: XDEUS_DEUS_SOLIDLY_LP,
+//     aprHook: useSolidlyApy,
+//     tvlHook: useSolidlyTvl,
+//     version: StakingVersion.EXTERNAL,
+//     chain: ChainInfo[SupportedChainId.MAINNET].label,
+//   },
+// ]

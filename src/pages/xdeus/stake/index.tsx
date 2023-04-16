@@ -91,8 +91,8 @@ const ReadMoreContainer = styled(Cell)`
 
 export default function Stake() {
   const list = useMemo(() => {
-    const allStakings = Stakings.concat(ExternalStakings as unknown as StakingType)
-    return allStakings.map((pool) => ({ ...pool, value: pool.name }))
+    // const allStakings = Stakings.concat(ExternalStakings as unknown as StakingType)
+    return Stakings.map((pool) => ({ ...pool, value: pool.name }))
   }, [])
 
   function getUpperRow() {
