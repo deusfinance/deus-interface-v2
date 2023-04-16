@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { isMobile } from 'react-device-detect'
 
-import { ExternalStakings, Stakings, StakingType } from 'constants/stakingPools'
+import { Stakings, StakingType } from 'constants/stakingPools'
 
 import { Row, RowBetween } from 'components/Row'
 import Table, { Cell } from 'components/App/Stake/Table'
@@ -91,8 +91,8 @@ const ReadMoreContainer = styled(Cell)`
 
 export default function Stake() {
   const list = useMemo(() => {
-    const allStakings = Stakings.concat(ExternalStakings as unknown as StakingType)
-    return allStakings.map((pool) => ({ ...pool, value: pool.name }))
+    // const allStakings = Stakings.concat(ExternalStakings as unknown as StakingType)
+    return Stakings.map((pool) => ({ ...pool, value: pool.name }))
   }, [])
 
   function getUpperRow() {

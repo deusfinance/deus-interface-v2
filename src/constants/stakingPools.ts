@@ -1,6 +1,5 @@
 import { Token } from '@sushiswap/core-sdk'
-import { DEUS_TOKEN, DEUS_VDEUS_LP_TOKEN, SOLID_TOKEN, XDEUS_DEUS_SOLIDLY_LP, XDEUS_TOKEN } from 'constants/tokens'
-import { useSolidlyApy, useSolidlyTvl } from 'hooks/useSolidlyPoolStats'
+import { DEUS_TOKEN, DEUS_VDEUS_LP_TOKEN, XDEUS_TOKEN } from 'constants/tokens'
 import { useGetDeusApy, useGetTvl, useV2GetApy } from 'hooks/useStakingInfo'
 import { useDeusPrice } from 'state/dashboard/hooks'
 import { MasterChefV3, StablePool_DEUS_vDEUS } from './addresses'
@@ -124,17 +123,17 @@ export const Stakings: StakingType[] = [
   },
 ]
 
-export const ExternalStakings: ExternalStakingType[] = [
-  {
-    id: 2,
-    name: 'xDEUS-DEUS',
-    rewardTokens: [XDEUS_TOKEN, SOLID_TOKEN],
-    provideLink: 'https://solidly.com/liquidity/0x4EF3fF9dadBa30cff48133f5Dc780A28fc48693F',
-    active: true,
-    contract: XDEUS_DEUS_SOLIDLY_LP,
-    aprHook: useSolidlyApy,
-    tvlHook: useSolidlyTvl,
-    version: StakingVersion.EXTERNAL,
-    chain: ChainInfo[SupportedChainId.MAINNET].label,
-  },
-]
+// export const ExternalStakings: ExternalStakingType[] = [
+//   {
+//     id: 2,
+//     name: 'xDEUS-DEUS',
+//     rewardTokens: [XDEUS_TOKEN, SOLID_TOKEN],
+//     provideLink: 'https://solidly.com/liquidity/0x4EF3fF9dadBa30cff48133f5Dc780A28fc48693F',
+//     active: true,
+//     contract: XDEUS_DEUS_SOLIDLY_LP,
+//     aprHook: useSolidlyApy,
+//     tvlHook: useSolidlyTvl,
+//     version: StakingVersion.EXTERNAL,
+//     chain: ChainInfo[SupportedChainId.MAINNET].label,
+//   },
+// ]
