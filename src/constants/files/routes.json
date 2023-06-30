@@ -7,5 +7,10 @@
       { "id": "62", "text": "Convert DEUS", "path": "/xdeus/swap" },
       { "id": "61", "text": "Stake xDEUS", "path": "/xdeus/stake" }
     ]
+  },
+  {
+    "id": "7",
+    "text": "Symm-migrate",
+    "path": "/symm-migrate"
   }
 ]
