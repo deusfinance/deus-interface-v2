@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import Image from 'next/image'
-import { Token } from '@sushiswap/core-sdk'
+import { CurrencyAmount, Token } from '@sushiswap/core-sdk'
 
 import EMPTY_LOCK from '/public/static/images/pages/veDEUS/emptyLock.svg'
 import EMPTY_LOCK_MOBILE from '/public/static/images/pages/veDEUS/emptyLockMobile.svg'
@@ -21,7 +21,12 @@ import { ExternalLink } from 'components/Link'
 import { Divider, HStack, VStack } from '../Staking/common/Layout'
 import { BaseButton, PrimaryButtonWide } from 'components/Button'
 import { useWalletModalToggle } from 'state/application/hooks'
-import { MigrationTypes } from 'constants/migrationOptions'
+import { MigrationTypes, MigrationVersion } from 'constants/migrationOptions'
+import { useTokenBalance } from 'state/wallet/hooks'
+
+import SymmLogo from '/public/static/images/tokens/symm.svg'
+import DeusLogo from '/public/static/images/tokens/deus.svg'
+import { isMobile } from 'react-device-detect'
 
 const Wrapper = styled.div`
   display: flex;
@@ -142,13 +147,30 @@ export const TopBorder = styled.div`
   display: flex;
 `
 
-export default function Table({
-  isMobile,
-  MigrationOptions,
-}: {
-  isMobile?: boolean
-  MigrationOptions: MigrationTypes[]
-}) {
+const MigrationButton = styled(BaseButton)<{ deus?: boolean }>`
+  /* width: 152px; */
+  height: 40px;
+  border-radius: 8px;
+  background: #141414;
+  color: ${({ theme, deus }) => (deus ? '#01F5E4' : theme.symmColor)};
+  text-align: center;
+  font-size: 14px;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  padding: 2px;
+
+  &:hover {
+    background: #242424;
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    font-size: 12px;
+  `}
+`
+
+export default function Table({ MigrationOptions }: { MigrationOptions: MigrationTypes[] }) {
   const { account } = useWeb3React()
 
   const isLoading = false
@@ -270,6 +292,8 @@ const MiniTopBorderWrap = styled(TopBorderWrap)`
 `
 interface ITableRowContent {
   token: Token
+  version: MigrationVersion
+  currencyBalance: CurrencyAmount<Token> | undefined
   active: MigrationTypes['active']
   handleClick: () => void
   chainIdError: boolean
@@ -280,6 +304,8 @@ interface ITableRowContent {
 
 const TableRowMiniContent = ({
   token,
+  version,
+  currencyBalance,
   active,
   handleClick,
   chainIdError,
@@ -287,72 +313,13 @@ const TableRowMiniContent = ({
   account,
   toggleWalletModal,
 }: ITableRowContent) => {
-  return (
-    <></>
-    // <MiniStakeContainer>
-    //   <MiniStakeHeaderContainer>
-    //     <TokenBox tokens={tokens} chain={chain} title={name} active={active} />
-    //     <div>
-    //       <MiniTopBorderWrap>
-    //         <TopBorder
-    //           {...(version !== StakingVersion.EXTERNAL && {
-    //             onClick: active && !chainIdError ? handleClick : undefined,
-    //           })}
-    //         >
-    //           {!account ? (
-    //             <PrimaryButtonWide transparentBG onClick={toggleWalletModal}>
-    //               <ButtonText gradientText={chainIdError}>Connect Wallet</ButtonText>
-    //             </PrimaryButtonWide>
-    //           ) : chainIdError ? (
-    //             <PrimaryButtonWide transparentBG onClick={() => rpcChangerCallback(FALLBACK_CHAIN_ID)}>
-    //               <ButtonText gradientText={chainIdError}>Switch to Fantom</ButtonText>
-    //             </PrimaryButtonWide>
-    //           ) : version === StakingVersion.EXTERNAL && provideLink ? (
-    //             <CustomButtonWrapper isActive={active} href={provideLink} type={BUTTON_TYPE.MINI} />
-    //           ) : (
-    //             <PrimaryButtonWide transparentBG>
-    //               <ButtonText gradientText={!active}>{active ? 'Manage' : 'Withdraw'}</ButtonText>
-    //             </PrimaryButtonWide>
-    //           )}
-    //         </TopBorder>
-    //       </MiniTopBorderWrap>
-    //     </div>
-    //   </MiniStakeHeaderContainer>
-    //   <MiniStakeContentContainer>
-    //     <SpaceBetween>
-    //       <Name>TVL</Name>
-    //       <Value>{tvl ? formatDollarAmount(tvl) : 'N/A'}</Value>
-    //     </SpaceBetween>
-    //     <SpaceBetween>
-    //       <Name>APR</Name>
-    //       <Value> {apr ? formatAmount(apr, 0) + '%' : 'N/A'} </Value>
-    //     </SpaceBetween>
-    //     <SpaceBetween>
-    //       <Name>Reward Tokens</Name>
-    //       <RewardBox tokens={rewardTokens} />
-    //     </SpaceBetween>
-    //   </MiniStakeContentContainer>
-    // </MiniStakeContainer>
-  )
+  return <></>
 }
-
-const MigrationButton = styled(BaseButton)<{ deus?: boolean }>`
-  width: 152px;
-  height: 40px;
-  border-radius: 8px;
-  background: #141414;
-  backdrop-filter: blur(9px);
-  color: ${({ theme, deus }) => (deus ? '#01F5E4' : theme.symmColor)};
-  text-align: center;
-  font-size: 14px;
-  font-family: Inter;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-`
 
 const TableRowLargeContent = ({
   token,
+  version,
+  currencyBalance,
   active,
   handleClick,
   chainIdError,
@@ -360,6 +327,10 @@ const TableRowLargeContent = ({
   account,
   toggleWalletModal,
 }: ITableRowContent) => {
+  const [currencyBalanceDisplay] = useMemo(() => {
+    return [currencyBalance?.toSignificant(4)]
+  }, [currencyBalance])
+
   return (
     <>
       <Cell width={'25%'}>
@@ -367,16 +338,33 @@ const TableRowLargeContent = ({
       </Cell>
 
       <Cell width={'20%'}>
-        <Value> {'N/A'} </Value>
+        <Value> {currencyBalanceDisplay ? currencyBalanceDisplay : '0.00'} </Value>
       </Cell>
 
       <Cell width={'25%'}>
-        <Value>{'N/A'}</Value>
+        <Value>
+          {'N/A ->'}
+          <span style={{ paddingLeft: '6px' }}>
+            <Image alt="SymmLogo" width={17} height={12} src={SymmLogo} />
+          </span>
+        </Value>
+        {version === MigrationVersion.DUAL && (
+          <Value>
+            {'N/A ->'}
+            <span style={{ paddingLeft: '6px' }}>
+              <Image alt="DeusLogo" width={16} height={16} src={DeusLogo} />
+            </span>
+          </Value>
+        )}
       </Cell>
 
-      <Cell>{account && !chainIdError && <MigrationButton deus>Migrate to DEUS</MigrationButton>}</Cell>
+      <Cell width={'15%'}>
+        {account && !chainIdError && version === MigrationVersion.DUAL && (
+          <MigrationButton deus>Migrate to DEUS</MigrationButton>
+        )}
+      </Cell>
 
-      <Cell>
+      <Cell width={'15%'}>
         {!account ? (
           <PrimaryButtonWide transparentBG onClick={toggleWalletModal}>
             <ButtonText gradientText={chainIdError}>Connect Wallet</ButtonText>
@@ -397,10 +385,8 @@ const TableRowContent = ({ migrationOption }: { migrationOption: MigrationTypes 
   const { chainId, account } = useWeb3React()
   const rpcChangerCallback = useRpcChangerCallback()
   const toggleWalletModal = useWalletModalToggle()
-  const { id, token, active } = migrationOption
+  const { token, version, active } = migrationOption
   const router = useRouter()
-
-  // const primaryApy = staking.aprHook(staking)
 
   const supportedChainId: boolean = useMemo(() => {
     if (!chainId || !account) return false
@@ -411,6 +397,8 @@ const TableRowContent = ({ migrationOption }: { migrationOption: MigrationTypes 
     router.push(`/symm-migrate`)
   }, [router])
 
+  const currencyBalance = useTokenBalance(account ?? undefined, token ?? undefined)
+
   return (
     <>
       <TableRowLargeContainer>
@@ -418,6 +406,8 @@ const TableRowContent = ({ migrationOption }: { migrationOption: MigrationTypes 
           active={active}
           handleClick={handleClick}
           token={token}
+          currencyBalance={currencyBalance}
+          version={version}
           chainIdError={!supportedChainId}
           rpcChangerCallback={rpcChangerCallback}
           account={account}
@@ -428,6 +418,8 @@ const TableRowContent = ({ migrationOption }: { migrationOption: MigrationTypes 
         active={active}
         handleClick={handleClick}
         token={token}
+        currencyBalance={currencyBalance}
+        version={version}
         chainIdError={!supportedChainId}
         rpcChangerCallback={rpcChangerCallback}
         account={account}

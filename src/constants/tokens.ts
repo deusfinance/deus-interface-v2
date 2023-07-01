@@ -37,6 +37,15 @@ export const XDEUS_TOKEN = new Token(
   'xDEUS'
 )
 
+// TODO: this is a test token
+export const SYMM_TOKEN = new Token(
+  SupportedChainId.FANTOM,
+  '0x0e249130b3545a2a287DE9f27d805CAB95f03DB9',
+  18,
+  'Symm',
+  'Symm'
+)
+
 export const DEUS_VDEUS_LP_TOKEN = new Token(
   SupportedChainId.FANTOM,
   DEUS_VDEUS_LP_TOKEN_ADDRESS[SupportedChainId.FANTOM],
