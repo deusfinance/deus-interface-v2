@@ -112,9 +112,9 @@ export default function Menu() {
               <div>xDEUS Stake</div>
             </Row>
           </Link>
-          <Link href="/symm-migrate" passHref>
-            <Row active={router.route.includes('/symm-migrate')} onClick={() => toggle()}>
-              <div>Symm-migrate</div>
+          <Link href="/migration" passHref>
+            <Row active={router.route.includes('/migration')} onClick={() => toggle()}>
+              <div>Migration</div>
             </Row>
           </Link>
           <Link href="/clqdr" passHref>

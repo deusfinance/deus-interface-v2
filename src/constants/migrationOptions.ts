@@ -1,5 +1,5 @@
 import { Token } from '@sushiswap/core-sdk'
-import { DEUS_TOKEN, Tokens, XDEUS_TOKEN } from 'constants/tokens'
+import { DEUS_TOKEN, Tokens, XDEUS_TOKEN, bDEI_TOKEN } from 'constants/tokens'
 import { SupportedChainId } from './chains'
 
 export enum MigrationVersion {
@@ -35,7 +35,7 @@ export const MigrationOptions: MigrationTypes[] = [
   },
   {
     id: 3,
-    token: Tokens['DEI'][SupportedChainId.FANTOM],
+    token: bDEI_TOKEN,
     version: MigrationVersion.DUAL,
     active: true,
   },

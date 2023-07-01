@@ -12,6 +12,7 @@ import {
   XDEUS_DEUS_SOLIDLY_LP_ADDRESS,
   SOLID_TOKEN_ADDRESS,
   LEGACY_DEI_ADDRESS,
+  BDEI_ADDRESS,
 } from './addresses'
 
 export const DEI_TOKEN = new Token(SupportedChainId.FANTOM, DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'DEI', 'DEI')
@@ -36,6 +37,8 @@ export const XDEUS_TOKEN = new Token(
   'xDEUS',
   'xDEUS'
 )
+
+export const bDEI_TOKEN = new Token(SupportedChainId.FANTOM, BDEI_ADDRESS[SupportedChainId.FANTOM], 18, 'bDEI', 'bDEI')
 
 // TODO: this is a test token
 export const SYMM_TOKEN = new Token(

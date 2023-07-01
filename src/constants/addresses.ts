@@ -36,6 +36,10 @@ export const LEGACY_DEI_ADDRESS: AddressMap = {
   ]),
 }
 
+export const BDEI_ADDRESS: AddressMap = {
+  [SupportedChainId.FANTOM]: '0x05f6ea7F80BDC07f6E0728BbBBAbebEA4E142eE8',
+}
+
 /* =====================================
                 DEUS ADDRESS
 ===================================== */

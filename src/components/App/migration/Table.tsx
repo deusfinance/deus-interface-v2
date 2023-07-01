@@ -1,6 +1,9 @@
 import React, { useCallback, useMemo } from 'react'
+import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
+
 import { CurrencyAmount, Token } from '@sushiswap/core-sdk'
 
 import EMPTY_LOCK from '/public/static/images/pages/veDEUS/emptyLock.svg'
@@ -9,24 +12,22 @@ import LOADING_LOCK from '/public/static/images/pages/veDEUS/loadingLock.svg'
 import LOADING_LOCK_MOBILE from '/public/static/images/pages/veDEUS/loadingLockMobile.svg'
 import ExternalIcon from '/public/static/images/pages/stake/down.svg'
 import Solidly from '/public/static/images/pages/stake/solidly.svg'
+import SymmLogo from '/public/static/images/tokens/symm.svg'
+import DeusLogo from '/public/static/images/tokens/deus.svg'
 
 import { FALLBACK_CHAIN_ID, SupportedChainId } from 'constants/chains'
-import { useRouter } from 'next/router'
+import { MigrationTypes, MigrationVersion } from 'constants/migrationOptions'
 
 import useWeb3React from 'hooks/useWeb3'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 
-import TokenBox from 'components/App/Migration/TokenBox'
 import { ExternalLink } from 'components/Link'
 import { Divider, HStack, VStack } from '../Staking/common/Layout'
 import { BaseButton, PrimaryButtonWide } from 'components/Button'
 import { useWalletModalToggle } from 'state/application/hooks'
-import { MigrationTypes, MigrationVersion } from 'constants/migrationOptions'
-import { useTokenBalance } from 'state/wallet/hooks'
+import TokenBox from './TokenBox'
 
-import SymmLogo from '/public/static/images/tokens/symm.svg'
-import DeusLogo from '/public/static/images/tokens/deus.svg'
-import { isMobile } from 'react-device-detect'
+import { useTokenBalance } from 'state/wallet/hooks'
 
 const Wrapper = styled.div`
   display: flex;
@@ -394,7 +395,7 @@ const TableRowContent = ({ migrationOption }: { migrationOption: MigrationTypes 
   }, [chainId, account])
 
   const handleClick = useCallback(() => {
-    router.push(`/symm-migrate`)
+    router.push(`/migration`)
   }, [router])
 
   const currencyBalance = useTokenBalance(account ?? undefined, token ?? undefined)

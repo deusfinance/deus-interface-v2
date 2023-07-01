@@ -1,7 +1,7 @@
 import { SupportedChainId } from 'constants/chains'
 import MigrationCard from './MigrationCard'
 
-import { DEUS_TOKEN, Tokens, XDEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
+import { DEUS_TOKEN, Tokens, XDEUS_TOKEN, SYMM_TOKEN, bDEI_TOKEN } from 'constants/tokens'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
@@ -21,21 +21,11 @@ export default function CardBox() {
       />
       <MigrationCard
         destinationTokens={[DEUS_TOKEN, SYMM_TOKEN]}
-        sourceTokens={[
-          DEUS_TOKEN,
-          XDEUS_TOKEN,
-          Tokens['LEGACY_DEI'][SupportedChainId.FANTOM],
-          Tokens['DEI'][SupportedChainId.FANTOM],
-        ]}
+        sourceTokens={[DEUS_TOKEN, XDEUS_TOKEN, Tokens['LEGACY_DEI'][SupportedChainId.FANTOM], bDEI_TOKEN]}
       />
       <MigrationCard
         destinationTokens={[SYMM_TOKEN]}
-        sourceTokens={[
-          DEUS_TOKEN,
-          XDEUS_TOKEN,
-          Tokens['LEGACY_DEI'][SupportedChainId.FANTOM],
-          Tokens['DEI'][SupportedChainId.FANTOM],
-        ]}
+        sourceTokens={[DEUS_TOKEN, XDEUS_TOKEN, Tokens['LEGACY_DEI'][SupportedChainId.FANTOM], bDEI_TOKEN]}
       />
     </Wrapper>
   )
