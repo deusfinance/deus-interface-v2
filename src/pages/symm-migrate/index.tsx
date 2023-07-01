@@ -2,15 +2,15 @@ import React, { useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { isMobile } from 'react-device-detect'
 
-import { Stakings, StakingType } from 'constants/stakingPools'
+import { MigrationOptions } from 'constants/migrationOptions'
 
 import { Row, RowBetween } from 'components/Row'
-import Table, { Cell } from 'components/App/Stake/Table'
+import Table, { Cell } from 'components/App/Migration/Table'
 import Image from 'next/image'
 import { RowCenter } from 'components/Row'
 
 import SymmLogo from '/public/static/images/pages/migration/symm.svg'
-import ActionSetter, { ActionTypes } from 'components/App/migration/ActionSetter'
+import ActionSetter, { ActionTypes } from 'components/App/Migration/ActionSetter'
 import { Card } from 'components/Card'
 import { Z_INDEX } from 'theme'
 import { ChevronDown as NavToggleIcon } from 'components/Icons'
@@ -165,7 +165,7 @@ const ValueBox = styled.div`
 const ExtensionSpan = styled.span<{ deusColor?: boolean }>`
   font-size: 13px;
   padding-left: 4px;
-
+  color: ${({ theme }) => theme.symmColor};
   ${({ deusColor }) =>
     deusColor &&
     ` 
@@ -249,6 +249,22 @@ const ChainWrap = styled.div`
   }
 `
 
+const TableTitle = styled(Cell)`
+  height: fit-content;
+  color: #7f8082;
+  font-size: 12px;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-align: start;
+  padding-left: 12px;
+`
+
+export const getImageSize = () => {
+  return isMobile ? 15 : 20
+}
+
 export default function Migrate() {
   const { chainId, account } = useWeb3React()
   const rpcChangerCallback = useRpcChangerCallback()
@@ -259,24 +275,13 @@ export default function Migrate() {
   const toggle = () => setIsOpen((prev) => !prev)
   useOnOutsideClick(ref, () => setIsOpen(false))
 
-  const list = useMemo(() => {
-    return Stakings.map((pool) => ({ ...pool, value: pool.name }))
-  }, [])
-
   function getUpperRow() {
     return (
       <UpperRow>
         <Row style={{ position: 'relative' }}>
-          <Cell style={{ height: 'fit-content', color: '#6F7380', fontWeight: 'medium' }} width="25%">
-            Pools
-          </Cell>
-          <Cell style={{ height: 'fit-content', color: '#6F7380', fontWeight: 'medium' }} width="10%">
-            APR
-          </Cell>
-          <Cell style={{ height: 'fit-content', color: '#6F7380' }} width="18%">
-            TVL
-          </Cell>
-          <Cell style={{ height: 'fit-content', textAlign: 'left', color: '#6F7380' }}>Reward Tokens</Cell>
+          <TableTitle width="25%">Token</TableTitle>
+          <TableTitle width="20%">My Balance</TableTitle>
+          <TableTitle width="25%">My Migrated Amount</TableTitle>
         </Row>
       </UpperRow>
     )
@@ -305,7 +310,7 @@ export default function Migrate() {
                   {item.extension && <ExtensionSpan deusColor={item.deusColor}>{item.extension}</ExtensionSpan>}
                   {item.logo && (
                     <span style={{ paddingLeft: '4px' }}>
-                      <Image alt="SymmLogo" width={20} height={14} src={SymmLogo} />
+                      <Image alt="SymmLogo" width={getImageSize()} height={14} src={SymmLogo} />
                     </span>
                   )}
                 </ValueBox>
@@ -332,8 +337,8 @@ export default function Migrate() {
               <InlineRow active>
                 <Image
                   src={chainId === SupportedChainId.FANTOM ? FANTOM_LOGO : ARBITRUM_LOGO}
-                  width={'20px'}
-                  height={'20px'}
+                  width={getImageSize() + 'px'}
+                  height={getImageSize() + 'px'}
                   alt={'chain-logo'}
                 />
                 <ChainDiv>{ChainInfo[chainId ?? SupportedChainId.FANTOM].chainName}</ChainDiv>
@@ -344,7 +349,12 @@ export default function Migrate() {
               <InlineModal isOpen={isOpen}>
                 <div>
                   <InlineRow active={SupportedChainId.ARBITRUM === chainId} onClick={() => toggle()}>
-                    <Image src={ARBITRUM_LOGO} width={'20px'} height={'20px'} alt={'chain-logo'} />
+                    <Image
+                      src={ARBITRUM_LOGO}
+                      width={getImageSize() + 'px'}
+                      height={getImageSize() + 'px'}
+                      alt={'chain-logo'}
+                    />
                     <ChainDiv onClick={() => rpcChangerCallback(SupportedChainId.ARBITRUM)}>
                       {ChainInfo[SupportedChainId.ARBITRUM].chainName}
                     </ChainDiv>
@@ -352,7 +362,12 @@ export default function Migrate() {
                 </div>
                 <div>
                   <InlineRow active={SupportedChainId.FANTOM === chainId} onClick={() => toggle()}>
-                    <Image src={FANTOM_LOGO} width={'20px'} height={'20px'} alt={'chain-logo'} />
+                    <Image
+                      src={FANTOM_LOGO}
+                      width={getImageSize() + 'px'}
+                      height={getImageSize() + 'px'}
+                      alt={'chain-logo'}
+                    />
                     <ChainDiv onClick={() => rpcChangerCallback(SupportedChainId.FANTOM)}>
                       {ChainInfo[SupportedChainId.FANTOM].chainName}
                     </ChainDiv>
@@ -366,7 +381,7 @@ export default function Migrate() {
         {selected === ActionTypes.MANUAL ? (
           <span>
             {getUpperRow()}
-            <Table isMobile={isMobile} stakings={list as unknown as StakingType[]} />
+            <Table isMobile={isMobile} MigrationOptions={MigrationOptions} />
           </span>
         ) : (
           <span>easy mode</span>

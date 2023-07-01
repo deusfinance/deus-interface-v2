@@ -28,6 +28,14 @@ export const DEI_ADDRESS: AddressMap = {
   ]),
 }
 
+export const LEGACY_DEI_ADDRESS: AddressMap = {
+  ...constructSameAddressMap('0xDE12c7959E1a72bbe8a5f7A1dc8f8EeF9Ab011B3', [
+    SupportedChainId.MAINNET,
+    SupportedChainId.POLYGON,
+    SupportedChainId.FANTOM,
+  ]),
+}
+
 /* =====================================
                 DEUS ADDRESS
 ===================================== */

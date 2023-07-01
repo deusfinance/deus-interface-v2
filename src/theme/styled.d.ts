@@ -76,6 +76,7 @@ export interface Colors {
   lqdrColor: Color
   clqdChartPrimaryColor: Color
   clqdChartSecondaryColor: Color
+  symmColor: Color
 }
 
 export type Shadow = string

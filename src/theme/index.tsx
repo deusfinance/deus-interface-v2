@@ -133,6 +133,7 @@ function colors(themeName: SupportedThemes): Colors {
       lqdrColor: 'linear-gradient(339.11deg, #1984FF 9.31%, #4DD9F6 96.03%)',
       clqdChartPrimaryColor: '#0BADF4',
       clqdChartSecondaryColor: '#30EFE4',
+      symmColor: '#FD9E99',
     },
     [SupportedThemes.DARK]: {
       themeName: SupportedThemes.DARK,
@@ -210,6 +211,7 @@ function colors(themeName: SupportedThemes): Colors {
       lqdrColor: 'linear-gradient(339.11deg, #1984FF 9.31%, #4DD9F6 96.03%)',
       clqdChartPrimaryColor: '#0BADF4',
       clqdChartSecondaryColor: '#30EFE4',
+      symmColor: '#fd9e99',
     },
   }
   // default the theme to light mode
