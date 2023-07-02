@@ -17,7 +17,7 @@ export default function CardBox() {
     <Wrapper>
       <MigrationCard
         destinationTokens={[DEUS_TOKEN]}
-        sourceTokens={[Tokens['LEGACY_DEI'][SupportedChainId.FANTOM], Tokens['DEI'][SupportedChainId.FANTOM]]}
+        sourceTokens={[Tokens['LEGACY_DEI'][SupportedChainId.FANTOM], bDEI_TOKEN]}
       />
       <MigrationCard
         destinationTokens={[DEUS_TOKEN, SYMM_TOKEN]}

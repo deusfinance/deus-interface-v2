@@ -5,11 +5,11 @@ import { isMobile } from 'react-device-detect'
 import { MigrationOptions } from 'constants/migrationOptions'
 
 import { Row, RowBetween } from 'components/Row'
-import Table, { Cell } from 'components/App/Migration/Table'
-import ActionSetter, { ActionTypes } from 'components/App/Migration/ActionSetter'
-import CardBox from 'components/App/Migration/CardBox'
-import HeaderBox from 'components/App/Migration/HeaderBox'
-import MigrationHeader from 'components/App/Migration/MigrationHeader'
+import Table, { Cell } from 'components/App/Migrate/Table'
+import ActionSetter, { ActionTypes } from 'components/App/Migrate/ActionSetter'
+import CardBox from 'components/App/Migrate/CardBox'
+import HeaderBox from 'components/App/Migrate/HeaderBox'
+import MigrationHeader from 'components/App/Migrate/MigrationHeader'
 
 export const Container = styled.div`
   display: flex;

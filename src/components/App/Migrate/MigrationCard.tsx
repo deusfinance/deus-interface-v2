@@ -8,6 +8,7 @@ import { RowCenter } from 'components/Row'
 import ImageWithFallback from 'components/ImageWithFallback'
 import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
 import { BaseButton } from 'components/Button'
+import { ExternalLink } from 'components/Link'
 
 const MainWrapper = styled.div<{ migrationStatus: string }>`
   display: flex;
@@ -146,7 +147,11 @@ export default function MigrationCard({
           })}
         </MultipleImageWrapper>
       </RowCenter>
-      <RowCenter>[Why? + How this easy migrate works?]</RowCenter>
+      <RowCenter>
+        <ExternalLink href={`https://docs.deus.finance/getting-started/the-gitbook-is-currently-restructured`}>
+          [Why? + How this easy migrate works?]
+        </ExternalLink>
+      </RowCenter>
       <RowCenter style={{ marginTop: 'auto' }}>
         <MigrationButton migrationStatus={migrationStatus(destinationTokens)}>
           Migrate to {destinationTokens[0]?.name} {destinationTokens[1] && 'and ' + destinationTokens[1]?.name}
