@@ -8,6 +8,7 @@ import { Row } from 'components/Row'
 
 import ARBITRUM_LOGO from '/public/static/images/networks/arbitrum.svg'
 import FANTOM_LOGO from '/public/static/images/networks/fantom.svg'
+import NOT_FOUND_LOGO from '/public/static/images/fallback/not_found.png'
 
 import { ChainInfo } from 'constants/chainInfo'
 import { SupportedChainId } from 'constants/chains'
@@ -110,12 +111,17 @@ export default function MigrationHeader() {
     <Row ref={ref}>
       <MainBoxTitle>Tokens Available to Migrate</MainBoxTitle>
       <ConnectedChain>
-        {/* TODO: This part does not support all chains */}
         <span>Connected Chain:</span>
         <ChainWrap onClick={() => toggle()}>
           <InlineRow active>
             <Image
-              src={chainId === SupportedChainId.FANTOM ? FANTOM_LOGO : ARBITRUM_LOGO}
+              src={
+                chainId === SupportedChainId.FANTOM
+                  ? FANTOM_LOGO
+                  : chainId === SupportedChainId.ARBITRUM
+                  ? ARBITRUM_LOGO
+                  : NOT_FOUND_LOGO
+              }
               width={getImageSize() + 'px'}
               height={getImageSize() + 'px'}
               alt={'chain-logo'}

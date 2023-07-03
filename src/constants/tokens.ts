@@ -17,15 +17,6 @@ import {
 
 export const DEI_TOKEN = new Token(SupportedChainId.FANTOM, DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'DEI', 'DEI')
 
-// FIXME: this token is only used in migration page, do we need this?
-export const DEIv2_TOKEN = new Token(
-  SupportedChainId.FANTOM,
-  '0xd358f17774B69A8c06cfAA0d4402D2F604d4a4bF',
-  18,
-  'DEI',
-  'DEI'
-)
-
 export const USDC_TOKEN = new Token(SupportedChainId.FANTOM, USDC_ADDRESS[SupportedChainId.FANTOM], 6, 'USDC', 'USDC')
 
 export const DEUS_TOKEN = new Token(SupportedChainId.FANTOM, DEUS_ADDRESS[SupportedChainId.FANTOM], 18, 'DEUS', 'DEUS')
@@ -45,8 +36,8 @@ export const SYMM_TOKEN = new Token(
   SupportedChainId.FANTOM,
   '0x0e249130b3545a2a287DE9f27d805CAB95f03DB9',
   18,
-  'Symm',
-  'Symm'
+  'SYMM',
+  'SYMM'
 )
 
 export const DEUS_VDEUS_LP_TOKEN = new Token(
@@ -118,7 +109,6 @@ export const WRAPPED_NATIVE = {
   [SupportedChainId.BSC]: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
 }
 
-//TODO: replace Matic and ETH with NATIVE in whole app
 export const Tokens: { [key: string]: TokenMap } = {
   USDT: {
     [SupportedChainId.MAINNET]: new Token(

@@ -81,7 +81,7 @@ export const MigrationButton = styled(BaseButton)<{ migrationStatus: string; dis
   line-height: normal;
   padding: 2px;
 
-  ${({ theme, disabled }) =>
+  ${({ disabled }) =>
     disabled &&
     `
       opacity: 0.4;
@@ -116,8 +116,6 @@ export default function MigrationCard({
 }) {
   const { account } = useWeb3React()
   const [isOpenReviewModal, toggleReviewModal] = useState(false)
-  const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
-  const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
 
   const text =
     destinationTokens.length === 1
@@ -137,50 +135,7 @@ export default function MigrationCard({
   const sourceLogos = useCurrencyLogos(sourceTokensAddress)
   const sourceBalances = useTokenBalances(account?.toString(), sourceTokens)
 
-  // const {
-  //   state: swapCallbackState,
-  //   callback: swapCallback,
-  //   error: swapCallbackError,
-  // } = useSwapCallback(
-  //   currencies[Field.INPUT],
-  //   currencies[Field.OUTPUT],
-  //   parsedAmounts[Field.INPUT],
-  //   parsedAmounts[Field.OUTPUT],
-  //   trade.trade.pool,
-  //   allowedSlippage,
-  //   20
-  // )
-
-  // const handleApprove = async () => {
-  //   console.log('called handleApprove')
-  //   setAwaitingApproveConfirmation(true)
-  //   await approveCallback()
-  //   setAwaitingApproveConfirmation(false)
-  // }
-
-  // const handleSwap = useCallback(async () => {
-  //   console.log('called handleSwap')
-  //   console.log(swapCallbackState, swapCallback, swapCallbackError)
-  //   if (!swapCallback) return
-
-  //   // let error = ''
-  //   try {
-  //     setAwaitingSwapConfirmation(true)
-  //     const txHash = await swapCallback()
-  //     setAwaitingSwapConfirmation(false)
-  //     toggleReviewModal(false)
-  //     console.log({ txHash })
-  //   } catch (e) {
-  //     setAwaitingSwapConfirmation(false)
-  //     toggleReviewModal(false)
-  //     if (e instanceof Error) {
-  //       // error = e.message
-  //     } else {
-  //       console.error(e)
-  //       // error = 'An unknown error occurred.'
-  //     }
-  //   }
-  // }, [swapCallbackState, swapCallback, swapCallbackError])
+  const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
 
   return (
     <>
@@ -238,7 +193,7 @@ export default function MigrationCard({
         migrationStatus={migrationStatus(destinationTokens)}
         buttonText={awaitingSwapConfirmation ? 'Migrating ' : reviewText}
         awaiting={awaitingSwapConfirmation}
-        handleClick={() => console.log('test')}
+        handleClick={() => console.log('')}
       />
     </>
   )

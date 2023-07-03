@@ -1,17 +1,24 @@
+import { useCallback, useMemo, useState } from 'react'
+import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 import { Token } from '@sushiswap/core-sdk'
 
 import { ModalHeader, Modal } from 'components/Modal'
-import Column from 'components/Column'
-import { Row, RowCenter } from 'components/Row'
-import { PrimaryButton } from 'components/Button'
+import { Row } from 'components/Row'
 import { DotFlashing } from 'components/Icons'
-import { isMobile } from 'react-device-detect'
 import { MigrationButton } from './MigrationCard'
 import ImageWithFallback from 'components/ImageWithFallback'
 import useCurrencyLogo from 'hooks/useCurrencyLogo'
-import InputBox from '../Swap/InputBox'
-import { useState } from 'react'
+import useWeb3React from 'hooks/useWeb3'
+import { useCurrencyBalance } from 'state/wallet/hooks'
+import { tryParseAmount } from 'utils/parse'
+import { useSupportedChainId } from 'hooks/useSupportedChainId'
+import useApproveCallback, { ApprovalState } from 'hooks/useApproveCallback'
+import { useMigratorContract } from 'hooks/useContract'
+import { useWalletModalToggle } from 'state/application/hooks'
+import useMigrateCallback from 'hooks/useMigrateCallback'
+import { DEUS_TOKEN } from 'constants/tokens'
+import InputBox from './InputBox'
 
 const MainModal = styled(Modal)`
   display: flex;
@@ -26,17 +33,6 @@ const MainModal = styled(Modal)`
     width: 90%;
     height: 560px;
   `};
-`
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: flex-start;
-
-  gap: 0.8rem;
-  padding: 1.5rem 0;
-  overflow-y: scroll;
-  height: auto;
 `
 
 const FromWrapper = styled.div`
@@ -56,36 +52,14 @@ const FromWrapper = styled.div`
   }
 `
 
-const TokenResultWrapper = styled(Column)`
-  gap: 8px;
-  padding-top: 1rem;
-`
-
-const Data = styled(RowCenter)`
-  font-family: 'Roboto';
-  font-style: italic;
-  font-weight: 300;
-  font-size: 12px;
-  line-height: 14px;
-  width: 100%;
-  margin-left: 10px;
-  padding: 5px;
-  color: ${({ theme }) => theme.text1};
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding: 1rem;
-  `};
-`
-const ConfirmButton = styled(PrimaryButton)`
-  background: ${({ theme }) => theme.text4};
-  height: 62px;
-  max-width: 90%;
-  margin: 20px auto;
-`
-
 const Separator = styled.div`
   height: 1px;
   background: ${({ theme }) => theme.bg3};
+`
+
+export const ModalMigrationButton = styled(MigrationButton)`
+  width: 93%;
+  margin: 15px auto;
 `
 
 function getImageSize() {
@@ -99,35 +73,154 @@ export default function ManualReviewModal({
   outputToken,
   buttonText,
   toggleModal,
-  handleClick,
   awaiting,
 }: {
   title: string
   isOpen: boolean
-  inputToken: Token
+  inputToken: Token | undefined
   outputToken: Token
   buttonText: string
   toggleModal: (action: boolean) => void
-  handleClick: () => void
   awaiting: boolean
 }) {
+  const { chainId, account } = useWeb3React()
+  const isSupportedChainId = useSupportedChainId()
+  const toggleWalletModal = useWalletModalToggle()
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  function toggleReviewModal(arg: boolean) {
+    toggleModal(arg)
+    setAmountIn('')
+  }
+
   const logo = useCurrencyLogo(outputToken?.address)
   const [amountIn, setAmountIn] = useState('')
+  const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
+  const [awaitingMigrateConfirmation, setAwaitingMigrateConfirmation] = useState(false)
+
+  const MigratorContract = useMigratorContract()
+  const spender = useMemo(() => MigratorContract?.address, [MigratorContract])
+  const [approvalState, approveCallback] = useApproveCallback(inputToken ?? undefined, spender)
+  const [showApprove, showApproveLoader] = useMemo(() => {
+    const show = inputToken && approvalState !== ApprovalState.APPROVED && !!amountIn
+    return [show, show && approvalState === ApprovalState.PENDING]
+  }, [inputToken, approvalState, amountIn])
+
+  const handleApprove = async () => {
+    setAwaitingApproveConfirmation(true)
+    await approveCallback()
+    setAwaitingApproveConfirmation(false)
+  }
+
+  const inputBalance = useCurrencyBalance(account ?? undefined, inputToken)
+
+  const inputAmount = useMemo(() => {
+    return tryParseAmount(amountIn, inputToken || undefined)
+  }, [amountIn, inputToken])
+
+  const {
+    state: migrateCallbackState,
+    callback: migrateCallback,
+    error: migrateCallbackError,
+  } = useMigrateCallback([inputToken], inputAmount && [inputAmount], [outputToken])
+
+  const handleMigrate = useCallback(async () => {
+    console.log('called handleMigrate')
+    console.log(migrateCallbackState, migrateCallbackError)
+    if (!migrateCallback) return
+    try {
+      setAwaitingMigrateConfirmation(true)
+      const txHash = await migrateCallback()
+      setAwaitingMigrateConfirmation(false)
+      toggleReviewModal(false)
+      console.log({ txHash })
+    } catch (e) {
+      setAwaitingMigrateConfirmation(false)
+      toggleReviewModal(false)
+      if (e instanceof Error) {
+      } else {
+        console.error(e)
+      }
+    }
+  }, [migrateCallbackState, migrateCallbackError, migrateCallback, toggleReviewModal])
+
+  const migrationStatus = outputToken?.symbol === DEUS_TOKEN?.name ? 'full_deus' : 'full_symm'
+
+  const insufficientBalance = useMemo(() => {
+    if (!inputAmount) return false
+    return inputBalance?.lessThan(inputAmount)
+  }, [inputBalance, inputAmount])
+
+  function getApproveButton(): JSX.Element | null {
+    if (!isSupportedChainId || !account) {
+      return null
+    } else if (awaitingApproveConfirmation) {
+      return (
+        <ModalMigrationButton migrationStatus={migrationStatus}>
+          Awaiting Confirmation <DotFlashing />
+        </ModalMigrationButton>
+      )
+    } else if (showApproveLoader) {
+      return (
+        <ModalMigrationButton migrationStatus={migrationStatus}>
+          Approving <DotFlashing />
+        </ModalMigrationButton>
+      )
+    } else if (showApprove) {
+      return (
+        <ModalMigrationButton migrationStatus={migrationStatus} onClick={handleApprove}>
+          Allow us to spend {inputToken?.symbol}
+        </ModalMigrationButton>
+      )
+    }
+    return null
+  }
+
+  function getActionButton(): JSX.Element | null {
+    if (!chainId || !account) {
+      return (
+        <ModalMigrationButton migrationStatus={migrationStatus} onClick={toggleWalletModal}>
+          Connect Wallet
+        </ModalMigrationButton>
+      )
+    } else if (showApprove) {
+      return null
+    } else if (insufficientBalance) {
+      return (
+        <ModalMigrationButton migrationStatus={migrationStatus} disabled>
+          Insufficient {inputToken?.symbol} Balance
+        </ModalMigrationButton>
+      )
+    } else if (awaitingMigrateConfirmation) {
+      return (
+        <ModalMigrationButton migrationStatus={migrationStatus}>
+          Migrating <DotFlashing />
+        </ModalMigrationButton>
+      )
+    }
+    return (
+      <ModalMigrationButton migrationStatus={migrationStatus} onClick={() => handleMigrate()} disabled={!amountIn}>
+        {buttonText + outputToken?.symbol} {awaiting && <DotFlashing />}
+      </ModalMigrationButton>
+    )
+  }
 
   return (
-    <MainModal isOpen={isOpen} onBackgroundClick={() => toggleModal(false)} onEscapeKeydown={() => toggleModal(false)}>
-      <ModalHeader onClose={() => toggleModal(false)} title={title + outputToken?.symbol} border={false} />
+    <MainModal
+      isOpen={isOpen}
+      onBackgroundClick={() => toggleReviewModal(false)}
+      onEscapeKeydown={() => toggleReviewModal(false)}
+    >
+      <ModalHeader onClose={() => toggleReviewModal(false)} title={title + outputToken?.symbol} border={false} />
 
       <Separator />
 
       <FromWrapper>
         <Row>From</Row>
-        {/* TODO: recode a new InputBox (new design, refactor code, etc) */}
         <InputBox
-          currency={inputToken}
+          currency={inputToken ?? DEUS_TOKEN}
           value={amountIn}
           onChange={(value: string) => setAmountIn(value)}
-          disable_vdeus
         />
       </FromWrapper>
 
@@ -136,7 +229,7 @@ export default function ManualReviewModal({
       <FromWrapper>
         <Row>To</Row>
         <Row>
-          {'0.00'} {outputToken?.name}
+          {outputToken?.name}
           <span style={{ marginLeft: 'auto' }}>
             <ImageWithFallback
               src={logo}
@@ -149,14 +242,8 @@ export default function ManualReviewModal({
         </Row>
       </FromWrapper>
 
-      <MigrationButton
-        style={{ width: '93%', margin: '15px auto' }}
-        migrationStatus={outputToken?.symbol === 'DEUS' ? 'full_deus' : 'full_symm'}
-        onClick={() => handleClick()}
-        disabled={!amountIn}
-      >
-        {buttonText + outputToken?.symbol} {awaiting && <DotFlashing style={{ marginLeft: '10px' }} />}
-      </MigrationButton>
+      {getApproveButton()}
+      {getActionButton()}
     </MainModal>
   )
 }

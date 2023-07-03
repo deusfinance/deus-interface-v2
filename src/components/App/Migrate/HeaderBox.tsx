@@ -52,7 +52,7 @@ const StickyTopWrap = styled.div`
   height: 35px;
 `
 
-const NoWrapSpan = styled.span`
+export const NoWrapSpan = styled.span`
   white-space: pre;
 `
 

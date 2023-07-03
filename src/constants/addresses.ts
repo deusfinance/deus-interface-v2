@@ -217,3 +217,7 @@ export const CLQDR_ADDRESS: AddressMap = {
 export const LQDR_ADDRESS: AddressMap = {
   [SupportedChainId.FANTOM]: '0x10b620b2dbAC4Faa7D7FFD71Da486f5D44cd86f9',
 }
+
+export const Migrator: AddressMap = {
+  [SupportedChainId.FANTOM]: '0x045a4d3115B69b3e86Bc141c41643078fEE48071',
+}

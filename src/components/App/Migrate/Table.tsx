@@ -178,46 +178,74 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
 
   const isLoading = false
 
+  const [type, setType] = useState(MigrationType.DEUS)
+  const [token, setToken] = useState<Token | undefined>(undefined)
+  const [isOpenReviewModal, toggleReviewModal] = useState(false)
+  const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
+  const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
+
+  function handleClickModal(type: MigrationType, inputToken: Token) {
+    setType(type)
+    setToken(inputToken)
+    toggleReviewModal(true)
+  }
+
   return (
-    <Wrapper>
-      <TableWrapper isEmpty={MigrationOptions.length === 0}>
-        <tbody>
-          {MigrationOptions.length > 0 &&
-            MigrationOptions.map((migrationOption: MigrationTypes, index) => (
-              <>
-                <Divider backgroundColor="#101116" />
-                <TableRow key={index} index={index} migrationOption={migrationOption} />
-              </>
-            ))}
-        </tbody>
-        {MigrationOptions.length === 0 && (
+    <>
+      <Wrapper>
+        <TableWrapper isEmpty={MigrationOptions.length === 0}>
           <tbody>
-            <tr>
-              <td>
-                <div style={{ margin: '0 auto' }}>
-                  {isLoading ? (
-                    <Image src={isMobile ? LOADING_LOCK_MOBILE : LOADING_LOCK} alt="loading-lock" />
-                  ) : (
-                    <Image src={isMobile ? EMPTY_LOCK_MOBILE : EMPTY_LOCK} alt="empty-lock" />
-                  )}
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                {!account ? (
-                  <NoResults warning>Wallet is not connected!</NoResults>
-                ) : isLoading ? (
-                  <NoResults>Loading...</NoResults>
-                ) : (
-                  <NoResults>No lock found</NoResults>
-                )}
-              </td>
-            </tr>
+            {MigrationOptions.length > 0 &&
+              MigrationOptions.map((migrationOption: MigrationTypes, index) => (
+                <React.Fragment key={index}>
+                  <Divider backgroundColor="#101116" />
+                  <TableRow
+                    key={index}
+                    index={index}
+                    migrationOption={migrationOption}
+                    handleClickModal={handleClickModal}
+                  />
+                </React.Fragment>
+              ))}
           </tbody>
-        )}
-      </TableWrapper>
-    </Wrapper>
+          {MigrationOptions.length === 0 && (
+            <tbody>
+              <tr>
+                <td>
+                  <div style={{ margin: '0 auto' }}>
+                    {isLoading ? (
+                      <Image src={isMobile ? LOADING_LOCK_MOBILE : LOADING_LOCK} alt="loading-lock" />
+                    ) : (
+                      <Image src={isMobile ? EMPTY_LOCK_MOBILE : EMPTY_LOCK} alt="empty-lock" />
+                    )}
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  {!account ? (
+                    <NoResults warning>Wallet is not connected!</NoResults>
+                  ) : isLoading ? (
+                    <NoResults>Loading...</NoResults>
+                  ) : (
+                    <NoResults>No lock found</NoResults>
+                  )}
+                </td>
+              </tr>
+            </tbody>
+          )}
+        </TableWrapper>
+      </Wrapper>
+      <ManualReviewModal
+        title={'Migrate to '}
+        isOpen={isOpenReviewModal}
+        toggleModal={(action: boolean) => toggleReviewModal(action)}
+        inputToken={token}
+        outputToken={type === MigrationType.DEUS ? DEUS_TOKEN : SYMM_TOKEN}
+        buttonText={awaitingSwapConfirmation ? 'Migrating ' : 'Migrate to '}
+        awaiting={awaitingSwapConfirmation}
+      />
+    </>
   )
 }
 
@@ -293,6 +321,13 @@ const MiniTopBorderWrap = styled(TopBorderWrap)`
     max-height: 32px;
   }
 `
+
+export enum MigrationType {
+  BALANCED,
+  DEUS,
+  SYMM,
+}
+
 interface ITableRowContent {
   token: Token
   version: MigrationVersion
@@ -303,6 +338,7 @@ interface ITableRowContent {
   rpcChangerCallback: (chainId: any) => void
   account: string | null | undefined
   toggleWalletModal: () => void
+  handleClickModal: (migrationType: MigrationType, inputToken: Token) => void
 }
 
 const TableRowMiniContent = ({
@@ -319,12 +355,6 @@ const TableRowMiniContent = ({
   return <></>
 }
 
-export enum MigrationType {
-  BALANCED,
-  DEUS,
-  SYMM,
-}
-
 const TableRowLargeContent = ({
   token,
   version,
@@ -335,21 +365,11 @@ const TableRowLargeContent = ({
   rpcChangerCallback,
   account,
   toggleWalletModal,
+  handleClickModal,
 }: ITableRowContent) => {
   const [currencyBalanceDisplay] = useMemo(() => {
     return [currencyBalance?.toSignificant(4)]
   }, [currencyBalance])
-
-  const [type, setType] = useState(MigrationType.DEUS)
-  const [isOpenReviewModal, toggleReviewModal] = useState(false)
-  const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
-  const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
-
-  function handleClickModal(type: MigrationType) {
-    setType(type)
-    toggleReviewModal(true)
-  }
-
   return (
     <>
       <Cell width={'25%'}>
@@ -379,7 +399,7 @@ const TableRowLargeContent = ({
 
       <Cell width={'15%'}>
         {account && !chainIdError && version === MigrationVersion.DUAL && (
-          <MigrationButton onClick={() => handleClickModal(MigrationType.DEUS)} deus>
+          <MigrationButton onClick={() => handleClickModal(MigrationType.DEUS, token)} deus>
             Migrate to {DEUS_TOKEN.name}
           </MigrationButton>
         )}
@@ -395,27 +415,22 @@ const TableRowLargeContent = ({
             <ButtonText gradientText={chainIdError}>Switch to Fantom</ButtonText>
           </PrimaryButtonWide>
         ) : (
-          <MigrationButton onClick={() => handleClickModal(MigrationType.SYMM)}>
+          <MigrationButton onClick={() => handleClickModal(MigrationType.SYMM, token)}>
             Migrate to {SYMM_TOKEN.name}
           </MigrationButton>
         )}
       </Cell>
-
-      <ManualReviewModal
-        title={'Migrate to '}
-        isOpen={isOpenReviewModal}
-        toggleModal={(action: boolean) => toggleReviewModal(action)}
-        inputToken={token}
-        outputToken={type === MigrationType.DEUS ? DEUS_TOKEN : SYMM_TOKEN}
-        buttonText={awaitingSwapConfirmation ? 'Migrating ' : 'Migrate to '}
-        awaiting={awaitingSwapConfirmation}
-        handleClick={() => console.log('test')}
-      />
     </>
   )
 }
 
-const TableRowContent = ({ migrationOption }: { migrationOption: MigrationTypes }) => {
+const TableRowContent = ({
+  migrationOption,
+  handleClickModal,
+}: {
+  migrationOption: MigrationTypes
+  handleClickModal: (migrationType: MigrationType, inputToken: Token) => void
+}) => {
   const { chainId, account } = useWeb3React()
   const rpcChangerCallback = useRpcChangerCallback()
   const toggleWalletModal = useWalletModalToggle()
@@ -446,6 +461,7 @@ const TableRowContent = ({ migrationOption }: { migrationOption: MigrationTypes 
           rpcChangerCallback={rpcChangerCallback}
           account={account}
           toggleWalletModal={toggleWalletModal}
+          handleClickModal={handleClickModal}
         />
       </TableRowLargeContainer>
       <TableRowMiniContent
@@ -458,15 +474,24 @@ const TableRowContent = ({ migrationOption }: { migrationOption: MigrationTypes 
         rpcChangerCallback={rpcChangerCallback}
         account={account}
         toggleWalletModal={toggleWalletModal}
+        handleClickModal={handleClickModal}
       />
     </>
   )
 }
 
-function TableRow({ migrationOption, index }: { migrationOption: MigrationTypes; index: number }) {
+function TableRow({
+  migrationOption,
+  index,
+  handleClickModal,
+}: {
+  migrationOption: MigrationTypes
+  index: number
+  handleClickModal: (migrationType: MigrationType, inputToken: Token) => void
+}) {
   return (
     <ZebraStripesRow isEven={index % 2 === 0}>
-      <TableRowContent migrationOption={migrationOption} />
+      <TableRowContent handleClickModal={handleClickModal} migrationOption={migrationOption} />
     </ZebraStripesRow>
   )
 }

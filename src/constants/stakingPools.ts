@@ -82,7 +82,7 @@ export const LiquidityPool: LiquidityType[] = [
   {
     id: 1,
     label: 'xDEUS Single Staking',
-    tokens: [XDEUS_TOKEN], // TODO: remove
+    tokens: [XDEUS_TOKEN],
     lpToken: XDEUS_TOKEN,
     priceToken: DEUS_TOKEN,
     priceHook: useDeusPrice,

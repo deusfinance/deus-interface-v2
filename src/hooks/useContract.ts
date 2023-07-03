@@ -15,6 +15,7 @@ import VE_DIST_ABI from 'constants/abi/VE_DIST.json'
 import SWAP_ABI from 'constants/abi/SWAP_ABI.json'
 import MasterChefV2_ABI from 'constants/abi/MasterChefV2.json'
 import VEDEUS_MULTI_REWARDER_ERC20_ABI from 'constants/abi/VEDEUS_MULTI_REWARDER_ERC20.json'
+import MIGRATOR_ABI from 'constants/abi/MIGRATOR.json'
 
 import CLQDR_ABI from 'constants/abi/CLQDR_ABI.json'
 import CLQDR_FULL_ABI from 'constants/abi/CLQDR_FULL_ABI.json'
@@ -29,6 +30,7 @@ import {
   CLQDR_ADDRESS,
   veDEUSMigrator,
   veDEUSMultiRewarderERC20,
+  Migrator,
 } from 'constants/addresses'
 import { LiquidityType, StakingType } from 'constants/stakingPools'
 
@@ -140,4 +142,10 @@ export function useVDeusMultiRewarderERC20Contract() {
   const { chainId } = useWeb3React()
   const address = useMemo(() => (chainId ? veDEUSMultiRewarderERC20[chainId] : undefined), [chainId])
   return useContract(address, VEDEUS_MULTI_REWARDER_ERC20_ABI)
+}
+
+export function useMigratorContract() {
+  const { chainId } = useWeb3React()
+  const address = useMemo(() => (chainId ? Migrator[chainId] : undefined), [chainId])
+  return useContract(address, MIGRATOR_ABI)
 }

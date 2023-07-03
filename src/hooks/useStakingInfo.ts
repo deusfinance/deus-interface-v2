@@ -17,7 +17,6 @@ import { usePoolBalances } from './useStablePoolInfo'
 import { useAverageBlockTime } from 'state/application/hooks'
 import { useVDeusStats } from './useVDeusStats'
 
-//TODO: should remove all and put it in /constants
 const pids = [0, 1]
 const stakingTokens: { [pid: number]: string } = {
   [pids[0]]: '0x05f6ea7F80BDC07f6E0728BbBBAbebEA4E142eE8',
@@ -219,7 +218,6 @@ export function useGetDeusReward(): number {
   }, [pendingTokens])
 }
 
-//TODO: totalDeposited should consider decimals of token
 export function usePoolInfo(stakingPool: StakingType): {
   accTokensPerShare: number
   lastRewardBlock: number

@@ -1,16 +1,21 @@
+import { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
+import { isMobile } from 'react-device-detect'
+
 import { Token } from '@sushiswap/core-sdk'
+import { formatUnits } from '@ethersproject/units'
 
 import { ModalHeader, Modal } from 'components/Modal'
-import Column from 'components/Column'
-import { Row, RowCenter } from 'components/Row'
-import { PrimaryButton } from 'components/Button'
+import { Row } from 'components/Row'
 import { DotFlashing } from 'components/Icons'
 import { TokenBalancesMap } from 'state/wallet/types'
-import { formatUnits } from '@ethersproject/units'
 import ImageWithFallback from 'components/ImageWithFallback'
-import { isMobile } from 'react-device-detect'
-import { MigrationButton } from './MigrationCard'
+import { useMigratorContract } from 'hooks/useContract'
+import useApproveCallbacks, { ApprovalState } from 'hooks/useApproveCallbacks'
+import useMigrateCallback from 'hooks/useMigrateCallback'
+import { ModalMigrationButton } from './ManualReviewModal'
+import useWeb3React from 'hooks/useWeb3'
+import { useWalletModalToggle } from 'state/application/hooks'
 
 const MainModal = styled(Modal)`
   display: flex;
@@ -25,17 +30,6 @@ const MainModal = styled(Modal)`
     width: 90%;
     height: 560px;
   `};
-`
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: flex-start;
-
-  gap: 0.8rem;
-  padding: 1.5rem 0;
-  overflow-y: scroll;
-  height: auto;
 `
 
 const FromWrapper = styled.div`
@@ -53,33 +47,6 @@ const FromWrapper = styled.div`
       font-size: 12px;
     }
   }
-`
-
-const TokenResultWrapper = styled(Column)`
-  gap: 8px;
-  padding-top: 1rem;
-`
-
-const Data = styled(RowCenter)`
-  font-family: 'Roboto';
-  font-style: italic;
-  font-weight: 300;
-  font-size: 12px;
-  line-height: 14px;
-  width: 100%;
-  margin-left: 10px;
-  padding: 5px;
-  color: ${({ theme }) => theme.text1};
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding: 1rem;
-  `};
-`
-const ConfirmButton = styled(PrimaryButton)`
-  background: ${({ theme }) => theme.text4};
-  height: 62px;
-  max-width: 90%;
-  margin: 20px auto;
 `
 
 const Separator = styled.div`
@@ -120,9 +87,116 @@ export default function ReviewModal({
   handleClick: () => void
   awaiting: boolean
 }) {
-  // const token = inputTokens[0]
-  // console.log({ amountsIn })
-  // console.log(formatUnits(amountsIn[token?.address].quotient.toString(), token?.decimals))
+  const { chainId, account } = useWeb3React()
+  const toggleWalletModal = useWalletModalToggle()
+
+  const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
+  const [awaitingMigrateConfirmation, setAwaitingMigrateConfirmation] = useState(false)
+
+  const MigratorContract = useMigratorContract()
+  const spender = useMemo(() => MigratorContract?.address, [MigratorContract])
+
+  const [approvalStates, handleApproveByIndex] = useApproveCallbacks(inputTokens ?? undefined, spender)
+  const [showApprove, showApproveLoader, tokenIndex] = useMemo(() => {
+    for (let index = 0; index < approvalStates.length; index++) {
+      const approvalState = approvalStates[index]
+      const amountIn = amountsIn[inputTokens[index]?.address]
+
+      if (approvalState !== ApprovalState.APPROVED && amountIn?.toSignificant(amountIn.currency.decimals) !== '0')
+        return [true, approvalState === ApprovalState.PENDING, index]
+    }
+    return [false, false, -1]
+  }, [approvalStates, amountsIn, inputTokens])
+
+  const handleApprove = async (index: number) => {
+    setAwaitingApproveConfirmation(true)
+    await handleApproveByIndex(index)
+    setAwaitingApproveConfirmation(false)
+  }
+
+  const inputAmounts = useMemo(() => {
+    return inputTokens.map((token) => {
+      return amountsIn[token?.address]
+    })
+  }, [amountsIn, inputTokens])
+
+  const {
+    state: migrateCallbackState,
+    callback: migrateCallback,
+    error: migrateCallbackError,
+  } = useMigrateCallback(inputTokens, inputAmounts, outputTokens)
+
+  const handleMigrate = useCallback(async () => {
+    console.log('called handleMigrate')
+    console.log(migrateCallbackState, migrateCallbackError)
+    if (!migrateCallback) return
+    try {
+      setAwaitingMigrateConfirmation(true)
+      const txHash = await migrateCallback()
+      setAwaitingMigrateConfirmation(false)
+      toggleModal(false)
+      console.log({ txHash })
+    } catch (e) {
+      setAwaitingMigrateConfirmation(false)
+      toggleModal(false)
+      if (e instanceof Error) {
+      } else {
+        console.error(e)
+      }
+    }
+  }, [migrateCallbackState, migrateCallbackError, migrateCallback, toggleModal])
+
+  function getApproveButton(): JSX.Element | null {
+    if (!chainId || !account) {
+      return null
+    }
+    if (awaitingApproveConfirmation) {
+      return (
+        <ModalMigrationButton migrationStatus={migrationStatus}>
+          Awaiting Confirmation <DotFlashing />
+        </ModalMigrationButton>
+      )
+    }
+    if (showApproveLoader) {
+      return (
+        <ModalMigrationButton migrationStatus={migrationStatus}>
+          Approving <DotFlashing />
+        </ModalMigrationButton>
+      )
+    }
+    if (showApprove) {
+      return (
+        <ModalMigrationButton migrationStatus={migrationStatus} onClick={() => handleApprove(tokenIndex)}>
+          Allow us to spend {inputTokens[tokenIndex]?.symbol}
+        </ModalMigrationButton>
+      )
+    }
+    return null
+  }
+
+  function getActionButton(): JSX.Element | null {
+    if (!chainId || !account)
+      return (
+        <ModalMigrationButton migrationStatus={migrationStatus} onClick={toggleWalletModal}>
+          Connect Wallet
+        </ModalMigrationButton>
+      )
+    if (showApprove) return null
+
+    if (awaitingMigrateConfirmation) {
+      return (
+        <ModalMigrationButton migrationStatus={migrationStatus}>
+          Migrating
+          <DotFlashing />
+        </ModalMigrationButton>
+      )
+    }
+    return (
+      <ModalMigrationButton migrationStatus={migrationStatus} onClick={() => handleMigrate()}>
+        {buttonText} {awaiting && <DotFlashing />}
+      </ModalMigrationButton>
+    )
+  }
 
   return (
     <MainModal isOpen={isOpen} onBackgroundClick={() => toggleModal(false)} onEscapeKeydown={() => toggleModal(false)}>
@@ -135,8 +209,7 @@ export default function ReviewModal({
         {inputTokens &&
           inputTokens.map((token, index) => (
             <Row key={index}>
-              {amountsIn.length && formatUnits(amountsIn[token?.address].quotient.toString(), token?.decimals)}{' '}
-              {token?.name}
+              {formatUnits(amountsIn[token?.address]?.quotient.toString() ?? '0', token?.decimals)} {token?.name}
               <span style={{ marginLeft: 'auto' }}>
                 <ImageWithFallback
                   src={inputTokenLogos[index]}
@@ -158,7 +231,7 @@ export default function ReviewModal({
         {outputTokens &&
           outputTokens.map((token, index) => (
             <Row key={index}>
-              {amountsOut.length && formatUnits(amountsOut[token?.address].quotient.toString(), token?.decimals)}{' '}
+              {/* {formatUnits(amountsOut[token?.address]?.quotient.toString() ?? '0', token?.decimals)} */}
               {token?.name}
               <span style={{ marginLeft: 'auto' }}>
                 <ImageWithFallback
@@ -174,13 +247,8 @@ export default function ReviewModal({
           ))}
       </FromWrapper>
 
-      <MigrationButton
-        style={{ width: '93%', margin: '15px auto' }}
-        migrationStatus={migrationStatus}
-        onClick={() => handleClick()}
-      >
-        {buttonText} {awaiting && <DotFlashing style={{ marginLeft: '10px' }} />}
-      </MigrationButton>
+      {getApproveButton()}
+      {getActionButton()}
     </MainModal>
   )
 }

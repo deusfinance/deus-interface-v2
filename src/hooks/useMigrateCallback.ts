@@ -1,69 +1,74 @@
 import { useCallback, useMemo } from 'react'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
+import { Currency, CurrencyAmount, NativeCurrency, Token } from '@sushiswap/core-sdk'
 import toast from 'react-hot-toast'
 
 import { useTransactionAdder } from 'state/transactions/hooks'
 import useWeb3React from 'hooks/useWeb3'
-import { useStablePoolContract } from 'hooks/useContract'
+import { useMigratorContract } from 'hooks/useContract'
 import { calculateGasMargin } from 'utils/web3'
+// import { toHex } from 'utils/hex'
 import { DefaultHandlerError } from 'utils/parseError'
-import { BN_TEN, toBN } from 'utils/numbers'
-import { LiquidityType } from 'constants/stakingPools'
+import { MigrationType } from 'components/App/Migrate/Table'
+import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
 
-export enum LiquidityCallbackState {
+export enum TransactionCallbackState {
   INVALID = 'INVALID',
   VALID = 'VALID',
 }
 
-export default function useManageLiquidity(
-  amounts: string[],
-  minAmountOut: string,
-  pool: LiquidityType,
-  slippage: number,
-  deadline: number,
-  isRemove: boolean
+export default function useMigrateCallback(
+  inputCurrency: (Currency | undefined)[],
+  inputAmount: CurrencyAmount<NativeCurrency | Token>[] | null | undefined,
+  outputTokens: Currency[]
 ): {
-  state: LiquidityCallbackState
+  state: TransactionCallbackState
   callback: null | (() => Promise<string>)
   error: string | null
 } {
   const { account, chainId, library } = useWeb3React()
   const addTransaction = useTransactionAdder()
-  const swapContract = useStablePoolContract(pool)
 
-  const deadlineValue = Math.round(new Date().getTime() / 1000 + 60 * deadline)
-  const minAmountOutBN = toBN(minAmountOut).times(1e18).toFixed(0, 1)
-  const amountsInBN = amounts.map((amount, index) => {
-    if (amount == '') return '0'
-    return toBN(amount).times(BN_TEN.pow(pool.tokens[index].decimals)).toFixed(0, 1)
-  })
+  const migrationType = useMemo(() => {
+    if (outputTokens?.length === 1 && outputTokens[0]?.symbol === DEUS_TOKEN?.name) return MigrationType.DEUS
+    else if (outputTokens?.length === 1 && outputTokens[0]?.symbol === SYMM_TOKEN?.name) return MigrationType.SYMM
+    else if (outputTokens?.length === 2) return MigrationType.BALANCED
+  }, [outputTokens])
+
+  const migratorContract = useMigratorContract()
 
   const constructCall = useCallback(() => {
     try {
-      if (!account || !library || !swapContract || !amounts || !amounts.length) {
+      if (!account || !library || !migratorContract || !inputAmount) {
         throw new Error('Missing dependencies.')
       }
-      let args = []
-      const methodName = isRemove ? 'removeLiquidity' : 'addLiquidity'
 
-      if (isRemove) {
-        const minAmountsBN = amountsInBN.map((amount) => {
-          return toBN(amount)
-            .multipliedBy((100 - Number(slippage)) / 100)
-            .toFixed(0, 1)
-        })
-        args = [minAmountOutBN, minAmountsBN, deadlineValue]
+      const methodName = 'deposit'
+
+      const tokens = inputCurrency.map((token) => {
+        return token?.wrapped?.address
+      })
+
+      const amounts = inputAmount.map((amount) => {
+        return amount.quotient.toString()
+      })
+
+      const len = inputCurrency.length
+      let pref = []
+
+      if (migrationType === MigrationType.BALANCED) {
+        pref = Array(len).fill(0)
+      } else if (migrationType === MigrationType.DEUS) {
+        pref = Array(len).fill(1)
       } else {
-        const minToMint = toBN(minAmountOutBN)
-          .multipliedBy((100 - Number(slippage)) / 100)
-          .toFixed(0, 1)
-        args = [amountsInBN, minToMint, deadlineValue]
+        pref = Array(len).fill(2)
       }
-      console.log({ args })
+      const args = [tokens, amounts, pref, account]
+      console.log(args)
 
       return {
-        address: swapContract.address,
-        calldata: swapContract.interface.encodeFunctionData(methodName, args) ?? '',
+        address: migratorContract.address,
+        calldata: migratorContract.interface.encodeFunctionData(methodName, args) ?? '',
         value: 0,
       }
     } catch (error) {
@@ -71,29 +76,29 @@ export default function useManageLiquidity(
         error,
       }
     }
-  }, [account, library, swapContract, amounts, slippage, isRemove, minAmountOutBN, amountsInBN, deadlineValue])
+  }, [account, library, migratorContract, inputAmount, inputCurrency, migrationType])
 
   return useMemo(() => {
-    if (!account || !chainId || !library || !swapContract || !pool || !slippage || !deadline) {
+    if (!account || !chainId || !library || !migratorContract || !inputCurrency) {
       return {
-        state: LiquidityCallbackState.INVALID,
+        state: TransactionCallbackState.INVALID,
         callback: null,
         error: 'Missing dependencies',
       }
     }
-    if (!amounts || !amounts.length || !minAmountOut) {
+    if (!inputAmount) {
       return {
-        state: LiquidityCallbackState.INVALID,
+        state: TransactionCallbackState.INVALID,
         callback: null,
         error: 'No amount provided',
       }
     }
 
     return {
-      state: LiquidityCallbackState.VALID,
+      state: TransactionCallbackState.VALID,
       error: null,
-      callback: async function onSwap(): Promise<string> {
-        console.log('onSwap callback')
+      callback: async function onMigrate(): Promise<string> {
+        console.log('onMigrate callback')
         const call = constructCall()
         const { address, calldata, value } = call
 
@@ -110,7 +115,7 @@ export default function useManageLiquidity(
           ? { from: account, to: address, data: calldata }
           : { from: account, to: address, data: calldata, value }
 
-        console.log('SWAP TRANSACTION', { tx, value })
+        console.log('MIGRATE TRANSACTION', { tx, value })
 
         const estimatedGas = await library.estimateGas(tx).catch((gasError) => {
           console.debug('Gas estimate failed, trying eth_call to extract error', call)
@@ -141,14 +146,16 @@ export default function useManageLiquidity(
           .sendTransaction({
             ...tx,
             ...(estimatedGas ? { gasLimit: calculateGasMargin(estimatedGas) } : {}),
-            // gasPrice
+            // gasPrice /// TODO add gasPrice based on EIP 1559
           })
           .then((response: TransactionResponse) => {
             console.log(response)
-            const lpSymbol = pool.lpToken.symbol
-            const summary = isRemove
-              ? `Remove ${minAmountOut} ${lpSymbol} from pool`
-              : `Deposit into pool for ${minAmountOut} ${lpSymbol}`
+            const summary = 'Migrated Successfully'
+            // migrationType === MigrationType.BALANCED
+            //   ? 'Balanced Migrated'
+            //   : migrationType === MigrationType.DEUS
+            //   ? 'Migrated to DEUS'
+            //   : 'Migrated to SYMM'
             addTransaction(response, { summary })
 
             return response.hash
@@ -165,18 +172,5 @@ export default function useManageLiquidity(
           })
       },
     }
-  }, [
-    account,
-    chainId,
-    library,
-    amounts,
-    deadline,
-    minAmountOut,
-    pool,
-    slippage,
-    addTransaction,
-    constructCall,
-    swapContract,
-    isRemove,
-  ])
+  }, [account, chainId, library, migratorContract, inputCurrency, inputAmount, constructCall, addTransaction])
 }
