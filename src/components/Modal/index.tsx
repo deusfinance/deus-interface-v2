@@ -26,9 +26,7 @@ export const MobileModal = styled(BaseModal)`
   border-radius: 0px;
 `
 
-export const Modal = styled(BaseModal)<{
-  width?: string
-}>`
+export const Modal = styled(BaseModal)<{ width?: string }>`
   background: ${({ theme }) => theme.bg2};
   width: clamp(200px, 85%, ${({ width }: { width?: string }) => width ?? '424px'});
 `
@@ -46,9 +44,7 @@ export const ModalBackground = styled.div`
   justify-content: center;
 `
 
-const HeaderWrapper = styled.div<{
-  border: boolean
-}>`
+const HeaderWrapper = styled.div<{ border: boolean }>`
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 import Image from 'next/image'
@@ -28,6 +28,8 @@ import { useWalletModalToggle } from 'state/application/hooks'
 import TokenBox from './TokenBox'
 
 import { useTokenBalance } from 'state/wallet/hooks'
+import ManualReviewModal from './ManualReviewModal'
+import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
 
 const Wrapper = styled.div`
   display: flex;
@@ -317,6 +319,12 @@ const TableRowMiniContent = ({
   return <></>
 }
 
+export enum MigrationType {
+  BALANCED,
+  DEUS,
+  SYMM,
+}
+
 const TableRowLargeContent = ({
   token,
   version,
@@ -331,6 +339,16 @@ const TableRowLargeContent = ({
   const [currencyBalanceDisplay] = useMemo(() => {
     return [currencyBalance?.toSignificant(4)]
   }, [currencyBalance])
+
+  const [type, setType] = useState(MigrationType.DEUS)
+  const [isOpenReviewModal, toggleReviewModal] = useState(false)
+  const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
+  const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
+
+  function handleClickModal(type: MigrationType) {
+    setType(type)
+    toggleReviewModal(true)
+  }
 
   return (
     <>
@@ -361,7 +379,9 @@ const TableRowLargeContent = ({
 
       <Cell width={'15%'}>
         {account && !chainIdError && version === MigrationVersion.DUAL && (
-          <MigrationButton deus>Migrate to DEUS</MigrationButton>
+          <MigrationButton onClick={() => handleClickModal(MigrationType.DEUS)} deus>
+            Migrate to {DEUS_TOKEN.name}
+          </MigrationButton>
         )}
       </Cell>
 
@@ -375,9 +395,22 @@ const TableRowLargeContent = ({
             <ButtonText gradientText={chainIdError}>Switch to Fantom</ButtonText>
           </PrimaryButtonWide>
         ) : (
-          <MigrationButton>Migrate to SYMM</MigrationButton>
+          <MigrationButton onClick={() => handleClickModal(MigrationType.SYMM)}>
+            Migrate to {SYMM_TOKEN.name}
+          </MigrationButton>
         )}
       </Cell>
+
+      <ManualReviewModal
+        title={'Migrate to '}
+        isOpen={isOpenReviewModal}
+        toggleModal={(action: boolean) => toggleReviewModal(action)}
+        inputToken={token}
+        outputToken={type === MigrationType.DEUS ? DEUS_TOKEN : SYMM_TOKEN}
+        buttonText={awaitingSwapConfirmation ? 'Migrating ' : 'Migrate to '}
+        awaiting={awaitingSwapConfirmation}
+        handleClick={() => console.log('test')}
+      />
     </>
   )
 }

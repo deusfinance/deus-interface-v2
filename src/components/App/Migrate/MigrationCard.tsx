@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 
@@ -7,8 +8,11 @@ import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
 import { RowCenter } from 'components/Row'
 import ImageWithFallback from 'components/ImageWithFallback'
 import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
+import { useTokenBalances } from 'state/wallet/hooks'
 import { BaseButton } from 'components/Button'
 import { ExternalLink } from 'components/Link'
+import ReviewModal from './ReviewModal'
+import useWeb3React from 'hooks/useWeb3'
 
 const MainWrapper = styled.div<{ migrationStatus: string }>`
   display: flex;
@@ -59,7 +63,7 @@ const MultipleImageWrapper = styled.div<{ isSingle?: boolean }>`
 `}
 `
 
-const MigrationButton = styled(BaseButton)<{ migrationStatus: string }>`
+export const MigrationButton = styled(BaseButton)<{ migrationStatus: string; disabled?: boolean }>`
   height: 40px;
   border-radius: 8px;
   background: #141414;
@@ -77,8 +81,15 @@ const MigrationButton = styled(BaseButton)<{ migrationStatus: string }>`
   line-height: normal;
   padding: 2px;
 
+  ${({ theme, disabled }) =>
+    disabled &&
+    `
+      opacity: 0.4;
+      cursor: default;
+  `}
+
   &:hover {
-    filter: brightness(1.2);
+    filter: ${({ disabled }) => (disabled ? 'none' : 'brightness(1.2)')};
   }
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
@@ -103,37 +114,79 @@ export default function MigrationCard({
   destinationTokens: Token[]
   sourceTokens: Token[]
 }) {
+  const { account } = useWeb3React()
+  const [isOpenReviewModal, toggleReviewModal] = useState(false)
+  const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
+  const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
+
   const text =
     destinationTokens.length === 1
       ? `Migrate Full to ${destinationTokens[0]?.name}`
       : `Migrate Balanced to ${destinationTokens[0]?.name} and ${destinationTokens[1]?.name}`
 
+  const reviewText =
+    destinationTokens.length === 1
+      ? `Migrate to ${destinationTokens[0]?.name}`
+      : `Migrate to ${destinationTokens[0]?.name} and ${destinationTokens[1]?.name}`
+
   const destinationTokensAddress = destinationTokens.map((token) => token.address)
   const destinationLogos = useCurrencyLogos(destinationTokensAddress)
+  const destinationBalances = useTokenBalances(account?.toString(), destinationTokens)
 
   const sourceTokensAddress = sourceTokens.map((token) => token.address)
   const sourceLogos = useCurrencyLogos(sourceTokensAddress)
+  const sourceBalances = useTokenBalances(account?.toString(), sourceTokens)
+
+  // const {
+  //   state: swapCallbackState,
+  //   callback: swapCallback,
+  //   error: swapCallbackError,
+  // } = useSwapCallback(
+  //   currencies[Field.INPUT],
+  //   currencies[Field.OUTPUT],
+  //   parsedAmounts[Field.INPUT],
+  //   parsedAmounts[Field.OUTPUT],
+  //   trade.trade.pool,
+  //   allowedSlippage,
+  //   20
+  // )
+
+  // const handleApprove = async () => {
+  //   console.log('called handleApprove')
+  //   setAwaitingApproveConfirmation(true)
+  //   await approveCallback()
+  //   setAwaitingApproveConfirmation(false)
+  // }
+
+  // const handleSwap = useCallback(async () => {
+  //   console.log('called handleSwap')
+  //   console.log(swapCallbackState, swapCallback, swapCallbackError)
+  //   if (!swapCallback) return
+
+  //   // let error = ''
+  //   try {
+  //     setAwaitingSwapConfirmation(true)
+  //     const txHash = await swapCallback()
+  //     setAwaitingSwapConfirmation(false)
+  //     toggleReviewModal(false)
+  //     console.log({ txHash })
+  //   } catch (e) {
+  //     setAwaitingSwapConfirmation(false)
+  //     toggleReviewModal(false)
+  //     if (e instanceof Error) {
+  //       // error = e.message
+  //     } else {
+  //       console.error(e)
+  //       // error = 'An unknown error occurred.'
+  //     }
+  //   }
+  // }, [swapCallbackState, swapCallback, swapCallbackError])
 
   return (
-    <MainWrapper migrationStatus={migrationStatus(destinationTokens)}>
-      <RowCenter>
-        {destinationLogos.map((logo, index) => {
-          return (
-            <ImageWithFallback
-              src={logo}
-              width={getImageSize()}
-              height={getImageSize()}
-              alt={`Logo`}
-              key={index}
-              round
-            />
-          )
-        })}
-      </RowCenter>
-      <RowCenter>{text}</RowCenter>
-      <RowCenter>
-        <MultipleImageWrapper isSingle={sourceLogos.length === 1}>
-          {sourceLogos.map((logo, index) => {
+    <>
+      <MainWrapper migrationStatus={migrationStatus(destinationTokens)}>
+        <RowCenter>
+          {destinationLogos.map((logo, index) => {
             return (
               <ImageWithFallback
                 src={logo}
@@ -145,18 +198,48 @@ export default function MigrationCard({
               />
             )
           })}
-        </MultipleImageWrapper>
-      </RowCenter>
-      <RowCenter>
-        <ExternalLink href={`https://docs.deus.finance/getting-started/the-gitbook-is-currently-restructured`}>
-          [Why? + How this easy migrate works?]
-        </ExternalLink>
-      </RowCenter>
-      <RowCenter style={{ marginTop: 'auto' }}>
-        <MigrationButton migrationStatus={migrationStatus(destinationTokens)}>
-          Migrate to {destinationTokens[0]?.name} {destinationTokens[1] && 'and ' + destinationTokens[1]?.name}
-        </MigrationButton>
-      </RowCenter>
-    </MainWrapper>
+        </RowCenter>
+        <RowCenter>{text}</RowCenter>
+        <RowCenter>
+          <MultipleImageWrapper isSingle={sourceLogos.length === 1}>
+            {sourceLogos.map((logo, index) => {
+              return (
+                <ImageWithFallback
+                  src={logo}
+                  width={getImageSize()}
+                  height={getImageSize()}
+                  alt={`Logo`}
+                  key={index}
+                  round
+                />
+              )
+            })}
+          </MultipleImageWrapper>
+        </RowCenter>
+        <RowCenter>
+          <ExternalLink href={`https://docs.deus.finance/`}>[Why? + How this easy migrate works?]</ExternalLink>
+        </RowCenter>
+        <RowCenter style={{ marginTop: 'auto' }}>
+          <MigrationButton onClick={() => toggleReviewModal(true)} migrationStatus={migrationStatus(destinationTokens)}>
+            {reviewText}
+          </MigrationButton>
+        </RowCenter>
+      </MainWrapper>
+      <ReviewModal
+        title={'Full ' + reviewText}
+        isOpen={isOpenReviewModal}
+        toggleModal={(action: boolean) => toggleReviewModal(action)}
+        inputTokens={sourceTokens}
+        outputTokens={destinationTokens}
+        amountsIn={sourceBalances}
+        amountsOut={destinationBalances}
+        inputTokenLogos={sourceLogos}
+        outputTokenLogos={destinationLogos}
+        migrationStatus={migrationStatus(destinationTokens)}
+        buttonText={awaitingSwapConfirmation ? 'Migrating ' : reviewText}
+        awaiting={awaitingSwapConfirmation}
+        handleClick={() => console.log('test')}
+      />
+    </>
   )
 }

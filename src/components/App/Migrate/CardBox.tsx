@@ -1,15 +1,12 @@
-import { SupportedChainId } from 'constants/chains'
-import MigrationCard from './MigrationCard'
-
-import { DEUS_TOKEN, Tokens, XDEUS_TOKEN, SYMM_TOKEN, bDEI_TOKEN } from 'constants/tokens'
 import styled from 'styled-components'
+
+import { SupportedChainId } from 'constants/chains'
+import { DEUS_TOKEN, Tokens, XDEUS_TOKEN, SYMM_TOKEN, bDEI_TOKEN } from 'constants/tokens'
+
+import MigrationCard from './MigrationCard'
 
 const Wrapper = styled.div`
   display: flex;
-  /* flex-flow: column nowrap; */
-  /* overflow: visible; */
-  /* margin: 0 auto; */
-  /* font-family: Inter; */
 `
 
 export default function CardBox() {

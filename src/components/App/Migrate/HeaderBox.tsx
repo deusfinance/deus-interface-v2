@@ -1,11 +1,13 @@
 import { useMemo } from 'react'
+import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 import Image from 'next/image'
 
 import { RowCenter } from 'components/Row'
 
 import SymmLogo from '/public/static/images/tokens/symm.svg'
-import { isMobile } from 'react-device-detect'
+
+import { Info } from 'components/Icons'
 
 const TopWrap = styled.div`
   font-family: 'Inter';
@@ -81,6 +83,7 @@ const Name = styled.div<{ underline?: boolean }>`
   font-weight: 400;
   line-height: normal;
   text-decoration-line: ${({ underline }) => (underline ? `underline` : 'none')};
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 10px;
   `};
@@ -117,7 +120,7 @@ export const getImageSize = () => {
 export default function HeaderBox() {
   const TopWrapItems = useMemo(
     () => [
-      { name: 'Early Migrator Bonus (i):', value: '73%', underline: true, logo: true },
+      { name: 'Early Migrator Bonus:', value: '73%', underline: true, logo: true, infoLogo: true },
       { name: 'Total Migrated:', value: '221,284.273', extension: 'DEUS', deusColor: true },
       { name: 'SYMM per DEUS ratio:', value: '2999', extension: 'SYMM per DEUS', deusColor: false },
     ],
@@ -131,7 +134,10 @@ export default function HeaderBox() {
         {TopWrapItems &&
           TopWrapItems.map((item, index) => (
             <Item key={index}>
-              <Name underline={item.underline}>{item.name}</Name>
+              <Name underline={item.underline}>
+                {item.name}
+                {item.infoLogo && <Info size={11} style={{ marginLeft: '3px', marginBottom: '-1px' }} />}
+              </Name>
               <ValueBox>
                 {item.value}
                 {item.extension && <ExtensionSpan deusColor={item.deusColor}>{item.extension}</ExtensionSpan>}
