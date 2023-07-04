@@ -30,6 +30,9 @@ import TokenBox from './TokenBox'
 import { useTokenBalance } from 'state/wallet/hooks'
 import ManualReviewModal from './ManualReviewModal'
 import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
+import { useGetUserMigrations } from 'hooks/useMigratePage'
+import BigNumber from 'bignumber.js'
+import { formatBalance } from 'utils/numbers'
 
 const Wrapper = styled.div`
   display: flex;
@@ -181,8 +184,10 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
   const [type, setType] = useState(MigrationType.DEUS)
   const [token, setToken] = useState<Token | undefined>(undefined)
   const [isOpenReviewModal, toggleReviewModal] = useState(false)
-  const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
+  // const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
   const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
+
+  const userMigrations = useGetUserMigrations(account)
 
   function handleClickModal(type: MigrationType, inputToken: Token) {
     setType(type)
@@ -204,6 +209,7 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
                     index={index}
                     migrationOption={migrationOption}
                     handleClickModal={handleClickModal}
+                    userMigrations={userMigrations}
                   />
                 </React.Fragment>
               ))}
@@ -296,9 +302,9 @@ const SpaceBetween = styled(HStack)`
 const TableRowLargeContainer = styled.div`
   width: 100%;
   display: table;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  /* ${({ theme }) => theme.mediaWidth.upToSmall`
     display:none;
-  `};
+  `}; */
 `
 const MiniStakeHeaderContainer = styled(SpaceBetween)``
 const MiniStakeContainer = styled.div`
@@ -339,6 +345,7 @@ interface ITableRowContent {
   account: string | null | undefined
   toggleWalletModal: () => void
   handleClickModal: (migrationType: MigrationType, inputToken: Token) => void
+  userMigrations: Map<string, BigNumber>
 }
 
 const TableRowMiniContent = ({
@@ -366,10 +373,12 @@ const TableRowLargeContent = ({
   account,
   toggleWalletModal,
   handleClickModal,
+  userMigrations,
 }: ITableRowContent) => {
   const [currencyBalanceDisplay] = useMemo(() => {
     return [currencyBalance?.toSignificant(4)]
   }, [currencyBalance])
+
   return (
     <>
       <Cell width={'25%'}>
@@ -382,14 +391,18 @@ const TableRowLargeContent = ({
 
       <Cell width={'25%'}>
         <Value>
-          {'N/A ->'}
+          {formatBalance(userMigrations.get(token.address + '_' + '2')?.toString(), 3) ?? '0.00'}
+          {formatBalance(userMigrations.get(token.address + '_' + '2')?.toString(), 3) === '' && '0.00'}
+          {' ->'}
           <span style={{ paddingLeft: '6px' }}>
             <Image alt="SymmLogo" width={17} height={12} src={SymmLogo} />
           </span>
         </Value>
         {version === MigrationVersion.DUAL && (
           <Value>
-            {'N/A ->'}
+            {formatBalance(userMigrations.get(token.address + '_' + '1')?.toString(), 3) ?? '0.00'}
+            {formatBalance(userMigrations.get(token.address + '_' + '1')?.toString(), 3) === '' && '0.00'}
+            {' ->'}
             <span style={{ paddingLeft: '6px' }}>
               <Image alt="DeusLogo" width={16} height={16} src={DeusLogo} />
             </span>
@@ -427,9 +440,11 @@ const TableRowLargeContent = ({
 const TableRowContent = ({
   migrationOption,
   handleClickModal,
+  userMigrations,
 }: {
   migrationOption: MigrationTypes
   handleClickModal: (migrationType: MigrationType, inputToken: Token) => void
+  userMigrations: Map<string, BigNumber>
 }) => {
   const { chainId, account } = useWeb3React()
   const rpcChangerCallback = useRpcChangerCallback()
@@ -462,6 +477,7 @@ const TableRowContent = ({
           account={account}
           toggleWalletModal={toggleWalletModal}
           handleClickModal={handleClickModal}
+          userMigrations={userMigrations}
         />
       </TableRowLargeContainer>
       <TableRowMiniContent
@@ -475,6 +491,7 @@ const TableRowContent = ({
         account={account}
         toggleWalletModal={toggleWalletModal}
         handleClickModal={handleClickModal}
+        userMigrations={userMigrations}
       />
     </>
   )
@@ -484,14 +501,20 @@ function TableRow({
   migrationOption,
   index,
   handleClickModal,
+  userMigrations,
 }: {
   migrationOption: MigrationTypes
   index: number
   handleClickModal: (migrationType: MigrationType, inputToken: Token) => void
+  userMigrations: Map<string, BigNumber>
 }) {
   return (
     <ZebraStripesRow isEven={index % 2 === 0}>
-      <TableRowContent handleClickModal={handleClickModal} migrationOption={migrationOption} />
+      <TableRowContent
+        userMigrations={userMigrations}
+        handleClickModal={handleClickModal}
+        migrationOption={migrationOption}
+      />
     </ZebraStripesRow>
   )
 }

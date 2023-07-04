@@ -57,9 +57,12 @@ const Separator = styled.div`
   background: ${({ theme }) => theme.bg3};
 `
 
-export const ModalMigrationButton = styled(MigrationButton)`
+export const ModalMigrationButton = styled(MigrationButton)<{ insufficientBalance?: boolean }>`
   width: 93%;
   margin: 15px auto;
+  background: ${({ insufficientBalance }) =>
+    insufficientBalance && 'linear-gradient(90deg, #B5BEC2 0%, #4F5B5B 93.41%)'};
+  filter: ${({ insufficientBalance }) => insufficientBalance && 'brightness(1.5)'};
 `
 
 function getImageSize() {
@@ -187,7 +190,7 @@ export default function ManualReviewModal({
       return null
     } else if (insufficientBalance) {
       return (
-        <ModalMigrationButton migrationStatus={migrationStatus} disabled>
+        <ModalMigrationButton migrationStatus={migrationStatus} disabled insufficientBalance>
           Insufficient {inputToken?.symbol} Balance
         </ModalMigrationButton>
       )

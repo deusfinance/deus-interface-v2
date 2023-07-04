@@ -152,7 +152,7 @@ export default function HeaderBox() {
       </DataBox>
       <StickyTopWrap>
         <RowCenter>
-          <TitleSpan>Migration Ends in: </TitleSpan>
+          <TitleSpan>Early Migration Ends in: </TitleSpan>
           <TimeSpan>2d : 14h : 52m : 04s</TimeSpan>
         </RowCenter>
       </StickyTopWrap>

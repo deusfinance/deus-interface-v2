@@ -16,6 +16,7 @@ import useMigrateCallback from 'hooks/useMigrateCallback'
 import { ModalMigrationButton } from './ManualReviewModal'
 import useWeb3React from 'hooks/useWeb3'
 import { useWalletModalToggle } from 'state/application/hooks'
+import { formatBalance } from 'utils/numbers'
 
 const MainModal = styled(Modal)`
   display: flex;
@@ -209,7 +210,8 @@ export default function ReviewModal({
         {inputTokens &&
           inputTokens.map((token, index) => (
             <Row key={index}>
-              {formatUnits(amountsIn[token?.address]?.quotient.toString() ?? '0', token?.decimals)} {token?.name}
+              {formatBalance(formatUnits(amountsIn[token?.address]?.quotient.toString() ?? '0', token?.decimals), 3)}{' '}
+              {token?.name}
               <span style={{ marginLeft: 'auto' }}>
                 <ImageWithFallback
                   src={inputTokenLogos[index]}

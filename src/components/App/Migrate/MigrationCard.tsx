@@ -33,6 +33,16 @@ const MainWrapper = styled.div<{ migrationStatus: string }>`
   height: 400px;
   border-radius: 12px;
   margin: 20px;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    margin-right: 4px;
+    margin-left: 4px;
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    margin-right: 1px;
+    margin-left: 1px;
+  `}
 `
 
 const MultipleImageWrapper = styled.div<{ isSingle?: boolean }>`
