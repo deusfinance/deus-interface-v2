@@ -63,6 +63,15 @@ export default function useMigrateCallback(
       } else {
         pref = Array(len).fill(2)
       }
+
+      let index = amounts.indexOf('0')
+      while (index > -1) {
+        amounts.splice(index, 1)
+        tokens.splice(index, 1)
+        pref.splice(index, 1)
+        index = amounts.indexOf('0')
+      }
+
       const args = [tokens, amounts, pref, account]
       console.log(args)
 
