@@ -14,6 +14,7 @@ import { useRouter } from 'next/router'
 type TextProps = Omit<TextPropsOriginal, 'css'>
 
 export const MEDIA_WIDTHS = {
+  upToSuperTiny: 360,
   upToExtraSmall: 500,
   upToSmall: 720,
   upToMedium: 960,

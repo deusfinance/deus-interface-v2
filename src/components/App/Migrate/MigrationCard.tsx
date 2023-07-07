@@ -26,22 +26,20 @@ const MainWrapper = styled.div<{ migrationStatus: string }>`
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  border-radius: 12px;
   padding: 12px 16px;
   padding-top: 20px;
   width: 100%;
   height: 400px;
   border-radius: 12px;
   margin: 20px;
-
   ${({ theme }) => theme.mediaWidth.upToMedium`
     margin-right: 4px;
     margin-left: 4px;
   `}
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    margin-right: 1px;
-    margin-left: 1px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 10px auto;
+    width: 95%;
   `}
 `
 

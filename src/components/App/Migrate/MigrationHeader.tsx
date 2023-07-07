@@ -22,15 +22,32 @@ import useOnOutsideClick from 'hooks/useOnOutsideClick'
 const MainBoxTitle = styled.span`
   padding: 20px;
   font-size: 16px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding-left: 12px;
+    padding-top: 10px;
+    padding-right: 0;
+    font-size: 13px;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToSuperTiny`
+    padding-left: 6px;
+    font-size: 10px;
+  `};
 `
 
-const ConnectedChain = styled.span`
+const ConnectedChain = styled.div`
   display: flex;
   align-items: center;
   padding: 20px;
   font-size: 14px;
   margin-left: auto;
   color: #8fcca7;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 8px;
+    padding-left: 0;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToSuperTiny`
+    padding: 5px;
+  `};
 `
 
 const InlineModal = styled(Card)<{ isOpen: boolean }>`
@@ -98,7 +115,7 @@ export const getImageSize = () => {
 }
 
 export default function MigrationHeader() {
-  const { chainId, account } = useWeb3React()
+  const { chainId } = useWeb3React()
   const rpcChangerCallback = useRpcChangerCallback()
   const ref = useRef(null)
 
@@ -111,7 +128,7 @@ export default function MigrationHeader() {
     <Row ref={ref}>
       <MainBoxTitle>Tokens Available to Migrate</MainBoxTitle>
       <ConnectedChain>
-        <span>Connected Chain:</span>
+        {!isMobile && <span>Connected Chain:</span>}
         <ChainWrap onClick={() => toggle()}>
           <InlineRow active>
             <Image

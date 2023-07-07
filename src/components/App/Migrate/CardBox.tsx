@@ -7,6 +7,11 @@ import MigrationCard from './MigrationCard'
 
 const Wrapper = styled.div`
   display: flex;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-flow: column wrap;
+    padding: 10px;
+  `};
 `
 
 export default function CardBox() {

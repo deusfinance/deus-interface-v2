@@ -4,10 +4,9 @@ import styled from 'styled-components'
 import Image from 'next/image'
 
 import { RowCenter } from 'components/Row'
+import { Info } from 'components/Icons'
 
 import SymmLogo from '/public/static/images/tokens/symm.svg'
-
-import { Info } from 'components/Icons'
 
 const TopWrap = styled.div`
   font-family: 'Inter';
@@ -19,23 +18,24 @@ const TopWrap = styled.div`
   padding: 20px;
   padding-top: 25px;
   border-radius: 15px;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    min-height: 100px;
-    font-size: 40px;
-  `}
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    font-size: 30px;
-  `}
 `
 
 const MainTitleSpan = styled.div`
   color: #d4fdf9;
   font-size: 16px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 13px;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToSuperTiny`
+    font-size: 11px;
+  `};
 `
 
 const DataBox = styled.div`
   padding-top: 30px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding-bottom: 20px;
+  `};
 `
 
 const StickyTopWrap = styled.div`
@@ -59,11 +59,23 @@ export const NoWrapSpan = styled.span`
 const TitleSpan = styled(NoWrapSpan)`
   color: #b6b6c7;
   font-size: 12px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 11px;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToSuperTiny`
+    font-size: 10px;
+  `};
 `
 
 const TimeSpan = styled.span`
   color: #b0e2f1;
   font-size: 14px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 13px;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToSuperTiny`
+    font-size: 12px;
+  `};
 `
 
 const Item = styled.div`
@@ -71,7 +83,10 @@ const Item = styled.div`
   height: 100%;
   margin-right: 30px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 0 15px;
+    display: flex;
+    flex-flow: row wrap;
+    margin-right: 0;
+    margin-bottom: 12px;
   `};
 `
 
@@ -79,13 +94,12 @@ const Name = styled.div<{ underline?: boolean }>`
   color: #bea29c;
   font-size: 12px;
   font-family: Inter;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
   text-decoration-line: ${({ underline }) => (underline ? `underline` : 'none')};
-
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 10px;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToSuperTiny`
+    font-size: 9px;
   `};
 `
 
@@ -94,10 +108,15 @@ const ValueBox = styled.div`
   color: #d5f1ed;
   font-size: 20px;
   font-family: Inter;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
   gap: 10px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 12px;
+    margin-top: 0;
+    margin-left: auto;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToSuperTiny`
+    font-size: 9px;
+  `};
 `
 
 const ExtensionSpan = styled.span<{ deusColor?: boolean }>`
@@ -110,6 +129,13 @@ const ExtensionSpan = styled.span<{ deusColor?: boolean }>`
     background: -webkit-linear-gradient(0deg, #0badf4 -10.26%, #30efe4 80%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 12px;
+    padding-left: 2px;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToSuperTiny`
+    font-size: 9px;
   `};
 `
 
