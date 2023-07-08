@@ -125,14 +125,14 @@ export default function Menu() {
               </ExternalItem>
             </Row>
           </ExternalLink>
-          <ExternalLink href="https://app.multichain.org/#/router">
+          {/* <ExternalLink href="https://app.multichain.org/#/router">
             <Row onClick={() => toggle()}>
               <ExternalItem>
                 <div>Bridge (multichain)</div>
                 <ExternalLinkIcon />
               </ExternalItem>
             </Row>
-          </ExternalLink>
+          </ExternalLink> */}
           <ExternalLink href="https://snapshot.org/#/dea.eth">
             <Row onClick={() => toggle()}>
               <ExternalItem>

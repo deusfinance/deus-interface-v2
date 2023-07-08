@@ -29,11 +29,11 @@ module.exports = {
         destination: 'https://legacy.dei.finance/migration',
         permanent: false,
       },
-      {
-        source: '/bridge',
-        destination: 'https://app.multichain.org/#/router',
-        permanent: false,
-      },
+      // {
+      //   source: '/bridge',
+      //   destination: 'https://app.multichain.org/#/router',
+      //   permanent: false,
+      // },
     ]
   },
 }
