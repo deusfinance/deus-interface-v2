@@ -71,6 +71,11 @@ const TableTitle = styled(Cell)`
   text-align: start;
   padding-left: 12px;
 `
+const LargeContent = styled.div`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `}
+`
 
 export const getImageSize = () => {
   return isMobile ? 15 : 20
@@ -102,7 +107,7 @@ export default function Migrate() {
 
         {selected === ActionTypes.MANUAL ? (
           <span>
-            {getUpperRow()}
+            <LargeContent>{getUpperRow()}</LargeContent>
             <Table MigrationOptions={MigrationOptions} />
           </span>
         ) : (

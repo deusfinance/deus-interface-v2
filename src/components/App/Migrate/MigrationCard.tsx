@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 
 import { Token } from '@sushiswap/core-sdk'
 
 import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
-import { RowCenter } from 'components/Row'
+import { Row, RowCenter } from 'components/Row'
 import ImageWithFallback from 'components/ImageWithFallback'
 import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
 import { useTokenBalances } from 'state/wallet/hooks'
@@ -13,8 +13,10 @@ import { BaseButton } from 'components/Button'
 import { ExternalLink } from 'components/Link'
 import ReviewModal from './ReviewModal'
 import useWeb3React from 'hooks/useWeb3'
+import { ChevronDown as ChevronDownIcon, ChevronUp } from 'components/Icons'
+import Column from 'components/Column'
 
-const MainWrapper = styled.div<{ migrationStatus: string }>`
+const MainWrapper = styled.div<{ migrationStatus: string; isOpen?: boolean }>`
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -28,19 +30,20 @@ const MainWrapper = styled.div<{ migrationStatus: string }>`
   background-position: center;
   padding: 12px 16px;
   padding-top: 20px;
-  width: 100%;
+  width: 95%;
   height: 400px;
   border-radius: 12px;
-  margin: 20px;
+  margin: 20px auto;
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    margin-right: 4px;
-    margin-left: 4px;
+    margin: 15px auto;
   `}
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme, isOpen }) => theme.mediaWidth.upToSmall`
     margin: 10px auto;
-    width: 95%;
-  `}
+    width: 100%;
+    height:${isOpen ? '400px' : 'fit-content'};
+    margin-inline: 0px;
+    background-position-y: -25px;
+  `};
 `
 
 const MultipleImageWrapper = styled.div<{ isSingle?: boolean }>`
@@ -82,10 +85,10 @@ export const MigrationButton = styled(BaseButton)<{ migrationStatus: string; dis
       ? 'linear-gradient(270deg, #D4FDF9 0%, #D7C7C1 23.44%, #D9A199 41.15%, #F095A2 57.81%, #FFA097 81.25%, #D5EEE9 99.99%)'
       : 'linear-gradient(270deg, #90D2D2 0%, #D4F9F4 50%, #F3CBD0 99.99%)'};
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
   font-family: Inter;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 700;
   line-height: normal;
   padding: 2px;
 
@@ -104,7 +107,175 @@ export const MigrationButton = styled(BaseButton)<{ migrationStatus: string; dis
     font-size: 12px;
   `}
 `
+const MiniHeadingContainer = styled.div`
+  display: flex;
+  cursor: pointer;
+  position: relative;
+  flex-direction: row;
+  width: 100%;
+  column-gap: 12px;
+  & > div {
+    width: auto;
+  }
+  & > svg {
+    position: absolute;
+    right: 0;
+  }
+`
+const MiniContent = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`
+const MiniContainer = styled.div`
+  display: none;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width:100%;
+    display:flex;
+    flex-direction:column;
+ `}
+`
+const LargeContainer = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
+  height: 100%;
+  row-gap: 30px;
+  margin: 0 auto;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `}
+`
+interface MigrationCardProps {
+  destinationLogos: string[]
+  text: string
+  sourceLogos: string[]
+  toggleReviewModal: Dispatch<SetStateAction<boolean>>
+  reviewText: string
+  destinationTokens: Token[]
+}
+const MiniMigrationCard = ({
+  destinationLogos,
+  text,
+  sourceLogos,
+  toggleReviewModal,
+  reviewText,
+  destinationTokens,
+}: MigrationCardProps) => {
+  const [isOpen, setOpen] = useState(false)
+  return (
+    <MiniContainer>
+      <MainWrapper isOpen={isOpen} migrationStatus={migrationStatus(destinationTokens)}>
+        <MiniHeadingContainer onClick={() => setOpen((prev) => !prev)}>
+          <Row>
+            {destinationLogos.map((logo, index) => {
+              return (
+                <ImageWithFallback
+                  src={logo}
+                  width={getImageSize()}
+                  height={getImageSize()}
+                  alt={`Logo`}
+                  key={index}
+                  round
+                />
+              )
+            })}
+          </Row>
+          <Row fontSize={14} fontWeight={500}>
+            {text}
+          </Row>
+          {isOpen ? <ChevronUp /> : <ChevronDownIcon />}
+        </MiniHeadingContainer>
+        {isOpen && (
+          <MiniContent>
+            <Column>
+              <RowCenter marginBottom={16}>
+                <MultipleImageWrapper isSingle={sourceLogos.length === 1}>
+                  {sourceLogos.map((logo, index) => {
+                    return (
+                      <ImageWithFallback
+                        src={logo}
+                        width={getImageSize()}
+                        height={getImageSize()}
+                        alt={`Logo`}
+                        key={index}
+                        round
+                      />
+                    )
+                  })}
+                </MultipleImageWrapper>
+              </RowCenter>
+              <RowCenter fontSize={12} fontWeight={500}>
+                <ExternalLink href={`https://docs.deus.finance/`}>[Why? + How this easy migrate works?]</ExternalLink>
+              </RowCenter>
+            </Column>
+          </MiniContent>
+        )}
+        <RowCenter style={{ marginTop: 'auto' }}>
+          <MigrationButton onClick={() => toggleReviewModal(true)} migrationStatus={migrationStatus(destinationTokens)}>
+            {reviewText}
+          </MigrationButton>
+        </RowCenter>
+      </MainWrapper>
+    </MiniContainer>
+  )
+}
+const LargeMigrationCard = ({
+  destinationLogos,
+  text,
+  sourceLogos,
+  toggleReviewModal,
+  reviewText,
+  destinationTokens,
+}: MigrationCardProps) => {
+  return (
+    <LargeContainer>
+      <MainWrapper migrationStatus={migrationStatus(destinationTokens)}>
+        <RowCenter>
+          {destinationLogos.map((logo, index) => {
+            return (
+              <ImageWithFallback
+                src={logo}
+                width={getImageSize()}
+                height={getImageSize()}
+                alt={`Logo`}
+                key={index}
+                round
+              />
+            )
+          })}
+        </RowCenter>
+        <RowCenter>{text}</RowCenter>
 
+        <RowCenter>
+          <MultipleImageWrapper isSingle={sourceLogos.length === 1}>
+            {sourceLogos.map((logo, index) => {
+              return (
+                <ImageWithFallback
+                  src={logo}
+                  width={getImageSize()}
+                  height={getImageSize()}
+                  alt={`Logo`}
+                  key={index}
+                  round
+                />
+              )
+            })}
+          </MultipleImageWrapper>
+        </RowCenter>
+        <RowCenter>
+          <ExternalLink href={`https://docs.deus.finance/`}>[Why? + How this easy migrate works?]</ExternalLink>
+        </RowCenter>
+        <RowCenter style={{ marginTop: 'auto' }}>
+          <MigrationButton onClick={() => toggleReviewModal(true)} migrationStatus={migrationStatus(destinationTokens)}>
+            {reviewText}
+          </MigrationButton>
+        </RowCenter>
+      </MainWrapper>
+    </LargeContainer>
+  )
+}
 function migrationStatus(destinationTokens: Token[]) {
   if (destinationTokens.length === 1 && destinationTokens[0]?.name === DEUS_TOKEN.name) return 'full_deus'
   if (destinationTokens.length === 1 && destinationTokens[0]?.name === SYMM_TOKEN.name) return 'full_symm'
@@ -147,47 +318,24 @@ export default function MigrationCard({
 
   return (
     <>
-      <MainWrapper migrationStatus={migrationStatus(destinationTokens)}>
-        <RowCenter>
-          {destinationLogos.map((logo, index) => {
-            return (
-              <ImageWithFallback
-                src={logo}
-                width={getImageSize()}
-                height={getImageSize()}
-                alt={`Logo`}
-                key={index}
-                round
-              />
-            )
-          })}
-        </RowCenter>
-        <RowCenter>{text}</RowCenter>
-        <RowCenter>
-          <MultipleImageWrapper isSingle={sourceLogos.length === 1}>
-            {sourceLogos.map((logo, index) => {
-              return (
-                <ImageWithFallback
-                  src={logo}
-                  width={getImageSize()}
-                  height={getImageSize()}
-                  alt={`Logo`}
-                  key={index}
-                  round
-                />
-              )
-            })}
-          </MultipleImageWrapper>
-        </RowCenter>
-        <RowCenter>
-          <ExternalLink href={`https://docs.deus.finance/`}>[Why? + How this easy migrate works?]</ExternalLink>
-        </RowCenter>
-        <RowCenter style={{ marginTop: 'auto' }}>
-          <MigrationButton onClick={() => toggleReviewModal(true)} migrationStatus={migrationStatus(destinationTokens)}>
-            {reviewText}
-          </MigrationButton>
-        </RowCenter>
-      </MainWrapper>
+      <MiniMigrationCard
+        destinationLogos={destinationLogos}
+        destinationTokens={destinationTokens}
+        reviewText={reviewText}
+        sourceLogos={sourceLogos}
+        text={text}
+        toggleReviewModal={toggleReviewModal}
+      />
+
+      <LargeMigrationCard
+        destinationLogos={destinationLogos}
+        destinationTokens={destinationTokens}
+        reviewText={reviewText}
+        sourceLogos={sourceLogos}
+        text={text}
+        toggleReviewModal={toggleReviewModal}
+      />
+
       <ReviewModal
         title={'Full ' + reviewText}
         isOpen={isOpenReviewModal}

@@ -22,7 +22,7 @@ import useWeb3React from 'hooks/useWeb3'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 
 import { ExternalLink } from 'components/Link'
-import { Divider, HStack, VStack } from '../Staking/common/Layout'
+import { HStack, VStack } from '../Staking/common/Layout'
 import { BaseButton, PrimaryButtonWide } from 'components/Button'
 import { useWalletModalToggle } from 'state/application/hooks'
 import TokenBox from './TokenBox'
@@ -71,6 +71,9 @@ export const Cell = styled.td<{ justify?: boolean }>`
   padding: 5px;
   padding-left: 16px;
   height: 75px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    height: fit-content;
+`};
 `
 
 const NoResults = styled.div<{ warning?: boolean }>`
@@ -175,6 +178,14 @@ const MigrationButton = styled(BaseButton)<{ deus?: boolean }>`
     font-size: 12px;
   `}
 `
+const DividerContainer = styled.div`
+  background-color: #101116;
+  width: 100%;
+  height: 2px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    background-color:#141414;
+  `}
+`
 
 export default function Table({ MigrationOptions }: { MigrationOptions: MigrationTypes[] }) {
   const { account } = useWeb3React()
@@ -203,7 +214,7 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
             {MigrationOptions.length > 0 &&
               MigrationOptions.map((migrationOption: MigrationTypes, index) => (
                 <React.Fragment key={index}>
-                  <Divider backgroundColor="#101116" />
+                  <DividerContainer />
                   <TableRow
                     key={index}
                     index={index}
@@ -299,7 +310,7 @@ const CustomButtonWrapper = ({ type, href, isActive }: { type: BUTTON_TYPE; href
 const SpaceBetween = styled(HStack)`
   justify-content: space-between;
 `
-const TableRowLargeContainer = styled.div`
+const TableRowContainer = styled.div`
   width: 100%;
   display: table;
   /* ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -326,6 +337,67 @@ const MiniTopBorderWrap = styled(TopBorderWrap)`
     min-width: 109px;
     max-height: 32px;
   }
+`
+const TableContent = styled.div`
+  display: flex;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    background:${({ theme }) => theme.bg2};
+    padding-inline:12px;
+  `};
+`
+const MyBalance = styled(Cell)`
+  width: 20%;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+  `};
+`
+const Label = styled.p`
+  display: none;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display:inline-block;
+    font-size:12px;
+    color:#7F8082;
+  `};
+`
+const MyMigratedAmount = styled(Cell)`
+  width: 25%;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    &>div{
+      column-gap:12px;
+      display:flex;
+      align-items:center;
+      &>div{
+        color:#82828C;
+      }
+    }
+  `};
+`
+const MigrationButtonCell = styled(Cell)`
+  display: none;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    column-gap:8px;
+    padding-left:5px;
+    &>td{
+      width:100%;
+    }
+  `};
+`
+const LargeButtonCellContainer = styled(Cell)`
+  width: 15%;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display:none;
+  `};
 `
 
 export enum MigrationType {
@@ -362,7 +434,7 @@ const TableRowMiniContent = ({
   return <></>
 }
 
-const TableRowLargeContent = ({
+const TableRowContentWrapper = ({
   token,
   version,
   currencyBalance,
@@ -380,45 +452,74 @@ const TableRowLargeContent = ({
   }, [currencyBalance])
 
   return (
-    <>
+    <TableContent>
       <Cell width={'25%'}>
         <TokenBox token={token} active={active} />
       </Cell>
 
-      <Cell width={'20%'}>
+      <MyBalance>
+        <Label>My Balance:</Label>
         <Value> {currencyBalanceDisplay ? currencyBalanceDisplay : '0.00'} </Value>
-      </Cell>
+      </MyBalance>
 
-      <Cell width={'25%'}>
-        <Value>
-          {formatBalance(userMigrations.get(token.address + '_' + '2')?.toString(), 3) ?? '0.00'}
-          {formatBalance(userMigrations.get(token.address + '_' + '2')?.toString(), 3) === '' && '0.00'}
-          {' ->'}
-          <span style={{ paddingLeft: '6px' }}>
-            <Image alt="SymmLogo" width={17} height={12} src={SymmLogo} />
-          </span>
-        </Value>
-        {version === MigrationVersion.DUAL && (
+      <MyMigratedAmount>
+        <Label>My Migrated Amount:</Label>
+        <div>
           <Value>
-            {formatBalance(userMigrations.get(token.address + '_' + '1')?.toString(), 3) ?? '0.00'}
-            {formatBalance(userMigrations.get(token.address + '_' + '1')?.toString(), 3) === '' && '0.00'}
+            {formatBalance(userMigrations.get(token.address + '_' + '2')?.toString(), 3) ?? '0.00'}
+            {formatBalance(userMigrations.get(token.address + '_' + '2')?.toString(), 3) === '' && '0.00'}
             {' ->'}
             <span style={{ paddingLeft: '6px' }}>
-              <Image alt="DeusLogo" width={16} height={16} src={DeusLogo} />
+              <Image alt="SymmLogo" width={17} height={12} src={SymmLogo} />
             </span>
           </Value>
-        )}
-      </Cell>
+          {version === MigrationVersion.DUAL && (
+            <Value>
+              {formatBalance(userMigrations.get(token.address + '_' + '1')?.toString(), 3) ?? '0.00'}
+              {formatBalance(userMigrations.get(token.address + '_' + '1')?.toString(), 3) === '' && '0.00'}
+              {' ->'}
+              <span style={{ paddingLeft: '6px' }}>
+                <Image alt="DeusLogo" width={16} height={16} src={DeusLogo} />
+              </span>
+            </Value>
+          )}
+        </div>
+      </MyMigratedAmount>
 
-      <Cell width={'15%'}>
+      <MigrationButtonCell>
+        <Cell style={{ paddingLeft: 5 }}>
+          {account && !chainIdError && version === MigrationVersion.DUAL && (
+            <MigrationButton onClick={() => handleClickModal(MigrationType.DEUS, token)} deus>
+              Migrate to {DEUS_TOKEN.name}
+            </MigrationButton>
+          )}
+        </Cell>
+
+        <Cell style={{ paddingLeft: 5 }}>
+          {!account ? (
+            <PrimaryButtonWide transparentBG onClick={toggleWalletModal}>
+              <ButtonText gradientText={chainIdError}>Connect Wallet</ButtonText>
+            </PrimaryButtonWide>
+          ) : chainIdError ? (
+            <PrimaryButtonWide transparentBG onClick={() => rpcChangerCallback(FALLBACK_CHAIN_ID)}>
+              <ButtonText gradientText={chainIdError}>Switch to Fantom</ButtonText>
+            </PrimaryButtonWide>
+          ) : (
+            <MigrationButton onClick={() => handleClickModal(MigrationType.SYMM, token)}>
+              Migrate to {SYMM_TOKEN.name}
+            </MigrationButton>
+          )}
+        </Cell>
+      </MigrationButtonCell>
+      <LargeButtonCellContainer>
         {account && !chainIdError && version === MigrationVersion.DUAL && (
           <MigrationButton onClick={() => handleClickModal(MigrationType.DEUS, token)} deus>
             Migrate to {DEUS_TOKEN.name}
           </MigrationButton>
         )}
-      </Cell>
+      </LargeButtonCellContainer>
 
-      <Cell width={'15%'}>
+      <LargeButtonCellContainer>
         {!account ? (
           <PrimaryButtonWide transparentBG onClick={toggleWalletModal}>
             <ButtonText gradientText={chainIdError}>Connect Wallet</ButtonText>
@@ -432,8 +533,8 @@ const TableRowLargeContent = ({
             Migrate to {SYMM_TOKEN.name}
           </MigrationButton>
         )}
-      </Cell>
-    </>
+      </LargeButtonCellContainer>
+    </TableContent>
   )
 }
 
@@ -465,8 +566,8 @@ const TableRowContent = ({
 
   return (
     <>
-      <TableRowLargeContainer>
-        <TableRowLargeContent
+      <TableRowContainer>
+        <TableRowContentWrapper
           active={active}
           handleClick={handleClick}
           token={token}
@@ -479,8 +580,8 @@ const TableRowContent = ({
           handleClickModal={handleClickModal}
           userMigrations={userMigrations}
         />
-      </TableRowLargeContainer>
-      <TableRowMiniContent
+      </TableRowContainer>
+      {/* <TableRowMiniContent
         active={active}
         handleClick={handleClick}
         token={token}
@@ -492,7 +593,7 @@ const TableRowContent = ({
         toggleWalletModal={toggleWalletModal}
         handleClickModal={handleClickModal}
         userMigrations={userMigrations}
-      />
+      /> */}
     </>
   )
 }

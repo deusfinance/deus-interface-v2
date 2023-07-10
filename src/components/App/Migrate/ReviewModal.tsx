@@ -29,7 +29,6 @@ const MainModal = styled(Modal)`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 90%;
-    height: 560px;
   `};
 `
 
