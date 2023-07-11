@@ -10,7 +10,6 @@ import ImageWithFallback from 'components/ImageWithFallback'
 import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
 import { useTokenBalances } from 'state/wallet/hooks'
 import { BaseButton } from 'components/Button'
-import { ExternalLink } from 'components/Link'
 import ReviewModal from './ReviewModal'
 import useWeb3React from 'hooks/useWeb3'
 import { ChevronDown as ChevronDownIcon, ChevronUp } from 'components/Icons'
@@ -31,7 +30,7 @@ const MainWrapper = styled.div<{ migrationStatus: string; isOpen?: boolean }>`
   padding: 12px 16px;
   padding-top: 20px;
   width: 95%;
-  height: 400px;
+  height: 100%;
   border-radius: 12px;
   margin: 20px auto;
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -85,10 +84,10 @@ export const MigrationButton = styled(BaseButton)<{ migrationStatus: string; dis
       ? 'linear-gradient(270deg, #D4FDF9 0%, #D7C7C1 23.44%, #D9A199 41.15%, #F095A2 57.81%, #FFA097 81.25%, #D5EEE9 99.99%)'
       : 'linear-gradient(270deg, #90D2D2 0%, #D4F9F4 50%, #F3CBD0 99.99%)'};
   text-align: center;
-  font-size: 12px;
+  font-size: 14px;
   font-family: Inter;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   line-height: normal;
   padding: 2px;
 
@@ -147,6 +146,24 @@ const LargeContainer = styled.div`
     display: none;
   `}
 `
+
+const DescriptionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: -14px;
+  p {
+    line-height: 24px;
+    color: ${({ theme }) => theme.text1};
+    font-size: 12px;
+    font-weight: 700;
+  }
+  & > p:last-child {
+    margin-top: 24px;
+  }
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin-top:initial;
+  `}
+`
 interface MigrationCardProps {
   destinationLogos: string[]
   text: string
@@ -154,6 +171,8 @@ interface MigrationCardProps {
   toggleReviewModal: Dispatch<SetStateAction<boolean>>
   reviewText: string
   destinationTokens: Token[]
+  firstDescription: string
+  secondDescription: string
 }
 const MiniMigrationCard = ({
   destinationLogos,
@@ -162,6 +181,8 @@ const MiniMigrationCard = ({
   toggleReviewModal,
   reviewText,
   destinationTokens,
+  firstDescription,
+  secondDescription,
 }: MigrationCardProps) => {
   const [isOpen, setOpen] = useState(false)
   return (
@@ -206,9 +227,10 @@ const MiniMigrationCard = ({
                   })}
                 </MultipleImageWrapper>
               </RowCenter>
-              <RowCenter fontSize={12} fontWeight={500}>
-                <ExternalLink href={`https://docs.deus.finance/`}>[Why? + How this easy migrate works?]</ExternalLink>
-              </RowCenter>
+              <DescriptionContainer>
+                <p>{firstDescription}</p>
+                <p>{secondDescription}</p>
+              </DescriptionContainer>
             </Column>
           </MiniContent>
         )}
@@ -228,6 +250,8 @@ const LargeMigrationCard = ({
   toggleReviewModal,
   reviewText,
   destinationTokens,
+  firstDescription,
+  secondDescription,
 }: MigrationCardProps) => {
   return (
     <LargeContainer>
@@ -264,9 +288,10 @@ const LargeMigrationCard = ({
             })}
           </MultipleImageWrapper>
         </RowCenter>
-        <RowCenter>
-          <ExternalLink href={`https://docs.deus.finance/`}>[Why? + How this easy migrate works?]</ExternalLink>
-        </RowCenter>
+        <DescriptionContainer>
+          <p>{firstDescription}</p>
+          <p>{secondDescription}</p>
+        </DescriptionContainer>
         <RowCenter style={{ marginTop: 'auto' }}>
           <MigrationButton onClick={() => toggleReviewModal(true)} migrationStatus={migrationStatus(destinationTokens)}>
             {reviewText}
@@ -289,9 +314,13 @@ function getImageSize() {
 export default function MigrationCard({
   destinationTokens,
   sourceTokens,
+  firstDescription,
+  secondDescription,
 }: {
   destinationTokens: Token[]
   sourceTokens: Token[]
+  firstDescription: string
+  secondDescription: string
 }) {
   const { account } = useWeb3React()
   const [isOpenReviewModal, toggleReviewModal] = useState(false)
@@ -317,7 +346,7 @@ export default function MigrationCard({
   const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
 
   return (
-    <>
+    <div style={{ width: '100%' }}>
       <MiniMigrationCard
         destinationLogos={destinationLogos}
         destinationTokens={destinationTokens}
@@ -325,6 +354,8 @@ export default function MigrationCard({
         sourceLogos={sourceLogos}
         text={text}
         toggleReviewModal={toggleReviewModal}
+        firstDescription={firstDescription}
+        secondDescription={secondDescription}
       />
 
       <LargeMigrationCard
@@ -334,6 +365,8 @@ export default function MigrationCard({
         sourceLogos={sourceLogos}
         text={text}
         toggleReviewModal={toggleReviewModal}
+        firstDescription={firstDescription}
+        secondDescription={secondDescription}
       />
 
       <ReviewModal
@@ -351,6 +384,6 @@ export default function MigrationCard({
         awaiting={awaitingSwapConfirmation}
         handleClick={() => console.log('')}
       />
-    </>
+    </div>
   )
 }

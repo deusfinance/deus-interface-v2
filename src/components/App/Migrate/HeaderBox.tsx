@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 import Image from 'next/image'
@@ -7,6 +7,8 @@ import { RowCenter } from 'components/Row'
 import { Info } from 'components/Icons'
 
 import SymmLogo from '/public/static/images/tokens/symm.svg'
+import { makeHttpRequest } from 'utils/http'
+import { toBN } from 'utils/numbers'
 
 const TopWrap = styled.div`
   font-family: 'Inter';
@@ -144,13 +146,61 @@ export const getImageSize = () => {
 }
 
 export default function HeaderBox() {
+  const [migrationInfo, setMigrationInfo] = useState<any>(null)
+  const [error, setError] = useState(false)
+
+  const getMigrationData = useCallback(async () => {
+    try {
+      const res = makeHttpRequest(`https://info.deus.finance/symm/v1/info`)
+      return res
+    } catch (error) {
+      return null
+    }
+  }, [])
+
+  const handleLoading = async () => {
+    const rest = await getMigrationData()
+    if (rest?.status === 'error') {
+      setError(true)
+      setMigrationInfo(null)
+    } else {
+      setMigrationInfo(rest)
+      setError(false)
+    }
+  }
+
+  useEffect(() => {
+    handleLoading()
+  }, [])
+
   const TopWrapItems = useMemo(
     () => [
-      { name: 'Early Migrator Bonus:', value: '73%', underline: true, logo: true, infoLogo: true },
-      { name: 'Total Migrated:', value: '221,284.273', extension: 'DEUS', deusColor: true },
-      { name: 'SYMM per DEUS ratio:', value: '2999', extension: 'SYMM per DEUS', deusColor: false },
+      {
+        name: 'Early Migrator Bonus:',
+        value: toBN(migrationInfo?.early_migration_bonus).toFixed(2) + '%' ?? 'N/A',
+        underline: true,
+        logo: true,
+        infoLogo: true,
+      },
+      {
+        name: 'Total Migrated:',
+        value:
+          toBN(
+            migrationInfo?.total_migrated_to_balanced * 1e-18 +
+              migrationInfo?.total_migrated_to_deus * 1e-18 +
+              migrationInfo?.total_migrated_to_symm * 1e-18
+          ).toFixed(2) ?? 'N/A',
+        extension: 'DEUS',
+        deusColor: true,
+      },
+      {
+        name: 'SYMM per DEUS ratio:',
+        value: toBN(migrationInfo?.symm_per_deus).toFixed(2) ?? 'N/A',
+        extension: 'SYMM per DEUS',
+        deusColor: false,
+      },
     ],
-    []
+    [migrationInfo]
   )
 
   return (

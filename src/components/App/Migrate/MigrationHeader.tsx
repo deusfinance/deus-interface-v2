@@ -4,15 +4,10 @@ import styled from 'styled-components'
 import Image from 'next/image'
 import { Z_INDEX } from 'theme'
 
-import { Row } from 'components/Row'
-
-import ARBITRUM_LOGO from '/public/static/images/networks/arbitrum.svg'
-import FANTOM_LOGO from '/public/static/images/networks/fantom.svg'
-import NOT_FOUND_LOGO from '/public/static/images/fallback/not_found.png'
-
 import { ChainInfo } from 'constants/chainInfo'
-import { SupportedChainId } from 'constants/chains'
+import { migrationChains } from 'constants/chains'
 
+import { Row } from 'components/Row'
 import { Card } from 'components/Card'
 import { ChevronDown as NavToggleIcon } from 'components/Icons'
 import useWeb3React from 'hooks/useWeb3'
@@ -53,8 +48,8 @@ const ConnectedChain = styled.div`
 const InlineModal = styled(Card)<{ isOpen: boolean }>`
   display: ${(props) => (props.isOpen ? 'flex' : 'none')};
   position: absolute;
-  width: 190px;
-  transform: translateX(-190px) translateY(20px);
+  min-width: 150px;
+  transform: translateX(-150px) translateY(20px);
   z-index: ${Z_INDEX.modal};
   gap: 12px;
   padding: 0.8rem;
@@ -127,57 +122,49 @@ export default function MigrationHeader() {
   return (
     <Row ref={ref}>
       <MainBoxTitle>Tokens Available to Migrate</MainBoxTitle>
-      <ConnectedChain>
-        {!isMobile && <span>Connected Chain:</span>}
-        <ChainWrap onClick={() => toggle()}>
-          <InlineRow active>
-            <Image
-              src={
-                chainId === SupportedChainId.FANTOM
-                  ? FANTOM_LOGO
-                  : chainId === SupportedChainId.ARBITRUM
-                  ? ARBITRUM_LOGO
-                  : NOT_FOUND_LOGO
-              }
-              width={getImageSize() + 'px'}
-              height={getImageSize() + 'px'}
-              alt={'chain-logo'}
-            />
-            <ChainDiv>{ChainInfo[chainId ?? SupportedChainId.FANTOM].chainName}</ChainDiv>
-          </InlineRow>
-          <NavToggle />
-        </ChainWrap>
-        <div>
-          <InlineModal isOpen={isOpen}>
-            <div>
-              <InlineRow active={SupportedChainId.ARBITRUM === chainId} onClick={() => toggle()}>
-                <Image
-                  src={ARBITRUM_LOGO}
-                  width={getImageSize() + 'px'}
-                  height={getImageSize() + 'px'}
-                  alt={'chain-logo'}
-                />
-                <ChainDiv onClick={() => rpcChangerCallback(SupportedChainId.ARBITRUM)}>
-                  {ChainInfo[SupportedChainId.ARBITRUM].chainName}
-                </ChainDiv>
-              </InlineRow>
-            </div>
-            <div>
-              <InlineRow active={SupportedChainId.FANTOM === chainId} onClick={() => toggle()}>
-                <Image
-                  src={FANTOM_LOGO}
-                  width={getImageSize() + 'px'}
-                  height={getImageSize() + 'px'}
-                  alt={'chain-logo'}
-                />
-                <ChainDiv onClick={() => rpcChangerCallback(SupportedChainId.FANTOM)}>
-                  {ChainInfo[SupportedChainId.FANTOM].chainName}
-                </ChainDiv>
-              </InlineRow>
-            </div>
-          </InlineModal>
-        </div>
-      </ConnectedChain>
+
+      {chainId && migrationChains.includes(chainId) && (
+        <ConnectedChain>
+          {!isMobile && <span>Connected Chain:</span>}
+          <ChainWrap onClick={() => toggle()}>
+            <InlineRow active>
+              <Image
+                src={ChainInfo[chainId].logoUrl}
+                width={getImageSize() + 'px'}
+                height={getImageSize() + 'px'}
+                alt={'chain-logo'}
+              />
+              <ChainDiv>{ChainInfo[chainId].label}</ChainDiv>
+            </InlineRow>
+            <NavToggle />
+          </ChainWrap>
+          <div>
+            <InlineModal isOpen={isOpen}>
+              {migrationChains.map((chain, index) => {
+                return (
+                  <div key={index}>
+                    <InlineRow active={Number(ChainInfo[chain].chainId) === chainId} onClick={() => toggle()}>
+                      <Image
+                        src={ChainInfo[chain].logoUrl}
+                        width={getImageSize() + 'px'}
+                        height={getImageSize() + 'px'}
+                        alt={`${ChainInfo[chain].label}-logo`}
+                      />
+                      <ChainDiv
+                        onClick={() => {
+                          rpcChangerCallback(Number(ChainInfo[chain].chainId))
+                        }}
+                      >
+                        {ChainInfo[chain].label}
+                      </ChainDiv>
+                    </InlineRow>
+                  </div>
+                )
+              })}
+            </InlineModal>
+          </div>
+        </ConnectedChain>
+      )}
     </Row>
   )
 }

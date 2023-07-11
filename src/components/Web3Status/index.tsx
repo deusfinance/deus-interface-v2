@@ -11,9 +11,10 @@ import { truncateAddress } from 'utils/account'
 import WalletModal from 'components/WalletModal'
 import { NavButton } from 'components/Button'
 import { Connected as ConnectedIcon } from 'components/Icons'
-import { FALLBACK_CHAIN_ID, SolidlyChains } from 'constants/chains'
+import { FALLBACK_CHAIN_ID, SolidlyChains, migrationChains } from 'constants/chains'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 import { RowCenter } from 'components/Row'
+import { useRouter } from 'next/router'
 
 const ConnectButtonWrap = styled.div`
   border: none;
@@ -80,11 +81,13 @@ function Web3StatusInner() {
   const { chainId, account, error } = useWeb3React()
   const toggleWalletModal = useWalletModalToggle()
   const rpcChangerCallback = useRpcChangerCallback()
+  const router = useRouter()
 
   const showCallbackError: boolean = useMemo(() => {
     if (!chainId || !account) return false
+    else if (router.route.includes('/migration')) return !migrationChains.includes(chainId)
     return !SolidlyChains.includes(chainId)
-  }, [chainId, account])
+  }, [chainId, account, router.route])
 
   if (showCallbackError) {
     return (

@@ -350,6 +350,12 @@ const TableContent = styled.div`
 `
 const MyBalance = styled(Cell)`
   width: 20%;
+  & > div {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin-top: 0px;
+  }
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width:100%;
     display:flex;
@@ -366,6 +372,8 @@ const Label = styled.p`
 `
 const MyMigratedAmount = styled(Cell)`
   width: 25%;
+  margin-block: auto;
+  height: 100%;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width:100%;
     display:flex;
@@ -383,23 +391,36 @@ const MyMigratedAmount = styled(Cell)`
 const MigrationButtonCell = styled(Cell)`
   display: none;
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    width:100%;
-    display:flex;
-    justify-content:space-between;
-    column-gap:8px;
-    padding-left:5px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 8px;
+    padding-left: 5px;
+    padding-right: 0px;
     &>td{
+      &:last-child{padding-right:0px}
       width:100%;
     }
   `};
 `
 const LargeButtonCellContainer = styled(Cell)`
   width: 15%;
+  display: flex;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display:none;
   `};
 `
-
+const TokenContainer = styled(Cell)`
+  width: 25%;
+  & > div {
+    height: 100%;
+  }
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  `};
+`
 export enum MigrationType {
   BALANCED,
   DEUS,
@@ -453,9 +474,9 @@ const TableRowContentWrapper = ({
 
   return (
     <TableContent>
-      <Cell width={'25%'}>
+      <TokenContainer>
         <TokenBox token={token} active={active} />
-      </Cell>
+      </TokenContainer>
 
       <MyBalance>
         <Label>My Balance:</Label>
