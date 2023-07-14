@@ -51,7 +51,7 @@ export const SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedCh
 
 export const SolidlyChains = [SupportedChainId.FANTOM]
 
-export const migrationChains = [
+export const MigrationChains = [
   SupportedChainId.FANTOM,
   SupportedChainId.MAINNET,
   SupportedChainId.POLYGON,

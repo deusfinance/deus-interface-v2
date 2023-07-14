@@ -1,5 +1,5 @@
 import { constructSameAddressMap } from 'utils/address'
-import { SupportedChainId } from './chains'
+import { MigrationChains, SupportedChainId } from './chains'
 
 interface AddressMap {
   [chainId: number]: string
@@ -38,6 +38,7 @@ export const LEGACY_DEI_ADDRESS: AddressMap = {
 
 export const BDEI_ADDRESS: AddressMap = {
   [SupportedChainId.FANTOM]: '0x05f6ea7F80BDC07f6E0728BbBBAbebEA4E142eE8',
+  [SupportedChainId.ARBITRUM]: '0x4a142eb454A1144c85D23e138A4571C697Ed2483',
 }
 
 /* =====================================
@@ -59,6 +60,8 @@ export const XDEUS_ADDRESS: AddressMap = {
     SupportedChainId.MAINNET,
     SupportedChainId.POLYGON,
     SupportedChainId.FANTOM,
+    SupportedChainId.BSC,
+    SupportedChainId.ARBITRUM,
   ]),
 }
 /* =====================================
@@ -103,8 +106,15 @@ export const USDCReserves3: AddressMap = {
                 DAPP CONTRACTS ADDRESS
 ===================================== */
 
+// TODO: Complete these addresses
 export const Multicall2: AddressMap = {
-  [SupportedChainId.FANTOM]: '0x22D4cF72C45F8198CfbF4B568dBdB5A85e8DC0B5',
+  [SupportedChainId.FANTOM]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [SupportedChainId.ARBITRUM]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [SupportedChainId.MAINNET]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [SupportedChainId.POLYGON]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [SupportedChainId.BSC]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [SupportedChainId.AVALANCHE]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [SupportedChainId.METIS]: '',
 }
 
 export const BaseV1Factory: AddressMap = {
@@ -219,5 +229,5 @@ export const LQDR_ADDRESS: AddressMap = {
 }
 
 export const Migrator: AddressMap = {
-  [SupportedChainId.FANTOM]: '0x045a4d3115B69b3e86Bc141c41643078fEE48071',
+  ...constructSameAddressMap('0xe3b6CC7b76a7f67BBCcb66c010780bE0AF31Ff05', MigrationChains),
 }

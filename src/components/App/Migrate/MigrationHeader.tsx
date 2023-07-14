@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { Z_INDEX } from 'theme'
 
 import { ChainInfo } from 'constants/chainInfo'
-import { migrationChains } from 'constants/chains'
+import { MigrationChains } from 'constants/chains'
 
 import { Row } from 'components/Row'
 import { Card } from 'components/Card'
@@ -123,7 +123,7 @@ export default function MigrationHeader() {
     <Row ref={ref}>
       <MainBoxTitle>Tokens Available to Migrate</MainBoxTitle>
 
-      {chainId && migrationChains.includes(chainId) && (
+      {chainId && MigrationChains.includes(chainId) && (
         <ConnectedChain>
           {!isMobile && <span>Connected Chain:</span>}
           <ChainWrap onClick={() => toggle()}>
@@ -140,7 +140,7 @@ export default function MigrationHeader() {
           </ChainWrap>
           <div>
             <InlineModal isOpen={isOpen}>
-              {migrationChains.map((chain, index) => {
+              {MigrationChains.map((chain, index) => {
                 return (
                   <div key={index}>
                     <InlineRow active={Number(ChainInfo[chain].chainId) === chainId} onClick={() => toggle()}>

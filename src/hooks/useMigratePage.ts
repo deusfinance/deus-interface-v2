@@ -37,3 +37,22 @@ export function useGetUserMigrations(account?: string | null): Map<string, BigNu
 
   return userMigrations
 }
+
+export function useGetEarlyMigrationDeadline(): string {
+  const migratorContract = useMigratorContract()
+
+  const amountOutCall = useMemo(
+    () => [
+      {
+        methodName: 'earlyMigrationDeadline',
+        callInputs: [],
+      },
+    ],
+    []
+  )
+
+  const [result] = useSingleContractMultipleMethods(migratorContract, amountOutCall)
+  const earlyMigrationDeadline = !result || !result.result ? '' : result.result[0]
+
+  return earlyMigrationDeadline
+}

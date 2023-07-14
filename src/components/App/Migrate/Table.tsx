@@ -15,7 +15,7 @@ import Solidly from '/public/static/images/pages/stake/solidly.svg'
 import SymmLogo from '/public/static/images/tokens/symm.svg'
 import DeusLogo from '/public/static/images/tokens/deus.svg'
 
-import { FALLBACK_CHAIN_ID, SupportedChainId } from 'constants/chains'
+import { FALLBACK_CHAIN_ID } from 'constants/chains'
 import { MigrationTypes, MigrationVersion } from 'constants/migrationOptions'
 
 import useWeb3React from 'hooks/useWeb3'
@@ -33,6 +33,7 @@ import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
 import { useGetUserMigrations } from 'hooks/useMigratePage'
 import BigNumber from 'bignumber.js'
 import { formatBalance } from 'utils/numbers'
+import { useSupportedChainId } from 'hooks/useSupportedChainId'
 
 const Wrapper = styled.div`
   display: flex;
@@ -188,7 +189,7 @@ const DividerContainer = styled.div`
 `
 
 export default function Table({ MigrationOptions }: { MigrationOptions: MigrationTypes[] }) {
-  const { account } = useWeb3React()
+  const { account, chainId } = useWeb3React()
 
   const isLoading = false
 
@@ -214,14 +215,18 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
             {MigrationOptions.length > 0 &&
               MigrationOptions.map((migrationOption: MigrationTypes, index) => (
                 <React.Fragment key={index}>
-                  <DividerContainer />
-                  <TableRow
-                    key={index}
-                    index={index}
-                    migrationOption={migrationOption}
-                    handleClickModal={handleClickModal}
-                    userMigrations={userMigrations}
-                  />
+                  {chainId && migrationOption.supportedChains.includes(chainId) && (
+                    <>
+                      <DividerContainer />
+                      <TableRow
+                        key={index}
+                        index={index}
+                        migrationOption={migrationOption}
+                        handleClickModal={handleClickModal}
+                        userMigrations={userMigrations}
+                      />
+                    </>
+                  )}
                 </React.Fragment>
               ))}
           </tbody>
@@ -571,51 +576,38 @@ const TableRowContent = ({
   const { chainId, account } = useWeb3React()
   const rpcChangerCallback = useRpcChangerCallback()
   const toggleWalletModal = useWalletModalToggle()
-  const { token, version, active } = migrationOption
+  const { token: tokens, version, active, supportedChains } = migrationOption
   const router = useRouter()
-
-  const supportedChainId: boolean = useMemo(() => {
-    if (!chainId || !account) return false
-    return chainId === SupportedChainId.FANTOM || chainId === SupportedChainId.ARBITRUM
-  }, [chainId, account])
 
   const handleClick = useCallback(() => {
     router.push(`/migration`)
   }, [router])
 
+  // const token = 'chainId' in token ? token : token[chainId ?? SupportedChainId.FANTOM]
+  const token = chainId ? tokens[chainId] : undefined
   const currencyBalance = useTokenBalance(account ?? undefined, token ?? undefined)
+  const chainIdError = !useSupportedChainId()
 
   return (
-    <>
-      <TableRowContainer>
-        <TableRowContentWrapper
-          active={active}
-          handleClick={handleClick}
-          token={token}
-          currencyBalance={currencyBalance}
-          version={version}
-          chainIdError={!supportedChainId}
-          rpcChangerCallback={rpcChangerCallback}
-          account={account}
-          toggleWalletModal={toggleWalletModal}
-          handleClickModal={handleClickModal}
-          userMigrations={userMigrations}
-        />
-      </TableRowContainer>
-      {/* <TableRowMiniContent
-        active={active}
-        handleClick={handleClick}
-        token={token}
-        currencyBalance={currencyBalance}
-        version={version}
-        chainIdError={!supportedChainId}
-        rpcChangerCallback={rpcChangerCallback}
-        account={account}
-        toggleWalletModal={toggleWalletModal}
-        handleClickModal={handleClickModal}
-        userMigrations={userMigrations}
-      /> */}
-    </>
+    <React.Fragment>
+      {token && (
+        <TableRowContainer>
+          <TableRowContentWrapper
+            active={active}
+            handleClick={handleClick}
+            token={token}
+            currencyBalance={currencyBalance}
+            version={version}
+            chainIdError={chainIdError}
+            rpcChangerCallback={rpcChangerCallback}
+            account={account}
+            toggleWalletModal={toggleWalletModal}
+            handleClickModal={handleClickModal}
+            userMigrations={userMigrations}
+          />
+        </TableRowContainer>
+      )}
+    </React.Fragment>
   )
 }
 

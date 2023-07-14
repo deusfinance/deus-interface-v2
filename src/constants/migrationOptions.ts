@@ -1,6 +1,6 @@
-import { Token } from '@sushiswap/core-sdk'
-import { DEUS_TOKEN, Tokens, XDEUS_TOKEN, bDEI_TOKEN } from 'constants/tokens'
-import { SupportedChainId } from './chains'
+import { Tokens } from 'constants/tokens'
+import { TokenMap } from 'utils/token'
+import { MigrationChains, SupportedChainId } from './chains'
 
 export enum MigrationVersion {
   DUAL,
@@ -9,34 +9,39 @@ export enum MigrationVersion {
 
 export type MigrationTypes = {
   id: number
-  token: Token
+  token: TokenMap
   version: MigrationVersion
+  supportedChains: SupportedChainId[]
   active: boolean
 }
 
 export const MigrationOptions: MigrationTypes[] = [
   {
     id: 0,
-    token: DEUS_TOKEN,
+    token: Tokens['DEUS'],
     version: MigrationVersion.ONLY_SYMM,
+    supportedChains: MigrationChains,
     active: true,
   },
   {
     id: 1,
-    token: XDEUS_TOKEN,
+    token: Tokens['XDEUS'],
     version: MigrationVersion.ONLY_SYMM,
+    supportedChains: [SupportedChainId.FANTOM, SupportedChainId.MAINNET],
     active: true,
   },
   {
     id: 2,
-    token: Tokens['LEGACY_DEI'][SupportedChainId.FANTOM],
+    token: Tokens['LEGACY_DEI'],
     version: MigrationVersion.DUAL,
+    supportedChains: MigrationChains,
     active: true,
   },
   {
     id: 3,
-    token: bDEI_TOKEN,
+    token: Tokens['bDEI_TOKEN'],
     version: MigrationVersion.DUAL,
+    supportedChains: [SupportedChainId.FANTOM, SupportedChainId.ARBITRUM],
     active: true,
   },
 ]

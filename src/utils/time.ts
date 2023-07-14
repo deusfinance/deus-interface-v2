@@ -22,8 +22,9 @@ export function getRemainingTime(timeStamp: number): {
   minutes: number
   seconds: number
 } {
+  if (timeStamp === 0) return { diff: 0, day: 0, hours: 0, minutes: 0, seconds: 0 }
   const now = dayjs().utc()
-  const endTime = dayjs.utc(timeStamp)
+  const endTime = dayjs.utc(timeStamp * 1e3)
   const diff = endTime.diff(now)
 
   const day = endTime.diff(now, 'day')

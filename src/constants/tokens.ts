@@ -29,8 +29,6 @@ export const XDEUS_TOKEN = new Token(
   'xDEUS'
 )
 
-export const bDEI_TOKEN = new Token(SupportedChainId.FANTOM, BDEI_ADDRESS[SupportedChainId.FANTOM], 18, 'bDEI', 'bDEI')
-
 // TODO: this is a test token
 export const SYMM_TOKEN = new Token(
   SupportedChainId.FANTOM,
@@ -141,6 +139,23 @@ export const Tokens: { [key: string]: TokenMap } = {
   USDC: duplicateTokenByAddressMap(USDC, 6, 'USDC', 'USD//C', { [SupportedChainId.BSC]: 18 }),
   DEI: duplicateTokenByChainId(DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'DEI', 'DEI'),
   LEGACY_DEI: duplicateTokenByChainId(LEGACY_DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'LegacyDEI', 'LegacyDEI'),
+  XDEUS: duplicateTokenByChainId(XDEUS_ADDRESS[SupportedChainId.FANTOM], 18, 'xDEUS', 'xDEUS'),
+  bDEI_TOKEN: {
+    [SupportedChainId.ARBITRUM]: new Token(
+      SupportedChainId.ARBITRUM,
+      BDEI_ADDRESS[SupportedChainId.ARBITRUM],
+      18,
+      'bDEI',
+      'bDEI'
+    ),
+    [SupportedChainId.FANTOM]: new Token(
+      SupportedChainId.FANTOM,
+      BDEI_ADDRESS[SupportedChainId.FANTOM],
+      18,
+      'bDEI',
+      'bDEI'
+    ),
+  },
   DEUS: duplicateTokenByChainId('0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44', 18, 'DEUS', 'DEUS'),
   WNATIVE: {
     [SupportedChainId.MAINNET]: new Token(1, WRAPPED_NATIVE[1], 18, 'WETH', 'Wrapped Ether'),

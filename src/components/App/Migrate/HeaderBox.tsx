@@ -9,6 +9,10 @@ import { Info } from 'components/Icons'
 import SymmLogo from '/public/static/images/tokens/symm.svg'
 import { makeHttpRequest } from 'utils/http'
 import { toBN } from 'utils/numbers'
+import { useGetEarlyMigrationDeadline } from 'hooks/useMigratePage'
+import { getRemainingTime } from 'utils/time'
+import { autoRefresh } from 'utils/retry'
+import useWeb3React from 'hooks/useWeb3'
 
 const TopWrap = styled.div`
   font-family: 'Inter';
@@ -146,6 +150,18 @@ export const getImageSize = () => {
 }
 
 export default function HeaderBox() {
+  const { chainId } = useWeb3React()
+
+  const [earlyMigrationDeadline, setEarlyMigrationDeadline] = useState('')
+  const earlyMigrationDeadlineTimeStamp = useGetEarlyMigrationDeadline()
+
+  useEffect(() => {
+    return autoRefresh(() => {
+      const { day, hours, minutes, seconds } = getRemainingTime(Number(earlyMigrationDeadlineTimeStamp))
+      setEarlyMigrationDeadline(`${day}d : ${hours}h : ${minutes}m : ${seconds}s`)
+    }, 1)
+  }, [earlyMigrationDeadlineTimeStamp, chainId])
+
   const [migrationInfo, setMigrationInfo] = useState<any>(null)
   const [error, setError] = useState(false)
 
@@ -229,7 +245,7 @@ export default function HeaderBox() {
       <StickyTopWrap>
         <RowCenter>
           <TitleSpan>Early Migration Ends in: </TitleSpan>
-          <TimeSpan>2d : 14h : 52m : 04s</TimeSpan>
+          <TimeSpan>{earlyMigrationDeadline}</TimeSpan>
         </RowCenter>
       </StickyTopWrap>
     </TopWrap>

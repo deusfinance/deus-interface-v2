@@ -78,10 +78,10 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address[]", "name": "tokens", "type": "address[]" }],
-    "name": "cleanup",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "inputs": [],
+    "name": "WITHDRAWER_ROLE",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -94,6 +94,13 @@
     "name": "deposit",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "earlyMigrationDeadline",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -117,6 +124,28 @@
     "inputs": [{ "internalType": "bytes32", "name": "role", "type": "bytes32" }],
     "name": "getRoleMemberCount",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address[]", "name": "tokens", "type": "address[]" }],
+    "name": "getTotalEarlyMigratedAmounts",
+    "outputs": [
+      { "internalType": "uint256[]", "name": "balancedAmounts", "type": "uint256[]" },
+      { "internalType": "uint256[]", "name": "deusAmounts", "type": "uint256[]" },
+      { "internalType": "uint256[]", "name": "symmAmounts", "type": "uint256[]" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address[]", "name": "tokens", "type": "address[]" }],
+    "name": "getTotalLateMigratedAmounts",
+    "outputs": [
+      { "internalType": "uint256[]", "name": "balancedAmounts", "type": "uint256[]" },
+      { "internalType": "uint256[]", "name": "deusAmounts", "type": "uint256[]" },
+      { "internalType": "uint256[]", "name": "symmAmounts", "type": "uint256[]" }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -236,10 +265,27 @@
       { "internalType": "enum Migrator.MigrationPreference", "name": "", "type": "uint8" },
       { "internalType": "address", "name": "", "type": "address" }
     ],
-    "name": "totalMigratedAmount",
+    "name": "totalEarlyMigratedAmount",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
-  { "inputs": [], "name": "unpause", "outputs": [], "stateMutability": "nonpayable", "type": "function" }
+  {
+    "inputs": [
+      { "internalType": "enum Migrator.MigrationPreference", "name": "", "type": "uint8" },
+      { "internalType": "address", "name": "", "type": "address" }
+    ],
+    "name": "totalLateMigratedAmount",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  { "inputs": [], "name": "unpause", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+  {
+    "inputs": [{ "internalType": "address[]", "name": "tokens", "type": "address[]" }],
+    "name": "withdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
 ]

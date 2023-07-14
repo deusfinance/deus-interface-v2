@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 
@@ -14,6 +14,8 @@ import ReviewModal from './ReviewModal'
 import useWeb3React from 'hooks/useWeb3'
 import { ChevronDown as ChevronDownIcon, ChevronUp } from 'components/Icons'
 import Column from 'components/Column'
+import { TokenMap } from 'utils/token'
+import { SupportedChainId } from 'constants/chains'
 
 const MainWrapper = styled.div<{ migrationStatus: string; isOpen?: boolean }>`
   display: flex;
@@ -276,14 +278,11 @@ const LargeMigrationCard = ({
           <MultipleImageWrapper isSingle={sourceLogos.length === 1}>
             {sourceLogos.map((logo, index) => {
               return (
-                <ImageWithFallback
-                  src={logo}
-                  width={getImageSize()}
-                  height={getImageSize()}
-                  alt={`Logo`}
-                  key={index}
-                  round
-                />
+                <React.Fragment key={index}>
+                  {true && (
+                    <ImageWithFallback src={logo} width={getImageSize()} height={getImageSize()} alt={`Logo`} round />
+                  )}
+                </React.Fragment>
               )
             })}
           </MultipleImageWrapper>
@@ -318,11 +317,11 @@ export default function MigrationCard({
   secondDescription,
 }: {
   destinationTokens: Token[]
-  sourceTokens: Token[]
+  sourceTokens: TokenMap[]
   firstDescription: string
   secondDescription: string
 }) {
-  const { account } = useWeb3React()
+  const { account, chainId } = useWeb3React()
   const [isOpenReviewModal, toggleReviewModal] = useState(false)
 
   const text =
@@ -339,9 +338,16 @@ export default function MigrationCard({
   const destinationLogos = useCurrencyLogos(destinationTokensAddress)
   const destinationBalances = useTokenBalances(account?.toString(), destinationTokens)
 
-  const sourceTokensAddress = sourceTokens.map((token) => token.address)
+  const chainSourceTokens = sourceTokens.map((token) => {
+    if (chainId && token[chainId]) {
+      return token[chainId]
+    } else {
+      return token[SupportedChainId.FANTOM]
+    }
+  })
+  const sourceTokensAddress = chainSourceTokens.map((token) => token.address)
   const sourceLogos = useCurrencyLogos(sourceTokensAddress)
-  const sourceBalances = useTokenBalances(account?.toString(), sourceTokens)
+  const sourceBalances = useTokenBalances(account?.toString(), chainSourceTokens)
 
   const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
 
@@ -373,7 +379,7 @@ export default function MigrationCard({
         title={'Full ' + reviewText}
         isOpen={isOpenReviewModal}
         toggleModal={(action: boolean) => toggleReviewModal(action)}
-        inputTokens={sourceTokens}
+        inputTokens={chainSourceTokens}
         outputTokens={destinationTokens}
         amountsIn={sourceBalances}
         amountsOut={destinationBalances}
