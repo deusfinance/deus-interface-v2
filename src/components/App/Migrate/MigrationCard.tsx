@@ -194,14 +194,7 @@ const MiniMigrationCard = ({
           <Row>
             {destinationLogos.map((logo, index) => {
               return (
-                <ImageWithFallback
-                  src={logo}
-                  width={getImageSize()}
-                  height={getImageSize()}
-                  alt={`Logo`}
-                  key={index}
-                  round
-                />
+                <ImageWithFallback src={logo} width={getImageSize()} height={getImageSize()} alt={`Logo`} key={index} />
               )
             })}
           </Row>
@@ -223,7 +216,6 @@ const MiniMigrationCard = ({
                         height={getImageSize()}
                         alt={`Logo`}
                         key={index}
-                        round
                       />
                     )
                   })}
@@ -261,14 +253,7 @@ const LargeMigrationCard = ({
         <RowCenter>
           {destinationLogos.map((logo, index) => {
             return (
-              <ImageWithFallback
-                src={logo}
-                width={getImageSize()}
-                height={getImageSize()}
-                alt={`Logo`}
-                key={index}
-                round
-              />
+              <ImageWithFallback src={logo} width={getImageSize()} height={getImageSize()} alt={`Logo`} key={index} />
             )
           })}
         </RowCenter>
@@ -279,9 +264,7 @@ const LargeMigrationCard = ({
             {sourceLogos.map((logo, index) => {
               return (
                 <React.Fragment key={index}>
-                  {true && (
-                    <ImageWithFallback src={logo} width={getImageSize()} height={getImageSize()} alt={`Logo`} round />
-                  )}
+                  {true && <ImageWithFallback src={logo} width={getImageSize()} height={getImageSize()} alt={`Logo`} />}
                 </React.Fragment>
               )
             })}

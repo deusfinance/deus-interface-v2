@@ -27,7 +27,6 @@ const TopWrap = styled.div`
   padding-top: 25px;
   border-radius: 15px;
 `
-
 const MainTitleSpan = styled.div`
   color: #d4fdf9;
   font-size: 16px;
@@ -38,14 +37,14 @@ const MainTitleSpan = styled.div`
     font-size: 11px;
   `};
 `
-
 const DataBox = styled.div`
+  display: flex;
   padding-top: 30px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
+  display: block;
     padding-bottom: 20px;
   `};
 `
-
 const StickyTopWrap = styled.div`
   display: flex;
   justify-content: center;
@@ -59,11 +58,9 @@ const StickyTopWrap = styled.div`
   background: rgba(29, 40, 45, 0.3);
   height: 35px;
 `
-
 export const NoWrapSpan = styled.span`
   white-space: pre;
 `
-
 const TitleSpan = styled(NoWrapSpan)`
   color: #b6b6c7;
   font-size: 12px;
@@ -74,7 +71,6 @@ const TitleSpan = styled(NoWrapSpan)`
     font-size: 10px;
   `};
 `
-
 const TimeSpan = styled.span`
   color: #b0e2f1;
   font-size: 14px;
@@ -85,7 +81,6 @@ const TimeSpan = styled.span`
     font-size: 12px;
   `};
 `
-
 const Item = styled.div`
   display: inline-block;
   height: 100%;
@@ -97,7 +92,6 @@ const Item = styled.div`
     margin-bottom: 12px;
   `};
 `
-
 const Name = styled.div<{ underline?: boolean }>`
   color: #bea29c;
   font-size: 12px;
@@ -110,7 +104,6 @@ const Name = styled.div<{ underline?: boolean }>`
     font-size: 9px;
   `};
 `
-
 const ValueBox = styled.div`
   margin-top: 10px;
   color: #d5f1ed;
@@ -126,7 +119,16 @@ const ValueBox = styled.div`
     font-size: 9px;
   `};
 `
-
+const SubValue = styled.div`
+  font-size: 10px;
+  opacity: 0.7;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 7px;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToSuperTiny`
+    font-size: 6px;
+  `};
+`
 const ExtensionSpan = styled.span<{ deusColor?: boolean }>`
   font-size: 13px;
   padding-left: 4px;
@@ -163,12 +165,14 @@ const InfoIcon = styled(Info)`
   margin-bottom: -1px;
   margin-left: 2px;
 `
-
 const ToolTipWrap = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
   padding: 4px;
+`
+const SymmText = styled.span`
+  color: ${({ theme }) => theme.symmColor};
 `
 
 export const getImageSize = () => {
@@ -189,7 +193,7 @@ export default function HeaderBox() {
   }, [earlyMigrationDeadlineTimeStamp, chainId])
 
   const [migrationInfo, setMigrationInfo] = useState<any>(null)
-  const [error, setError] = useState(false)
+  // const [error, setError] = useState(false)
 
   const getMigrationData = useCallback(async () => {
     try {
@@ -203,11 +207,11 @@ export default function HeaderBox() {
   const handleLoading = async () => {
     const rest = await getMigrationData()
     if (rest?.status === 'error') {
-      setError(true)
+      // setError(true)
       setMigrationInfo(null)
     } else {
       setMigrationInfo(rest)
-      setError(false)
+      // setError(false)
     }
   }
 
@@ -253,8 +257,15 @@ export default function HeaderBox() {
       },
       {
         name: 'SYMM per DEUS ratio:',
-        value: toBN(migrationInfo?.symm_per_deus).toFixed(2) ?? 'N/A',
+        value:
+          toBN(Number(migrationInfo?.unvested_symm_per_deus) + Number(migrationInfo?.vested_symm_per_deus)).toFixed(
+            2
+          ) ?? 'N/A',
         extension: 'SYMM per DEUS',
+        subValue: {
+          unvested: toBN(migrationInfo?.unvested_symm_per_deus).toFixed(3) ?? 'N/A',
+          vested: toBN(migrationInfo?.vested_symm_per_deus).toFixed(3) ?? 'N/A',
+        },
         deusColor: false,
       },
     ],
@@ -273,8 +284,10 @@ export default function HeaderBox() {
                 {item.infoLogo && <Info size={11} style={{ marginLeft: '3px', marginBottom: '-1px' }} />}
               </Name>
               <ValueBox data-tooltip-id="my-tooltip-multiline" data-for="id">
-                {item.value}
+                <span>{item.value}</span>
+
                 {item.extension && <ExtensionSpan deusColor={item.deusColor}>{item.extension}</ExtensionSpan>}
+
                 {item.tooltip && (
                   <React.Fragment>
                     <a data-tip data-for={'multiline-id'}>
@@ -300,10 +313,17 @@ export default function HeaderBox() {
                     </CustomTooltip>
                   </React.Fragment>
                 )}
+
                 {item.logo && (
                   <span style={{ paddingLeft: '4px' }}>
                     <Image alt="SymmLogo" width={getImageSize()} height={14} src={SymmLogo} />
                   </span>
+                )}
+
+                {item.subValue && (
+                  <SubValue>
+                    ({item.subValue.unvested} <SymmText>UNVESTED</SymmText> / {item.subValue.vested} VESTED)
+                  </SubValue>
                 )}
               </ValueBox>
             </Item>

@@ -29,7 +29,7 @@ export const XDEUS_TOKEN = new Token(
   'xDEUS'
 )
 
-// TODO: this is a test token
+// TODO: this is a random test token: should change after the launch of SYMM token
 export const SYMM_TOKEN = new Token(
   SupportedChainId.FANTOM,
   '0x0e249130b3545a2a287DE9f27d805CAB95f03DB9',
