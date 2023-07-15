@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 import Image from 'next/image'
 
+import { ToolTip } from 'components/ToolTip'
 import { RowCenter } from 'components/Row'
 import { Info } from 'components/Icons'
 
@@ -13,6 +14,7 @@ import { useGetEarlyMigrationDeadline } from 'hooks/useMigratePage'
 import { getRemainingTime } from 'utils/time'
 import { autoRefresh } from 'utils/retry'
 import useWeb3React from 'hooks/useWeb3'
+import { DeusText } from '../Stake/RewardBox'
 
 const TopWrap = styled.div`
   font-family: 'Inter';
@@ -144,6 +146,30 @@ const ExtensionSpan = styled.span<{ deusColor?: boolean }>`
     font-size: 9px;
   `};
 `
+const CustomTooltip = styled(ToolTip)`
+  font-size: 0.8rem !important;
+  color: #bea29c !important;
+  border: 1px solid #bea29c !important;
+  border-radius: 6px !important;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 0.65rem !important;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToSuperTiny`
+    font-size: 0.5rem !important;
+  `};
+`
+const InfoIcon = styled(Info)`
+  margin-bottom: -1px;
+  margin-left: 2px;
+`
+
+const ToolTipWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px;
+`
 
 export const getImageSize = () => {
   return isMobile ? 15 : 20
@@ -189,6 +215,26 @@ export default function HeaderBox() {
     handleLoading()
   }, [])
 
+  const totalMigratedData = useMemo(() => {
+    const balanced = toBN(migrationInfo?.total_migrated_to_balanced * 1e-18).toFixed(3) ?? 'N/A'
+    const deus = toBN(migrationInfo?.total_migrated_to_deus * 1e-18).toFixed(3) ?? 'N/A'
+    const symm = toBN(migrationInfo?.total_migrated_to_symm * 1e-18).toFixed(3) ?? 'N/A'
+
+    const totalValue =
+      toBN(
+        migrationInfo?.total_migrated_to_balanced * 1e-18 +
+          migrationInfo?.total_migrated_to_deus * 1e-18 +
+          migrationInfo?.total_migrated_to_symm * 1e-18
+      ).toFixed(2) ?? 'N/A'
+
+    return {
+      balanced,
+      deus,
+      symm,
+      totalValue,
+    }
+  }, [migrationInfo])
+
   const TopWrapItems = useMemo(
     () => [
       {
@@ -200,12 +246,8 @@ export default function HeaderBox() {
       },
       {
         name: 'Total Migrated:',
-        value:
-          toBN(
-            migrationInfo?.total_migrated_to_balanced * 1e-18 +
-              migrationInfo?.total_migrated_to_deus * 1e-18 +
-              migrationInfo?.total_migrated_to_symm * 1e-18
-          ).toFixed(2) ?? 'N/A',
+        value: totalMigratedData.totalValue,
+        tooltip: true,
         extension: 'DEUS',
         deusColor: true,
       },
@@ -216,7 +258,7 @@ export default function HeaderBox() {
         deusColor: false,
       },
     ],
-    [migrationInfo]
+    [migrationInfo, totalMigratedData]
   )
 
   return (
@@ -230,9 +272,34 @@ export default function HeaderBox() {
                 {item.name}
                 {item.infoLogo && <Info size={11} style={{ marginLeft: '3px', marginBottom: '-1px' }} />}
               </Name>
-              <ValueBox>
+              <ValueBox data-tooltip-id="my-tooltip-multiline" data-for="id">
                 {item.value}
                 {item.extension && <ExtensionSpan deusColor={item.deusColor}>{item.extension}</ExtensionSpan>}
+                {item.tooltip && (
+                  <React.Fragment>
+                    <a data-tip data-for={'multiline-id'}>
+                      <InfoIcon size={12} />
+                    </a>
+                    <CustomTooltip id="multiline-id" arrowColor={'#bea29c'}>
+                      <ToolTipWrap>
+                        <span>
+                          BALANCED: {totalMigratedData.balanced}
+                          <DeusText> DEUS</DeusText>
+                        </span>
+
+                        <span>
+                          DEUS: {totalMigratedData.deus}
+                          <DeusText> DEUS</DeusText>
+                        </span>
+
+                        <span>
+                          SYMM: {totalMigratedData.symm}
+                          <DeusText> DEUS</DeusText>
+                        </span>
+                      </ToolTipWrap>
+                    </CustomTooltip>
+                  </React.Fragment>
+                )}
                 {item.logo && (
                   <span style={{ paddingLeft: '4px' }}>
                     <Image alt="SymmLogo" width={getImageSize()} height={14} src={SymmLogo} />
