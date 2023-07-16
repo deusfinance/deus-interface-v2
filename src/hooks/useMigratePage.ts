@@ -7,7 +7,10 @@ import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
 import { useMigratorContract } from './useContract'
 import { BN_ZERO, toBN } from 'utils/numbers'
 
-export function useGetUserMigrations(account?: string | null): Map<string, BigNumber> {
+export function useGetUserMigrations(
+  ratio: number,
+  account?: string | null
+): { userMigrations: Map<string, BigNumber>; userTotalMigration: BigNumber } {
   const migratorContract = useMigratorContract()
 
   const amountOutCall = useMemo(
@@ -28,14 +31,31 @@ export function useGetUserMigrations(account?: string | null): Map<string, BigNu
   const arg0 = !result || !result.result ? '' : result.result[0]
 
   const userMigrations = new Map<string, BigNumber>()
+  let userTotalMigration = BN_ZERO
+
   for (const obj of arg0) {
-    const key = obj.token + '_' + obj.migrationPreference
-    const prevAmount: BigNumber = userMigrations.get(key) ?? BN_ZERO
-    const amount: BigNumber = toBN(formatUnits(obj.amount.toString(), 18))
-    userMigrations.set(key, prevAmount.plus(amount))
+    if (obj.migrationPreference === 0) {
+      const key = obj.token + '_1' // for DEUS
+      const prevAmount: BigNumber = userMigrations.get(key) ?? BN_ZERO
+      const amount: BigNumber = toBN(formatUnits(obj.amount.toString(), 18)).times(ratio)
+      userMigrations.set(key, prevAmount.plus(amount))
+      userTotalMigration = userTotalMigration.plus(amount)
+
+      const key2 = obj.token + '_2' // for SYMM
+      const prevAmount2: BigNumber = userMigrations.get(key2) ?? BN_ZERO
+      const amount2: BigNumber = toBN(formatUnits(obj.amount.toString(), 18)).times(1 - ratio)
+      userMigrations.set(key2, prevAmount2.plus(amount2))
+      userTotalMigration = userTotalMigration.plus(amount2)
+    } else {
+      const key = obj.token + '_' + obj.migrationPreference
+      const prevAmount: BigNumber = userMigrations.get(key) ?? BN_ZERO
+      const amount: BigNumber = toBN(formatUnits(obj.amount.toString(), 18))
+      userMigrations.set(key, prevAmount.plus(amount))
+      userTotalMigration = userTotalMigration.plus(amount)
+    }
   }
 
-  return userMigrations
+  return { userMigrations, userTotalMigration }
 }
 
 export function useGetEarlyMigrationDeadline(): string {

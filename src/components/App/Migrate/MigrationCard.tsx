@@ -293,12 +293,20 @@ function getImageSize() {
   return isMobile ? 22 : 28
 }
 
+const Wrapper = styled.div<{ disabled: boolean }>`
+  width: 100%;
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
+  opacity: ${({ disabled }) => (disabled ? '0.2' : '1')};
+`
+
 export default function MigrationCard({
+  disabled,
   destinationTokens,
   sourceTokens,
   firstDescription,
   secondDescription,
 }: {
+  disabled: boolean
   destinationTokens: Token[]
   sourceTokens: TokenMap[]
   firstDescription: string
@@ -335,7 +343,7 @@ export default function MigrationCard({
   const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
 
   return (
-    <div style={{ width: '100%' }}>
+    <Wrapper disabled={disabled}>
       <MiniMigrationCard
         destinationLogos={destinationLogos}
         destinationTokens={destinationTokens}
@@ -373,6 +381,6 @@ export default function MigrationCard({
         awaiting={awaitingSwapConfirmation}
         handleClick={() => console.log('')}
       />
-    </div>
+    </Wrapper>
   )
 }
