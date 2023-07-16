@@ -275,4 +275,17 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://andromeda.metis.io/?owner=1088',
     blockExplorerUrl: 'https://andromeda-explorer.metis.io/',
   },
+  [SupportedChainId.KAVA]: {
+    chainId: '0x8ae',
+    chainName: 'Kava EVM',
+    label: 'Kava',
+    logoUrl: require('/public/static/images/networks/kava.svg'),
+    nativeCurrency: {
+      name: 'KAVA',
+      symbol: 'KAVA',
+      decimals: 18,
+    },
+    rpcUrl: 'https://evm.kava.io',
+    blockExplorerUrl: 'https://explorer.kava.io/',
+  },
 }

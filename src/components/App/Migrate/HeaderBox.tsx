@@ -25,7 +25,11 @@ const TopWrap = styled.div`
   background: ${({ theme }) => theme.bg0};
   padding: 20px;
   padding-top: 25px;
+  padding-bottom: 50px;
   border-radius: 15px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding-bottom: 20px;
+  `};
 `
 const MainTitleSpan = styled.div`
   color: #d4fdf9;
@@ -35,6 +39,21 @@ const MainTitleSpan = styled.div`
   `};
   ${({ theme }) => theme.mediaWidth.upToSuperTiny`
     font-size: 11px;
+  `};
+`
+const SubTitleSpan = styled.div`
+  color: #ebebec;
+  font-family: Inter;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  padding-top: 10px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 10px;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToSuperTiny`
+    font-size: 8px;
   `};
 `
 const DataBox = styled.div`
@@ -275,6 +294,11 @@ export default function HeaderBox() {
   return (
     <TopWrap>
       <MainTitleSpan>Deposit your DEUS ecosystem tokens to migrate.</MainTitleSpan>
+      <SubTitleSpan>
+        Easy migration tab auto-migrates 100% of your DEUS ecosystem wallet balances into selected option. Manual lets
+        you customize the amount you want to migrate. bDEI and legacyDEI to DEUS swaps are not instant, more information
+        around when you will receive your DEUS tokens will be shared soon.
+      </SubTitleSpan>
       <DataBox>
         {TopWrapItems &&
           TopWrapItems.map((item, index) => (
