@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 import Image from 'next/image'
@@ -32,8 +32,9 @@ import ManualReviewModal from './ManualReviewModal'
 import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
 import { useGetUserMigrations } from 'hooks/useMigratePage'
 import BigNumber from 'bignumber.js'
-import { formatBalance } from 'utils/numbers'
+import { formatBalance, toBN } from 'utils/numbers'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
+import { makeHttpRequest } from 'utils/http'
 
 const Wrapper = styled.div`
   display: flex;
@@ -199,7 +200,39 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
   // const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
   const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
 
-  const userMigrations = useGetUserMigrations(account)
+  const [migrationInfo, setMigrationInfo] = useState<any>(null)
+
+  const getMigrationData = useCallback(async () => {
+    try {
+      const res = makeHttpRequest(`https://info.deus.finance/symm/v1/info`)
+      return res
+    } catch (error) {
+      return null
+    }
+  }, [])
+
+  const handleLoading = async () => {
+    const rest = await getMigrationData()
+    if (rest?.status === 'error') {
+      setMigrationInfo(null)
+    } else {
+      setMigrationInfo(rest)
+    }
+  }
+
+  useEffect(() => {
+    handleLoading()
+  }, [])
+
+  const balancedRatio = useMemo(() => {
+    const deus = toBN(migrationInfo?.total_migrated_to_deus * 1e-18)
+    const symm = toBN(migrationInfo?.total_migrated_to_symm * 1e-18)
+    const total = toBN(800000).minus(symm).plus(deus)
+    const ratio = total.div(800000)
+    return ratio.toString()
+  }, [migrationInfo])
+
+  const { userMigrations } = useGetUserMigrations(Number(balancedRatio), account)
 
   function handleClickModal(type: MigrationType, inputToken: Token) {
     setType(type)
@@ -499,16 +532,14 @@ const TableRowContentWrapper = ({
               <Image alt="SymmLogo" width={17} height={12} src={SymmLogo} />
             </span>
           </Value>
-          {version === MigrationVersion.DUAL && (
-            <Value>
-              {formatBalance(userMigrations.get(token.address + '_' + '1')?.toString(), 3) ?? '0.00'}
-              {formatBalance(userMigrations.get(token.address + '_' + '1')?.toString(), 3) === '' && '0.00'}
-              {' ->'}
-              <span style={{ paddingLeft: '6px' }}>
-                <Image alt="DeusLogo" width={16} height={16} src={DeusLogo} />
-              </span>
-            </Value>
-          )}
+          <Value>
+            {formatBalance(userMigrations.get(token.address + '_' + '1')?.toString(), 3) ?? '0.00'}
+            {formatBalance(userMigrations.get(token.address + '_' + '1')?.toString(), 3) === '' && '0.00'}
+            {' ->'}
+            <span style={{ paddingLeft: '6px' }}>
+              <Image alt="DeusLogo" width={16} height={16} src={DeusLogo} />
+            </span>
+          </Value>
         </div>
       </MyMigratedAmount>
 
