@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import Image from 'next/image'
 
 import { ToolTip } from 'components/ToolTip'
-import { RowCenter } from 'components/Row'
+// import { RowCenter } from 'components/Row'
 import { Info } from 'components/Icons'
 
 import SymmLogo from '/public/static/images/tokens/symm.svg'
@@ -239,16 +239,23 @@ export default function HeaderBox() {
   }, [])
 
   const totalMigratedData = useMemo(() => {
-    const balanced = toBN(migrationInfo?.total_migrated_to_balanced * 1e-18).toFixed(3) ?? 'N/A'
-    const deus = toBN(migrationInfo?.total_migrated_to_deus * 1e-18).toFixed(3) ?? 'N/A'
-    const symm = toBN(migrationInfo?.total_migrated_to_symm * 1e-18).toFixed(3) ?? 'N/A'
+    const balanced = migrationInfo?.total_migrated_to_balanced
+      ? toBN(migrationInfo?.total_migrated_to_balanced * 1e-18).toFixed(3)
+      : 'N/A'
+    const deus = migrationInfo?.total_migrated_to_deus
+      ? toBN(migrationInfo?.total_migrated_to_deus * 1e-18).toFixed(3)
+      : 'N/A'
+    const symm = migrationInfo?.total_migrated_to_symm
+      ? toBN(migrationInfo?.total_migrated_to_symm * 1e-18).toFixed(3)
+      : 'N/A'
 
-    const totalValue =
-      toBN(
-        migrationInfo?.total_migrated_to_balanced * 1e-18 +
-          migrationInfo?.total_migrated_to_deus * 1e-18 +
-          migrationInfo?.total_migrated_to_symm * 1e-18
-      ).toFixed(2) ?? 'N/A'
+    const totalValue = migrationInfo?.total_migrated_to_balanced
+      ? toBN(
+          migrationInfo?.total_migrated_to_balanced * 1e-18 +
+            migrationInfo?.total_migrated_to_deus * 1e-18 +
+            migrationInfo?.total_migrated_to_symm * 1e-18
+        ).toFixed(2)
+      : 'N/A'
 
     return {
       balanced,
@@ -262,7 +269,9 @@ export default function HeaderBox() {
     () => [
       {
         name: 'Early Migrator Bonus:',
-        value: toBN(migrationInfo?.early_migration_bonus).toFixed(2) + '%' ?? 'N/A',
+        value: migrationInfo?.early_migration_bonus
+          ? toBN(migrationInfo?.early_migration_bonus).toFixed(2) + '%'
+          : 'N/A',
         underline: true,
         logo: true,
         infoLogo: true,
@@ -276,14 +285,15 @@ export default function HeaderBox() {
       },
       {
         name: 'SYMM per DEUS ratio:',
-        value:
-          toBN(Number(migrationInfo?.unvested_symm_per_deus) + Number(migrationInfo?.vested_symm_per_deus)).toFixed(
-            2
-          ) ?? 'N/A',
+        value: migrationInfo?.unvested_symm_per_deus
+          ? toBN(Number(migrationInfo?.unvested_symm_per_deus) + Number(migrationInfo?.vested_symm_per_deus)).toFixed(2)
+          : 'N/A',
         extension: 'SYMM per DEUS',
         subValue: {
-          unvested: toBN(migrationInfo?.unvested_symm_per_deus).toFixed(3) ?? 'N/A',
-          vested: toBN(migrationInfo?.vested_symm_per_deus).toFixed(3) ?? 'N/A',
+          unvested: migrationInfo?.unvested_symm_per_deus
+            ? toBN(migrationInfo?.unvested_symm_per_deus).toFixed(3)
+            : 'N/A',
+          vested: migrationInfo?.vested_symm_per_deus ? toBN(migrationInfo?.vested_symm_per_deus).toFixed(3) : 'N/A',
         },
         deusColor: false,
       },
@@ -295,9 +305,14 @@ export default function HeaderBox() {
     <TopWrap>
       <MainTitleSpan>Deposit your DEUS ecosystem tokens to migrate.</MainTitleSpan>
       <SubTitleSpan>
-        Easy migration tab auto-migrates 100% of your DEUS ecosystem wallet balances into selected option. Manual lets
-        you customize the amount you want to migrate. bDEI and legacyDEI to DEUS swaps are not instant, more information
-        around when you will receive your DEUS tokens will be shared soon.
+        <p>
+          • Easy migration tab auto-migrates 100% of your DEUS ecosystem wallet balances into selected option. Manual
+          lets you customize the amount you want to migrate.
+        </p>
+        <p>
+          • bDEI and legacyDEI to DEUS swaps are not instant, more information around when you will receive your DEUS
+          tokens will be shared soon.
+        </p>
       </SubTitleSpan>
       <DataBox>
         {TopWrapItems &&
@@ -305,7 +320,9 @@ export default function HeaderBox() {
             <Item key={index}>
               <Name underline={item.underline}>
                 {item.name}
-                {item.infoLogo && <Info size={11} style={{ marginLeft: '3px', marginBottom: '-1px' }} />}
+                {item.infoLogo && (
+                  <Info size={11} style={{ marginLeft: '3px', marginBottom: '-1px', cursor: 'default' }} />
+                )}
               </Name>
               <ValueBox data-tooltip-id="my-tooltip-multiline" data-for="id">
                 <span>{item.value}</span>
@@ -353,12 +370,12 @@ export default function HeaderBox() {
             </Item>
           ))}
       </DataBox>
-      <StickyTopWrap>
+      {/* <StickyTopWrap>
         <RowCenter>
           <TitleSpan>Early Migration Ends in: </TitleSpan>
           <TimeSpan>{earlyMigrationDeadline}</TimeSpan>
         </RowCenter>
-      </StickyTopWrap>
+      </StickyTopWrap> */}
     </TopWrap>
   )
 }
