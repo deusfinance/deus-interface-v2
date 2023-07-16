@@ -43,7 +43,7 @@ export function useGetUserMigrations(
 
       const key2 = obj.token + '_2' // for SYMM
       const prevAmount2: BigNumber = userMigrations.get(key2) ?? BN_ZERO
-      const amount2: BigNumber = toBN(formatUnits(obj.amount.toString(), 18)).times(1 - ratio)
+      const amount2: BigNumber = toBN(formatUnits(obj.amount.toString(), 18)).minus(amount)
       userMigrations.set(key2, prevAmount2.plus(amount2))
       userTotalMigration = userTotalMigration.plus(amount2)
     } else {

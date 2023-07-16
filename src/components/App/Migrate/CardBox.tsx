@@ -43,12 +43,10 @@ export default function CardBox() {
   const isFullyMigrated = useMemo(() => {
     for (let index = 0; index < inputAmounts.length; index++) {
       const element = inputAmounts[index]
-      if (element !== '0') return false && userTotalMigration.toString() !== '0'
+      if (element !== '0') return false
     }
     return true && userTotalMigration.toString() !== '0'
   }, [inputAmounts, userTotalMigration])
-
-  // console.log({ isFullyMigrated, isMobile })
 
   return (
     <Wrapper>

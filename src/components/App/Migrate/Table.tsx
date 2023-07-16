@@ -227,10 +227,8 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
   const balancedRatio = useMemo(() => {
     const deus = toBN(migrationInfo?.total_migrated_to_deus * 1e-18)
     const symm = toBN(migrationInfo?.total_migrated_to_symm * 1e-18)
-    const total = deus.plus(symm)
-
-    const ratio = deus.div(total)
-
+    const total = toBN(800000).minus(symm).plus(deus)
+    const ratio = total.div(800000)
     return ratio.toString()
   }, [migrationInfo])
 
