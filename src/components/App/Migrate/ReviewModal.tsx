@@ -101,8 +101,11 @@ export default function ReviewModal({
     for (let index = 0; index < approvalStates.length; index++) {
       const approvalState = approvalStates[index]
       const amountIn = amountsIn[inputTokens[index]?.address]
-
-      if (approvalState !== ApprovalState.APPROVED && amountIn?.toSignificant(amountIn.currency.decimals) !== '0')
+      if (
+        approvalState !== ApprovalState.APPROVED &&
+        amountIn &&
+        amountIn?.toSignificant(amountIn.currency.decimals) !== '0'
+      )
         return [true, approvalState === ApprovalState.PENDING, index]
     }
     return [false, false, -1]
