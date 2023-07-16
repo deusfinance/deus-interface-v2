@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import { DEUS_TOKEN, Tokens, SYMM_TOKEN } from 'constants/tokens'
@@ -9,6 +9,8 @@ import { useTokenBalances } from 'state/wallet/hooks'
 import { useGetUserMigrations } from 'hooks/useMigratePage'
 import CongratsCard from './CongratsCard'
 import { isMobile } from 'react-device-detect'
+import { toBN } from 'utils/numbers'
+import { makeHttpRequest } from 'utils/http'
 
 const Wrapper = styled.div`
   display: flex;
@@ -38,15 +40,47 @@ export default function CardBox() {
     })
   }, [sourceBalances, chainSourceTokens])
 
-  const { userTotalMigration } = useGetUserMigrations(0.5, account)
+  const [migrationInfo, setMigrationInfo] = useState<any>(null)
+
+  const getMigrationData = useCallback(async () => {
+    try {
+      const res = makeHttpRequest(`https://info.deus.finance/symm/v1/info`)
+      return res
+    } catch (error) {
+      return null
+    }
+  }, [])
+
+  const handleLoading = async () => {
+    const rest = await getMigrationData()
+    if (rest?.status === 'error') {
+      setMigrationInfo(null)
+    } else {
+      setMigrationInfo(rest)
+    }
+  }
+
+  useEffect(() => {
+    handleLoading()
+  }, [])
+
+  const balancedRatio = useMemo(() => {
+    const deus = toBN(migrationInfo?.total_migrated_to_deus * 1e-18)
+    const symm = toBN(migrationInfo?.total_migrated_to_symm * 1e-18)
+    const total = toBN(800000).minus(symm).plus(deus)
+    const ratio = total.div(800000)
+    return ratio.toString()
+  }, [migrationInfo])
+
+  const { userTotalMigration_toDeus, userTotalMigration_toSymm } = useGetUserMigrations(Number(balancedRatio), account)
 
   const isFullyMigrated = useMemo(() => {
     for (let index = 0; index < inputAmounts.length; index++) {
       const element = inputAmounts[index]
       if (element !== '0') return false
     }
-    return true && userTotalMigration.toString() !== '0'
-  }, [inputAmounts, userTotalMigration])
+    return true && (userTotalMigration_toDeus.toString() !== '0' || userTotalMigration_toSymm.toString() !== '0')
+  }, [inputAmounts, userTotalMigration_toDeus, userTotalMigration_toSymm])
 
   return (
     <Wrapper>
@@ -71,7 +105,8 @@ export default function CardBox() {
         <CongratsCard
           destinationTokens={[DEUS_TOKEN, SYMM_TOKEN]}
           sourceTokens={[Tokens['DEUS'], Tokens['XDEUS'], Tokens['LEGACY_DEI'], Tokens['bDEI_TOKEN']]}
-          secondDescription={`Migrated amount: ${userTotalMigration.toFixed(2).toString()} `}
+          deus={userTotalMigration_toDeus.toFixed(2).toString()}
+          symm={userTotalMigration_toSymm.toFixed(2).toString()}
         />
       )}
       {(!isFullyMigrated || !isMobile) && (

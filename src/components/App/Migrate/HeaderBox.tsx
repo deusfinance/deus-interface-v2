@@ -192,7 +192,7 @@ const ToolTipWrap = styled.div`
   gap: 6px;
   padding: 4px;
 `
-const SymmText = styled.span`
+export const SymmText = styled.span`
   color: ${({ theme }) => theme.symmColor};
 `
 const ExternalLinkIcon = styled(LinkIcon)`

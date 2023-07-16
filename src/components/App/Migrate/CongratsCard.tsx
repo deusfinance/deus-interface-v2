@@ -13,6 +13,7 @@ import { SupportedChainId } from 'constants/chains'
 import { DeusText } from '../Stake/RewardBox'
 import { ExternalLink } from 'components/Link'
 import React from 'react'
+import { SymmText } from './HeaderBox'
 
 const MainWrapper = styled.div`
   display: flex;
@@ -41,7 +42,6 @@ const MainWrapper = styled.div`
     background-position-y: -25px;
   `};
 `
-
 const MultipleImageWrapper = styled.div<{ isSingle?: boolean }>`
   display: flex;
   flex-flow: row nowrap;
@@ -130,10 +130,11 @@ interface MigrationCardProps {
   destinationLogos: string[]
   text: string
   sourceLogos: string[]
-  secondDescription: string
+  deus: string
+  symm: string
 }
 
-const LargeMigrationCard = ({ destinationLogos, text, sourceLogos, secondDescription }: MigrationCardProps) => {
+const LargeMigrationCard = ({ destinationLogos, text, sourceLogos, deus, symm }: MigrationCardProps) => {
   return (
     <LargeContainer>
       <MainWrapper>
@@ -162,7 +163,7 @@ const LargeMigrationCard = ({ destinationLogos, text, sourceLogos, secondDescrip
           <p>You are fully migrated,</p>
           <p>see you in Q4!</p>
           <p>
-            {secondDescription} <DeusText>DEUS</DeusText>.
+            Migrated amount: {deus} <DeusText>TO DEUS</DeusText>, {symm} <SymmText>TO SYMM</SymmText>
           </p>
         </DescriptionContainer>
         <RowCenter style={{ marginTop: 'auto' }}>
@@ -186,11 +187,13 @@ const Wrapper = styled.div`
 export default function MigrationCard({
   destinationTokens,
   sourceTokens,
-  secondDescription,
+  deus,
+  symm,
 }: {
   destinationTokens: Token[]
   sourceTokens: TokenMap[]
-  secondDescription: string
+  deus: string
+  symm: string
 }) {
   const { chainId } = useWeb3React()
 
@@ -218,7 +221,8 @@ export default function MigrationCard({
         destinationLogos={destinationLogos}
         sourceLogos={sourceLogos}
         text={text}
-        secondDescription={secondDescription}
+        deus={deus}
+        symm={symm}
       />
     </Wrapper>
   )
