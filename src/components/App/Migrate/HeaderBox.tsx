@@ -15,6 +15,8 @@ import { getRemainingTime } from 'utils/time'
 import { autoRefresh } from 'utils/retry'
 import useWeb3React from 'hooks/useWeb3'
 import { DeusText } from '../Stake/RewardBox'
+import { Link as LinkIcon } from 'components/Icons'
+import { ExternalLink } from 'components/Link'
 
 const TopWrap = styled.div`
   font-family: 'Inter';
@@ -193,6 +195,12 @@ const ToolTipWrap = styled.div`
 const SymmText = styled.span`
   color: ${({ theme }) => theme.symmColor};
 `
+const ExternalLinkIcon = styled(LinkIcon)`
+  margin-left: 3px;
+  path {
+    fill: #bea29c;
+  }
+`
 
 export const getImageSize = () => {
   return isMobile ? 15 : 20
@@ -318,12 +326,20 @@ export default function HeaderBox() {
         {TopWrapItems &&
           TopWrapItems.map((item, index) => (
             <Item key={index}>
-              <Name underline={item.underline}>
-                {item.name}
-                {item.infoLogo && (
-                  <Info size={11} style={{ marginLeft: '3px', marginBottom: '-1px', cursor: 'default' }} />
-                )}
-              </Name>
+              {item.infoLogo ? (
+                <ExternalLink
+                  href="https://lafayettetabor.medium.com/early-symm-migration-announcement-144e51baf36f"
+                  style={{ textDecoration: 'none' }}
+                >
+                  <Name underline={item.underline}>
+                    {item.name}
+                    {item.infoLogo && <ExternalLinkIcon />}
+                  </Name>
+                </ExternalLink>
+              ) : (
+                <Name underline={item.underline}>{item.name}</Name>
+              )}
+
               <ValueBox data-tooltip-id="my-tooltip-multiline" data-for="id">
                 <span>{item.value}</span>
 
