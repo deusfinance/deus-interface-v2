@@ -534,16 +534,14 @@ const TableRowContentWrapper = ({
               <Image alt="SymmLogo" width={17} height={12} src={SymmLogo} />
             </span>
           </Value>
-          {version === MigrationVersion.DUAL && (
-            <Value>
-              {formatBalance(userMigrations.get(token.address + '_' + '1')?.toString(), 3) ?? '0.00'}
-              {formatBalance(userMigrations.get(token.address + '_' + '1')?.toString(), 3) === '' && '0.00'}
-              {' ->'}
-              <span style={{ paddingLeft: '6px' }}>
-                <Image alt="DeusLogo" width={16} height={16} src={DeusLogo} />
-              </span>
-            </Value>
-          )}
+          <Value>
+            {formatBalance(userMigrations.get(token.address + '_' + '1')?.toString(), 3) ?? '0.00'}
+            {formatBalance(userMigrations.get(token.address + '_' + '1')?.toString(), 3) === '' && '0.00'}
+            {' ->'}
+            <span style={{ paddingLeft: '6px' }}>
+              <Image alt="DeusLogo" width={16} height={16} src={DeusLogo} />
+            </span>
+          </Value>
         </div>
       </MyMigratedAmount>
 

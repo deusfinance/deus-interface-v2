@@ -166,10 +166,7 @@ const LargeMigrationCard = ({ destinationLogos, text, sourceLogos, secondDescrip
           </p>
         </DescriptionContainer>
         <RowCenter style={{ marginTop: 'auto' }}>
-          <ExternalLink
-            href="https://lafayettetabor.medium.com/early-symm-migration-announcement-144e51baf36f"
-            style={{ textDecoration: 'none', width: '100%' }}
-          >
+          <ExternalLink href="https://docs.symm.io" style={{ textDecoration: 'none', width: '100%' }}>
             <MigrationButton>Learn more about SYMMIO</MigrationButton>
           </ExternalLink>
         </RowCenter>
