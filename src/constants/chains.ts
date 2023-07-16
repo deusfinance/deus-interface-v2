@@ -41,6 +41,9 @@ export enum SupportedChainId {
 
   PALM = 11297108109,
   PALM_TESTNET = 11297108099,
+
+  METIS = 1088,
+  KAVA = 2222,
 }
 
 export const SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedChainId).filter(
@@ -48,6 +51,17 @@ export const SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedCh
 ) as SupportedChainId[]
 
 export const SolidlyChains = [SupportedChainId.FANTOM]
+
+export const MigrationChains = [
+  SupportedChainId.FANTOM,
+  SupportedChainId.MAINNET,
+  SupportedChainId.POLYGON,
+  SupportedChainId.BSC,
+  SupportedChainId.ARBITRUM,
+  SupportedChainId.METIS,
+  // SupportedChainId.AVALANCHE,
+  // SupportedChainId.KAVA,
+]
 
 export const FALLBACK_CHAIN_ID = SupportedChainId.FANTOM
 

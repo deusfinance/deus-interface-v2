@@ -7,6 +7,7 @@ import { ChainInfo } from 'constants/chainInfo'
 
 import { NavButton } from 'components/Button'
 import { SolidlyChains } from 'constants/chains'
+import { useRouter } from 'next/router'
 
 const Button = styled(NavButton)`
   background: ${({ theme }) => theme.bg1};
@@ -38,12 +39,13 @@ const Text = styled.p`
 
 export default function Web3Network() {
   const { account, chainId } = useWeb3React()
+  const router = useRouter()
 
   const Chain = useMemo(() => {
     return chainId && chainId in ChainInfo ? ChainInfo[chainId] : null
   }, [chainId])
 
-  if (!account || !chainId || !Chain || !SolidlyChains.includes(chainId)) {
+  if (!account || !chainId || !Chain || (!SolidlyChains.includes(chainId) && !router.route.includes('/migration'))) {
     return null
   }
 

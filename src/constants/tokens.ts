@@ -11,18 +11,11 @@ import {
   DEUS_VDEUS_LP_TOKEN_ADDRESS,
   XDEUS_DEUS_SOLIDLY_LP_ADDRESS,
   SOLID_TOKEN_ADDRESS,
+  LEGACY_DEI_ADDRESS,
+  BDEI_ADDRESS,
 } from './addresses'
 
 export const DEI_TOKEN = new Token(SupportedChainId.FANTOM, DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'DEI', 'DEI')
-
-// FIXME: this token is only used in migration page, do we need this?
-export const DEIv2_TOKEN = new Token(
-  SupportedChainId.FANTOM,
-  '0xd358f17774B69A8c06cfAA0d4402D2F604d4a4bF',
-  18,
-  'DEI',
-  'DEI'
-)
 
 export const USDC_TOKEN = new Token(SupportedChainId.FANTOM, USDC_ADDRESS[SupportedChainId.FANTOM], 6, 'USDC', 'USDC')
 
@@ -34,6 +27,15 @@ export const XDEUS_TOKEN = new Token(
   18,
   'xDEUS',
   'xDEUS'
+)
+
+// TODO: this is a random test token: should change after the launch of SYMM token
+export const SYMM_TOKEN = new Token(
+  SupportedChainId.FANTOM,
+  '0x0e249130b3545a2a287DE9f27d805CAB95f03DB9',
+  18,
+  'SYMM',
+  'SYMM'
 )
 
 export const DEUS_VDEUS_LP_TOKEN = new Token(
@@ -105,7 +107,6 @@ export const WRAPPED_NATIVE = {
   [SupportedChainId.BSC]: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
 }
 
-//TODO: replace Matic and ETH with NATIVE in whole app
 export const Tokens: { [key: string]: TokenMap } = {
   USDT: {
     [SupportedChainId.MAINNET]: new Token(
@@ -137,6 +138,24 @@ export const Tokens: { [key: string]: TokenMap } = {
   WETH: duplicateTokenByAddressMap(WETH, 18, 'WETH', 'wETH'),
   USDC: duplicateTokenByAddressMap(USDC, 6, 'USDC', 'USD//C', { [SupportedChainId.BSC]: 18 }),
   DEI: duplicateTokenByChainId(DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'DEI', 'DEI'),
+  LEGACY_DEI: duplicateTokenByChainId(LEGACY_DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'LegacyDEI', 'LegacyDEI'),
+  XDEUS: duplicateTokenByChainId(XDEUS_ADDRESS[SupportedChainId.FANTOM], 18, 'xDEUS', 'xDEUS'),
+  bDEI_TOKEN: {
+    [SupportedChainId.ARBITRUM]: new Token(
+      SupportedChainId.ARBITRUM,
+      BDEI_ADDRESS[SupportedChainId.ARBITRUM],
+      18,
+      'bDEI',
+      'bDEI'
+    ),
+    [SupportedChainId.FANTOM]: new Token(
+      SupportedChainId.FANTOM,
+      BDEI_ADDRESS[SupportedChainId.FANTOM],
+      18,
+      'bDEI',
+      'bDEI'
+    ),
+  },
   DEUS: duplicateTokenByChainId('0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44', 18, 'DEUS', 'DEUS'),
   WNATIVE: {
     [SupportedChainId.MAINNET]: new Token(1, WRAPPED_NATIVE[1], 18, 'WETH', 'Wrapped Ether'),

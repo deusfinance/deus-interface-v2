@@ -2,6 +2,8 @@ import { useMemo } from 'react'
 
 import NotFound from '/public/static/images/fallback/not_found.png'
 import DEI_LOGO from '/public/static/images/tokens/dei.svg'
+import LEGACY_DEI_LOGO from '/public/static/images/tokens/legacy_dei.svg'
+import SYMM_LOGO from '/public/static/images/tokens/symm.svg'
 import DEUS_LOGO from '/public/static/images/tokens/deus.svg'
 import USDC_LOGO from '/public/static/images/tokens/usdc.svg'
 import BDEI_LOGO from '/public/static/images/tokens/bdei.svg'
@@ -20,8 +22,11 @@ const LogoMap: { [contractOrSymbol: string]: string } = {
   '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83': 'https://assets.spooky.fi/tokens/wFTM.png', // wFTM
   '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75': USDC_LOGO, // USDC
   '0xDE1E704dae0B4051e80DAbB26ab6ad6c12262DA0': DEI_LOGO,
+  '0xDE12c7959E1a72bbe8a5f7A1dc8f8EeF9Ab011B3': LEGACY_DEI_LOGO,
+  '0x0e249130b3545a2a287DE9f27d805CAB95f03DB9': SYMM_LOGO,
   '0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44': DEUS_LOGO,
   '0x05f6ea7F80BDC07f6E0728BbBBAbebEA4E142eE8': BDEI_LOGO,
+  '0x4a142eb454A1144c85D23e138A4571C697Ed2483': BDEI_LOGO,
   '0x953Cd009a490176FcEB3a26b9753e6F01645ff28': xDEUS_LOGO,
   '0x10b620b2dbAC4Faa7D7FFD71Da486f5D44cd86f9': LQDR_ICON,
   '0x814c66594a22404e101FEcfECac1012D8d75C156': CLQDR_ICON,

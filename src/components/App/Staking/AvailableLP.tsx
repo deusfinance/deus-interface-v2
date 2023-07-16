@@ -104,7 +104,6 @@ const AvailableLP = ({ pool }: { pool: LiquidityType }) => {
   const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
   const [awaitingDepositConfirmation, setAwaitingDepositConfirmation] = useState(false)
 
-  // TODO: check the spender
   const spender = useMemo(() => (chainId ? stakingPool.masterChef : undefined), [chainId, stakingPool.masterChef])
   const [approvalState, approveCallback] = useApproveCallback(lpCurrency ?? undefined, spender)
 

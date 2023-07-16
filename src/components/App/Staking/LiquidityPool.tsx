@@ -408,7 +408,6 @@ export default function LiquidityPool({ pool }: { pool: LiquidityType }) {
 
   const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
   const [awaitingLiquidityConfirmation, setAwaitingLiquidityConfirmation] = useState(false)
-  // TODO: check the spender
   const spender = useMemo(() => (chainId ? stakingPool.contract : undefined), [chainId, stakingPool.contract])
 
   const [approvalState, approveCallback] = useApproveCallback(token1Currency ?? undefined, spender)

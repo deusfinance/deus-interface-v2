@@ -1,5 +1,5 @@
 import { constructSameAddressMap } from 'utils/address'
-import { SupportedChainId } from './chains'
+import { MigrationChains, SupportedChainId } from './chains'
 
 interface AddressMap {
   [chainId: number]: string
@@ -28,6 +28,19 @@ export const DEI_ADDRESS: AddressMap = {
   ]),
 }
 
+export const LEGACY_DEI_ADDRESS: AddressMap = {
+  ...constructSameAddressMap('0xDE12c7959E1a72bbe8a5f7A1dc8f8EeF9Ab011B3', [
+    SupportedChainId.MAINNET,
+    SupportedChainId.POLYGON,
+    SupportedChainId.FANTOM,
+  ]),
+}
+
+export const BDEI_ADDRESS: AddressMap = {
+  [SupportedChainId.FANTOM]: '0x05f6ea7F80BDC07f6E0728BbBBAbebEA4E142eE8',
+  [SupportedChainId.ARBITRUM]: '0x4a142eb454A1144c85D23e138A4571C697Ed2483',
+}
+
 /* =====================================
                 DEUS ADDRESS
 ===================================== */
@@ -47,6 +60,8 @@ export const XDEUS_ADDRESS: AddressMap = {
     SupportedChainId.MAINNET,
     SupportedChainId.POLYGON,
     SupportedChainId.FANTOM,
+    SupportedChainId.BSC,
+    SupportedChainId.ARBITRUM,
   ]),
 }
 /* =====================================
@@ -92,7 +107,13 @@ export const USDCReserves3: AddressMap = {
 ===================================== */
 
 export const Multicall2: AddressMap = {
-  [SupportedChainId.FANTOM]: '0x22D4cF72C45F8198CfbF4B568dBdB5A85e8DC0B5',
+  [SupportedChainId.FANTOM]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [SupportedChainId.ARBITRUM]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [SupportedChainId.MAINNET]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [SupportedChainId.POLYGON]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [SupportedChainId.BSC]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [SupportedChainId.AVALANCHE]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [SupportedChainId.METIS]: '0x3CB9ae281E511759832a074A92634d2486E6a886',
 }
 
 export const BaseV1Factory: AddressMap = {
@@ -204,4 +225,8 @@ export const CLQDR_ADDRESS: AddressMap = {
 
 export const LQDR_ADDRESS: AddressMap = {
   [SupportedChainId.FANTOM]: '0x10b620b2dbAC4Faa7D7FFD71Da486f5D44cd86f9',
+}
+
+export const Migrator: AddressMap = {
+  ...constructSameAddressMap('0xe3b6CC7b76a7f67BBCcb66c010780bE0AF31Ff05', MigrationChains),
 }

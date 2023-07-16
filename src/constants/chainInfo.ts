@@ -162,7 +162,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     chainId: '0xA86A',
     chainName: 'Avalanche Mainnet C-Chain',
     label: 'Avalanche',
-    logoUrl: require('/public/static/images/fallback/not_found.png'),
+    logoUrl: require('/public/static/images/networks/avalanche.svg'),
     nativeCurrency: {
       name: 'Avalanche Token',
       symbol: 'AVAX',
@@ -188,7 +188,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     chainId: '0xA4B1',
     chainName: 'Arbitrum',
     label: 'Arbitrum',
-    logoUrl: require('/public/static/images/fallback/not_found.png'),
+    logoUrl: require('/public/static/images/networks/arbitrum.svg'),
     nativeCurrency: {
       name: 'Ethereum',
       symbol: 'ETH',
@@ -261,5 +261,31 @@ export const ChainInfo: { [chainId: number]: Info } = {
     },
     rpcUrl: 'https://palm-mainnet.infura.io/v3/da5fbfafcca14b109e2665290681e267',
     blockExplorerUrl: 'https://explorer.palm.io',
+  },
+  [SupportedChainId.METIS]: {
+    chainId: '0x440',
+    chainName: 'Metis Andromeda Mainnet',
+    label: 'Metis',
+    logoUrl: require('/public/static/images/networks/metis.svg'),
+    nativeCurrency: {
+      name: 'MetisDAO',
+      symbol: 'METIS',
+      decimals: 18,
+    },
+    rpcUrl: 'https://andromeda.metis.io/?owner=1088',
+    blockExplorerUrl: 'https://andromeda-explorer.metis.io/',
+  },
+  [SupportedChainId.KAVA]: {
+    chainId: '0x8ae',
+    chainName: 'Kava EVM',
+    label: 'Kava',
+    logoUrl: require('/public/static/images/networks/kava.svg'),
+    nativeCurrency: {
+      name: 'KAVA',
+      symbol: 'KAVA',
+      decimals: 18,
+    },
+    rpcUrl: 'https://evm.kava.io',
+    blockExplorerUrl: 'https://explorer.kava.io/',
   },
 }

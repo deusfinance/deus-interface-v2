@@ -11,6 +11,7 @@ import InputBox from 'components/InputBox'
 import ModalInfo from './ModalInfo'
 import InputBoxInDollar from 'components/App/StableCoin/InputBoxInDollar'
 import LottieDei from 'components/Icons/LottieDei'
+import { DEUS_TOKEN } from 'constants/tokens'
 
 const MainModal = styled(Modal)`
   display: flex;
@@ -174,7 +175,7 @@ export default function DefaultReviewModal({
             {outputTokens.map((token, index) =>
               amountsOut[index] === '0' ? (
                 <div style={{ display: 'none' }} key={index}></div>
-              ) : token.name === 'DEUS' ? (
+              ) : token.name === DEUS_TOKEN?.name ? (
                 <InputBoxInDollar key={index} currency={token} value={amountsOut[index]} />
               ) : (
                 <InputBox

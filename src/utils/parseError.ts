@@ -22,7 +22,6 @@ export function DefaultHandlerError(error: any): string | null {
   return `${reason ? `"${reason}"` : ''}.`
 }
 
-//TODO: get All error and make a readable message here
 export function CollateralPoolErrorToUserReadableMessage(error: any): string {
   const reason = getErrorState(error)
 

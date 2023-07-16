@@ -11,9 +11,10 @@ import { truncateAddress } from 'utils/account'
 import WalletModal from 'components/WalletModal'
 import { NavButton } from 'components/Button'
 import { Connected as ConnectedIcon } from 'components/Icons'
-import { FALLBACK_CHAIN_ID, SolidlyChains } from 'constants/chains'
+import { FALLBACK_CHAIN_ID } from 'constants/chains'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 import { RowCenter } from 'components/Row'
+import { useSupportedChainId } from 'hooks/useSupportedChainId'
 
 const ConnectButtonWrap = styled.div`
   border: none;
@@ -81,12 +82,7 @@ function Web3StatusInner() {
   const toggleWalletModal = useWalletModalToggle()
   const rpcChangerCallback = useRpcChangerCallback()
 
-  const showCallbackError: boolean = useMemo(() => {
-    if (!chainId || !account) return false
-    return !SolidlyChains.includes(chainId)
-  }, [chainId, account])
-
-  if (showCallbackError) {
+  if (!useSupportedChainId()) {
     return (
       <ErrorButton onClick={() => rpcChangerCallback(FALLBACK_CHAIN_ID)}>
         <Text>Wrong Network</Text>

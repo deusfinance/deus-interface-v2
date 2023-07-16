@@ -76,6 +76,7 @@ export interface Colors {
   lqdrColor: Color
   clqdChartPrimaryColor: Color
   clqdChartSecondaryColor: Color
+  symmColor: Color
 }
 
 export type Shadow = string
@@ -91,6 +92,7 @@ declare module 'styled-components' {
 
     // media queries
     mediaWidth: {
+      upToSuperTiny: ThemedCssFunction<DefaultTheme>
       upToExtraSmall: ThemedCssFunction<DefaultTheme>
       upToSmall: ThemedCssFunction<DefaultTheme>
       upToMedium: ThemedCssFunction<DefaultTheme>
