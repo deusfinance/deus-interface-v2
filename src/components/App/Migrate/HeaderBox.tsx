@@ -379,7 +379,7 @@ export default function HeaderBox() {
 
                 {item.subValue && (
                   <SubValue>
-                    ({item.subValue.unvested} <SymmText>UNVESTED</SymmText> / {item.subValue.vested} VESTED)
+                    ({item.subValue.unvested} <SymmText>UNLOCKED</SymmText> / {item.subValue.vested} LOCKED)
                   </SubValue>
                 )}
               </ValueBox>
