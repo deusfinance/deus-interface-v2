@@ -184,7 +184,7 @@ const Wrapper = styled.div`
   width: 100%;
 `
 
-export default function MigrationCard({
+export default function CongratsCard({
   destinationTokens,
   sourceTokens,
   deus,
