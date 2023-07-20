@@ -1,14 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 import Image from 'next/image'
 
 import { ToolTip } from 'components/ToolTip'
-// import { RowCenter } from 'components/Row'
 import { Info } from 'components/Icons'
 
 import SymmLogo from '/public/static/images/tokens/symm.svg'
-import { makeHttpRequest } from 'utils/http'
 import { toBN } from 'utils/numbers'
 import { useGetEarlyMigrationDeadline } from 'hooks/useMigratePage'
 import { getRemainingTime } from 'utils/time'
@@ -17,6 +15,7 @@ import useWeb3React from 'hooks/useWeb3'
 import { DeusText } from '../Stake/RewardBox'
 import { Link as LinkIcon } from 'components/Icons'
 import { ExternalLink } from 'components/Link'
+import { useMigrationData } from 'context/Migration'
 
 const TopWrap = styled.div`
   font-family: 'Inter';
@@ -219,49 +218,22 @@ export default function HeaderBox() {
     }, 1)
   }, [earlyMigrationDeadlineTimeStamp, chainId])
 
-  const [migrationInfo, setMigrationInfo] = useState<any>(null)
-  // const [error, setError] = useState(false)
-
-  const getMigrationData = useCallback(async () => {
-    try {
-      const res = makeHttpRequest(`https://info.deus.finance/symm/v1/info`)
-      return res
-    } catch (error) {
-      return null
-    }
-  }, [])
-
-  const handleLoading = async () => {
-    const rest = await getMigrationData()
-    if (rest?.status === 'error') {
-      // setError(true)
-      setMigrationInfo(null)
-    } else {
-      setMigrationInfo(rest)
-      // setError(false)
-    }
-  }
-
-  useEffect(() => {
-    handleLoading()
-  }, [])
+  const migrationInfo = useMigrationData()
 
   const totalMigratedData = useMemo(() => {
     const balanced = migrationInfo?.total_migrated_to_balanced
-      ? toBN(migrationInfo?.total_migrated_to_balanced * 1e-18).toFixed(3)
+      ? toBN(+migrationInfo?.total_migrated_to_balanced * 1e-18).toFixed(3)
       : 'N/A'
     const deus = migrationInfo?.total_migrated_to_deus
-      ? toBN(migrationInfo?.total_migrated_to_deus * 1e-18).toFixed(3)
+      ? toBN(+migrationInfo?.total_migrated_to_deus * 1e-18).toFixed(3)
       : 'N/A'
     const symm = migrationInfo?.total_migrated_to_symm
-      ? toBN(migrationInfo?.total_migrated_to_symm * 1e-18).toFixed(3)
+      ? toBN(+migrationInfo?.total_migrated_to_symm * 1e-18).toFixed(3)
       : 'N/A'
 
     const totalValue = migrationInfo?.total_migrated_to_balanced
       ? toBN(
-          migrationInfo?.total_migrated_to_balanced * 1e-18 +
-            migrationInfo?.total_migrated_to_deus * 1e-18 +
-            migrationInfo?.total_migrated_to_symm * 1e-18
+          +migrationInfo?.total_migrated_to_balanced * 1e-18 + +migrationInfo?.total_migrated_to_symm * 1e-18
         ).toFixed(2)
       : 'N/A'
 

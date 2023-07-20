@@ -10,8 +10,6 @@ import EMPTY_LOCK from '/public/static/images/pages/veDEUS/emptyLock.svg'
 import EMPTY_LOCK_MOBILE from '/public/static/images/pages/veDEUS/emptyLockMobile.svg'
 import LOADING_LOCK from '/public/static/images/pages/veDEUS/loadingLock.svg'
 import LOADING_LOCK_MOBILE from '/public/static/images/pages/veDEUS/loadingLockMobile.svg'
-import ExternalIcon from '/public/static/images/pages/stake/down.svg'
-import Solidly from '/public/static/images/pages/stake/solidly.svg'
 import SymmLogo from '/public/static/images/tokens/symm.svg'
 import DeusLogo from '/public/static/images/tokens/deus.svg'
 
@@ -21,8 +19,6 @@ import { MigrationTypes, MigrationVersion } from 'constants/migrationOptions'
 import useWeb3React from 'hooks/useWeb3'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 
-import { ExternalLink } from 'components/Link'
-import { HStack, VStack } from '../Staking/common/Layout'
 import { BaseButton, PrimaryButtonWide } from 'components/Button'
 import { useWalletModalToggle } from 'state/application/hooks'
 import TokenBox from './TokenBox'
@@ -34,14 +30,14 @@ import { useGetUserMigrations } from 'hooks/useMigratePage'
 import BigNumber from 'bignumber.js'
 import { formatBalance, toBN } from 'utils/numbers'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
-import { makeHttpRequest } from 'utils/http'
+import { useSignMessage } from 'hooks/useMigrateCallback'
+import { useMigrationData } from 'context/Migration'
 
 const Wrapper = styled.div`
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
 `
-
 const TableWrapper = styled.table<{ isEmpty?: boolean }>`
   width: 100%;
   overflow: hidden;
@@ -51,24 +47,14 @@ const TableWrapper = styled.table<{ isEmpty?: boolean }>`
   border-bottom-right-radius: ${({ isEmpty }) => (isEmpty ? '12px' : '0')};
   border-bottom-left-radius: ${({ isEmpty }) => (isEmpty ? '12px' : '0')};
 `
-
 const Row = styled.tr`
   align-items: center;
   height: 21px;
   font-size: 0.8rem;
   color: ${({ theme }) => theme.text1};
 `
-
-const FirstRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0 5px;
-`
-
 export const Cell = styled.td<{ justify?: boolean }>`
   align-items: center;
-  /* text-align: center; */
   vertical-align: middle;
   padding: 5px;
   padding-left: 16px;
@@ -77,44 +63,23 @@ export const Cell = styled.td<{ justify?: boolean }>`
     height: fit-content;
 `};
 `
-
 const NoResults = styled.div<{ warning?: boolean }>`
   text-align: center;
   padding: 20px;
   color: ${({ theme, warning }) => (warning ? theme.warning : 'white')};
 `
-
-const PaginationWrapper = styled.div`
-  background: ${({ theme }) => theme.bg0};
-  border-bottom-right-radius: 12px;
-  border-bottom-left-radius: 12px;
-  width: 100%;
-`
-
-const Name = styled.div`
-  font-size: 12px;
-  color: ${({ theme }) => theme.text2};
-  white-space: nowrap;
-
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    margin-top: 12px;
-  `};
-`
-
 const Value = styled.div`
   font-weight: 500;
   font-size: 14px;
   color: ${({ theme }) => theme.text1};
   margin-top: 10px;
 `
-
 const ZebraStripesRow = styled(Row)<{ isEven?: boolean }>`
   background: ${({ theme }) => theme.bg1};
   ${({ theme }) => theme.mediaWidth.upToSmall`
     background:none;
   `};
 `
-
 const ButtonText = styled.span<{ gradientText?: boolean }>`
   display: flex;
   font-family: 'Inter';
@@ -126,7 +91,6 @@ const ButtonText = styled.span<{ gradientText?: boolean }>`
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     font-size: 14px;
   `}
-
   ${({ gradientText }) =>
     gradientText &&
     `
@@ -135,21 +99,6 @@ const ButtonText = styled.span<{ gradientText?: boolean }>`
     -webkit-text-fill-color: transparent;
   `}
 `
-
-const TopBorderWrap = styled.div<{ active?: boolean }>`
-  background: ${({ theme, active }) => (active ? theme.deusColor : theme.white)};
-  padding: 2px;
-  border-radius: 12px;
-  margin-right: 4px;
-  margin-left: 3px;
-  border: 1px solid ${({ theme }) => theme.bg0};
-  flex: 1;
-
-  &:hover {
-    border: 1px solid ${({ theme, active }) => (active ? theme.clqdrBlueColor : theme.white)};
-  }
-`
-
 export const TopBorder = styled.div`
   background: ${({ theme }) => theme.bg0};
   border-radius: 8px;
@@ -157,7 +106,6 @@ export const TopBorder = styled.div`
   width: 100%;
   display: flex;
 `
-
 const MigrationButton = styled(BaseButton)<{ deus?: boolean }>`
   /* width: 152px; */
   height: 40px;
@@ -171,11 +119,9 @@ const MigrationButton = styled(BaseButton)<{ deus?: boolean }>`
   font-weight: 600;
   line-height: normal;
   padding: 2px;
-
   &:hover {
     background: #242424;
   }
-
   ${({ theme }) => theme.mediaWidth.upToLarge`
     font-size: 12px;
   `}
@@ -193,40 +139,55 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
   const { account, chainId } = useWeb3React()
 
   const isLoading = false
-
   const [type, setType] = useState(MigrationType.DEUS)
   const [token, setToken] = useState<Token | undefined>(undefined)
   const [isOpenReviewModal, toggleReviewModal] = useState(false)
-  // const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
   const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
 
-  const [migrationInfo, setMigrationInfo] = useState<any>(null)
+  const migrationInfo = useMigrationData()
 
-  const getMigrationData = useCallback(async () => {
-    try {
-      const res = makeHttpRequest(`https://info.deus.finance/symm/v1/info`)
-      return res
-    } catch (error) {
-      return null
-    }
-  }, [])
+  const signatureItem = 'signature_' + account?.toString()
+  const [signature, setSignature] = useState(localStorage.getItem(signatureItem))
+  // const signatureMessage = 'In order to see your migrated amount across all chains, you need to sign the message.'
+  const signatureMessage = 'SYMM'
 
-  const handleLoading = async () => {
-    const rest = await getMigrationData()
-    if (rest?.status === 'error') {
-      setMigrationInfo(null)
-    } else {
-      setMigrationInfo(rest)
+  const {
+    state: signCallbackState,
+    callback: signCallback,
+    error: signCallbackError,
+  } = useSignMessage(signatureMessage)
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  function setLoadedSignature(arg0: string) {
+    if (arg0) {
+      setSignature(arg0)
+      localStorage.setItem(signatureItem, arg0)
     }
   }
 
+  const handleSign = useCallback(async () => {
+    console.log('called handleSign')
+    console.log(signCallbackState, signCallbackError)
+    if (!signCallback) return
+    if (signature) return
+    try {
+      const response = await signCallback()
+      setLoadedSignature(response)
+    } catch (e) {
+      if (e instanceof Error) {
+      } else {
+        console.error(e)
+      }
+    }
+  }, [signCallbackState, signCallbackError, signCallback, signature, setLoadedSignature])
+
   useEffect(() => {
-    handleLoading()
+    // handleSign()
   }, [])
 
   const balancedRatio = useMemo(() => {
-    const deus = toBN(migrationInfo?.total_migrated_to_deus * 1e-18)
-    const symm = toBN(migrationInfo?.total_migrated_to_symm * 1e-18)
+    const deus = toBN(+migrationInfo?.total_migrated_to_deus * 1e-18)
+    const symm = toBN(+migrationInfo?.total_migrated_to_symm * 1e-18)
     const total = toBN(800000).minus(symm).plus(deus)
     const ratio = total.div(800000)
     return ratio.toString()
@@ -304,77 +265,9 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
   )
 }
 
-const CustomButton = styled(ExternalLink)`
-  width: 100%;
-  padding: 14px 12px;
-  span {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    height:34px;
-  `}
-`
-
-enum BUTTON_TYPE {
-  SOLIDLY = 'SOLIDLY',
-  MINI = 'MINI',
-}
-
-const titles = {
-  solidly: 'Solidly',
-  mini: 'Manage',
-}
-const CustomButtonWrapper = ({ type, href, isActive }: { type: BUTTON_TYPE; href: string; isActive: boolean }) => {
-  return (
-    <CustomButton transparentBG href={isActive && href}>
-      <ButtonText>
-        {type === BUTTON_TYPE.MINI ? titles.mini : 'Farm on '}
-        <HStack style={{ marginLeft: '1ch', alignItems: 'flex-end' }}>
-          <Image
-            width={type === BUTTON_TYPE.SOLIDLY ? 64 : 0}
-            height={type === BUTTON_TYPE.SOLIDLY ? 24 : 0}
-            src={type === BUTTON_TYPE.SOLIDLY ? Solidly : ExternalIcon}
-            alt={type === BUTTON_TYPE.SOLIDLY ? titles.solidly : titles.mini}
-          />
-        </HStack>
-      </ButtonText>
-    </CustomButton>
-  )
-}
-const SpaceBetween = styled(HStack)`
-  justify-content: space-between;
-`
 const TableRowContainer = styled.div`
   width: 100%;
   display: table;
-  /* ${({ theme }) => theme.mediaWidth.upToSmall`
-    display:none;
-  `}; */
-`
-const MiniStakeHeaderContainer = styled(SpaceBetween)``
-const MiniStakeContainer = styled.div`
-  margin-block: 2px;
-  background: ${({ theme }) => theme.bg1};
-  display: none;
-  padding: 16px 12px;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-  display:block;
-  `};
-`
-const MiniStakeContentContainer = styled(VStack)`
-  margin-top: 16px;
-`
-const MiniTopBorderWrap = styled(TopBorderWrap)`
-  min-width: 109px;
-  margin: 0px;
-  & > * {
-    min-width: 109px;
-    max-height: 32px;
-  }
 `
 const TableContent = styled.div`
   display: flex;
@@ -477,20 +370,6 @@ interface ITableRowContent {
   toggleWalletModal: () => void
   handleClickModal: (migrationType: MigrationType, inputToken: Token) => void
   userMigrations: Map<string, BigNumber>
-}
-
-const TableRowMiniContent = ({
-  token,
-  version,
-  currencyBalance,
-  active,
-  handleClick,
-  chainIdError,
-  rpcChangerCallback,
-  account,
-  toggleWalletModal,
-}: ITableRowContent) => {
-  return <></>
 }
 
 const TableRowContentWrapper = ({
@@ -607,14 +486,13 @@ const TableRowContent = ({
   const { chainId, account } = useWeb3React()
   const rpcChangerCallback = useRpcChangerCallback()
   const toggleWalletModal = useWalletModalToggle()
-  const { token: tokens, version, active, supportedChains } = migrationOption
+  const { token: tokens, version, active } = migrationOption
   const router = useRouter()
 
   const handleClick = useCallback(() => {
     router.push(`/migration`)
   }, [router])
 
-  // const token = 'chainId' in token ? token : token[chainId ?? SupportedChainId.FANTOM]
   const token = chainId ? tokens[chainId] : undefined
   const currencyBalance = useTokenBalance(account ?? undefined, token ?? undefined)
   const chainIdError = !useSupportedChainId()

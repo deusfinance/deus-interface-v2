@@ -7,7 +7,6 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import useWeb3React from 'hooks/useWeb3'
 import { useMigratorContract } from 'hooks/useContract'
 import { calculateGasMargin } from 'utils/web3'
-// import { toHex } from 'utils/hex'
 import { DefaultHandlerError } from 'utils/parseError'
 import { MigrationType } from 'components/App/Migrate/Table'
 import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
@@ -182,4 +181,57 @@ export default function useMigrateCallback(
       },
     }
   }, [account, chainId, library, migratorContract, inputCurrency, inputAmount, constructCall, addTransaction])
+}
+
+export function useSignMessage(message: string): {
+  state: TransactionCallbackState
+  callback: null | (() => Promise<string>)
+  error: string | null
+} {
+  const { account, chainId, library } = useWeb3React()
+
+  const migratorContract = useMigratorContract()
+
+  return useMemo(() => {
+    if (!account || !chainId || !library || !migratorContract) {
+      return {
+        state: TransactionCallbackState.INVALID,
+        callback: null,
+        error: 'Missing dependencies',
+      }
+    }
+    if (!message) {
+      return {
+        state: TransactionCallbackState.INVALID,
+        callback: null,
+        error: 'No message provided',
+      }
+    }
+
+    return {
+      state: TransactionCallbackState.VALID,
+      error: null,
+      callback: async function onMigrate(): Promise<string> {
+        console.log('onMigrate callback')
+
+        return library
+          .getSigner()
+          .signMessage(message)
+          .then((response) => {
+            console.log(response)
+            return response
+          })
+          .catch((error) => {
+            // if the user rejected the tx, pass this along
+            if (error?.code === 4001) {
+              throw new Error('Transaction rejected.')
+            } else {
+              // otherwise, the error was unexpected and we need to convey that
+              // console.error(`Transaction failed`, error, address, calldata, value)
+              throw new Error(`Transaction failed: ${error.message}`)
+            }
+          })
+      },
+    }
+  }, [account, chainId, library, migratorContract, message])
 }

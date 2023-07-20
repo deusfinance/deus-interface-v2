@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
 
 import { DEUS_TOKEN, Tokens, SYMM_TOKEN } from 'constants/tokens'
@@ -10,7 +10,7 @@ import { useGetUserMigrations } from 'hooks/useMigratePage'
 import CongratsCard from './CongratsCard'
 import { isMobile } from 'react-device-detect'
 import { toBN } from 'utils/numbers'
-import { makeHttpRequest } from 'utils/http'
+import { useMigrationData } from 'context/Migration'
 
 const Wrapper = styled.div`
   display: flex;
@@ -40,33 +40,11 @@ export default function CardBox() {
     })
   }, [sourceBalances, chainSourceTokens])
 
-  const [migrationInfo, setMigrationInfo] = useState<any>(null)
-
-  const getMigrationData = useCallback(async () => {
-    try {
-      const res = makeHttpRequest(`https://info.deus.finance/symm/v1/info`)
-      return res
-    } catch (error) {
-      return null
-    }
-  }, [])
-
-  const handleLoading = async () => {
-    const rest = await getMigrationData()
-    if (rest?.status === 'error') {
-      setMigrationInfo(null)
-    } else {
-      setMigrationInfo(rest)
-    }
-  }
-
-  useEffect(() => {
-    handleLoading()
-  }, [])
+  const migrationInfo = useMigrationData()
 
   const balancedRatio = useMemo(() => {
-    const deus = toBN(migrationInfo?.total_migrated_to_deus * 1e-18)
-    const symm = toBN(migrationInfo?.total_migrated_to_symm * 1e-18)
+    const deus = toBN(+migrationInfo?.total_migrated_to_deus * 1e-18)
+    const symm = toBN(+migrationInfo?.total_migrated_to_symm * 1e-18)
     const total = toBN(800000).minus(symm).plus(deus)
     const ratio = total.div(800000)
     return ratio.toString()

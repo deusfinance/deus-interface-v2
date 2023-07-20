@@ -10,6 +10,7 @@ import ActionSetter, { ActionTypes } from 'components/App/Migrate/ActionSetter'
 import CardBox from 'components/App/Migrate/CardBox'
 import HeaderBox from 'components/App/Migrate/HeaderBox'
 import MigrationHeader from 'components/App/Migrate/MigrationHeader'
+import { MigrationWrap } from 'context/Migration'
 
 export const Container = styled.div`
   display: flex;
@@ -98,22 +99,24 @@ export default function Migrate() {
 
   return (
     <Container>
-      <HeaderBox />
+      <MigrationWrap>
+        <HeaderBox />
 
-      <ActionSetter selected={selected} setSelected={setSelected} />
+        <ActionSetter selected={selected} setSelected={setSelected} />
 
-      <Wrapper>
-        <MigrationHeader />
+        <Wrapper>
+          <MigrationHeader />
 
-        {selected === ActionTypes.MANUAL ? (
-          <span>
-            <LargeContent>{getUpperRow()}</LargeContent>
-            <Table MigrationOptions={MigrationOptions} />
-          </span>
-        ) : (
-          <CardBox />
-        )}
-      </Wrapper>
+          {selected === ActionTypes.MANUAL ? (
+            <span>
+              <LargeContent>{getUpperRow()}</LargeContent>
+              <Table MigrationOptions={MigrationOptions} />
+            </span>
+          ) : (
+            <CardBox />
+          )}
+        </Wrapper>
+      </MigrationWrap>
     </Container>
   )
 }
