@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 import Image from 'next/image'
-import { useRouter } from 'next/router'
 
 import { CurrencyAmount, Token } from '@sushiswap/core-sdk'
 
@@ -30,7 +29,6 @@ import { useGetUserMigrations } from 'hooks/useMigratePage'
 import BigNumber from 'bignumber.js'
 import { formatBalance, toBN } from 'utils/numbers'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
-import { useSignMessage } from 'hooks/useMigrateCallback'
 import { useMigrationData } from 'context/Migration'
 
 const Wrapper = styled.div`
@@ -146,45 +144,7 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
 
   const migrationInfo = useMigrationData()
 
-  const signatureItem = 'signature_' + account?.toString()
-  const [signature, setSignature] = useState(localStorage.getItem(signatureItem))
-  // const signatureMessage = 'In order to see your migrated amount across all chains, you need to sign the message.'
-  const signatureMessage = 'SYMM'
-
-  const {
-    state: signCallbackState,
-    callback: signCallback,
-    error: signCallbackError,
-  } = useSignMessage(signatureMessage)
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  function setLoadedSignature(arg0: string) {
-    if (arg0) {
-      setSignature(arg0)
-      localStorage.setItem(signatureItem, arg0)
-    }
-  }
-
-  const handleSign = useCallback(async () => {
-    console.log('called handleSign')
-    console.log(signCallbackState, signCallbackError)
-    if (!signCallback) return
-    if (signature) return
-    try {
-      const response = await signCallback()
-      setLoadedSignature(response)
-    } catch (e) {
-      if (e instanceof Error) {
-      } else {
-        console.error(e)
-      }
-    }
-  }, [signCallbackState, signCallbackError, signCallback, signature, setLoadedSignature])
-
-  useEffect(() => {
-    // handleSign()
-  }, [])
-
+  // TODO: this is a repeated code, better to put in one in place
   const balancedRatio = useMemo(() => {
     const symm = toBN(+migrationInfo?.total_migrated_to_symm * 1e-18)
     const total = toBN(800000).minus(symm)
@@ -357,33 +317,29 @@ export enum MigrationType {
   SYMM,
 }
 
-interface ITableRowContent {
-  token: Token
-  version: MigrationVersion
-  currencyBalance: CurrencyAmount<Token> | undefined
-  active: MigrationTypes['active']
-  handleClick: () => void
-  chainIdError: boolean
-  rpcChangerCallback: (chainId: any) => void
-  account: string | null | undefined
-  toggleWalletModal: () => void
-  handleClickModal: (migrationType: MigrationType, inputToken: Token) => void
-  userMigrations: Map<string, BigNumber>
-}
-
 const TableRowContentWrapper = ({
   token,
   version,
   currencyBalance,
   active,
-  handleClick,
   chainIdError,
   rpcChangerCallback,
   account,
   toggleWalletModal,
   handleClickModal,
   userMigrations,
-}: ITableRowContent) => {
+}: {
+  token: Token
+  version: MigrationVersion
+  currencyBalance: CurrencyAmount<Token> | undefined
+  active: MigrationTypes['active']
+  chainIdError: boolean
+  rpcChangerCallback: (chainId: any) => void
+  account: string | null | undefined
+  toggleWalletModal: () => void
+  handleClickModal: (migrationType: MigrationType, inputToken: Token) => void
+  userMigrations: Map<string, BigNumber>
+}) => {
   const [currencyBalanceDisplay] = useMemo(() => {
     return [currencyBalance?.toSignificant(4)]
   }, [currencyBalance])
@@ -486,11 +442,6 @@ const TableRowContent = ({
   const rpcChangerCallback = useRpcChangerCallback()
   const toggleWalletModal = useWalletModalToggle()
   const { token: tokens, version, active } = migrationOption
-  const router = useRouter()
-
-  const handleClick = useCallback(() => {
-    router.push(`/migration`)
-  }, [router])
 
   const token = chainId ? tokens[chainId] : undefined
   const currencyBalance = useTokenBalance(account ?? undefined, token ?? undefined)
@@ -502,7 +453,6 @@ const TableRowContent = ({
         <TableRowContainer>
           <TableRowContentWrapper
             active={active}
-            handleClick={handleClick}
             token={token}
             currencyBalance={currencyBalance}
             version={version}

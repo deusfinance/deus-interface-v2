@@ -21,11 +21,12 @@ const Wrapper = styled.div`
   `};
 `
 
+export const MigrationSourceTokens = [Tokens['DEUS'], Tokens['XDEUS'], Tokens['LEGACY_DEI'], Tokens['bDEI_TOKEN']]
+
 export default function CardBox() {
   const { account, chainId } = useWeb3React()
-  const sourceTokens = [Tokens['DEUS'], Tokens['XDEUS'], Tokens['LEGACY_DEI'], Tokens['bDEI_TOKEN']]
 
-  const chainSourceTokens = sourceTokens.map((token) => {
+  const chainSourceTokens = MigrationSourceTokens.map((token) => {
     if (chainId && token[chainId]) {
       return token[chainId]
     } else {

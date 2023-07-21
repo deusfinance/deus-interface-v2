@@ -11,6 +11,7 @@ import CardBox from 'components/App/Migrate/CardBox'
 import HeaderBox from 'components/App/Migrate/HeaderBox'
 import MigrationHeader from 'components/App/Migrate/MigrationHeader'
 import { MigrationWrap } from 'context/Migration'
+import MigratedTable from 'components/App/Migrate/MigratedTable'
 
 export const Container = styled.div`
   display: flex;
@@ -83,7 +84,7 @@ export const getImageSize = () => {
 }
 
 export default function Migrate() {
-  const [selected, setSelected] = useState<ActionTypes>(ActionTypes.EASY)
+  const [selected, setSelected] = useState<ActionTypes>(ActionTypes.ALL)
 
   function getUpperRow() {
     return (
@@ -97,6 +98,19 @@ export default function Migrate() {
     )
   }
 
+  function getAllUpperRow() {
+    return (
+      <UpperRow>
+        <Row style={{ position: 'relative' }}>
+          <TableTitle width="20%">Token</TableTitle>
+          <TableTitle width="20%">Chain</TableTitle>
+          <TableTitle width="25%">My Migrated Amount</TableTitle>
+          <TableTitle width="35%">Claimable Token</TableTitle>
+        </Row>
+      </UpperRow>
+    )
+  }
+
   return (
     <Container>
       <MigrationWrap>
@@ -105,15 +119,22 @@ export default function Migrate() {
         <ActionSetter selected={selected} setSelected={setSelected} />
 
         <Wrapper>
-          <MigrationHeader />
+          {selected !== ActionTypes.ALL && <MigrationHeader />}
 
-          {selected === ActionTypes.MANUAL ? (
+          {selected === ActionTypes.MANUAL && (
             <span>
               <LargeContent>{getUpperRow()}</LargeContent>
               <Table MigrationOptions={MigrationOptions} />
             </span>
-          ) : (
-            <CardBox />
+          )}
+
+          {selected === ActionTypes.EASY && <CardBox />}
+
+          {selected === ActionTypes.ALL && (
+            <span>
+              <LargeContent>{getAllUpperRow()}</LargeContent>
+              <MigratedTable />
+            </span>
           )}
         </Wrapper>
       </MigrationWrap>
