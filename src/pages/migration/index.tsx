@@ -85,6 +85,7 @@ export const getImageSize = () => {
 
 export default function Migrate() {
   const [selected, setSelected] = useState<ActionTypes>(ActionTypes.ALL)
+  const [loading, setLoading] = useState(true)
 
   function getUpperRow() {
     return (
@@ -132,8 +133,8 @@ export default function Migrate() {
 
           {selected === ActionTypes.ALL && (
             <span>
-              <LargeContent>{getAllUpperRow()}</LargeContent>
-              <MigratedTable />
+              {!loading && <LargeContent>{getAllUpperRow()}</LargeContent>}
+              <MigratedTable setLoading={setLoading} />
             </span>
           )}
         </Wrapper>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 import Image from 'next/image'
@@ -11,15 +11,17 @@ import LOADING_LOCK from '/public/static/images/pages/veDEUS/loadingLock.svg'
 import LOADING_LOCK_MOBILE from '/public/static/images/pages/veDEUS/loadingLockMobile.svg'
 
 import useWeb3React from 'hooks/useWeb3'
-
-import { BaseButton } from 'components/Button'
 import TokenBox from './TokenBox'
-
 import { useSignMessage } from 'hooks/useMigrateCallback'
 import { makeHttpRequest } from 'utils/http'
 import { MigrationSourceTokens } from './CardBox'
 import { ChainInfo } from 'constants/chainInfo'
-import { toBN } from 'utils/numbers'
+import { BN_ZERO, formatBalance, toBN } from 'utils/numbers'
+import BigNumber from 'bignumber.js'
+import { formatUnits } from '@ethersproject/units'
+import { useMigrationData } from 'context/Migration'
+import { DeusText } from '../Stake/RewardBox'
+import { SymmText } from './HeaderBox'
 
 const Wrapper = styled.div`
   display: flex;
@@ -68,51 +70,12 @@ const ZebraStripesRow = styled(Row)<{ isEven?: boolean }>`
     background:none;
   `};
 `
-const ButtonText = styled.span<{ gradientText?: boolean }>`
-  display: flex;
-  font-family: 'Inter';
-  font-weight: 600;
-  font-size: 15px;
-  white-space: nowrap;
-  color: ${({ theme }) => theme.text1};
-  align-items: center;
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    font-size: 14px;
-  `}
-  ${({ gradientText }) =>
-    gradientText &&
-    `
-    background: -webkit-linear-gradient(92.33deg, #e29d52 -10.26%, #de4a7b 80%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  `}
-`
 export const TopBorder = styled.div`
   background: ${({ theme }) => theme.bg0};
   border-radius: 8px;
   height: 100%;
   width: 100%;
   display: flex;
-`
-const MigrationButton = styled(BaseButton)<{ deus?: boolean }>`
-  /* width: 152px; */
-  height: 40px;
-  border-radius: 8px;
-  background: #141414;
-  color: ${({ theme, deus }) => (deus ? '#01F5E4' : theme.symmColor)};
-  text-align: center;
-  font-size: 14px;
-  font-family: Inter;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  padding: 2px;
-  &:hover {
-    background: #242424;
-  }
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    font-size: 12px;
-  `}
 `
 const DividerContainer = styled.div`
   background-color: #101116;
@@ -132,14 +95,10 @@ interface IMigrationInfo {
   migrationPreference: number
 }
 
-export default function MigratedTable() {
-  const { account, chainId } = useWeb3React()
+export default function MigratedTable({ setLoading }: { setLoading: (action: boolean) => void }) {
+  const { account } = useWeb3React()
 
   const isLoading = false
-  const [type, setType] = useState(MigrationType.DEUS)
-  const [token, setToken] = useState<Token | undefined>(undefined)
-  const [isOpenReviewModal, toggleReviewModal] = useState(false)
-  const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
   const [allMigrationData, setAllMigrationData] = useState<any>(undefined)
 
   const signatureItem = 'signature_' + account?.toString()
@@ -191,16 +150,19 @@ export default function MigratedTable() {
     const rest = await getAllMigrationData()
     if (rest?.status === 'error') {
       setAllMigrationData(null)
+      setLoading(true)
     } else if (rest) {
       const values = Object.entries(rest)
-      // console.log(rest)
       setAllMigrationData(values)
+      setLoading(false)
     }
   }
 
   useEffect(() => {
     handleSign()
     handleAllMigration()
+    return () => setLoading(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -314,28 +276,6 @@ const MyMigratedAmount = styled(Cell)`
     }
   `};
 `
-const MigrationButtonCell = styled(Cell)`
-  display: none;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    column-gap: 8px;
-    padding-left: 5px;
-    padding-right: 0px;
-    &>td{
-      &:last-child{padding-right:0px}
-      width:100%;
-    }
-  `};
-`
-const LargeButtonCellContainer = styled(Cell)`
-  width: 15%;
-  display: flex;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display:none;
-  `};
-`
 const TokenContainer = styled(Cell)`
   width: 20%;
   & > div {
@@ -362,8 +302,7 @@ function TableRow({ migrationInfo, chain }: { migrationInfo: IMigrationInfo; cha
 }
 
 const TableRowContent = ({ migrationInfo, chain }: { migrationInfo: IMigrationInfo; chain: number }) => {
-  // const { chainId, account } = useWeb3React()
-  const { tokenAddress, amount: migratedAmount, migrationPreference } = migrationInfo
+  const { tokenAddress, amount: migratedAmount } = migrationInfo
   const [token, setToken] = useState<Token | undefined>(undefined)
 
   const handleToken = useCallback(() => {
@@ -378,7 +317,36 @@ const TableRowContent = ({ migrationInfo, chain }: { migrationInfo: IMigrationIn
 
   useEffect(() => {
     handleToken()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const TotalMigrationInfo = useMigrationData()
+
+  const balancedRatio = useMemo(() => {
+    const symm = toBN(+TotalMigrationInfo?.total_migrated_to_symm * 1e-18)
+    const total = toBN(800000).minus(symm)
+    const ratio = total.div(800000)
+    return ratio.toString()
+  }, [TotalMigrationInfo])
+
+  const ratio = Number(balancedRatio)
+  let migratedToDEUS = BN_ZERO
+  let migratedToSYMM = BN_ZERO
+
+  if (migrationInfo.migrationPreference === 0) {
+    const amount: BigNumber = toBN(formatUnits(migrationInfo.amount.toString(), 18)).times(ratio)
+    migratedToDEUS = migratedToDEUS.plus(amount)
+
+    const amount2: BigNumber = toBN(formatUnits(migrationInfo.amount.toString(), 18)).minus(amount)
+    migratedToSYMM = migratedToSYMM.plus(amount2)
+  } else {
+    const amount: BigNumber = toBN(formatUnits(migrationInfo.amount.toString(), 18))
+    if (migrationInfo.migrationPreference === 1) {
+      migratedToDEUS = migratedToDEUS.plus(amount)
+    } else if (migrationInfo.migrationPreference === 2) {
+      migratedToSYMM = migratedToSYMM.plus(amount)
+    }
+  }
 
   return (
     <React.Fragment>
@@ -387,7 +355,8 @@ const TableRowContent = ({ migrationInfo, chain }: { migrationInfo: IMigrationIn
           <TableRowContentWrapper
             token={token}
             migratedAmount={migratedAmount}
-            migrationPreference={migrationPreference}
+            migratedToDEUS={migratedToDEUS}
+            migratedToSYMM={migratedToSYMM}
           />
         </TableRowContainer>
       )}
@@ -423,13 +392,16 @@ const ChainDiv = styled.div`
 const TableRowContentWrapper = ({
   token,
   migratedAmount,
-  migrationPreference,
+  migratedToDEUS,
+  migratedToSYMM,
 }: {
   token: Token
   migratedAmount: number
-  migrationPreference: number
+  migratedToDEUS: BigNumber
+  migratedToSYMM: BigNumber
 }) => {
   const chain = token?.chainId
+
   return (
     <TableContent>
       <TokenContainer>
@@ -437,7 +409,7 @@ const TableRowContentWrapper = ({
       </TokenContainer>
 
       <MyBalance>
-        <Label>Chain</Label>
+        <Label>Chain:</Label>
         <Value>
           <div>
             <InlineRow active>
@@ -457,7 +429,26 @@ const TableRowContentWrapper = ({
         <Label>My Migrated Amount:</Label>
         <div>
           <Value>
-            {toBN(migratedAmount * 1e-18).toString() ?? 'N/A'} {token.symbol}
+            {formatBalance(toBN(migratedAmount * 1e-18).toString(), 3) ?? 'N/A'} {token.symbol}
+          </Value>
+        </div>
+      </MyMigratedAmount>
+
+      <MyMigratedAmount>
+        <Label>Claimable Token:</Label>
+        <div>
+          <Value>
+            {migratedToDEUS.toString() !== '0' && (
+              <span>
+                {formatBalance(migratedToDEUS.toString(), 3)} <DeusText>DEUS</DeusText>
+              </span>
+            )}
+            {migratedToDEUS.toString() !== '0' && migratedToSYMM.toString() !== '0' && <span>, </span>}
+            {migratedToSYMM.toString() !== '0' && (
+              <span>
+                {formatBalance(migratedToSYMM.toString(), 3)} <SymmText>SYMM</SymmText>
+              </span>
+            )}
           </Value>
         </div>
       </MyMigratedAmount>

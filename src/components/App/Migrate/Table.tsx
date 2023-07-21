@@ -144,7 +144,7 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
 
   const migrationInfo = useMigrationData()
 
-  // TODO: this is a repeated code, better to put in one in place
+  // TODO: this is a repeated code, better to put in one in place (3 times)
   const balancedRatio = useMemo(() => {
     const symm = toBN(+migrationInfo?.total_migrated_to_symm * 1e-18)
     const total = toBN(800000).minus(symm)
