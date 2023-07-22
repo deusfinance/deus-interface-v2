@@ -165,6 +165,10 @@ export default function MigratedTable({ setLoading }: { setLoading: (action: boo
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    handleAllMigration()
+  }, [signature])
+
   return (
     <Wrapper>
       <TableWrapper>
@@ -285,6 +289,7 @@ const TokenContainer = styled(Cell)`
     width: 100%;
     display: flex;
     justify-content: space-between;
+    margin-top: 10px;
   `};
 `
 export enum MigrationType {
