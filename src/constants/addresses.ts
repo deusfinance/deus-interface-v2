@@ -114,6 +114,7 @@ export const Multicall2: AddressMap = {
   [SupportedChainId.BSC]: '0xcA11bde05977b3631167028862bE2a173976CA11',
   [SupportedChainId.AVALANCHE]: '0xcA11bde05977b3631167028862bE2a173976CA11',
   [SupportedChainId.METIS]: '0x3CB9ae281E511759832a074A92634d2486E6a886',
+  [SupportedChainId.KAVA]: '0x731e0A91Ec7F87868124D85d87D92Aa5cF058351',
 }
 
 export const BaseV1Factory: AddressMap = {
