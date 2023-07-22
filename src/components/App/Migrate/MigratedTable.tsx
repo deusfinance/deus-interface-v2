@@ -22,6 +22,7 @@ import { formatUnits } from '@ethersproject/units'
 import { useMigrationData } from 'context/Migration'
 import { DeusText } from '../Stake/RewardBox'
 import { SymmText } from './HeaderBox'
+import { signatureMessage } from 'constants/misc'
 
 const Wrapper = styled.div`
   display: flex;
@@ -103,14 +104,12 @@ export default function MigratedTable({ setLoading }: { setLoading: (action: boo
 
   const signatureItem = 'signature_' + account?.toString()
   const [signature, setSignature] = useState(localStorage.getItem(signatureItem))
-  // const signatureMessage = 'In order to see your migrated amount across all chains, you need to sign the message.'
-  const signatureMessage = 'SYMM'
 
   const {
     state: signCallbackState,
     callback: signCallback,
     error: signCallbackError,
-  } = useSignMessage(signatureMessage)
+  } = useSignMessage(signatureMessage + `${account?.toString()}`)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   function setLoadedSignature(arg0: string) {
