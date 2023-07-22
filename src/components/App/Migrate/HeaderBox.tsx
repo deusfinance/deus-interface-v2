@@ -16,6 +16,7 @@ import { DeusText } from '../Stake/RewardBox'
 import { Link as LinkIcon } from 'components/Icons'
 import { ExternalLink } from 'components/Link'
 import { useMigrationData } from 'context/Migration'
+import { RowCenter } from 'components/Row'
 
 const TopWrap = styled.div`
   font-family: 'Inter';
@@ -358,12 +359,12 @@ export default function HeaderBox() {
             </Item>
           ))}
       </DataBox>
-      {/* <StickyTopWrap>
+      <StickyTopWrap>
         <RowCenter>
           <TitleSpan>Early Migration Ends in: </TitleSpan>
           <TimeSpan>{earlyMigrationDeadline}</TimeSpan>
         </RowCenter>
-      </StickyTopWrap> */}
+      </StickyTopWrap>
     </TopWrap>
   )
 }

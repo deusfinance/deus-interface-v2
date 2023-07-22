@@ -12,7 +12,7 @@ import LOADING_LOCK_MOBILE from '/public/static/images/pages/veDEUS/loadingLockM
 import SymmLogo from '/public/static/images/tokens/symm.svg'
 import DeusLogo from '/public/static/images/tokens/deus.svg'
 
-import { FALLBACK_CHAIN_ID } from 'constants/chains'
+import { FALLBACK_CHAIN_ID, SupportedChainId } from 'constants/chains'
 import { MigrationTypes, MigrationVersion } from 'constants/migrationOptions'
 
 import useWeb3React from 'hooks/useWeb3'
@@ -340,6 +340,7 @@ const TableRowContentWrapper = ({
   handleClickModal: (migrationType: MigrationType, inputToken: Token) => void
   userMigrations: Map<string, BigNumber>
 }) => {
+  const { chainId } = useWeb3React()
   const [currencyBalanceDisplay] = useMemo(() => {
     return [currencyBalance?.toSignificant(4)]
   }, [currencyBalance])
@@ -379,9 +380,10 @@ const TableRowContentWrapper = ({
 
       <MigrationButtonCell>
         <Cell style={{ paddingLeft: 5 }}>
-          {account && !chainIdError && version === MigrationVersion.DUAL && (
+          {account && !chainIdError && (version === MigrationVersion.DUAL || chainId === SupportedChainId.FANTOM) && (
             <MigrationButton onClick={() => handleClickModal(MigrationType.DEUS, token)} deus>
               Migrate to {DEUS_TOKEN.name}
+              {chainId === SupportedChainId.FANTOM && token.symbol?.includes('DEUS') && '(ARB)'}
             </MigrationButton>
           )}
         </Cell>
@@ -403,9 +405,10 @@ const TableRowContentWrapper = ({
         </Cell>
       </MigrationButtonCell>
       <LargeButtonCellContainer>
-        {account && !chainIdError && version === MigrationVersion.DUAL && (
+        {account && !chainIdError && (version === MigrationVersion.DUAL || chainId === SupportedChainId.FANTOM) && (
           <MigrationButton onClick={() => handleClickModal(MigrationType.DEUS, token)} deus>
             Migrate to {DEUS_TOKEN.name}
+            {chainId === SupportedChainId.FANTOM && token.symbol?.includes('DEUS') && '(ARB)'}
           </MigrationButton>
         )}
       </LargeButtonCellContainer>

@@ -54,13 +54,13 @@ export const SolidlyChains = [SupportedChainId.FANTOM]
 
 export const MigrationChains = [
   SupportedChainId.FANTOM,
+  SupportedChainId.ARBITRUM,
   SupportedChainId.MAINNET,
   SupportedChainId.POLYGON,
   SupportedChainId.BSC,
-  SupportedChainId.ARBITRUM,
+  SupportedChainId.AVALANCHE,
   SupportedChainId.METIS,
-  // SupportedChainId.AVALANCHE,
-  // SupportedChainId.KAVA,
+  SupportedChainId.KAVA,
 ]
 
 export const FALLBACK_CHAIN_ID = SupportedChainId.FANTOM
