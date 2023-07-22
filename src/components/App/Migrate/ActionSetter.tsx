@@ -45,7 +45,7 @@ export enum ActionTypes {
 const ActionLabels = {
   [ActionTypes.EASY]: 'Easy Migration',
   [ActionTypes.MANUAL]: 'Manual Migration',
-  [ActionTypes.ALL]: 'My All Migrations',
+  [ActionTypes.ALL]: 'My Migrations (Dashboard)',
 }
 
 export default function ActionSetter({

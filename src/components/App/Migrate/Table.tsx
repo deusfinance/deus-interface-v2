@@ -78,7 +78,7 @@ const ZebraStripesRow = styled(Row)<{ isEven?: boolean }>`
     background:none;
   `};
 `
-const ButtonText = styled.span<{ gradientText?: boolean }>`
+export const ButtonText = styled.span<{ gradientText?: boolean }>`
   display: flex;
   font-family: 'Inter';
   font-weight: 600;
