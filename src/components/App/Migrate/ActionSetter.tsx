@@ -24,6 +24,9 @@ const Item = styled.div<{ selected: boolean; left: boolean }>`
   margin-left: ${({ left }) => !left && '0'};
   border-radius: 8px;
   width: 50%;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    text-align: center;
+    `}
   &:hover {
     cursor: pointer;
   }

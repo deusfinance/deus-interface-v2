@@ -25,11 +25,11 @@ import TokenBox from './TokenBox'
 import { useTokenBalance } from 'state/wallet/hooks'
 import ManualReviewModal from './ManualReviewModal'
 import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
-import { useGetUserMigrations } from 'hooks/useMigratePage'
+import { useBalancedRatio, useGetUserMigrations } from 'hooks/useMigratePage'
 import BigNumber from 'bignumber.js'
-import { formatBalance, toBN } from 'utils/numbers'
+import { formatBalance } from 'utils/numbers'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
-import { useMigrationData } from 'context/Migration'
+import { RowBetween } from 'components/Row'
 
 const Wrapper = styled.div`
   display: flex;
@@ -132,6 +132,47 @@ const DividerContainer = styled.div`
     background-color:#141414;
   `}
 `
+const LargeContent = styled.div`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `}
+`
+const UpperRow = styled(RowBetween)`
+  background: ${({ theme }) => theme.bg1};
+  border-top-right-radius: 12px;
+  border-top-left-radius: 12px;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  & > * {
+    margin: 8px 8px;
+  }
+`
+const TableTitle = styled(Cell)`
+  height: fit-content;
+  color: #7f8082;
+  font-size: 12px;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-align: start;
+  padding-left: 12px;
+`
+
+function getUpperRow() {
+  return (
+    <UpperRow>
+      <div style={{ display: 'flex', width: '100%', position: 'relative' }}>
+        <TableTitle width="25%">Token</TableTitle>
+        <TableTitle width="20%">My Balance</TableTitle>
+        <TableTitle width="25%">My Migrated Amount</TableTitle>
+      </div>
+    </UpperRow>
+  )
+}
 
 export default function Table({ MigrationOptions }: { MigrationOptions: MigrationTypes[] }) {
   const { account, chainId } = useWeb3React()
@@ -142,16 +183,7 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
   const [isOpenReviewModal, toggleReviewModal] = useState(false)
   const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
 
-  const migrationInfo = useMigrationData()
-
-  // TODO: this is a repeated code, better to put in one in place (3 times)
-  const balancedRatio = useMemo(() => {
-    const symm = toBN(+migrationInfo?.total_migrated_to_symm * 1e-18)
-    const total = toBN(800000).minus(symm)
-    const ratio = total.div(800000)
-    return ratio.toString()
-  }, [migrationInfo])
-
+  const balancedRatio = useBalancedRatio()
   const { userMigrations } = useGetUserMigrations(Number(balancedRatio), account)
 
   function handleClickModal(type: MigrationType, inputToken: Token) {
@@ -162,6 +194,7 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
 
   return (
     <>
+      <LargeContent>{getUpperRow()}</LargeContent>
       <Wrapper>
         <TableWrapper isEmpty={MigrationOptions.length === 0}>
           <tbody>

@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js'
 import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
 import { useMigratorContract } from './useContract'
 import { BN_ZERO, toBN } from 'utils/numbers'
+import { useMigrationData } from 'context/Migration'
 
 export function useGetUserMigrations(
   ratio: number,
@@ -85,4 +86,16 @@ export function useGetEarlyMigrationDeadline(): string {
   const earlyMigrationDeadline = '1692624600'
 
   return earlyMigrationDeadline
+}
+
+export const useBalancedRatio = () => {
+  const migrationInfo = useMigrationData()
+
+  const balancedRatio = useMemo(() => {
+    const symm = toBN(+migrationInfo?.total_migrated_to_symm * 1e-18)
+    const total = toBN(800000).minus(symm)
+    const ratio = total.div(800000)
+    return ratio.toString()
+  }, [migrationInfo])
+  return balancedRatio
 }

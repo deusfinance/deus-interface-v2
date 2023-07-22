@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 import Image from 'next/image'
@@ -19,10 +19,15 @@ import { ChainInfo } from 'constants/chainInfo'
 import { BN_ZERO, formatBalance, toBN } from 'utils/numbers'
 import BigNumber from 'bignumber.js'
 import { formatUnits } from '@ethersproject/units'
-import { useMigrationData } from 'context/Migration'
 import { DeusText } from '../Stake/RewardBox'
 import { SymmText } from './HeaderBox'
-import { signatureMessage } from 'constants/misc'
+import { InputField } from 'components/Input'
+import { BaseButton } from 'components/Button'
+import { RowBetween } from 'components/Row'
+import { ArrowRight } from 'react-feather'
+import { useBalancedRatio } from 'hooks/useMigratePage'
+import { truncateAddress } from 'utils/account'
+// import { signatureMessage } from 'constants/misc'
 
 const Wrapper = styled.div`
   display: flex;
@@ -95,8 +100,115 @@ interface IMigrationInfo {
   block: number
   migrationPreference: number
 }
+const LargeContent = styled.div`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `}
+`
 
-export default function MigratedTable({ setLoading }: { setLoading: (action: boolean) => void }) {
+const TableInputWrapper = styled.div`
+  border: 1px solid #4b4949e5;
+  display: flex;
+  padding: 4px 8px;
+  border-radius: 8px;
+  margin-inline: 20px 13px;
+  margin-top: 16px;
+  width: auto;
+  & > input {
+    height: 32px;
+    color: #f1f1f1;
+    font-size: 14px;
+    font-family: Inter;
+  }
+`
+const CheckButton = styled(BaseButton)`
+  background: linear-gradient(90deg, #dc756b, #f095a2, #d9a199, #d7c7c1, #d4fdf9);
+  width: 120px;
+  position: relative;
+  height: 32px;
+  border-radius: 8px;
+  &:hover {
+    background: linear-gradient(-90deg, #dc756b, #f095a2, #d9a199, #d7c7c1, #d4fdf9);
+  }
+  &:before {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1d282d;
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
+    z-index: 0;
+    border-radius: 8px;
+  }
+  & > span {
+    background: linear-gradient(90deg, #dc756b, #f095a2, #d9a199, #d7c7c1, #d4fdf9);
+    display: inline-block;
+    width: 100%;
+    padding-block: 8px;
+    border-radius: 8px;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    z-index: 1;
+  }
+`
+const TotalMigrationAmountWrapper = styled(RowBetween)`
+  padding-top: 31px;
+  padding-bottom: 50px;
+  margin-inline: 8px;
+  padding-inline: 12px 5px;
+  width: auto;
+  p {
+    font-size: 16px;
+    font-weight: 500;
+    font-family: Inter;
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+        font-size:10px;
+    `}
+  }
+  & > div {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    & > p:first-child {
+      background: linear-gradient(90deg, #0badf4, #30efe4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: right;
+    }
+    & > svg {
+      margin-inline: 1ch;
+      width: 14px;
+      height: 14px;
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        width:10px;
+        height:10px;
+    `}
+    }
+    & > p:last-child {
+      background: linear-gradient(90deg, #dc756b, #f095a2, #d9a199, #d7c7c1, #d4fdf9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+`
+
+export default function MigratedTable({
+  setLoading,
+  loading,
+  getAllUpperRow,
+}: {
+  loading: boolean
+  getAllUpperRow: () => JSX.Element
+  setLoading: (action: boolean) => void
+}) {
   const { account } = useWeb3React()
 
   const isLoading = false
@@ -105,11 +217,8 @@ export default function MigratedTable({ setLoading }: { setLoading: (action: boo
   const signatureItem = 'signature_' + account?.toString()
   const [signature, setSignature] = useState(localStorage.getItem(signatureItem))
 
-  const {
-    state: signCallbackState,
-    callback: signCallback,
-    error: signCallbackError,
-  } = useSignMessage(signatureMessage + `${account?.toString()}`)
+  const { state: signCallbackState, callback: signCallback, error: signCallbackError } = useSignMessage('SYMM')
+  // signatureMessage + `${account?.toString()}`
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   function setLoadedSignature(arg0: string) {
@@ -158,70 +267,94 @@ export default function MigratedTable({ setLoading }: { setLoading: (action: boo
   }
 
   useEffect(() => {
-    handleSign()
-    handleAllMigration()
     return () => setLoading(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  function handleCheck() {
+    handleSign()
+    handleAllMigration()
+  }
+
+  useEffect(() => {
+    setAllMigrationData(null)
+  }, [account])
 
   useEffect(() => {
     handleAllMigration()
   }, [signature])
 
   return (
-    <Wrapper>
-      <TableWrapper>
-        <tbody>
-          {allMigrationData?.length > 0 &&
-            allMigrationData.map(([key, values]: [string, []]) =>
-              values.map((migrationInfo, index) => (
-                <React.Fragment key={index}>
-                  <>
-                    <DividerContainer />
-                    <TableRow
-                      migrationInfo={{
-                        user: migrationInfo[0],
-                        tokenAddress: migrationInfo[1],
-                        amount: migrationInfo[2],
-                        timestamp: migrationInfo[3],
-                        block: migrationInfo[4],
-                        migrationPreference: migrationInfo[5],
-                      }}
-                      chain={+key}
-                    />
-                  </>
-                </React.Fragment>
-              ))
-            )}
-        </tbody>
-        {allMigrationData?.length === 0 && (
+    <div style={{ width: '100%' }}>
+      <TableInputWrapper>
+        <InputField value={account ? truncateAddress(account) : ''} disabled placeholder="Wallet address" />
+        <CheckButton onClick={() => handleCheck()}>
+          <span>Check</span>
+        </CheckButton>
+      </TableInputWrapper>
+      <TotalMigrationAmountWrapper>
+        <p>My Total Migrated Amount to SYMM:</p>
+        <div>
+          <p>88.34 DEUS </p>
+          <ArrowRight />
+          <p>293,276.99 SYMM</p>
+        </div>
+      </TotalMigrationAmountWrapper>
+      {!loading && <LargeContent>{getAllUpperRow()}</LargeContent>}
+      <Wrapper>
+        <TableWrapper>
           <tbody>
-            <tr>
-              <td>
-                <div style={{ margin: '0 auto' }}>
-                  {isLoading ? (
-                    <Image src={isMobile ? LOADING_LOCK_MOBILE : LOADING_LOCK} alt="loading-lock" />
-                  ) : (
-                    <Image src={isMobile ? EMPTY_LOCK_MOBILE : EMPTY_LOCK} alt="empty-lock" />
-                  )}
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                {!account ? (
-                  <NoResults warning>Wallet is not connected!</NoResults>
-                ) : isLoading ? (
-                  <NoResults>Loading...</NoResults>
-                ) : (
-                  <NoResults>No lock found</NoResults>
-                )}
-              </td>
-            </tr>
+            {allMigrationData?.length > 0 &&
+              allMigrationData.map(([key, values]: [string, []]) =>
+                values.map((migrationInfo, index) => (
+                  <React.Fragment key={index}>
+                    <>
+                      <DividerContainer />
+                      <TableRow
+                        migrationInfo={{
+                          user: migrationInfo[0],
+                          tokenAddress: migrationInfo[1],
+                          amount: migrationInfo[2],
+                          timestamp: migrationInfo[3],
+                          block: migrationInfo[4],
+                          migrationPreference: migrationInfo[5],
+                        }}
+                        chain={+key}
+                      />
+                    </>
+                  </React.Fragment>
+                ))
+              )}
           </tbody>
-        )}
-      </TableWrapper>
-    </Wrapper>
+          {allMigrationData?.length === 0 && (
+            <tbody>
+              <tr>
+                <td>
+                  <div style={{ margin: '0 auto' }}>
+                    {isLoading ? (
+                      <Image src={isMobile ? LOADING_LOCK_MOBILE : LOADING_LOCK} alt="loading-lock" />
+                    ) : (
+                      <Image src={isMobile ? EMPTY_LOCK_MOBILE : EMPTY_LOCK} alt="empty-lock" />
+                    )}
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  {!account ? (
+                    <NoResults warning>Wallet is not connected!</NoResults>
+                  ) : isLoading ? (
+                    <NoResults>Loading...</NoResults>
+                  ) : (
+                    <NoResults>No lock found</NoResults>
+                  )}
+                </td>
+              </tr>
+            </tbody>
+          )}
+        </TableWrapper>
+      </Wrapper>
+    </div>
   )
 }
 
@@ -324,14 +457,7 @@ const TableRowContent = ({ migrationInfo, chain }: { migrationInfo: IMigrationIn
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const TotalMigrationInfo = useMigrationData()
-
-  const balancedRatio = useMemo(() => {
-    const symm = toBN(+TotalMigrationInfo?.total_migrated_to_symm * 1e-18)
-    const total = toBN(800000).minus(symm)
-    const ratio = total.div(800000)
-    return ratio.toString()
-  }, [TotalMigrationInfo])
+  const balancedRatio = useBalancedRatio()
 
   const ratio = Number(balancedRatio)
   let migratedToDEUS = BN_ZERO

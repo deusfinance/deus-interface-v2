@@ -47,7 +47,6 @@ const Wrapper = styled(Container)`
     margin-top: 20px;
   `}
 `
-
 const UpperRow = styled(RowBetween)`
   background: ${({ theme }) => theme.bg1};
   border-top-right-radius: 12px;
@@ -61,7 +60,6 @@ const UpperRow = styled(RowBetween)`
     margin: 8px 8px;
   }
 `
-
 const TableTitle = styled(Cell)`
   height: fit-content;
   color: #7f8082;
@@ -73,31 +71,14 @@ const TableTitle = styled(Cell)`
   text-align: start;
   padding-left: 12px;
 `
-const LargeContent = styled.div`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;
-  `}
-`
 
 export const getImageSize = () => {
   return isMobile ? 15 : 20
 }
 
 export default function Migrate() {
-  const [selected, setSelected] = useState<ActionTypes>(ActionTypes.EASY)
+  const [selected, setSelected] = useState<ActionTypes>(ActionTypes.ALL)
   const [loading, setLoading] = useState(true)
-
-  function getUpperRow() {
-    return (
-      <UpperRow>
-        <Row style={{ position: 'relative' }}>
-          <TableTitle width="25%">Token</TableTitle>
-          <TableTitle width="20%">My Balance</TableTitle>
-          <TableTitle width="25%">My Migrated Amount</TableTitle>
-        </Row>
-      </UpperRow>
-    )
-  }
 
   function getAllUpperRow() {
     return (
@@ -122,20 +103,12 @@ export default function Migrate() {
         <Wrapper>
           {selected !== ActionTypes.ALL && <MigrationHeader />}
 
-          {selected === ActionTypes.MANUAL && (
-            <span>
-              <LargeContent>{getUpperRow()}</LargeContent>
-              <Table MigrationOptions={MigrationOptions} />
-            </span>
-          )}
+          {selected === ActionTypes.MANUAL && <Table MigrationOptions={MigrationOptions} />}
 
           {selected === ActionTypes.EASY && <CardBox />}
 
           {selected === ActionTypes.ALL && (
-            <span>
-              {!loading && <LargeContent>{getAllUpperRow()}</LargeContent>}
-              <MigratedTable setLoading={setLoading} />
-            </span>
+            <MigratedTable loading={loading} getAllUpperRow={getAllUpperRow} setLoading={setLoading} />
           )}
         </Wrapper>
       </MigrationWrap>
