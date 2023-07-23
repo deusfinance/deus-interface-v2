@@ -22,7 +22,7 @@ import { RowBetween } from 'components/Row'
 import { ArrowRight } from 'react-feather'
 import { useBalancedRatio } from 'hooks/useMigratePage'
 import { truncateAddress } from 'utils/account'
-// import { signatureMessage } from 'constants/misc'
+import { signatureMessage } from 'constants/misc'
 
 const Wrapper = styled.div`
   display: flex;
@@ -239,28 +239,25 @@ export default function MigratedTable() {
   const isLoading = false
   const [allMigrationData, setAllMigrationData] = useState<any>(undefined)
 
-  const signatureItem = 'signature_' + account?.toString()
   const [signature, setSignature] = useState<string | null>(null)
+  const signatureMessageWithWallet = signatureMessage + `${account?.toString()}`
 
-  const { state: signCallbackState, callback: signCallback, error: signCallbackError } = useSignMessage('SYMM')
-  // signatureMessage + `${account?.toString()}`
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  function setLoadedSignature(arg0: string) {
-    if (arg0) {
-      setSignature(arg0)
-      localStorage.setItem(signatureItem, arg0)
-    }
-  }
+  const {
+    state: signCallbackState,
+    callback: signCallback,
+    error: signCallbackError,
+  } = useSignMessage(signatureMessageWithWallet)
 
   const getAllMigrationData = useCallback(async () => {
     try {
-      const res = await makeHttpRequest(`https://info.deus.finance/symm/v1/info/${signature}`)
+      const res = await makeHttpRequest(
+        `https://info.deus.finance/symm/v1/user-info?message=${signatureMessageWithWallet}&signature=${signature}`
+      )
       return res
     } catch (error) {
       return null
     }
-  }, [signature])
+  }, [signature, signatureMessageWithWallet])
 
   const handleSign = useCallback(async () => {
     console.log('called handleSign')
@@ -269,14 +266,14 @@ export default function MigratedTable() {
     if (signature) return
     try {
       const response = await signCallback()
-      setLoadedSignature(response)
+      setSignature(response)
     } catch (e) {
       if (e instanceof Error) {
       } else {
         console.error(e)
       }
     }
-  }, [signCallbackState, signCallbackError, signCallback, signature, setLoadedSignature])
+  }, [signCallbackState, signCallbackError, signCallback, signature])
 
   const handleAllMigration = async () => {
     if (allMigrationData) return
@@ -291,15 +288,8 @@ export default function MigratedTable() {
     }
   }
 
-  useEffect(() => {
-    return () => setLoading(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   function handleCheck() {
-    const ls_signature = localStorage.getItem(signatureItem)
-    if (ls_signature) setSignature(ls_signature)
-    else handleSign()
+    handleSign()
     handleAllMigration()
   }
 
