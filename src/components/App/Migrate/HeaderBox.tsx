@@ -260,7 +260,7 @@ export default function HeaderBox() {
       {
         name: 'Total Migrated:',
         value: totalMigratedData.totalValue,
-        tooltip: true,
+        tooltip: 'TotalMigrated',
         extension: 'DEUS',
         deusColor: true,
       },
@@ -270,6 +270,7 @@ export default function HeaderBox() {
           ? toBN(Number(migrationInfo?.unvested_symm_per_deus) + Number(migrationInfo?.vested_symm_per_deus)).toFixed(2)
           : 'N/A',
         extension: 'SYMM per DEUS',
+        tooltip: 'Ratio',
         subValue: {
           unvested: migrationInfo?.unvested_symm_per_deus
             ? toBN(migrationInfo?.unvested_symm_per_deus).toFixed(3)
@@ -318,7 +319,7 @@ export default function HeaderBox() {
 
                 {item.extension && <ExtensionSpan deusColor={item.deusColor}>{item.extension}</ExtensionSpan>}
 
-                {item.tooltip && (
+                {item.tooltip === 'TotalMigrated' && (
                   <React.Fragment>
                     <a data-tip data-for={'multiline-id'}>
                       <InfoIcon size={12} />
@@ -339,6 +340,25 @@ export default function HeaderBox() {
                           SYMM: {totalMigratedData.symm}
                           <DeusText> DEUS</DeusText>
                         </span>
+                      </ToolTipWrap>
+                    </CustomTooltip>
+                  </React.Fragment>
+                )}
+
+                {item.tooltip === 'Ratio' && (
+                  <React.Fragment>
+                    <a data-tip data-for={'multiline-id2'}>
+                      <InfoIcon size={12} />
+                    </a>
+                    <CustomTooltip id="multiline-id2" arrowColor={'#bea29c'}>
+                      <ToolTipWrap>
+                        {item.subValue && (
+                          <span>
+                            <p>LOCKED: {item.subValue.vested}</p>
+                            <span> + </span>
+                            <p>UNLOCKED: {item.subValue.unvested}</p>
+                          </span>
+                        )}
                       </ToolTipWrap>
                     </CustomTooltip>
                   </React.Fragment>

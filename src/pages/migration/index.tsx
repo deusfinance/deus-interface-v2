@@ -50,7 +50,7 @@ export const getImageSize = () => {
 }
 
 export default function Migrate() {
-  const [selected, setSelected] = useState<ActionTypes>(ActionTypes.EASY)
+  const [selected, setSelected] = useState<ActionTypes>(ActionTypes.ALL)
 
   return (
     <Container>

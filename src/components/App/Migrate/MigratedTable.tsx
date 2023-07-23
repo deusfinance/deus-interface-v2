@@ -23,20 +23,22 @@ import { ArrowRight } from 'react-feather'
 import { useBalancedRatio } from 'hooks/useMigratePage'
 import { truncateAddress } from 'utils/account'
 import { signatureMessage } from 'constants/misc'
+import { Tokens } from 'constants/tokens'
+import { useMigrationData } from 'context/Migration'
 
 const Wrapper = styled.div`
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
 `
-const TableWrapper = styled.table<{ isEmpty?: boolean }>`
+const TableWrapper = styled.table`
   width: 100%;
   overflow: hidden;
   table-layout: fixed;
   border-collapse: collapse;
   background: ${({ theme }) => theme.bg1};
-  border-bottom-right-radius: ${({ isEmpty }) => (!isEmpty ? '12px' : '0')};
-  border-bottom-left-radius: ${({ isEmpty }) => (!isEmpty ? '12px' : '0')};
+  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 12px;
 `
 const Row = styled.tr`
   align-items: center;
@@ -239,7 +241,7 @@ export default function MigratedTable() {
   const isLoading = false
   const [allMigrationData, setAllMigrationData] = useState<any>(undefined)
 
-  const [signature, setSignature] = useState<string | null>(null)
+  const [signature, setSignature] = useState<string | undefined>(undefined)
   const signatureMessageWithWallet = signatureMessage + `${account?.toString()}`
 
   const {
@@ -248,16 +250,19 @@ export default function MigratedTable() {
     error: signCallbackError,
   } = useSignMessage(signatureMessageWithWallet)
 
-  const getAllMigrationData = useCallback(async () => {
-    try {
-      const res = await makeHttpRequest(
-        `https://info.deus.finance/symm/v1/user-info?message=${signatureMessageWithWallet}&signature=${signature}`
-      )
-      return res
-    } catch (error) {
-      return null
-    }
-  }, [signature, signatureMessageWithWallet])
+  const getAllMigrationData = useCallback(
+    async (signature: string) => {
+      try {
+        const res = await makeHttpRequest(
+          `https://info.deus.finance/symm/v1/user-info?wallet=${account?.toString()}&signature=${signature}`
+        )
+        return res
+      } catch (error) {
+        return null
+      }
+    },
+    [account]
+  )
 
   const handleSign = useCallback(async () => {
     console.log('called handleSign')
@@ -265,8 +270,7 @@ export default function MigratedTable() {
     if (!signCallback) return
     if (signature) return
     try {
-      const response = await signCallback()
-      setSignature(response)
+      return await signCallback()
     } catch (e) {
       if (e instanceof Error) {
       } else {
@@ -275,32 +279,34 @@ export default function MigratedTable() {
     }
   }, [signCallbackState, signCallbackError, signCallback, signature])
 
-  const handleAllMigration = async () => {
-    if (allMigrationData) return
-    const rest = await getAllMigrationData()
-    if (rest?.status === 'error') {
-      setAllMigrationData(null)
-      setLoading(true)
-    } else if (rest) {
-      const values = Object.entries(rest)
-      setAllMigrationData(values)
-      setLoading(false)
-    }
-  }
+  const handleAllMigration = useCallback(
+    async (signature: string) => {
+      const rest = await getAllMigrationData(signature)
+      if (rest?.status === 'error') {
+        setAllMigrationData(null)
+        setLoading(true)
+      } else if (rest) {
+        const values = Object.entries(rest)
+        setAllMigrationData(values)
+        setLoading(false)
+      }
+    },
+    [getAllMigrationData]
+  )
 
-  function handleCheck() {
-    handleSign()
-    handleAllMigration()
-  }
+  const handleCheck = useCallback(async () => {
+    handleSign().then((response) => {
+      setSignature(response)
+      handleAllMigration(response || '')
+    })
+  }, [handleAllMigration, handleSign])
 
   useEffect(() => {
-    setSignature(null)
+    console.log('account changed')
+    setSignature(undefined)
     setAllMigrationData(null)
+    setLoading(true)
   }, [account])
-
-  useEffect(() => {
-    handleAllMigration()
-  }, [signature])
 
   const isAllMigrationDataEmpty = useMemo(() => {
     if (allMigrationData?.length > 0) {
@@ -311,6 +317,57 @@ export default function MigratedTable() {
       return true
     }
   }, [allMigrationData])
+
+  const migrationAmount: Array<Array<{ amount: number; token: string; chainId: number }>> = useMemo(() => {
+    if (allMigrationData?.length > 0) {
+      return allMigrationData.map(([key, values]: [string, []]) =>
+        values.map((migrationInfo: [any, string, number]) => ({
+          amount: migrationInfo[2],
+          token: migrationInfo[1],
+          chainId: key,
+        }))
+      )
+    }
+    return
+  }, [allMigrationData])
+
+  const [totalAmount, setTotalAmount] = useState(0)
+  useEffect(() => {
+    let amount = 0
+
+    const filteredMigrationAmount = migrationAmount?.filter((migrationAmount) => migrationAmount.length !== 0)
+
+    filteredMigrationAmount?.forEach((item) => {
+      item?.forEach((value) => {
+        switch (value.token) {
+          case Tokens['DEUS'][value.chainId].address:
+            amount += value.amount
+            break
+
+          case Tokens['XDEUS'][value.chainId].address:
+            amount += value.amount
+            break
+
+          case Tokens['bDEI_TOKEN'][value.chainId].address:
+            amount += value.amount / (185 * 1e18)
+            break
+
+          case Tokens['LEGACY_DEI'][value.chainId].address:
+            amount += value.amount / (217 * 1e18)
+            break
+        }
+      })
+    })
+    setTotalAmount(amount * 1e-18)
+  }, [migrationAmount])
+
+  const migrationContextData = useMigrationData()
+  const calculatedSymmPerDeus = useMemo(
+    () =>
+      (Number(migrationContextData?.unvested_symm_per_deus) + Number(migrationContextData?.vested_symm_per_deus)) *
+      totalAmount,
+    [migrationContextData, totalAmount]
+  )
 
   return (
     <div style={{ width: '100%' }}>
@@ -324,15 +381,15 @@ export default function MigratedTable() {
         <TotalMigrationAmountWrapper>
           <p>My Total Migrated Amount to SYMM:</p>
           <div>
-            <p>88.34 DEUS </p>
+            <p>{toBN(totalAmount).toFixed(3).toString()} DEUS</p>
             <ArrowRight />
-            <p>293,276.99 SYMM</p>
+            <p>{toBN(calculatedSymmPerDeus).toFixed(3).toString()} SYMM</p>
           </div>
         </TotalMigrationAmountWrapper>
       )}
       {!loading && <LargeContent>{getAllUpperRow()}</LargeContent>}
       <Wrapper>
-        <TableWrapper isEmpty={isAllMigrationDataEmpty}>
+        <TableWrapper>
           <tbody>
             {allMigrationData?.length > 0 &&
               allMigrationData.map(([key, values]: [string, []]) =>
