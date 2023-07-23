@@ -1,14 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 import Image from 'next/image'
 
 import { Token } from '@sushiswap/core-sdk'
-
-import EMPTY_LOCK from '/public/static/images/pages/veDEUS/emptyLock.svg'
-import EMPTY_LOCK_MOBILE from '/public/static/images/pages/veDEUS/emptyLockMobile.svg'
-import LOADING_LOCK from '/public/static/images/pages/veDEUS/loadingLock.svg'
-import LOADING_LOCK_MOBILE from '/public/static/images/pages/veDEUS/loadingLockMobile.svg'
 
 import useWeb3React from 'hooks/useWeb3'
 import TokenBox from './TokenBox'
@@ -40,8 +35,8 @@ const TableWrapper = styled.table<{ isEmpty?: boolean }>`
   table-layout: fixed;
   border-collapse: collapse;
   background: ${({ theme }) => theme.bg1};
-  border-bottom-right-radius: ${({ isEmpty }) => (isEmpty ? '12px' : '0')};
-  border-bottom-left-radius: ${({ isEmpty }) => (isEmpty ? '12px' : '0')};
+  border-bottom-right-radius: ${({ isEmpty }) => (!isEmpty ? '12px' : '0')};
+  border-bottom-left-radius: ${({ isEmpty }) => (!isEmpty ? '12px' : '0')};
 `
 const Row = styled.tr`
   align-items: center;
@@ -113,6 +108,7 @@ const TableInputWrapper = styled.div`
   border-radius: 8px;
   margin-inline: 20px 13px;
   margin-top: 16px;
+  margin-bottom: 16px;
   width: auto;
   & > input {
     height: 32px;
@@ -158,8 +154,8 @@ const CheckButton = styled(BaseButton)`
   }
 `
 const TotalMigrationAmountWrapper = styled(RowBetween)`
-  padding-top: 31px;
-  padding-bottom: 50px;
+  padding-top: 20px;
+  padding-bottom: 30px;
   margin-inline: 8px;
   padding-inline: 12px 5px;
   width: auto;
@@ -199,23 +195,52 @@ const TotalMigrationAmountWrapper = styled(RowBetween)`
     }
   }
 `
+const UpperRow = styled(RowBetween)`
+  background: ${({ theme }) => theme.bg1};
+  border-top-right-radius: 12px;
+  border-top-left-radius: 12px;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  & > * {
+    margin: 8px 8px;
+  }
+`
+const TableTitle = styled(Cell)`
+  height: fit-content;
+  color: #7f8082;
+  font-size: 12px;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-align: start;
+  padding-left: 12px;
+`
 
-export default function MigratedTable({
-  setLoading,
-  loading,
-  getAllUpperRow,
-}: {
-  loading: boolean
-  getAllUpperRow: () => JSX.Element
-  setLoading: (action: boolean) => void
-}) {
+function getAllUpperRow() {
+  return (
+    <UpperRow>
+      <div style={{ display: 'flex', width: '100%', position: 'relative' }}>
+        <TableTitle width="20%">Token</TableTitle>
+        <TableTitle width="20%">Chain</TableTitle>
+        <TableTitle width="25%">My Migrated Amount</TableTitle>
+        <TableTitle width="35%">Claimable Token</TableTitle>
+      </div>
+    </UpperRow>
+  )
+}
+
+export default function MigratedTable() {
   const { account } = useWeb3React()
+  const [loading, setLoading] = useState(true)
 
   const isLoading = false
   const [allMigrationData, setAllMigrationData] = useState<any>(undefined)
 
   const signatureItem = 'signature_' + account?.toString()
-  const [signature, setSignature] = useState(localStorage.getItem(signatureItem))
+  const [signature, setSignature] = useState<string | null>(null)
 
   const { state: signCallbackState, callback: signCallback, error: signCallbackError } = useSignMessage('SYMM')
   // signatureMessage + `${account?.toString()}`
@@ -272,17 +297,30 @@ export default function MigratedTable({
   }, [])
 
   function handleCheck() {
-    handleSign()
+    const ls_signature = localStorage.getItem(signatureItem)
+    if (ls_signature) setSignature(ls_signature)
+    else handleSign()
     handleAllMigration()
   }
 
   useEffect(() => {
+    setSignature(null)
     setAllMigrationData(null)
   }, [account])
 
   useEffect(() => {
     handleAllMigration()
   }, [signature])
+
+  const isAllMigrationDataEmpty = useMemo(() => {
+    if (allMigrationData?.length > 0) {
+      for (let index = 0; index < allMigrationData?.length; index++) {
+        const element = allMigrationData[index]
+        if (element[1].length > 1) return false
+      }
+      return true
+    }
+  }, [allMigrationData])
 
   return (
     <div style={{ width: '100%' }}>
@@ -292,17 +330,19 @@ export default function MigratedTable({
           <span>Check</span>
         </CheckButton>
       </TableInputWrapper>
-      <TotalMigrationAmountWrapper>
-        <p>My Total Migrated Amount to SYMM:</p>
-        <div>
-          <p>88.34 DEUS </p>
-          <ArrowRight />
-          <p>293,276.99 SYMM</p>
-        </div>
-      </TotalMigrationAmountWrapper>
+      {!loading && (
+        <TotalMigrationAmountWrapper>
+          <p>My Total Migrated Amount to SYMM:</p>
+          <div>
+            <p>88.34 DEUS </p>
+            <ArrowRight />
+            <p>293,276.99 SYMM</p>
+          </div>
+        </TotalMigrationAmountWrapper>
+      )}
       {!loading && <LargeContent>{getAllUpperRow()}</LargeContent>}
       <Wrapper>
-        <TableWrapper>
+        <TableWrapper isEmpty={isAllMigrationDataEmpty}>
           <tbody>
             {allMigrationData?.length > 0 &&
               allMigrationData.map(([key, values]: [string, []]) =>
@@ -326,19 +366,8 @@ export default function MigratedTable({
                 ))
               )}
           </tbody>
-          {allMigrationData?.length === 0 && (
+          {isAllMigrationDataEmpty && (
             <tbody>
-              <tr>
-                <td>
-                  <div style={{ margin: '0 auto' }}>
-                    {isLoading ? (
-                      <Image src={isMobile ? LOADING_LOCK_MOBILE : LOADING_LOCK} alt="loading-lock" />
-                    ) : (
-                      <Image src={isMobile ? EMPTY_LOCK_MOBILE : EMPTY_LOCK} alt="empty-lock" />
-                    )}
-                  </div>
-                </td>
-              </tr>
               <tr>
                 <td>
                   {!account ? (
@@ -346,7 +375,7 @@ export default function MigratedTable({
                   ) : isLoading ? (
                     <NoResults>Loading...</NoResults>
                   ) : (
-                    <NoResults>No lock found</NoResults>
+                    <NoResults>No Migration found</NoResults>
                   )}
                 </td>
               </tr>

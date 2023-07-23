@@ -1,19 +1,16 @@
 import React, { useMemo, useState } from 'react'
-import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 import Image from 'next/image'
 
 import { CurrencyAmount, Token } from '@sushiswap/core-sdk'
 
-import EMPTY_LOCK from '/public/static/images/pages/veDEUS/emptyLock.svg'
-import EMPTY_LOCK_MOBILE from '/public/static/images/pages/veDEUS/emptyLockMobile.svg'
-import LOADING_LOCK from '/public/static/images/pages/veDEUS/loadingLock.svg'
-import LOADING_LOCK_MOBILE from '/public/static/images/pages/veDEUS/loadingLockMobile.svg'
 import SymmLogo from '/public/static/images/tokens/symm.svg'
 import DeusLogo from '/public/static/images/tokens/deus.svg'
 
 import { FALLBACK_CHAIN_ID, SupportedChainId } from 'constants/chains'
 import { MigrationTypes, MigrationVersion } from 'constants/migrationOptions'
+import { MigrationOptions } from 'constants/migrationOptions'
+import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
 
 import useWeb3React from 'hooks/useWeb3'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
@@ -24,7 +21,6 @@ import TokenBox from './TokenBox'
 
 import { useTokenBalance } from 'state/wallet/hooks'
 import ManualReviewModal from './ManualReviewModal'
-import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
 import { useBalancedRatio, useGetUserMigrations } from 'hooks/useMigratePage'
 import BigNumber from 'bignumber.js'
 import { formatBalance } from 'utils/numbers'
@@ -145,7 +141,6 @@ const UpperRow = styled(RowBetween)`
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-
   & > * {
     margin: 8px 8px;
   }
@@ -174,7 +169,7 @@ function getUpperRow() {
   )
 }
 
-export default function Table({ MigrationOptions }: { MigrationOptions: MigrationTypes[] }) {
+export default function Table() {
   const { account, chainId } = useWeb3React()
 
   const isLoading = false
@@ -220,23 +215,12 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
             <tbody>
               <tr>
                 <td>
-                  <div style={{ margin: '0 auto' }}>
-                    {isLoading ? (
-                      <Image src={isMobile ? LOADING_LOCK_MOBILE : LOADING_LOCK} alt="loading-lock" />
-                    ) : (
-                      <Image src={isMobile ? EMPTY_LOCK_MOBILE : EMPTY_LOCK} alt="empty-lock" />
-                    )}
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
                   {!account ? (
                     <NoResults warning>Wallet is not connected!</NoResults>
                   ) : isLoading ? (
                     <NoResults>Loading...</NoResults>
                   ) : (
-                    <NoResults>No lock found</NoResults>
+                    <NoResults>No Migration found</NoResults>
                   )}
                 </td>
               </tr>
