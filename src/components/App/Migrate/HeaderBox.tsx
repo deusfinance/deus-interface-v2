@@ -276,6 +276,18 @@ export default function HeaderBox() {
             ? toBN(migrationInfo?.unvested_symm_per_deus).toFixed(3)
             : 'N/A',
           vested: migrationInfo?.vested_symm_per_deus ? toBN(migrationInfo?.vested_symm_per_deus).toFixed(3) : 'N/A',
+          unlockedCalc:
+            '68,000,000' +
+            ' / ' +
+            toBN(Number(migrationInfo?.total_early_migrations_to_symm) * 1e-18)
+              .toFixed(3)
+              .toString(),
+          lockedCalc:
+            '680,000,000' +
+            ' / ' +
+            toBN(Number(migrationInfo?.total_migrations_to_symm) * 1e-18)
+              .toFixed(3)
+              .toString(),
         },
         deusColor: false,
       },
@@ -354,9 +366,13 @@ export default function HeaderBox() {
                       <ToolTipWrap>
                         {item.subValue && (
                           <span>
-                            <p>LOCKED: {item.subValue.vested}</p>
-                            <span> + </span>
-                            <p>UNLOCKED: {item.subValue.unvested}</p>
+                            <p>
+                              <DeusText>UNLOCKED:</DeusText> {item.subValue.unlockedCalc} = {item.subValue.unvested}
+                            </p>
+                            <DeusText style={{ fontSize: '18px', fontWeight: 'bold' }}> + </DeusText>
+                            <p>
+                              <DeusText>LOCKED:</DeusText> {item.subValue.lockedCalc} = {item.subValue.vested}
+                            </p>
                           </span>
                         )}
                       </ToolTipWrap>
