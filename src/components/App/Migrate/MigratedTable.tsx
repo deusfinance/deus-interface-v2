@@ -312,7 +312,7 @@ export default function MigratedTable() {
     if (allMigrationData?.length > 0) {
       for (let index = 0; index < allMigrationData?.length; index++) {
         const element = allMigrationData[index]
-        if (element[1].length > 1) return false
+        if (element[1].length > 0) return false
       }
       return true
     }
