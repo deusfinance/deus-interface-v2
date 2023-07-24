@@ -17,7 +17,7 @@ import { formatUnits } from '@ethersproject/units'
 import { DeusText } from '../Stake/RewardBox'
 import { SymmText } from './HeaderBox'
 import { InputField } from 'components/Input'
-import { BaseButton } from 'components/Button'
+import { BaseButton, PrimaryButtonWide } from 'components/Button'
 import { RowBetween } from 'components/Row'
 import { ArrowRight } from 'react-feather'
 import { useBalancedRatio } from 'hooks/useMigratePage'
@@ -25,6 +25,7 @@ import { truncateAddress } from 'utils/account'
 import { signatureMessage } from 'constants/misc'
 import { Tokens } from 'constants/tokens'
 import { useMigrationData } from 'context/Migration'
+import { useWalletModalToggle } from 'state/application/hooks'
 
 const Wrapper = styled.div`
   display: flex;
@@ -220,6 +221,23 @@ const TableTitle = styled(Cell)`
   text-align: start;
   padding-left: 12px;
 `
+const ButtonText = styled.span`
+  display: flex;
+  font-family: 'Inter';
+  font-weight: 600;
+  font-size: 15px;
+  color: ${({ theme }) => theme.text1};
+  align-items: center;
+  background: -webkit-linear-gradient(92.33deg, #e29d52 -10.26%, #de4a7b 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    font-size: 12px;
+  `}
+`
+const WalletConnectButton = styled(PrimaryButtonWide)`
+  max-width: 160px;
+`
 
 function getAllUpperRow() {
   return (
@@ -237,12 +255,11 @@ function getAllUpperRow() {
 export default function MigratedTable() {
   const { account } = useWeb3React()
   const [loading, setLoading] = useState(true)
-
-  const isLoading = false
+  const toggleWalletModal = useWalletModalToggle()
   const [allMigrationData, setAllMigrationData] = useState<any>(undefined)
-
   const [signature, setSignature] = useState<string | undefined>(undefined)
   const signatureMessageWithWallet = signatureMessage + `${account?.toString()}`
+  const isLoading = false
 
   const {
     state: signCallbackState,
@@ -334,7 +351,6 @@ export default function MigratedTable() {
   const [totalAmount, setTotalAmount] = useState(0)
   useEffect(() => {
     let amount = 0
-
     const filteredMigrationAmount = migrationAmount?.filter((migrationAmount) => migrationAmount.length !== 0)
 
     filteredMigrationAmount?.forEach((item) => {
@@ -373,9 +389,15 @@ export default function MigratedTable() {
     <div style={{ width: '100%' }}>
       <TableInputWrapper>
         <InputField value={account ? truncateAddress(account) : ''} disabled placeholder="Wallet address" />
-        <CheckButton onClick={() => handleCheck()}>
-          <span>Check</span>
-        </CheckButton>
+        {account ? (
+          <CheckButton onClick={() => handleCheck()}>
+            <span>Check</span>
+          </CheckButton>
+        ) : (
+          <WalletConnectButton transparentBG onClick={toggleWalletModal}>
+            <ButtonText>Connect Wallet</ButtonText>
+          </WalletConnectButton>
+        )}
       </TableInputWrapper>
       {!loading && (
         <TotalMigrationAmountWrapper>
