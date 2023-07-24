@@ -182,6 +182,20 @@ const CustomTooltip = styled(ToolTip)`
     font-size: 0.5rem !important;
   `};
 `
+const CustomTooltip2 = styled(ToolTip)`
+  font-size: 0.9rem !important;
+  color: #bea29c !important;
+  border: 1px solid #bea29c !important;
+  border-radius: 6px !important;
+  max-width: 465px !important;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 0.8rem !important;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToSuperTiny`
+    font-size: 0.65rem !important;
+  `};
+`
 const InfoIcon = styled(Info)`
   margin-bottom: -1px;
   margin-left: 2px;
@@ -276,18 +290,12 @@ export default function HeaderBox() {
             ? toBN(migrationInfo?.unvested_symm_per_deus).toFixed(3)
             : 'N/A',
           vested: migrationInfo?.vested_symm_per_deus ? toBN(migrationInfo?.vested_symm_per_deus).toFixed(3) : 'N/A',
-          unlockedCalc:
-            '68,000,000' +
-            ' / ' +
-            toBN(Number(migrationInfo?.total_early_migrations_to_symm) * 1e-18)
-              .toFixed(3)
-              .toString(),
-          lockedCalc:
-            '680,000,000' +
-            ' / ' +
-            toBN(Number(migrationInfo?.total_migrations_to_symm) * 1e-18)
-              .toFixed(3)
-              .toString(),
+          unlockedCalc: toBN(Number(migrationInfo?.total_early_migrations_to_symm) * 1e-18)
+            .toFixed(2)
+            .toString(),
+          lockedCalc: toBN(Number(migrationInfo?.total_migrations_to_symm) * 1e-18)
+            .toFixed(2)
+            .toString(),
         },
         deusColor: false,
       },
@@ -362,21 +370,25 @@ export default function HeaderBox() {
                     <a data-tip data-for={'multiline-id2'}>
                       <InfoIcon size={12} />
                     </a>
-                    <CustomTooltip id="multiline-id2" arrowColor={'#bea29c'}>
+                    <CustomTooltip2 id="multiline-id2" arrowColor={'#bea29c'}>
                       <ToolTipWrap>
                         {item.subValue && (
-                          <span>
+                          <span style={{ color: 'white' }}>
                             <p>
-                              <DeusText>UNLOCKED:</DeusText> {item.subValue.unlockedCalc} = {item.subValue.unvested}
+                              <SymmText>UNLOCKED:</SymmText>
+                              <p>68,000,000 / Early_total_DEUS_migrated_to_SYMM ({item.subValue.unlockedCalc})</p>
+                              <p>= {item.subValue.unvested}</p>
                             </p>
-                            <DeusText style={{ fontSize: '18px', fontWeight: 'bold' }}> + </DeusText>
+                            <p style={{ padding: '5px' }}></p>
                             <p>
-                              <DeusText>LOCKED:</DeusText> {item.subValue.lockedCalc} = {item.subValue.vested}
+                              <p style={{ color: '#bea29c' }}>LOCKED:</p>
+                              <p>680,000,000 / Total_DEUS_migrated_to_SYMM ({item.subValue.lockedCalc})</p>
+                              <p>= {item.subValue.vested}</p>
                             </p>
                           </span>
                         )}
                       </ToolTipWrap>
-                    </CustomTooltip>
+                    </CustomTooltip2>
                   </React.Fragment>
                 )}
 
