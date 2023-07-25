@@ -182,6 +182,20 @@ const CustomTooltip = styled(ToolTip)`
     font-size: 0.5rem !important;
   `};
 `
+const CustomTooltip2 = styled(ToolTip)`
+  font-size: 0.9rem !important;
+  color: #bea29c !important;
+  border: 1px solid #bea29c !important;
+  border-radius: 6px !important;
+  max-width: 465px !important;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 0.8rem !important;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToSuperTiny`
+    font-size: 0.65rem !important;
+  `};
+`
 const InfoIcon = styled(Info)`
   margin-bottom: -1px;
   margin-left: 2px;
@@ -260,7 +274,7 @@ export default function HeaderBox() {
       {
         name: 'Total Migrated:',
         value: totalMigratedData.totalValue,
-        tooltip: true,
+        tooltip: 'TotalMigrated',
         extension: 'DEUS',
         deusColor: true,
       },
@@ -270,11 +284,18 @@ export default function HeaderBox() {
           ? toBN(Number(migrationInfo?.unvested_symm_per_deus) + Number(migrationInfo?.vested_symm_per_deus)).toFixed(2)
           : 'N/A',
         extension: 'SYMM per DEUS',
+        tooltip: 'Ratio',
         subValue: {
           unvested: migrationInfo?.unvested_symm_per_deus
             ? toBN(migrationInfo?.unvested_symm_per_deus).toFixed(3)
             : 'N/A',
           vested: migrationInfo?.vested_symm_per_deus ? toBN(migrationInfo?.vested_symm_per_deus).toFixed(3) : 'N/A',
+          unlockedCalc: toBN(Number(migrationInfo?.total_early_migrations_to_symm) * 1e-18)
+            .toFixed(2)
+            .toString(),
+          lockedCalc: toBN(Number(migrationInfo?.total_migrations_to_symm) * 1e-18)
+            .toFixed(2)
+            .toString(),
         },
         deusColor: false,
       },
@@ -318,7 +339,7 @@ export default function HeaderBox() {
 
                 {item.extension && <ExtensionSpan deusColor={item.deusColor}>{item.extension}</ExtensionSpan>}
 
-                {item.tooltip && (
+                {item.tooltip === 'TotalMigrated' && (
                   <React.Fragment>
                     <a data-tip data-for={'multiline-id'}>
                       <InfoIcon size={12} />
@@ -341,6 +362,33 @@ export default function HeaderBox() {
                         </span>
                       </ToolTipWrap>
                     </CustomTooltip>
+                  </React.Fragment>
+                )}
+
+                {item.tooltip === 'Ratio' && (
+                  <React.Fragment>
+                    <a data-tip data-for={'multiline-id2'}>
+                      <InfoIcon size={12} />
+                    </a>
+                    <CustomTooltip2 id="multiline-id2" arrowColor={'#bea29c'}>
+                      <ToolTipWrap>
+                        {item.subValue && (
+                          <span style={{ color: 'white' }}>
+                            <p>
+                              <SymmText>UNLOCKED:</SymmText>
+                              <p>68,000,000 / Early_total_DEUS_migrated_to_SYMM ({item.subValue.unlockedCalc})</p>
+                              <p>= {item.subValue.unvested}</p>
+                            </p>
+                            <p style={{ padding: '5px' }}></p>
+                            <p>
+                              <p style={{ color: '#bea29c' }}>LOCKED:</p>
+                              <p>680,000,000 / Total_DEUS_migrated_to_SYMM ({item.subValue.lockedCalc})</p>
+                              <p>= {item.subValue.vested}</p>
+                            </p>
+                          </span>
+                        )}
+                      </ToolTipWrap>
+                    </CustomTooltip2>
                   </React.Fragment>
                 )}
 

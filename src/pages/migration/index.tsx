@@ -2,15 +2,13 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { isMobile } from 'react-device-detect'
 
-import { MigrationOptions } from 'constants/migrationOptions'
-
-import { Row, RowBetween } from 'components/Row'
-import Table, { Cell } from 'components/App/Migrate/Table'
+import Table from 'components/App/Migrate/Table'
 import ActionSetter, { ActionTypes } from 'components/App/Migrate/ActionSetter'
 import CardBox from 'components/App/Migrate/CardBox'
 import HeaderBox from 'components/App/Migrate/HeaderBox'
 import MigrationHeader from 'components/App/Migrate/MigrationHeader'
 import { MigrationWrap } from 'context/Migration'
+// import MigratedTable from 'components/App/Migrate/MigratedTable'
 
 export const Container = styled.div`
   display: flex;
@@ -47,37 +45,6 @@ const Wrapper = styled(Container)`
   `}
 `
 
-const UpperRow = styled(RowBetween)`
-  background: ${({ theme }) => theme.bg1};
-  border-top-right-radius: 12px;
-  border-top-left-radius: 12px;
-  flex-wrap: wrap;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-
-  & > * {
-    margin: 8px 8px;
-  }
-`
-
-const TableTitle = styled(Cell)`
-  height: fit-content;
-  color: #7f8082;
-  font-size: 12px;
-  font-family: Inter;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  text-align: start;
-  padding-left: 12px;
-`
-const LargeContent = styled.div`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;
-  `}
-`
-
 export const getImageSize = () => {
   return isMobile ? 15 : 20
 }
@@ -85,36 +52,19 @@ export const getImageSize = () => {
 export default function Migrate() {
   const [selected, setSelected] = useState<ActionTypes>(ActionTypes.EASY)
 
-  function getUpperRow() {
-    return (
-      <UpperRow>
-        <Row style={{ position: 'relative' }}>
-          <TableTitle width="25%">Token</TableTitle>
-          <TableTitle width="20%">My Balance</TableTitle>
-          <TableTitle width="25%">My Migrated Amount</TableTitle>
-        </Row>
-      </UpperRow>
-    )
-  }
-
   return (
     <Container>
       <MigrationWrap>
         <HeaderBox />
-
         <ActionSetter selected={selected} setSelected={setSelected} />
 
         <Wrapper>
+          {/* {selected !== ActionTypes.ALL && <MigrationHeader />} */}
           <MigrationHeader />
 
-          {selected === ActionTypes.MANUAL ? (
-            <span>
-              <LargeContent>{getUpperRow()}</LargeContent>
-              <Table MigrationOptions={MigrationOptions} />
-            </span>
-          ) : (
-            <CardBox />
-          )}
+          {selected === ActionTypes.MANUAL && <Table />}
+          {selected === ActionTypes.EASY && <CardBox />}
+          {/* {selected === ActionTypes.ALL && <MigratedTable />} */}
         </Wrapper>
       </MigrationWrap>
     </Container>

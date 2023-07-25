@@ -1,20 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { isMobile } from 'react-device-detect'
+import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import Image from 'next/image'
-import { useRouter } from 'next/router'
 
 import { CurrencyAmount, Token } from '@sushiswap/core-sdk'
 
-import EMPTY_LOCK from '/public/static/images/pages/veDEUS/emptyLock.svg'
-import EMPTY_LOCK_MOBILE from '/public/static/images/pages/veDEUS/emptyLockMobile.svg'
-import LOADING_LOCK from '/public/static/images/pages/veDEUS/loadingLock.svg'
-import LOADING_LOCK_MOBILE from '/public/static/images/pages/veDEUS/loadingLockMobile.svg'
 import SymmLogo from '/public/static/images/tokens/symm.svg'
 import DeusLogo from '/public/static/images/tokens/deus.svg'
 
 import { FALLBACK_CHAIN_ID, SupportedChainId } from 'constants/chains'
 import { MigrationTypes, MigrationVersion } from 'constants/migrationOptions'
+import { MigrationOptions } from 'constants/migrationOptions'
+import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
 
 import useWeb3React from 'hooks/useWeb3'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
@@ -25,13 +21,11 @@ import TokenBox from './TokenBox'
 
 import { useTokenBalance } from 'state/wallet/hooks'
 import ManualReviewModal from './ManualReviewModal'
-import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
-import { useGetUserMigrations } from 'hooks/useMigratePage'
+import { useBalancedRatio, useGetUserMigrations } from 'hooks/useMigratePage'
 import BigNumber from 'bignumber.js'
-import { formatBalance, toBN } from 'utils/numbers'
+import { formatBalance } from 'utils/numbers'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
-import { useSignMessage } from 'hooks/useMigrateCallback'
-import { useMigrationData } from 'context/Migration'
+import { RowBetween } from 'components/Row'
 
 const Wrapper = styled.div`
   display: flex;
@@ -80,7 +74,7 @@ const ZebraStripesRow = styled(Row)<{ isEven?: boolean }>`
     background:none;
   `};
 `
-const ButtonText = styled.span<{ gradientText?: boolean }>`
+export const ButtonText = styled.span<{ gradientText?: boolean }>`
   display: flex;
   font-family: 'Inter';
   font-weight: 600;
@@ -134,8 +128,48 @@ const DividerContainer = styled.div`
     background-color:#141414;
   `}
 `
+const LargeContent = styled.div`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `}
+`
+const UpperRow = styled(RowBetween)`
+  background: ${({ theme }) => theme.bg1};
+  border-top-right-radius: 12px;
+  border-top-left-radius: 12px;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  & > * {
+    margin: 8px 8px;
+  }
+`
+const TableTitle = styled(Cell)`
+  height: fit-content;
+  color: #7f8082;
+  font-size: 12px;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-align: start;
+  padding-left: 12px;
+`
 
-export default function Table({ MigrationOptions }: { MigrationOptions: MigrationTypes[] }) {
+function getUpperRow() {
+  return (
+    <UpperRow>
+      <div style={{ display: 'flex', width: '100%', position: 'relative' }}>
+        <TableTitle width="25%">Token</TableTitle>
+        <TableTitle width="20%">My Balance</TableTitle>
+        <TableTitle width="25%">My Migrated Amount</TableTitle>
+      </div>
+    </UpperRow>
+  )
+}
+
+export default function Table() {
   const { account, chainId } = useWeb3React()
 
   const isLoading = false
@@ -144,54 +178,7 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
   const [isOpenReviewModal, toggleReviewModal] = useState(false)
   const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
 
-  const migrationInfo = useMigrationData()
-
-  const signatureItem = 'signature_' + account?.toString()
-  const [signature, setSignature] = useState(localStorage.getItem(signatureItem))
-  // const signatureMessage = 'In order to see your migrated amount across all chains, you need to sign the message.'
-  const signatureMessage = 'SYMM'
-
-  const {
-    state: signCallbackState,
-    callback: signCallback,
-    error: signCallbackError,
-  } = useSignMessage(signatureMessage)
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  function setLoadedSignature(arg0: string) {
-    if (arg0) {
-      setSignature(arg0)
-      localStorage.setItem(signatureItem, arg0)
-    }
-  }
-
-  const handleSign = useCallback(async () => {
-    console.log('called handleSign')
-    console.log(signCallbackState, signCallbackError)
-    if (!signCallback) return
-    if (signature) return
-    try {
-      const response = await signCallback()
-      setLoadedSignature(response)
-    } catch (e) {
-      if (e instanceof Error) {
-      } else {
-        console.error(e)
-      }
-    }
-  }, [signCallbackState, signCallbackError, signCallback, signature, setLoadedSignature])
-
-  useEffect(() => {
-    // handleSign()
-  }, [])
-
-  const balancedRatio = useMemo(() => {
-    const symm = toBN(+migrationInfo?.total_migrated_to_symm * 1e-18)
-    const total = toBN(800000).minus(symm)
-    const ratio = total.div(800000)
-    return ratio.toString()
-  }, [migrationInfo])
-
+  const balancedRatio = useBalancedRatio()
   const { userMigrations } = useGetUserMigrations(Number(balancedRatio), account)
 
   function handleClickModal(type: MigrationType, inputToken: Token) {
@@ -202,6 +189,7 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
 
   return (
     <>
+      <LargeContent>{getUpperRow()}</LargeContent>
       <Wrapper>
         <TableWrapper isEmpty={MigrationOptions.length === 0}>
           <tbody>
@@ -227,23 +215,12 @@ export default function Table({ MigrationOptions }: { MigrationOptions: Migratio
             <tbody>
               <tr>
                 <td>
-                  <div style={{ margin: '0 auto' }}>
-                    {isLoading ? (
-                      <Image src={isMobile ? LOADING_LOCK_MOBILE : LOADING_LOCK} alt="loading-lock" />
-                    ) : (
-                      <Image src={isMobile ? EMPTY_LOCK_MOBILE : EMPTY_LOCK} alt="empty-lock" />
-                    )}
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
                   {!account ? (
                     <NoResults warning>Wallet is not connected!</NoResults>
                   ) : isLoading ? (
                     <NoResults>Loading...</NoResults>
                   ) : (
-                    <NoResults>No lock found</NoResults>
+                    <NoResults>No Migration found</NoResults>
                   )}
                 </td>
               </tr>
@@ -357,33 +334,29 @@ export enum MigrationType {
   SYMM,
 }
 
-interface ITableRowContent {
-  token: Token
-  version: MigrationVersion
-  currencyBalance: CurrencyAmount<Token> | undefined
-  active: MigrationTypes['active']
-  handleClick: () => void
-  chainIdError: boolean
-  rpcChangerCallback: (chainId: any) => void
-  account: string | null | undefined
-  toggleWalletModal: () => void
-  handleClickModal: (migrationType: MigrationType, inputToken: Token) => void
-  userMigrations: Map<string, BigNumber>
-}
-
 const TableRowContentWrapper = ({
   token,
   version,
   currencyBalance,
   active,
-  handleClick,
   chainIdError,
   rpcChangerCallback,
   account,
   toggleWalletModal,
   handleClickModal,
   userMigrations,
-}: ITableRowContent) => {
+}: {
+  token: Token
+  version: MigrationVersion
+  currencyBalance: CurrencyAmount<Token> | undefined
+  active: MigrationTypes['active']
+  chainIdError: boolean
+  rpcChangerCallback: (chainId: any) => void
+  account: string | null | undefined
+  toggleWalletModal: () => void
+  handleClickModal: (migrationType: MigrationType, inputToken: Token) => void
+  userMigrations: Map<string, BigNumber>
+}) => {
   const { chainId } = useWeb3React()
   const [currencyBalanceDisplay] = useMemo(() => {
     return [currencyBalance?.toSignificant(4)]
@@ -489,11 +462,6 @@ const TableRowContent = ({
   const rpcChangerCallback = useRpcChangerCallback()
   const toggleWalletModal = useWalletModalToggle()
   const { token: tokens, version, active } = migrationOption
-  const router = useRouter()
-
-  const handleClick = useCallback(() => {
-    router.push(`/migration`)
-  }, [router])
 
   const token = chainId ? tokens[chainId] : undefined
   const currencyBalance = useTokenBalance(account ?? undefined, token ?? undefined)
@@ -505,7 +473,6 @@ const TableRowContent = ({
         <TableRowContainer>
           <TableRowContentWrapper
             active={active}
-            handleClick={handleClick}
             token={token}
             currencyBalance={currencyBalance}
             version={version}

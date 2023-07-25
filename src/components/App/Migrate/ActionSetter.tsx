@@ -24,6 +24,9 @@ const Item = styled.div<{ selected: boolean; left: boolean }>`
   margin-left: ${({ left }) => !left && '0'};
   border-radius: 8px;
   width: 50%;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    text-align: center;
+    `}
   &:hover {
     cursor: pointer;
   }
@@ -39,11 +42,13 @@ const Line = styled.div`
 export enum ActionTypes {
   EASY = 'EASY',
   MANUAL = 'MANUAL',
+  // ALL = 'ALL',
 }
 
 const ActionLabels = {
   [ActionTypes.EASY]: 'Easy Migration',
   [ActionTypes.MANUAL]: 'Manual Migration',
+  // [ActionTypes.ALL]: 'My Migrations (Dashboard)',
 }
 
 export default function ActionSetter({

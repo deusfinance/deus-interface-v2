@@ -78,11 +78,20 @@ function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
 }
 
 function Web3StatusInner() {
-  const { chainId, account, error } = useWeb3React()
+  const { account, error } = useWeb3React()
   const toggleWalletModal = useWalletModalToggle()
   const rpcChangerCallback = useRpcChangerCallback()
+  const notSupportedChainId = !useSupportedChainId()
 
-  if (!useSupportedChainId()) {
+  if (!account) {
+    return (
+      <ConnectButtonWrap onClick={toggleWalletModal}>
+        <ConnectButton>
+          <ConnectButtonText>Connect Wallet</ConnectButtonText>
+        </ConnectButton>
+      </ConnectButtonWrap>
+    )
+  } else if (notSupportedChainId) {
     return (
       <ErrorButton onClick={() => rpcChangerCallback(FALLBACK_CHAIN_ID)}>
         <Text>Wrong Network</Text>
