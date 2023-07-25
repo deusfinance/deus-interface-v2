@@ -42,13 +42,13 @@ const Line = styled.div`
 export enum ActionTypes {
   EASY = 'EASY',
   MANUAL = 'MANUAL',
-  ALL = 'ALL',
+  // ALL = 'ALL',
 }
 
 const ActionLabels = {
   [ActionTypes.EASY]: 'Easy Migration',
   [ActionTypes.MANUAL]: 'Manual Migration',
-  [ActionTypes.ALL]: 'My Migrations (Dashboard)',
+  // [ActionTypes.ALL]: 'My Migrations (Dashboard)',
 }
 
 export default function ActionSetter({
