@@ -237,6 +237,7 @@ const ButtonText = styled.span`
 `
 const WalletConnectButton = styled(PrimaryButtonWide)`
   max-width: 160px;
+  max-height: 32px;
 `
 
 function getAllUpperRow() {
