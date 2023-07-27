@@ -8,7 +8,7 @@ import CardBox from 'components/App/Migrate/CardBox'
 import HeaderBox from 'components/App/Migrate/HeaderBox'
 import MigrationHeader from 'components/App/Migrate/MigrationHeader'
 import { MigrationWrap } from 'context/Migration'
-// import MigratedTable from 'components/App/Migrate/MigratedTable'
+import MigratedTable from 'components/App/Migrate/MigratedTable'
 
 export const Container = styled.div`
   display: flex;
@@ -59,12 +59,11 @@ export default function Migrate() {
         <ActionSetter selected={selected} setSelected={setSelected} />
 
         <Wrapper>
-          {/* {selected !== ActionTypes.ALL && <MigrationHeader />} */}
-          <MigrationHeader />
+          {selected !== ActionTypes.ALL && <MigrationHeader />}
 
           {selected === ActionTypes.MANUAL && <Table />}
           {selected === ActionTypes.EASY && <CardBox />}
-          {/* {selected === ActionTypes.ALL && <MigratedTable />} */}
+          {selected === ActionTypes.ALL && <MigratedTable />}
         </Wrapper>
       </MigrationWrap>
     </Container>
