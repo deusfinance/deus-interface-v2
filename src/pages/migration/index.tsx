@@ -8,7 +8,8 @@ import CardBox from 'components/App/Migrate/CardBox'
 import HeaderBox from 'components/App/Migrate/HeaderBox'
 import MigrationHeader from 'components/App/Migrate/MigrationHeader'
 import { MigrationWrap } from 'context/Migration'
-// import MigratedTable from 'components/App/Migrate/MigratedTable'
+import ConfirmationModal from 'components/App/Migrate/ConfirmationModal'
+import MigratedTable from 'components/App/Migrate/MigratedTable'
 
 export const Container = styled.div`
   display: flex;
@@ -51,22 +52,30 @@ export const getImageSize = () => {
 
 export default function Migrate() {
   const [selected, setSelected] = useState<ActionTypes>(ActionTypes.EASY)
+  const [isOpenReviewModal, toggleReviewModal] = useState(false)
 
   return (
-    <Container>
-      <MigrationWrap>
-        <HeaderBox />
-        <ActionSetter selected={selected} setSelected={setSelected} />
+    <>
+      <Container>
+        <MigrationWrap>
+          <HeaderBox />
+          <ActionSetter selected={selected} setSelected={setSelected} />
 
-        <Wrapper>
-          {/* {selected !== ActionTypes.ALL && <MigrationHeader />} */}
-          <MigrationHeader />
+          <Wrapper>
+            {selected !== ActionTypes.ALL && <MigrationHeader />}
+            {/* <MigrationHeader /> */}
 
-          {selected === ActionTypes.MANUAL && <Table />}
-          {selected === ActionTypes.EASY && <CardBox />}
-          {/* {selected === ActionTypes.ALL && <MigratedTable />} */}
-        </Wrapper>
-      </MigrationWrap>
-    </Container>
+            {selected === ActionTypes.MANUAL && <Table />}
+            {selected === ActionTypes.EASY && <CardBox />}
+            {selected === ActionTypes.ALL && <MigratedTable />}
+          </Wrapper>
+        </MigrationWrap>
+      </Container>
+      <ConfirmationModal
+        isOpen={isOpenReviewModal}
+        toggleModal={(action: boolean) => toggleReviewModal(action)}
+        handleClick={() => console.log('')}
+      />
+    </>
   )
 }

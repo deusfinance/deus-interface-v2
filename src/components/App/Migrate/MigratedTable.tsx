@@ -22,7 +22,7 @@ import { RowBetween } from 'components/Row'
 import { ArrowRight } from 'react-feather'
 import { useBalancedRatio } from 'hooks/useMigratePage'
 import { truncateAddress } from 'utils/account'
-import { signatureMessage } from 'constants/misc'
+import { myMigrationSignatureMessage } from 'constants/misc'
 import { Tokens } from 'constants/tokens'
 import { useMigrationData } from 'context/Migration'
 import { useWalletModalToggle } from 'state/application/hooks'
@@ -259,7 +259,7 @@ export default function MigratedTable() {
   const toggleWalletModal = useWalletModalToggle()
   const [allMigrationData, setAllMigrationData] = useState<any>(undefined)
   const [signature, setSignature] = useState<string | undefined>(undefined)
-  const signatureMessageWithWallet = signatureMessage + `${account?.toString()}`
+  const signatureMessageWithWallet = myMigrationSignatureMessage + `${account?.toString()}`
   const isLoading = false
 
   const {
@@ -314,8 +314,10 @@ export default function MigratedTable() {
 
   const handleCheck = useCallback(async () => {
     handleSign().then((response) => {
-      setSignature(response)
-      handleAllMigration(response || '')
+      if (response) {
+        setSignature(response)
+        handleAllMigration(response)
+      }
     })
   }, [handleAllMigration, handleSign])
 
