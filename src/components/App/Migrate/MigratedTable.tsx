@@ -11,7 +11,7 @@ import { useSignMessage } from 'hooks/useMigrateCallback'
 import { makeHttpRequest } from 'utils/http'
 import { MigrationSourceTokens } from './CardBox'
 import { ChainInfo } from 'constants/chainInfo'
-import { BN_ZERO, formatBalance, toBN } from 'utils/numbers'
+import { BN_ZERO, formatBalance, formatNumber, toBN } from 'utils/numbers'
 import BigNumber from 'bignumber.js'
 import { formatUnits } from '@ethersproject/units'
 import { DeusText } from '../Stake/RewardBox'
@@ -406,9 +406,9 @@ export default function MigratedTable() {
         <TotalMigrationAmountWrapper>
           <p>My Total Migrated Amount to SYMM:</p>
           <div>
-            <p>{toBN(totalAmount).toFixed(3).toString()} DEUS</p>
+            <p>{formatNumber(toBN(totalAmount).toFixed(3).toString())} DEUS</p>
             <ArrowRight />
-            <p>{toBN(calculatedSymmPerDeus).toFixed(3).toString()} SYMM</p>
+            <p>{formatNumber(toBN(calculatedSymmPerDeus).toFixed(3).toString())} SYMM</p>
           </div>
         </TotalMigrationAmountWrapper>
       )}
@@ -661,7 +661,7 @@ const TableRowContentWrapper = ({
         <Label>My Migrated Amount:</Label>
         <div>
           <Value>
-            {formatBalance(toBN(migratedAmount * 1e-18).toString(), 3) ?? 'N/A'} {token.symbol}
+            {formatNumber(formatBalance(toBN(migratedAmount * 1e-18).toString(), 3)) ?? 'N/A'} {token.symbol}
           </Value>
         </div>
       </MyMigratedAmount>
@@ -672,13 +672,13 @@ const TableRowContentWrapper = ({
           <Value>
             {migratedToDEUS.toString() !== '0' && (
               <span>
-                {formatBalance(migratedToDEUS.toString(), 3)} <DeusText>DEUS</DeusText>
+                {formatNumber(formatBalance(migratedToDEUS.toString(), 3))} <DeusText>DEUS</DeusText>
               </span>
             )}
             {migratedToDEUS.toString() !== '0' && migratedToSYMM.toString() !== '0' && <span>, </span>}
             {migratedToSYMM.toString() !== '0' && (
               <span>
-                {formatBalance(migratedToSYMM.toString(), 3)} <SymmText>SYMM</SymmText>
+                {formatNumber(formatBalance(migratedToSYMM.toString(), 3))} <SymmText>SYMM</SymmText>
               </span>
             )}
           </Value>

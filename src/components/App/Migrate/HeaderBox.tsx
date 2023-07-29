@@ -7,7 +7,7 @@ import { ToolTip } from 'components/ToolTip'
 import { Info } from 'components/Icons'
 
 import SymmLogo from '/public/static/images/tokens/symm.svg'
-import { toBN } from 'utils/numbers'
+import { formatNumber, toBN } from 'utils/numbers'
 import { useGetEarlyMigrationDeadline } from 'hooks/useMigratePage'
 import { getRemainingTime } from 'utils/time'
 import { autoRefresh } from 'utils/retry'
@@ -273,7 +273,7 @@ export default function HeaderBox() {
       },
       {
         name: 'Total Migrated:',
-        value: totalMigratedData.totalValue,
+        value: formatNumber(totalMigratedData.totalValue),
         tooltip: 'TotalMigrated',
         extension: 'DEUS',
         deusColor: true,
