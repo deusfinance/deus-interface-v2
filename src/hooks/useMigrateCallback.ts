@@ -212,7 +212,7 @@ export function useSignMessage(message: string): {
       state: TransactionCallbackState.VALID,
       error: null,
       callback: async function onMigrate(): Promise<string> {
-        console.log('onMigrate callback')
+        console.log('onSign callback')
 
         return library
           .getSigner()

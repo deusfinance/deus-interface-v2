@@ -52,7 +52,8 @@ export const getImageSize = () => {
 
 export default function Migrate() {
   const [selected, setSelected] = useState<ActionTypes>(ActionTypes.EASY)
-  const [isOpenReviewModal, toggleReviewModal] = useState(false)
+  const showModal = localStorage.getItem('migrationTermOfServiceSignatureMessage') ? false : true
+  const [isOpenReviewModal, toggleReviewModal] = useState(showModal)
 
   return (
     <>
@@ -63,7 +64,6 @@ export default function Migrate() {
 
           <Wrapper>
             {selected !== ActionTypes.ALL && <MigrationHeader />}
-            {/* <MigrationHeader /> */}
 
             {selected === ActionTypes.MANUAL && <Table />}
             {selected === ActionTypes.EASY && <CardBox />}
@@ -71,11 +71,7 @@ export default function Migrate() {
           </Wrapper>
         </MigrationWrap>
       </Container>
-      <ConfirmationModal
-        isOpen={isOpenReviewModal}
-        toggleModal={(action: boolean) => toggleReviewModal(action)}
-        handleClick={() => console.log('')}
-      />
+      <ConfirmationModal isOpen={isOpenReviewModal} toggleModal={(action: boolean) => toggleReviewModal(action)} />
     </>
   )
 }

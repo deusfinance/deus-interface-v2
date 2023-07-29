@@ -1,8 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from 'styled-components'
 
 import { ModalHeader, Modal } from 'components/Modal'
 import { BaseButton } from 'components/Button'
 import { useRouter } from 'next/router'
+import { useCallback, useState } from 'react'
+import { migrationTermOfServiceSignatureMessage } from 'constants/misc'
+import { useSignMessage } from 'hooks/useMigrateCallback'
 
 const MainModal = styled(Modal)`
   display: flex;
@@ -61,18 +65,51 @@ export const Button = styled(BaseButton)<{ isAccept?: boolean }>`
 export default function ConfirmationModal({
   isOpen,
   toggleModal,
-  handleClick,
 }: {
   isOpen: boolean
   toggleModal: (action: boolean) => void
-  handleClick: () => void
 }) {
+  const [signature, setSignature] = useState<string | undefined>(undefined)
   const router = useRouter()
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   function toggleReviewModal(arg: boolean) {
     toggleModal(arg)
     router.push('/clqdr')
   }
+
+  const {
+    state: signCallbackState,
+    callback: signCallback,
+    error: signCallbackError,
+  } = useSignMessage(migrationTermOfServiceSignatureMessage)
+
+  const handleSign = useCallback(async () => {
+    console.log('called handleSign')
+    console.log(signCallbackState, signCallbackError)
+    if (!signCallback) return
+    if (signature) return
+    try {
+      return await signCallback()
+    } catch (e) {
+      if (e instanceof Error) {
+      } else {
+        console.error(e)
+      }
+    }
+  }, [signCallbackState, signCallbackError, signCallback, signature])
+
+  const handleCheck = useCallback(async () => {
+    handleSign().then((response) => {
+      if (response) {
+        setSignature(response)
+        localStorage.setItem('migrationTermOfServiceSignatureMessage', response)
+        toggleModal(false)
+      } else {
+        router.push('/clqdr')
+      }
+    })
+  }, [handleSign, router, toggleReviewModal])
 
   return (
     <MainModal
@@ -104,7 +141,7 @@ export default function ConfirmationModal({
       <ButtonsWrap>
         <Button onClick={() => toggleReviewModal(false)}>I Reject</Button>
 
-        <Button isAccept onClick={() => toggleModal(false)}>
+        <Button isAccept onClick={() => handleCheck()}>
           I Confirm
         </Button>
       </ButtonsWrap>
