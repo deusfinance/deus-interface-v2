@@ -7,6 +7,9 @@ import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
 import { useMigratorContract } from './useContract'
 import { BN_ZERO, toBN } from 'utils/numbers'
 import { useMigrationData } from 'context/Migration'
+import { DEUS_ADDRESS } from 'constants/addresses'
+import { MigrationType } from 'components/App/Migrate/Table'
+import { SupportedChainId } from 'constants/chains'
 
 export function useGetUserMigrations(
   ratio: number,
@@ -40,6 +43,8 @@ export function useGetUserMigrations(
   let userTotalMigration_toSymm = BN_ZERO
 
   for (const obj of arg0) {
+    if (obj.token === DEUS_ADDRESS[SupportedChainId.FANTOM] && obj.migrationPreference === MigrationType.DEUS) continue
+
     if (obj.migrationPreference === 0) {
       const key = obj.token + '_1' // for DEUS
       const prevAmount: BigNumber = userMigrations.get(key) ?? BN_ZERO
