@@ -90,21 +90,11 @@ const DividerContainer = styled.div`
     background-color:#141414;
   `}
 `
-
-interface IMigrationInfo {
-  user: string
-  tokenAddress: string
-  amount: number
-  timestamp: number
-  block: number
-  migrationPreference: number
-}
 const LargeContent = styled.div`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: none;
   `}
 `
-
 const TableInputWrapper = styled.div`
   border: 1px solid #4b4949e5;
   display: flex;
@@ -240,6 +230,14 @@ const WalletConnectButton = styled(PrimaryButtonWide)`
   max-width: 160px;
   max-height: 32px;
 `
+interface IMigrationInfo {
+  user: string
+  tokenAddress: string
+  amount: number
+  timestamp: number
+  block: number
+  migrationPreference: number
+}
 
 function getAllUpperRow() {
   return (
@@ -382,12 +380,11 @@ export default function MigratedTable() {
   }, [migrationAmount])
 
   const migrationContextData = useMigrationData()
-  const calculatedSymmPerDeus = useMemo(
-    () =>
-      (Number(migrationContextData?.unvested_symm_per_deus) + Number(migrationContextData?.vested_symm_per_deus)) *
-      totalAmount,
-    [migrationContextData, totalAmount]
-  )
+  const [calculatedSymmPerDeusUnvested, calculatedSymmPerDeusVested] = useMemo(() => {
+    const calculatedSymmPerDeusUnvested = Number(migrationContextData?.unvested_symm_per_deus) * totalAmount
+    const calculatedSymmPerDeusVested = Number(migrationContextData?.vested_symm_per_deus) * totalAmount
+    return [calculatedSymmPerDeusUnvested, calculatedSymmPerDeusVested]
+  }, [migrationContextData, totalAmount])
 
   return (
     <div style={{ width: '100%' }}>
@@ -409,7 +406,10 @@ export default function MigratedTable() {
           <div>
             <p>{formatNumber(toBN(totalAmount).toFixed(3).toString())} DEUS</p>
             <ArrowRight />
-            <p>{formatNumber(toBN(calculatedSymmPerDeus).toFixed(3).toString())} SYMM</p>
+            <p>
+              {formatNumber(toBN(calculatedSymmPerDeusUnvested).toFixed(3).toString())}(
+              {formatNumber(toBN(calculatedSymmPerDeusVested).toFixed(3).toString())}) SYMM
+            </p>
           </div>
         </TotalMigrationAmountWrapper>
       )}
