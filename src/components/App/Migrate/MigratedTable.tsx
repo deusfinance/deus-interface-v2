@@ -563,15 +563,16 @@ const TableRowContent = ({ migrationInfo, chain }: { migrationInfo: IMigrationIn
   const ratio = Number(balancedRatio)
   let migratedToDEUS = BN_ZERO
   let migratedToSYMM = BN_ZERO
+  const migrationInfoAmount = toBN(migrationInfo?.amount.toString()).toString()
 
   if (migrationInfo.migrationPreference === 0) {
-    const amount: BigNumber = toBN(formatUnits(migrationInfo.amount.toString(), 18)).times(ratio)
+    const amount: BigNumber = toBN(formatUnits(migrationInfoAmount, 18)).times(ratio)
     migratedToDEUS = migratedToDEUS.plus(amount)
 
-    const amount2: BigNumber = toBN(formatUnits(migrationInfo.amount.toString(), 18)).minus(amount)
+    const amount2: BigNumber = toBN(formatUnits(migrationInfoAmount, 18)).minus(amount)
     migratedToSYMM = migratedToSYMM.plus(amount2)
   } else {
-    const amount: BigNumber = toBN(formatUnits(migrationInfo.amount.toString(), 18))
+    const amount: BigNumber = toBN(formatUnits(migrationInfoAmount, 18))
     if (migrationInfo.migrationPreference === 1) {
       migratedToDEUS = migratedToDEUS.plus(amount)
     } else if (migrationInfo.migrationPreference === 2) {
