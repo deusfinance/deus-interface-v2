@@ -26,6 +26,7 @@ import { myMigrationSignatureMessage } from 'constants/misc'
 import { Tokens } from 'constants/tokens'
 import { useMigrationData } from 'context/Migration'
 import { useWalletModalToggle } from 'state/application/hooks'
+import { MigrationOptions } from 'constants/migrationOptions'
 
 const Wrapper = styled.div`
   display: flex;
@@ -368,11 +369,11 @@ export default function MigratedTable() {
             break
 
           case Tokens['bDEI_TOKEN'][value.chainId].address:
-            amount += value.amount / (185 * 1e18)
+            amount += value.amount / (MigrationOptions[3].divideRatio * 1e18)
             break
 
           case Tokens['LEGACY_DEI'][value.chainId].address:
-            amount += value.amount / (217 * 1e18)
+            amount += value.amount / (MigrationOptions[2].divideRatio * 1e18)
             break
         }
       })
@@ -565,18 +566,20 @@ const TableRowContent = ({ migrationInfo, chain }: { migrationInfo: IMigrationIn
   let migratedToSYMM = BN_ZERO
   const migrationInfoAmount = toBN(migrationInfo?.amount.toString()).toString()
 
-  if (migrationInfo.migrationPreference === 0) {
+  const divideRatio = MigrationOptions.find((option) => option.token[chain]?.name === token?.name)?.divideRatio || 1
+
+  if (migrationInfo.migrationPreference === MigrationType.BALANCED) {
     const amount: BigNumber = toBN(formatUnits(migrationInfoAmount, 18)).times(ratio)
-    migratedToDEUS = migratedToDEUS.plus(amount)
+    migratedToDEUS = migratedToDEUS.plus(amount).div(divideRatio)
 
     const amount2: BigNumber = toBN(formatUnits(migrationInfoAmount, 18)).minus(amount)
-    migratedToSYMM = migratedToSYMM.plus(amount2)
+    migratedToSYMM = migratedToSYMM.plus(amount2).div(divideRatio)
   } else {
     const amount: BigNumber = toBN(formatUnits(migrationInfoAmount, 18))
-    if (migrationInfo.migrationPreference === 1) {
-      migratedToDEUS = migratedToDEUS.plus(amount)
-    } else if (migrationInfo.migrationPreference === 2) {
-      migratedToSYMM = migratedToSYMM.plus(amount)
+    if (migrationInfo.migrationPreference === MigrationType.DEUS) {
+      migratedToDEUS = migratedToDEUS.plus(amount).div(divideRatio)
+    } else if (migrationInfo.migrationPreference === MigrationType.SYMM) {
+      migratedToSYMM = migratedToSYMM.plus(amount).div(divideRatio)
     }
   }
 
@@ -633,6 +636,15 @@ const TableRowContentWrapper = ({
   migratedToSYMM: BigNumber
 }) => {
   const chain = token?.chainId
+  const migrationContextData = useMigrationData()
+
+  const calculatedSymmPerDeus = useMemo(
+    () =>
+      toBN(
+        Number(migrationContextData?.unvested_symm_per_deus) + Number(migrationContextData?.vested_symm_per_deus)
+      ).multipliedBy(migratedToSYMM),
+    [migrationContextData, migratedToSYMM]
+  )
 
   return (
     <TableContent>
@@ -678,7 +690,7 @@ const TableRowContentWrapper = ({
             {migratedToDEUS.toString() !== '0' && migratedToSYMM.toString() !== '0' && <span>, </span>}
             {migratedToSYMM.toString() !== '0' && (
               <span>
-                {formatNumber(formatBalance(migratedToSYMM.toString(), 3))} <SymmText>SYMM</SymmText>
+                {formatNumber(formatBalance(calculatedSymmPerDeus.toString(), 3))} <SymmText>SYMM</SymmText>
               </span>
             )}
           </Value>
