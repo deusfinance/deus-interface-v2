@@ -63,7 +63,7 @@ export default function ReviewModal({
   inputTokens,
   outputTokens,
   amountsIn,
-  amountsOut,
+  // amountsOut,
   inputTokenLogos,
   outputTokenLogos,
   isOpen,
@@ -77,7 +77,7 @@ export default function ReviewModal({
   inputTokens: Token[]
   outputTokens: Token[]
   amountsIn: TokenBalancesMap
-  amountsOut: TokenBalancesMap
+  // amountsOut: TokenBalancesMap
   inputTokenLogos: string[]
   outputTokenLogos: string[]
   isOpen: boolean
@@ -121,6 +121,14 @@ export default function ReviewModal({
     return inputTokens.map((token) => {
       return amountsIn[token?.address]
     })
+  }, [amountsIn, inputTokens])
+
+  const zeroAmounts = useMemo(() => {
+    for (let index = 0; index < inputTokens.length; index++) {
+      const token = inputTokens[index]
+      if (amountsIn[token?.address]?.quotient.toString() !== '0') return false
+    }
+    return true
   }, [amountsIn, inputTokens])
 
   const {
@@ -194,6 +202,13 @@ export default function ReviewModal({
         </ModalMigrationButton>
       )
     }
+    if (zeroAmounts) {
+      return (
+        <ModalMigrationButton disabled={zeroAmounts} migrationStatus={migrationStatus}>
+          {buttonText}
+        </ModalMigrationButton>
+      )
+    }
     return (
       <ModalMigrationButton migrationStatus={migrationStatus} onClick={() => handleMigrate()}>
         {buttonText} {awaiting && <DotFlashing />}
@@ -212,7 +227,7 @@ export default function ReviewModal({
         {inputTokens &&
           inputTokens.map((token, index) => (
             <Row key={index}>
-              {formatBalance(formatUnits(amountsIn[token?.address]?.quotient.toString() ?? '0', token?.decimals), 3)}{' '}
+              {formatBalance(formatUnits(amountsIn[token?.address]?.quotient.toString() ?? '0', token?.decimals))}{' '}
               {token?.name}
               <span style={{ marginLeft: 'auto' }}>
                 <ImageWithFallback
