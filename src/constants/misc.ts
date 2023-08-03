@@ -1,5 +1,4 @@
 import { RetryOptions } from 'utils/retry'
-import { formatDate } from 'utils/time'
 
 export const NETWORK_CONTEXT_NAME = 'NETWORK'
 
@@ -15,27 +14,24 @@ export const INFO_URL = 'https://info.deus.finance'
 //oracle api
 export const ORACLE_BASE_URL = new URL('https://oracle4.deus.finance')
 
-export const myMigrationSignatureMessage = `Date: ${formatDate(new Date())}
+export const migrationTermOfServiceSignatureMessage = `Please take a moment to carefully review the following information and terms. By signing, you legally consent to be bound by these terms. If you are not in agreement with these terms, you should refrain from proceeding with the migration process.
 
-In order to view a wallet's migrated amount across all chains, the wallet owner should sign the following message:
+_
 
-I, hereby declare that I am the rightful owner of this Ethereum wallet. I confirm that I am a human and not a bot. I am aiming to utilize this feature to access my migration data.
+I declare that I am the rightful owner of this Ethereum wallet. I confirm that I am a human and not a bot. I am aiming to utilize this feature to access my migration data.
 
 I understand the importance of conserving computational resources and ensuring the integrity of the API. I pledge not to abuse the API or bombard it with unnecessary requests.
 
 By signing this message with my Ethereum wallet, I accept responsibility for all actions conducted through this wallet.
 
-Ethereum Wallet Address: `
+Additionally, by signing, I confirm my acceptance of the following terms and conditions related to this migration:
 
-export const migrationTermOfServiceSignatureMessage = `Migration Terms of Service
+Once initiated, the migration process cannot be reversed.
 
-By signing with your Ethereum wallet, you confirm your acceptance of the following terms and conditions related to this migration:
+The migration of DEUS, legacy DEI, bDEI, and xDEUS tokens is not instant and can incur delays. The details regarding token distribution will be communicated in Q3 2023, with the anticipated execution of distribution expected for Q4.
+I accept any potential delays that may occur during this process and agree not to hold the platform accountable for such delays.
 
-You comprehend that the migration of your DEUS, legacy DEI, bDEI, and xDEUS tokens is a process that requires time.
-You acknowledge and agree that, once initiated, the migration process cannot be reversed.
-You are aware that details regarding token distribution will be communicated in Q3, with the anticipated execution of distribution slated for Q4.
-You willingly accept any potential delays that may occur during this process and agree not to hold the platform accountable for such delays.
-You confirm that all the information provided by you during this process is accurate, complete, and current.
-You confirm your acceptance of the general Terms of Service of DEUS, affirming that you have read, understood, and agree with them.
-You commit to comply with all laws and regulations relevant to the use of this service.
-Take a moment to carefully review these terms. By signing with your Ethereum wallet, you legally consent to be bound by these terms. If you are not in agreement with these terms, you should refrain from proceeding with the migration process.`
+I confirm that all the information provided during this process is accurate, complete, and current.
+I accept the general Terms of Service of DEUS, confirming that I have read and understood them.
+
+I commit to comply with all laws and regulations relevant to the use of this service.`

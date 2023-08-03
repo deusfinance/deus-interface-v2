@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { isMobile } from 'react-device-detect'
 
@@ -10,6 +10,7 @@ import MigrationHeader from 'components/App/Migrate/MigrationHeader'
 import { MigrationWrap } from 'context/Migration'
 import ConfirmationModal from 'components/App/Migrate/ConfirmationModal'
 import MigratedTable from 'components/App/Migrate/MigratedTable'
+import useWeb3React from 'hooks/useWeb3'
 
 export const Container = styled.div`
   display: flex;
@@ -51,9 +52,16 @@ export const getImageSize = () => {
 }
 
 export default function Migrate() {
+  const { account } = useWeb3React()
   const [selected, setSelected] = useState<ActionTypes>(ActionTypes.EASY)
-  const showModal = localStorage.getItem('migrationTermOfServiceSignatureMessage') ? false : true
+  const showModal = useMemo(() => {
+    return localStorage.getItem('migrationTermOfServiceSignatureMessage' + account?.toString()) ? false : true
+  }, [account])
   const [isOpenReviewModal, toggleReviewModal] = useState(showModal)
+
+  useEffect(() => {
+    toggleReviewModal(showModal)
+  }, [showModal])
 
   return (
     <>

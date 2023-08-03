@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 import { migrationTermOfServiceSignatureMessage } from 'constants/misc'
 import { useSignMessage } from 'hooks/useMigrateCallback'
+import useWeb3React from 'hooks/useWeb3'
 
 const MainModal = styled(Modal)`
   display: flex;
@@ -69,6 +70,7 @@ export default function ConfirmationModal({
   isOpen: boolean
   toggleModal: (action: boolean) => void
 }) {
+  const { account } = useWeb3React()
   const [signature, setSignature] = useState<string | undefined>(undefined)
   const router = useRouter()
 
@@ -103,7 +105,7 @@ export default function ConfirmationModal({
     handleSign().then((response) => {
       if (response) {
         setSignature(response)
-        localStorage.setItem('migrationTermOfServiceSignatureMessage', response)
+        localStorage.setItem('migrationTermOfServiceSignatureMessage' + account?.toString(), response)
         toggleModal(false)
       } else {
         router.push('/clqdr')

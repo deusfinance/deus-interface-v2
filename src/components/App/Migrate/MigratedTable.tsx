@@ -7,7 +7,6 @@ import { Token } from '@sushiswap/core-sdk'
 
 import useWeb3React from 'hooks/useWeb3'
 import TokenBox from './TokenBox'
-import { useSignMessage } from 'hooks/useMigrateCallback'
 import { makeHttpRequest } from 'utils/http'
 import { MigrationSourceTokens } from './CardBox'
 import { ChainInfo } from 'constants/chainInfo'
@@ -22,7 +21,6 @@ import { RowBetween } from 'components/Row'
 import { ArrowRight } from 'react-feather'
 import { useBalancedRatio } from 'hooks/useMigratePage'
 import { truncateAddress } from 'utils/account'
-import { myMigrationSignatureMessage } from 'constants/misc'
 import { Tokens } from 'constants/tokens'
 import { useMigrationData } from 'context/Migration'
 import { useWalletModalToggle } from 'state/application/hooks'
@@ -258,43 +256,16 @@ export default function MigratedTable() {
   const toggleWalletModal = useWalletModalToggle()
   const [allMigrationData, setAllMigrationData] = useState<any>(undefined)
   const [signature, setSignature] = useState<string | undefined>(undefined)
-  const signatureMessageWithWallet = myMigrationSignatureMessage + `${account?.toString()}`
   const isLoading = false
 
-  const {
-    state: signCallbackState,
-    callback: signCallback,
-    error: signCallbackError,
-  } = useSignMessage(signatureMessageWithWallet)
-
-  const getAllMigrationData = useCallback(
-    async (signature: string) => {
-      try {
-        const res = await makeHttpRequest(
-          `https://info.deus.finance/symm/v1/user-info?wallet=${account?.toString()}&signature=${signature}`
-        )
-        return res
-      } catch (error) {
-        return null
-      }
-    },
-    [account]
-  )
-
-  const handleSign = useCallback(async () => {
-    console.log('called handleSign')
-    console.log(signCallbackState, signCallbackError)
-    if (!signCallback) return
-    if (signature) return
+  const getAllMigrationData = useCallback(async (signature: string) => {
     try {
-      return await signCallback()
-    } catch (e) {
-      if (e instanceof Error) {
-      } else {
-        console.error(e)
-      }
+      const res = await makeHttpRequest(`https://info.deus.finance/symm/v1/user-info?signature=${signature}`)
+      return res
+    } catch (error) {
+      return null
     }
-  }, [signCallbackState, signCallbackError, signCallback, signature])
+  }, [])
 
   const handleAllMigration = useCallback(
     async (signature: string) => {
@@ -312,13 +283,12 @@ export default function MigratedTable() {
   )
 
   const handleCheck = useCallback(async () => {
-    handleSign().then((response) => {
-      if (response) {
-        setSignature(response)
-        handleAllMigration(response)
-      }
-    })
-  }, [handleAllMigration, handleSign])
+    const signature = localStorage.getItem('migrationTermOfServiceSignatureMessage' + account?.toString())
+    if (signature) {
+      setSignature(signature)
+      handleAllMigration(signature)
+    }
+  }, [account, handleAllMigration])
 
   useEffect(() => {
     console.log('account changed')
