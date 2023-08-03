@@ -14,7 +14,7 @@ import { BN_ZERO, formatBalance, formatNumber, toBN } from 'utils/numbers'
 import BigNumber from 'bignumber.js'
 import { formatUnits } from '@ethersproject/units'
 import { DeusText } from '../Stake/RewardBox'
-import { SymmText } from './HeaderBox'
+import { CustomTooltip2, InfoIcon, SymmText, ToolTipWrap } from './HeaderBox'
 import { InputField } from 'components/Input'
 import { BaseButton, PrimaryButtonWide } from 'components/Button'
 import { RowBetween } from 'components/Row'
@@ -179,7 +179,7 @@ const TotalMigrationAmountWrapper = styled(RowBetween)`
         height:10px;
     `}
     }
-    & > p:last-child {
+    & > p:nth-child(3) {
       background: linear-gradient(90deg, #dc756b, #f095a2, #d9a199, #d7c7c1, #d4fdf9);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -350,10 +350,11 @@ export default function MigratedTable() {
   }, [migrationAmount])
 
   const migrationContextData = useMigrationData()
-  const [calculatedSymmPerDeusUnvested, calculatedSymmPerDeusVested] = useMemo(() => {
+  const [calculatedSymmPerDeusUnvested, calculatedSymmPerDeusVested, calculatedSymmPerDeusTotal] = useMemo(() => {
     const calculatedSymmPerDeusUnvested = Number(migrationContextData?.unvested_symm_per_deus) * totalAmount
     const calculatedSymmPerDeusVested = Number(migrationContextData?.vested_symm_per_deus) * totalAmount
-    return [calculatedSymmPerDeusUnvested, calculatedSymmPerDeusVested]
+    const calculatedSymmPerDeusTotal = calculatedSymmPerDeusVested + calculatedSymmPerDeusUnvested
+    return [calculatedSymmPerDeusUnvested, calculatedSymmPerDeusVested, calculatedSymmPerDeusTotal]
   }, [migrationContextData, totalAmount])
 
   return (
@@ -376,10 +377,27 @@ export default function MigratedTable() {
           <div>
             <p>{formatNumber(toBN(totalAmount).toFixed(3).toString())} DEUS</p>
             <ArrowRight />
-            <p>
-              {formatNumber(toBN(calculatedSymmPerDeusUnvested).toFixed(3).toString())}(
-              {formatNumber(toBN(calculatedSymmPerDeusVested).toFixed(3).toString())}) SYMM
-            </p>
+            <p>{formatNumber(toBN(calculatedSymmPerDeusTotal).toFixed(3).toString())} SYMM</p>
+            <React.Fragment>
+              <a data-tip data-for={'multiline-id3'}>
+                <InfoIcon size={12} />
+              </a>
+              <CustomTooltip2 id="multiline-id3" arrowColor={'#bea29c'}>
+                <ToolTipWrap>
+                  <span style={{ color: 'white' }}>
+                    <p>
+                      <SymmText>UNLOCKED: </SymmText>
+                      <span>{formatNumber(toBN(calculatedSymmPerDeusUnvested).toFixed(3).toString())}</span>
+                    </p>
+                    <p style={{ padding: '5px' }}></p>
+                    <p>
+                      <span style={{ color: '#bea29c' }}>LOCKED: </span>
+                      <span>{formatNumber(toBN(calculatedSymmPerDeusVested).toFixed(3).toString())}</span>
+                    </p>
+                  </span>
+                </ToolTipWrap>
+              </CustomTooltip2>
+            </React.Fragment>
           </div>
         </TotalMigrationAmountWrapper>
       )}

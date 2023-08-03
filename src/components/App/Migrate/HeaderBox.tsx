@@ -182,7 +182,7 @@ const CustomTooltip = styled(ToolTip)`
     font-size: 0.5rem !important;
   `};
 `
-const CustomTooltip2 = styled(ToolTip)`
+export const CustomTooltip2 = styled(ToolTip)`
   font-size: 0.9rem !important;
   color: #bea29c !important;
   border: 1px solid #bea29c !important;
@@ -196,11 +196,11 @@ const CustomTooltip2 = styled(ToolTip)`
     font-size: 0.65rem !important;
   `};
 `
-const InfoIcon = styled(Info)`
+export const InfoIcon = styled(Info)`
   margin-bottom: -1px;
   margin-left: 2px;
 `
-const ToolTipWrap = styled.div`
+export const ToolTipWrap = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;

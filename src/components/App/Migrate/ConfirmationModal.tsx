@@ -138,10 +138,16 @@ export default function ConfirmationModal({
           Please consider these potential delays prior to depositing your funds. We appreciate your patience and
           understanding. Should you have any questions or concerns, our support team is ready to assist you. Thank you.
         </p>
+
+        <p>
+          Additionally, using the dashboard to retrieve migration data across multiple chains should be done with
+          understanding the importance of conserving computational resources and ensuring the integrity of the
+          cross-chain API, therefore you should confirm to not abuse the API or bombard it with unnecessary requests.
+        </p>
       </MainWrap>
 
       <ButtonsWrap>
-        <Button onClick={() => toggleReviewModal(false)}>I Reject</Button>
+        <Button onClick={() => toggleReviewModal(false)}>I Reject (bring me to another page)</Button>
 
         <Button isAccept onClick={() => handleCheck()}>
           I Confirm
