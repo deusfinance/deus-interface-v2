@@ -60,8 +60,10 @@ export default function Migrate() {
   const [isOpenReviewModal, toggleReviewModal] = useState(showModal)
 
   useEffect(() => {
-    toggleReviewModal(showModal)
-  }, [showModal])
+    toggleReviewModal(
+      localStorage.getItem('migrationTermOfServiceSignatureMessage' + account?.toString()) ? false : true
+    )
+  }, [account, showModal])
 
   return (
     <>
