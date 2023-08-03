@@ -57,12 +57,14 @@ export default function Migrate() {
   const showModal = useMemo(() => {
     return localStorage.getItem('migrationTermOfServiceSignatureMessage' + account?.toString()) ? false : true
   }, [account])
-  const [isOpenReviewModal, toggleReviewModal] = useState(showModal)
+  const [isOpenReviewModal, toggleReviewModal] = useState(showModal && !!account)
 
   useEffect(() => {
-    toggleReviewModal(
-      localStorage.getItem('migrationTermOfServiceSignatureMessage' + account?.toString()) ? false : true
-    )
+    if (!!account) {
+      toggleReviewModal(
+        localStorage.getItem('migrationTermOfServiceSignatureMessage' + account?.toString()) ? false : true
+      )
+    }
   }, [account, showModal])
 
   return (
