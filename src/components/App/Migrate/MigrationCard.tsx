@@ -15,7 +15,6 @@ import useWeb3React from 'hooks/useWeb3'
 import { ChevronDown as ChevronDownIcon, ChevronUp } from 'components/Icons'
 import Column from 'components/Column'
 import { TokenMap } from 'utils/token'
-import { SupportedChainId } from 'constants/chains'
 
 const MainWrapper = styled.div<{ migrationStatus: string; isOpen?: boolean }>`
   display: flex;
@@ -327,17 +326,17 @@ export default function MigrationCard({
 
   const destinationTokensAddress = destinationTokens.map((token) => token.address)
   const destinationLogos = useCurrencyLogos(destinationTokensAddress)
-  const destinationBalances = useTokenBalances(account?.toString(), destinationTokens)
+  // const destinationBalances = useTokenBalances(account?.toString(), destinationTokens)
 
   const chainSourceTokens = sourceTokens.map((token) => {
     if (chainId && token[chainId]) {
       return token[chainId]
-    } else {
-      return token[SupportedChainId.FANTOM]
     }
   })
-  const sourceTokensAddress = chainSourceTokens.map((token) => token.address)
-  const sourceLogos = useCurrencyLogos(sourceTokensAddress)
+  const sourceTokensAddress = chainSourceTokens.map((token) => {
+    if (token) return token.address
+  })
+  const sourceLogos = useCurrencyLogos(sourceTokensAddress as string[])
   const sourceBalances = useTokenBalances(account?.toString(), chainSourceTokens)
 
   const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
@@ -370,10 +369,10 @@ export default function MigrationCard({
         title={'Full ' + reviewText}
         isOpen={isOpenReviewModal}
         toggleModal={(action: boolean) => toggleReviewModal(action)}
-        inputTokens={chainSourceTokens}
+        inputTokens={chainSourceTokens as Token[]}
         outputTokens={destinationTokens}
         amountsIn={sourceBalances}
-        amountsOut={destinationBalances}
+        // amountsOut={destinationBalances}
         inputTokenLogos={sourceLogos}
         outputTokenLogos={destinationLogos}
         migrationStatus={migrationStatus(destinationTokens)}

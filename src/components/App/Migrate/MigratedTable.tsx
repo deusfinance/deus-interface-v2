@@ -8,7 +8,6 @@ import { Token } from '@sushiswap/core-sdk'
 import useWeb3React from 'hooks/useWeb3'
 import TokenBox from './TokenBox'
 import { makeHttpRequest } from 'utils/http'
-import { MigrationSourceTokens } from './CardBox'
 import { ChainInfo } from 'constants/chainInfo'
 import { BN_ZERO, formatBalance, formatNumber, toBN } from 'utils/numbers'
 import BigNumber from 'bignumber.js'
@@ -527,6 +526,8 @@ function TableRow({ migrationInfo, chain }: { migrationInfo: IMigrationInfo; cha
     </ZebraStripesRow>
   )
 }
+
+const MigrationSourceTokens = [Tokens['DEUS'], Tokens['XDEUS'], Tokens['LEGACY_DEI'], Tokens['bDEI_TOKEN']]
 
 const TableRowContent = ({ migrationInfo, chain }: { migrationInfo: IMigrationInfo; chain: number }) => {
   const { tokenAddress, amount: migratedAmount } = migrationInfo
