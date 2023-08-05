@@ -60,9 +60,7 @@ export default function Migrate() {
   const [isOpenReviewModal, toggleReviewModal] = useState(showModal && !!account)
 
   useEffect(() => {
-    if (!!account) {
-      toggleReviewModal(showModal)
-    }
+    if (account) toggleReviewModal(showModal)
   }, [account, showModal])
 
   return (

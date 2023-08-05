@@ -251,11 +251,11 @@ function getAllUpperRow() {
 
 export default function MigratedTable() {
   const { account } = useWeb3React()
-  const [loading, setLoading] = useState(true)
+  const [hasData, setHasData] = useState(false)
+  const [checked, setChecked] = useState(false)
+  const [tableDataLoading, setTableDataLoading] = useState(false)
   const toggleWalletModal = useWalletModalToggle()
   const [allMigrationData, setAllMigrationData] = useState<any>(undefined)
-  const [signature, setSignature] = useState<string | undefined>(undefined)
-  const isLoading = false
 
   const getAllMigrationData = useCallback(async (signature: string) => {
     try {
@@ -268,32 +268,32 @@ export default function MigratedTable() {
 
   const handleAllMigration = useCallback(
     async (signature: string) => {
+      setTableDataLoading(true)
       const rest = await getAllMigrationData(signature)
       if (rest?.status === 'error') {
         setAllMigrationData(null)
-        setLoading(true)
+        setHasData(false)
       } else if (rest) {
         const values = Object.entries(rest)
         setAllMigrationData(values)
-        setLoading(false)
+        setHasData(true)
       }
+      setTableDataLoading(false)
     },
     [getAllMigrationData]
   )
 
   const handleCheck = useCallback(async () => {
+    setChecked(true)
     const signature = localStorage.getItem('migrationTermOfServiceSignatureMessage' + account?.toString())
-    if (signature) {
-      setSignature(signature)
-      handleAllMigration(signature)
-    }
+    if (signature) handleAllMigration(signature)
   }, [account, handleAllMigration])
 
   useEffect(() => {
     console.log('account changed')
-    setSignature(undefined)
     setAllMigrationData(null)
-    setLoading(true)
+    setHasData(false)
+    setChecked(false)
   }, [account])
 
   const isAllMigrationDataEmpty = useMemo(() => {
@@ -304,6 +304,7 @@ export default function MigratedTable() {
       }
       return true
     }
+    return true
   }, [allMigrationData])
 
   const migrationAmount: Array<Array<{ amount: number; token: string; chainId: number }>> = useMemo(() => {
@@ -370,7 +371,7 @@ export default function MigratedTable() {
           </WalletConnectButton>
         )}
       </TableInputWrapper>
-      {!loading && (
+      {hasData && (
         <TotalMigrationAmountWrapper>
           <p>My Total Migrated Amount to SYMM:</p>
           <div>
@@ -400,7 +401,7 @@ export default function MigratedTable() {
           </div>
         </TotalMigrationAmountWrapper>
       )}
-      {!loading && <LargeContent>{getAllUpperRow()}</LargeContent>}
+      {hasData && <LargeContent>{getAllUpperRow()}</LargeContent>}
       <Wrapper>
         <TableWrapper>
           <tbody>
@@ -426,13 +427,13 @@ export default function MigratedTable() {
                 ))
               )}
           </tbody>
-          {isAllMigrationDataEmpty && (
+          {isAllMigrationDataEmpty && checked && (
             <tbody>
               <tr>
                 <td>
                   {!account ? (
                     <NoResults warning>Wallet is not connected!</NoResults>
-                  ) : isLoading ? (
+                  ) : tableDataLoading ? (
                     <NoResults>Loading...</NoResults>
                   ) : (
                     <NoResults>No Migration found</NoResults>
