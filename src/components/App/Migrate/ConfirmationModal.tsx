@@ -90,7 +90,6 @@ export default function ConfirmationModal({
     console.log('called handleSign')
     console.log(signCallbackState, signCallbackError)
     if (!signCallback) return
-    if (signature) return
     try {
       return await signCallback()
     } catch (e) {
