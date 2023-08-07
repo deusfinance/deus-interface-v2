@@ -94,3 +94,11 @@ export const formatBalance = (balance: BigNumber.Value | undefined | null, fixed
   }
   return bnBalance.sd(fixed, BigNumber.ROUND_DOWN).toFixed()
 }
+
+export function formatNumber(n?: number | string): string {
+  if (n === undefined || n === null || n === '' || n === 'N/A') return 'N/A'
+  const numberValue = typeof n === 'string' ? parseFloat(n) : n
+  if (isNaN(numberValue)) throw new Error(`Invalid number: ${n}`)
+  if (numberValue !== 0 && Math.abs(numberValue) < 1) return n.toString()
+  return numberValue.toLocaleString('en-US')
+}

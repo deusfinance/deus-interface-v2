@@ -12,6 +12,7 @@ export type MigrationTypes = {
   token: TokenMap
   version: MigrationVersion
   supportedChains: SupportedChainId[]
+  divideRatio: number
   active: boolean
 }
 
@@ -21,6 +22,7 @@ export const MigrationOptions: MigrationTypes[] = [
     token: Tokens['DEUS'],
     version: MigrationVersion.ONLY_SYMM,
     supportedChains: MigrationChains,
+    divideRatio: 1,
     active: true,
   },
   {
@@ -28,6 +30,7 @@ export const MigrationOptions: MigrationTypes[] = [
     token: Tokens['XDEUS'],
     version: MigrationVersion.ONLY_SYMM,
     supportedChains: [SupportedChainId.FANTOM, SupportedChainId.MAINNET],
+    divideRatio: 1,
     active: true,
   },
   {
@@ -35,6 +38,7 @@ export const MigrationOptions: MigrationTypes[] = [
     token: Tokens['LEGACY_DEI'],
     version: MigrationVersion.DUAL,
     supportedChains: MigrationChains,
+    divideRatio: 217,
     active: true,
   },
   {
@@ -42,6 +46,7 @@ export const MigrationOptions: MigrationTypes[] = [
     token: Tokens['bDEI_TOKEN'],
     version: MigrationVersion.DUAL,
     supportedChains: [SupportedChainId.FANTOM, SupportedChainId.ARBITRUM],
+    divideRatio: 185,
     active: true,
   },
 ]

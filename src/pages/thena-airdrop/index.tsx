@@ -84,12 +84,12 @@ const Button = styled(BaseButton)`
 `
 const Input = styled(InputField)`
   font-size: 1rem;
-  font-family: 'Noto Sans Mono'
-  color:##777A7E;
-  &::placeholder{
-    color:##777A7E;
+  font-family: 'Noto Sans Mono';
+  color: #777a7e;
+  &::placeholder {
+    color: #777a7e;
     font-size: 1rem;
-    font-family:'Noto Sans Mono'
+    font-family: 'Noto Sans Mono';
   }
   ${({ theme }) => theme.mediaWidth.upToMedium`
     font-size: 0.7rem !important;

@@ -7,7 +7,7 @@ import { ToolTip } from 'components/ToolTip'
 import { Info } from 'components/Icons'
 
 import SymmLogo from '/public/static/images/tokens/symm.svg'
-import { toBN } from 'utils/numbers'
+import { formatNumber, toBN } from 'utils/numbers'
 import { useGetEarlyMigrationDeadline } from 'hooks/useMigratePage'
 import { getRemainingTime } from 'utils/time'
 import { autoRefresh } from 'utils/retry'
@@ -182,7 +182,7 @@ const CustomTooltip = styled(ToolTip)`
     font-size: 0.5rem !important;
   `};
 `
-const CustomTooltip2 = styled(ToolTip)`
+export const CustomTooltip2 = styled(ToolTip)`
   font-size: 0.9rem !important;
   color: #bea29c !important;
   border: 1px solid #bea29c !important;
@@ -196,11 +196,11 @@ const CustomTooltip2 = styled(ToolTip)`
     font-size: 0.65rem !important;
   `};
 `
-const InfoIcon = styled(Info)`
+export const InfoIcon = styled(Info)`
   margin-bottom: -1px;
   margin-left: 2px;
 `
-const ToolTipWrap = styled.div`
+export const ToolTipWrap = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -273,7 +273,7 @@ export default function HeaderBox() {
       },
       {
         name: 'Total Migrated:',
-        value: totalMigratedData.totalValue,
+        value: formatNumber(totalMigratedData.totalValue),
         tooltip: 'TotalMigrated',
         extension: 'DEUS',
         deusColor: true,

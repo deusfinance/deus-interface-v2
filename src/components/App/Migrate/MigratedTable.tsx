@@ -7,24 +7,23 @@ import { Token } from '@sushiswap/core-sdk'
 
 import useWeb3React from 'hooks/useWeb3'
 import TokenBox from './TokenBox'
-import { useSignMessage } from 'hooks/useMigrateCallback'
 import { makeHttpRequest } from 'utils/http'
 import { ChainInfo } from 'constants/chainInfo'
-import { BN_ZERO, formatBalance, toBN } from 'utils/numbers'
+import { BN_ZERO, formatBalance, formatNumber, toBN } from 'utils/numbers'
 import BigNumber from 'bignumber.js'
 import { formatUnits } from '@ethersproject/units'
 import { DeusText } from '../Stake/RewardBox'
-import { SymmText } from './HeaderBox'
+import { CustomTooltip2, InfoIcon, SymmText, ToolTipWrap } from './HeaderBox'
 import { InputField } from 'components/Input'
 import { BaseButton, PrimaryButtonWide } from 'components/Button'
 import { RowBetween } from 'components/Row'
 import { ArrowRight } from 'react-feather'
 import { useBalancedRatio } from 'hooks/useMigratePage'
 import { truncateAddress } from 'utils/account'
-import { signatureMessage } from 'constants/misc'
 import { Tokens } from 'constants/tokens'
 import { useMigrationData } from 'context/Migration'
 import { useWalletModalToggle } from 'state/application/hooks'
+import { MigrationOptions } from 'constants/migrationOptions'
 
 const Wrapper = styled.div`
   display: flex;
@@ -88,21 +87,11 @@ const DividerContainer = styled.div`
     background-color:#141414;
   `}
 `
-
-interface IMigrationInfo {
-  user: string
-  tokenAddress: string
-  amount: number
-  timestamp: number
-  block: number
-  migrationPreference: number
-}
 const LargeContent = styled.div`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: none;
   `}
 `
-
 const TableInputWrapper = styled.div`
   border: 1px solid #4b4949e5;
   display: flex;
@@ -189,7 +178,7 @@ const TotalMigrationAmountWrapper = styled(RowBetween)`
         height:10px;
     `}
     }
-    & > p:last-child {
+    & > p:nth-child(3) {
       background: linear-gradient(90deg, #dc756b, #f095a2, #d9a199, #d7c7c1, #d4fdf9);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -238,6 +227,14 @@ const WalletConnectButton = styled(PrimaryButtonWide)`
   max-width: 160px;
   max-height: 32px;
 `
+interface IMigrationInfo {
+  user: string
+  tokenAddress: string
+  amount: number
+  timestamp: number
+  block: number
+  migrationPreference: number
+}
 
 function getAllUpperRow() {
   return (
@@ -254,75 +251,49 @@ function getAllUpperRow() {
 
 export default function MigratedTable() {
   const { account } = useWeb3React()
-  const [loading, setLoading] = useState(true)
+  const [hasData, setHasData] = useState(false)
+  const [checked, setChecked] = useState(false)
+  const [tableDataLoading, setTableDataLoading] = useState(false)
   const toggleWalletModal = useWalletModalToggle()
   const [allMigrationData, setAllMigrationData] = useState<any>(undefined)
-  const [signature, setSignature] = useState<string | undefined>(undefined)
-  const signatureMessageWithWallet = signatureMessage + `${account?.toString()}`
-  const isLoading = false
 
-  const {
-    state: signCallbackState,
-    callback: signCallback,
-    error: signCallbackError,
-  } = useSignMessage(signatureMessageWithWallet)
-
-  const getAllMigrationData = useCallback(
-    async (signature: string) => {
-      try {
-        const res = await makeHttpRequest(
-          `https://info.deus.finance/symm/v1/user-info?wallet=${account?.toString()}&signature=${signature}`
-        )
-        return res
-      } catch (error) {
-        return null
-      }
-    },
-    [account]
-  )
-
-  const handleSign = useCallback(async () => {
-    console.log('called handleSign')
-    console.log(signCallbackState, signCallbackError)
-    if (!signCallback) return
-    if (signature) return
+  const getAllMigrationData = useCallback(async (signature: string) => {
     try {
-      return await signCallback()
-    } catch (e) {
-      if (e instanceof Error) {
-      } else {
-        console.error(e)
-      }
+      const res = await makeHttpRequest(`https://info.deus.finance/symm/v1/user-info?signature=${signature}`)
+      return res
+    } catch (error) {
+      return null
     }
-  }, [signCallbackState, signCallbackError, signCallback, signature])
+  }, [])
 
   const handleAllMigration = useCallback(
     async (signature: string) => {
+      setTableDataLoading(true)
       const rest = await getAllMigrationData(signature)
       if (rest?.status === 'error') {
         setAllMigrationData(null)
-        setLoading(true)
+        setHasData(false)
       } else if (rest) {
         const values = Object.entries(rest)
         setAllMigrationData(values)
-        setLoading(false)
+        setHasData(true)
       }
+      setTableDataLoading(false)
     },
     [getAllMigrationData]
   )
 
   const handleCheck = useCallback(async () => {
-    handleSign().then((response) => {
-      setSignature(response)
-      handleAllMigration(response || '')
-    })
-  }, [handleAllMigration, handleSign])
+    setChecked(true)
+    const signature = localStorage.getItem('migrationTermOfServiceSignature' + account?.toString())
+    if (signature) handleAllMigration(signature)
+  }, [account, handleAllMigration])
 
   useEffect(() => {
     console.log('account changed')
-    setSignature(undefined)
     setAllMigrationData(null)
-    setLoading(true)
+    setHasData(false)
+    setChecked(false)
   }, [account])
 
   const isAllMigrationDataEmpty = useMemo(() => {
@@ -333,6 +304,7 @@ export default function MigratedTable() {
       }
       return true
     }
+    return true
   }, [allMigrationData])
 
   const migrationAmount: Array<Array<{ amount: number; token: string; chainId: number }>> = useMemo(() => {
@@ -365,11 +337,11 @@ export default function MigratedTable() {
             break
 
           case Tokens['bDEI_TOKEN'][value.chainId].address:
-            amount += value.amount / (185 * 1e18)
+            amount += value.amount / (MigrationOptions[3].divideRatio * 1e18)
             break
 
           case Tokens['LEGACY_DEI'][value.chainId].address:
-            amount += value.amount / (217 * 1e18)
+            amount += value.amount / (MigrationOptions[2].divideRatio * 1e18)
             break
         }
       })
@@ -378,12 +350,12 @@ export default function MigratedTable() {
   }, [migrationAmount])
 
   const migrationContextData = useMigrationData()
-  const calculatedSymmPerDeus = useMemo(
-    () =>
-      (Number(migrationContextData?.unvested_symm_per_deus) + Number(migrationContextData?.vested_symm_per_deus)) *
-      totalAmount,
-    [migrationContextData, totalAmount]
-  )
+  const [calculatedSymmPerDeusUnvested, calculatedSymmPerDeusVested, calculatedSymmPerDeusTotal] = useMemo(() => {
+    const calculatedSymmPerDeusUnvested = Number(migrationContextData?.unvested_symm_per_deus) * totalAmount
+    const calculatedSymmPerDeusVested = Number(migrationContextData?.vested_symm_per_deus) * totalAmount
+    const calculatedSymmPerDeusTotal = calculatedSymmPerDeusVested + calculatedSymmPerDeusUnvested
+    return [calculatedSymmPerDeusUnvested, calculatedSymmPerDeusVested, calculatedSymmPerDeusTotal]
+  }, [migrationContextData, totalAmount])
 
   return (
     <div style={{ width: '100%' }}>
@@ -399,17 +371,37 @@ export default function MigratedTable() {
           </WalletConnectButton>
         )}
       </TableInputWrapper>
-      {!loading && (
+      {hasData && (
         <TotalMigrationAmountWrapper>
           <p>My Total Migrated Amount to SYMM:</p>
           <div>
-            <p>{toBN(totalAmount).toFixed(3).toString()} DEUS</p>
+            <p>{formatNumber(toBN(totalAmount).toFixed(3).toString())} DEUS</p>
             <ArrowRight />
-            <p>{toBN(calculatedSymmPerDeus).toFixed(3).toString()} SYMM</p>
+            <p>{formatNumber(toBN(calculatedSymmPerDeusTotal).toFixed(3).toString())} SYMM</p>
+            <React.Fragment>
+              <a data-tip data-for={'multiline-id3'}>
+                <InfoIcon size={12} />
+              </a>
+              <CustomTooltip2 id="multiline-id3" arrowColor={'#bea29c'}>
+                <ToolTipWrap>
+                  <span style={{ color: 'white' }}>
+                    <p>
+                      <SymmText>UNLOCKED: </SymmText>
+                      <span>{formatNumber(toBN(calculatedSymmPerDeusUnvested).toFixed(3).toString())}</span>
+                    </p>
+                    <p style={{ padding: '5px' }}></p>
+                    <p>
+                      <span style={{ color: '#bea29c' }}>LOCKED: </span>
+                      <span>{formatNumber(toBN(calculatedSymmPerDeusVested).toFixed(3).toString())}</span>
+                    </p>
+                  </span>
+                </ToolTipWrap>
+              </CustomTooltip2>
+            </React.Fragment>
           </div>
         </TotalMigrationAmountWrapper>
       )}
-      {!loading && <LargeContent>{getAllUpperRow()}</LargeContent>}
+      {hasData && <LargeContent>{getAllUpperRow()}</LargeContent>}
       <Wrapper>
         <TableWrapper>
           <tbody>
@@ -435,13 +427,13 @@ export default function MigratedTable() {
                 ))
               )}
           </tbody>
-          {isAllMigrationDataEmpty && (
+          {isAllMigrationDataEmpty && checked && (
             <tbody>
               <tr>
                 <td>
                   {!account ? (
                     <NoResults warning>Wallet is not connected!</NoResults>
-                  ) : isLoading ? (
+                  ) : tableDataLoading ? (
                     <NoResults>Loading...</NoResults>
                   ) : (
                     <NoResults>No Migration found</NoResults>
@@ -562,19 +554,22 @@ const TableRowContent = ({ migrationInfo, chain }: { migrationInfo: IMigrationIn
   const ratio = Number(balancedRatio)
   let migratedToDEUS = BN_ZERO
   let migratedToSYMM = BN_ZERO
+  const migrationInfoAmount = toBN(migrationInfo?.amount.toString()).toString()
 
-  if (migrationInfo.migrationPreference === 0) {
-    const amount: BigNumber = toBN(formatUnits(migrationInfo.amount.toString(), 18)).times(ratio)
-    migratedToDEUS = migratedToDEUS.plus(amount)
+  const divideRatio = MigrationOptions.find((option) => option.token[chain]?.name === token?.name)?.divideRatio || 1
 
-    const amount2: BigNumber = toBN(formatUnits(migrationInfo.amount.toString(), 18)).minus(amount)
-    migratedToSYMM = migratedToSYMM.plus(amount2)
+  if (migrationInfo.migrationPreference === MigrationType.BALANCED) {
+    const amount: BigNumber = toBN(formatUnits(migrationInfoAmount, 18)).times(ratio)
+    migratedToDEUS = migratedToDEUS.plus(amount).div(divideRatio)
+
+    const amount2: BigNumber = toBN(formatUnits(migrationInfoAmount, 18)).minus(amount)
+    migratedToSYMM = migratedToSYMM.plus(amount2).div(divideRatio)
   } else {
-    const amount: BigNumber = toBN(formatUnits(migrationInfo.amount.toString(), 18))
-    if (migrationInfo.migrationPreference === 1) {
-      migratedToDEUS = migratedToDEUS.plus(amount)
-    } else if (migrationInfo.migrationPreference === 2) {
-      migratedToSYMM = migratedToSYMM.plus(amount)
+    const amount: BigNumber = toBN(formatUnits(migrationInfoAmount, 18))
+    if (migrationInfo.migrationPreference === MigrationType.DEUS) {
+      migratedToDEUS = migratedToDEUS.plus(amount).div(divideRatio)
+    } else if (migrationInfo.migrationPreference === MigrationType.SYMM) {
+      migratedToSYMM = migratedToSYMM.plus(amount).div(divideRatio)
     }
   }
 
@@ -631,6 +626,15 @@ const TableRowContentWrapper = ({
   migratedToSYMM: BigNumber
 }) => {
   const chain = token?.chainId
+  const migrationContextData = useMigrationData()
+
+  const calculatedSymmPerDeus = useMemo(
+    () =>
+      toBN(
+        Number(migrationContextData?.unvested_symm_per_deus) + Number(migrationContextData?.vested_symm_per_deus)
+      ).multipliedBy(migratedToSYMM),
+    [migrationContextData, migratedToSYMM]
+  )
 
   return (
     <TableContent>
@@ -659,7 +663,7 @@ const TableRowContentWrapper = ({
         <Label>My Migrated Amount:</Label>
         <div>
           <Value>
-            {formatBalance(toBN(migratedAmount * 1e-18).toString(), 3) ?? 'N/A'} {token.symbol}
+            {formatNumber(formatBalance(toBN(migratedAmount * 1e-18).toString(), 3)) ?? 'N/A'} {token.symbol}
           </Value>
         </div>
       </MyMigratedAmount>
@@ -670,13 +674,13 @@ const TableRowContentWrapper = ({
           <Value>
             {migratedToDEUS.toString() !== '0' && (
               <span>
-                {formatBalance(migratedToDEUS.toString(), 3)} <DeusText>DEUS</DeusText>
+                {formatNumber(formatBalance(migratedToDEUS.toString(), 3))} <DeusText>DEUS</DeusText>
               </span>
             )}
             {migratedToDEUS.toString() !== '0' && migratedToSYMM.toString() !== '0' && <span>, </span>}
             {migratedToSYMM.toString() !== '0' && (
               <span>
-                {formatBalance(migratedToSYMM.toString(), 3)} <SymmText>SYMM</SymmText>
+                {formatNumber(formatBalance(calculatedSymmPerDeus.toString(), 3))} <SymmText>SYMM</SymmText>
               </span>
             )}
           </Value>
