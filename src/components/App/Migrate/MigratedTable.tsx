@@ -285,7 +285,7 @@ export default function MigratedTable() {
 
   const handleCheck = useCallback(async () => {
     setChecked(true)
-    const signature = localStorage.getItem('migrationTermOfServiceSignatureMessage' + account?.toString())
+    const signature = localStorage.getItem('migrationTermOfServiceSignature' + account?.toString())
     if (signature) handleAllMigration(signature)
   }, [account, handleAllMigration])
 

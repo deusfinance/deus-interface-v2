@@ -156,91 +156,6 @@ const TableTitle = styled(Cell)`
   text-align: start;
   padding-left: 12px;
 `
-
-function getUpperRow() {
-  return (
-    <UpperRow>
-      <div style={{ display: 'flex', width: '100%', position: 'relative' }}>
-        <TableTitle width="25%">Token</TableTitle>
-        <TableTitle width="20%">My Balance</TableTitle>
-        <TableTitle width="25%">My Migrated Amount</TableTitle>
-      </div>
-    </UpperRow>
-  )
-}
-
-export default function Table() {
-  const { account, chainId } = useWeb3React()
-
-  const isLoading = false
-  const [type, setType] = useState(MigrationType.DEUS)
-  const [token, setToken] = useState<Token | undefined>(undefined)
-  const [isOpenReviewModal, toggleReviewModal] = useState(false)
-  const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
-
-  const balancedRatio = useBalancedRatio()
-  const { userMigrations } = useGetUserMigrations(Number(balancedRatio), account)
-
-  function handleClickModal(type: MigrationType, inputToken: Token) {
-    setType(type)
-    setToken(inputToken)
-    toggleReviewModal(true)
-  }
-
-  return (
-    <>
-      <LargeContent>{getUpperRow()}</LargeContent>
-      <Wrapper>
-        <TableWrapper isEmpty={MigrationOptions.length === 0}>
-          <tbody>
-            {MigrationOptions.length > 0 &&
-              MigrationOptions.map((migrationOption: MigrationTypes, index) => (
-                <React.Fragment key={index}>
-                  {chainId && migrationOption.supportedChains.includes(chainId) && (
-                    <>
-                      <DividerContainer />
-                      <TableRow
-                        key={index}
-                        index={index}
-                        migrationOption={migrationOption}
-                        handleClickModal={handleClickModal}
-                        userMigrations={userMigrations}
-                      />
-                    </>
-                  )}
-                </React.Fragment>
-              ))}
-          </tbody>
-          {MigrationOptions.length === 0 && (
-            <tbody>
-              <tr>
-                <td>
-                  {!account ? (
-                    <NoResults warning>Wallet is not connected!</NoResults>
-                  ) : isLoading ? (
-                    <NoResults>Loading...</NoResults>
-                  ) : (
-                    <NoResults>No Migration found</NoResults>
-                  )}
-                </td>
-              </tr>
-            </tbody>
-          )}
-        </TableWrapper>
-      </Wrapper>
-      <ManualReviewModal
-        title={'Migrate to '}
-        isOpen={isOpenReviewModal}
-        toggleModal={(action: boolean) => toggleReviewModal(action)}
-        inputToken={token}
-        outputToken={type === MigrationType.DEUS ? DEUS_TOKEN : SYMM_TOKEN}
-        buttonText={awaitingSwapConfirmation ? 'Migrating ' : 'Migrate to '}
-        awaiting={awaitingSwapConfirmation}
-      />
-    </>
-  )
-}
-
 const TableRowContainer = styled.div`
   width: 100%;
   display: table;
@@ -328,10 +243,157 @@ const TokenContainer = styled(Cell)`
     justify-content: space-between;
   `};
 `
+
 export enum MigrationType {
   BALANCED,
   DEUS,
   SYMM,
+}
+
+function getUpperRow() {
+  return (
+    <UpperRow>
+      <div style={{ display: 'flex', width: '100%', position: 'relative' }}>
+        <TableTitle width="25%">Token</TableTitle>
+        <TableTitle width="20%">My Balance</TableTitle>
+        <TableTitle width="25%">My Migrated Amount</TableTitle>
+      </div>
+    </UpperRow>
+  )
+}
+
+export default function Table() {
+  const { account, chainId } = useWeb3React()
+
+  const isLoading = false
+  const [type, setType] = useState(MigrationType.DEUS)
+  const [token, setToken] = useState<Token | undefined>(undefined)
+  const [isOpenReviewModal, toggleReviewModal] = useState(false)
+  const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
+
+  const balancedRatio = useBalancedRatio()
+  const { userMigrations } = useGetUserMigrations(Number(balancedRatio), account)
+
+  function handleClickModal(type: MigrationType, inputToken: Token) {
+    setType(type)
+    setToken(inputToken)
+    toggleReviewModal(true)
+  }
+
+  return (
+    <>
+      <LargeContent>{getUpperRow()}</LargeContent>
+      <Wrapper>
+        <TableWrapper isEmpty={MigrationOptions.length === 0}>
+          <tbody>
+            {MigrationOptions.length > 0 &&
+              MigrationOptions.map((migrationOption: MigrationTypes, index) => (
+                <React.Fragment key={index}>
+                  {chainId && migrationOption.supportedChains.includes(chainId) && (
+                    <>
+                      <DividerContainer />
+                      <TableRow
+                        key={index}
+                        index={index}
+                        migrationOption={migrationOption}
+                        handleClickModal={handleClickModal}
+                        userMigrations={userMigrations}
+                      />
+                    </>
+                  )}
+                </React.Fragment>
+              ))}
+          </tbody>
+          {MigrationOptions.length === 0 && (
+            <tbody>
+              <tr>
+                <td>
+                  {!account ? (
+                    <NoResults warning>Wallet is not connected!</NoResults>
+                  ) : isLoading ? (
+                    <NoResults>Loading...</NoResults>
+                  ) : (
+                    <NoResults>No Migration found</NoResults>
+                  )}
+                </td>
+              </tr>
+            </tbody>
+          )}
+        </TableWrapper>
+      </Wrapper>
+      <ManualReviewModal
+        title={'Migrate to '}
+        isOpen={isOpenReviewModal}
+        toggleModal={(action: boolean) => toggleReviewModal(action)}
+        inputToken={token}
+        outputToken={type === MigrationType.DEUS ? DEUS_TOKEN : SYMM_TOKEN}
+        buttonText={awaitingSwapConfirmation ? 'Migrating ' : 'Migrate to '}
+        awaiting={awaitingSwapConfirmation}
+      />
+    </>
+  )
+}
+
+function TableRow({
+  migrationOption,
+  index,
+  handleClickModal,
+  userMigrations,
+}: {
+  migrationOption: MigrationTypes
+  index: number
+  handleClickModal: (migrationType: MigrationType, inputToken: Token) => void
+  userMigrations: Map<string, BigNumber>
+}) {
+  return (
+    <ZebraStripesRow isEven={index % 2 === 0}>
+      <TableRowContent
+        userMigrations={userMigrations}
+        handleClickModal={handleClickModal}
+        migrationOption={migrationOption}
+      />
+    </ZebraStripesRow>
+  )
+}
+
+const TableRowContent = ({
+  migrationOption,
+  handleClickModal,
+  userMigrations,
+}: {
+  migrationOption: MigrationTypes
+  handleClickModal: (migrationType: MigrationType, inputToken: Token) => void
+  userMigrations: Map<string, BigNumber>
+}) => {
+  const { chainId, account } = useWeb3React()
+  const rpcChangerCallback = useRpcChangerCallback()
+  const toggleWalletModal = useWalletModalToggle()
+  const { token: tokens, version, active } = migrationOption
+
+  const token = chainId ? tokens[chainId] : undefined
+  const currencyBalance = useTokenBalance(account ?? undefined, token ?? undefined)
+  const chainIdError = !useSupportedChainId()
+
+  return (
+    <React.Fragment>
+      {token && (
+        <TableRowContainer>
+          <TableRowContentWrapper
+            active={active}
+            token={token}
+            currencyBalance={currencyBalance}
+            version={version}
+            chainIdError={chainIdError}
+            rpcChangerCallback={rpcChangerCallback}
+            account={account}
+            toggleWalletModal={toggleWalletModal}
+            handleClickModal={handleClickModal}
+            userMigrations={userMigrations}
+          />
+        </TableRowContainer>
+      )}
+    </React.Fragment>
+  )
 }
 
 const TableRowContentWrapper = ({
@@ -446,67 +508,5 @@ const TableRowContentWrapper = ({
         )}
       </LargeButtonCellContainer>
     </TableContent>
-  )
-}
-
-const TableRowContent = ({
-  migrationOption,
-  handleClickModal,
-  userMigrations,
-}: {
-  migrationOption: MigrationTypes
-  handleClickModal: (migrationType: MigrationType, inputToken: Token) => void
-  userMigrations: Map<string, BigNumber>
-}) => {
-  const { chainId, account } = useWeb3React()
-  const rpcChangerCallback = useRpcChangerCallback()
-  const toggleWalletModal = useWalletModalToggle()
-  const { token: tokens, version, active } = migrationOption
-
-  const token = chainId ? tokens[chainId] : undefined
-  const currencyBalance = useTokenBalance(account ?? undefined, token ?? undefined)
-  const chainIdError = !useSupportedChainId()
-
-  return (
-    <React.Fragment>
-      {token && (
-        <TableRowContainer>
-          <TableRowContentWrapper
-            active={active}
-            token={token}
-            currencyBalance={currencyBalance}
-            version={version}
-            chainIdError={chainIdError}
-            rpcChangerCallback={rpcChangerCallback}
-            account={account}
-            toggleWalletModal={toggleWalletModal}
-            handleClickModal={handleClickModal}
-            userMigrations={userMigrations}
-          />
-        </TableRowContainer>
-      )}
-    </React.Fragment>
-  )
-}
-
-function TableRow({
-  migrationOption,
-  index,
-  handleClickModal,
-  userMigrations,
-}: {
-  migrationOption: MigrationTypes
-  index: number
-  handleClickModal: (migrationType: MigrationType, inputToken: Token) => void
-  userMigrations: Map<string, BigNumber>
-}) {
-  return (
-    <ZebraStripesRow isEven={index % 2 === 0}>
-      <TableRowContent
-        userMigrations={userMigrations}
-        handleClickModal={handleClickModal}
-        migrationOption={migrationOption}
-      />
-    </ZebraStripesRow>
   )
 }

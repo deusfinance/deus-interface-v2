@@ -14,7 +14,7 @@ export const INFO_URL = 'https://info.deus.finance'
 //oracle api
 export const ORACLE_BASE_URL = new URL('https://oracle4.deus.finance')
 
-export const migrationTermOfServiceSignatureMessage = `Please take a moment to carefully review the following information and terms. By signing, you legally consent to be bound by these terms. If you are not in agreement with these terms, you should refrain from proceeding with the migration process.
+export const migrationTermOfServiceSignatureMessage = `Please take a moment to carefully review the following information and terms. By signing, you legally consent to be bound by these terms. If you are not in agreement, you should refrain from proceeding with the migration process.
 
 _
 
@@ -32,6 +32,6 @@ The migration of DEUS, legacy DEI, bDEI, and xDEUS tokens is not instant and can
 I accept any potential delays that may occur during this process and agree not to hold the platform accountable for such delays.
 
 I confirm that all the information provided during this process is accurate, complete, and current.
-I accept the general Terms of Service of DEUS, confirming that I have read and understood them.
+I also confirm to accept the general Terms of Service of DEUS (https://docs.deus.finance/contracts/legals-and-disclaimer/terms-of-service) confirming that I have read and understood them.
 
 I commit to comply with all laws and regulations relevant to the use of this service.`

@@ -104,7 +104,7 @@ export default function ConfirmationModal({
     handleSign().then((response) => {
       if (response) {
         setSignature(response)
-        localStorage.setItem('migrationTermOfServiceSignatureMessage' + account?.toString(), response)
+        localStorage.setItem('migrationTermOfServiceSignature' + account?.toString(), response)
         toggleModal(false)
       } else {
         router.push('/clqdr')

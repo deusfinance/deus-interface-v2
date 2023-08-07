@@ -55,7 +55,7 @@ export default function Migrate() {
   const { account } = useWeb3React()
   const [selected, setSelected] = useState<ActionTypes>(ActionTypes.EASY)
   const showModal = useMemo(() => {
-    return localStorage.getItem('migrationTermOfServiceSignatureMessage' + account?.toString()) ? false : true
+    return localStorage.getItem('migrationTermOfServiceSignature' + account?.toString()) ? false : true
   }, [account])
   const [isOpenReviewModal, toggleReviewModal] = useState(showModal && !!account)
 
