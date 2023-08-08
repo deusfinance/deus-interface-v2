@@ -71,11 +71,11 @@ export default function Migrate() {
           <ActionSetter selected={selected} setSelected={setSelected} />
 
           <Wrapper>
-            {selected !== ActionTypes.ALL && <MigrationHeader />}
+            {selected !== ActionTypes.DASHBOARD && <MigrationHeader />}
 
             {selected === ActionTypes.MANUAL && <Table />}
             {selected === ActionTypes.EASY && <CardBox />}
-            {selected === ActionTypes.ALL && <MigratedTable />}
+            {selected === ActionTypes.DASHBOARD && <MigratedTable />}
           </Wrapper>
         </MigrationWrap>
       </Container>

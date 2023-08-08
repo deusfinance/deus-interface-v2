@@ -322,31 +322,31 @@ export default function MigratedTable() {
 
   const [totalAmount, setTotalAmount] = useState(0)
   useEffect(() => {
-    let amount = 0
+    let amount = BN_ZERO
     const filteredMigrationAmount = migrationAmount?.filter((migrationAmount) => migrationAmount.length !== 0)
 
     filteredMigrationAmount?.forEach((item) => {
       item?.forEach((value) => {
         switch (value.token) {
           case Tokens['DEUS'][value.chainId].address:
-            amount += value.amount
+            amount = amount.plus(value.amount)
             break
 
           case Tokens['XDEUS'][value.chainId].address:
-            amount += value.amount
+            amount = amount.plus(value.amount)
             break
 
           case Tokens['bDEI_TOKEN'][value.chainId].address:
-            amount += value.amount / (MigrationOptions[3].divideRatio * 1e18)
+            amount = amount.plus(value.amount / MigrationOptions[3].divideRatio)
             break
 
           case Tokens['LEGACY_DEI'][value.chainId].address:
-            amount += value.amount / (MigrationOptions[2].divideRatio * 1e18)
+            amount = amount.plus(value.amount / MigrationOptions[2].divideRatio)
             break
         }
       })
     })
-    setTotalAmount(amount * 1e-18)
+    setTotalAmount(Number(amount.div(1e18)))
   }, [migrationAmount])
 
   const migrationContextData = useMigrationData()
