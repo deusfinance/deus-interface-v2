@@ -18,7 +18,6 @@ import InputBox from 'components/InputBox'
 import { SupportedChainId } from 'constants/chains'
 import { useBridgeContract } from 'hooks/useContract'
 import useBridgeCallback from 'hooks/useBridgeCallback'
-import MigrationHeader from './MigrationHeader'
 
 const Container = styled.div`
   display: flex;
@@ -35,10 +34,10 @@ const Wrapper = styled(Container)`
   border-radius: 15px;
   justify-content: center;
   & > * {
-    &:nth-child(3) {
+    &:nth-child(2) {
       margin: 15px auto;
     }
-    &:nth-child(7) {
+    &:nth-child(6) {
       margin-top: 20px !important;
       padding: 0;
     }
@@ -49,7 +48,7 @@ const MainButton = styled(PrimaryButton)`
   border-radius: 12px;
 `
 
-export default function SwapPage() {
+export default function WithdrawPage() {
   const { chainId, account } = useWeb3React()
   const toggleWalletModal = useWalletModalToggle()
   const isSupportedChainId = useSupportedChainId()
@@ -153,9 +152,8 @@ export default function SwapPage() {
 
   return (
     <Wrapper>
-      <MigrationHeader />
-
       <InputBox currency={inputCurrency} value={amountIn} onChange={(value: string) => setAmountIn(value)} />
+
       {inputCurrency.symbol === DEUS_TOKEN.symbol ? (
         <RefreshCw
           style={{ cursor: 'pointer' }}
@@ -173,13 +171,16 @@ export default function SwapPage() {
           }}
         />
       )}
+
       <InputBox
         currency={outputCurrency}
         value={debouncedAmountIn}
         onChange={(value: string) => console.log(value)}
         disabled={true}
       />
+
       <div style={{ marginTop: '60px' }}></div>
+
       {getApproveButton()}
       {getActionButton()}
     </Wrapper>

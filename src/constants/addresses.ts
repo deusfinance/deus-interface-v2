@@ -241,9 +241,9 @@ export const AxlDEUS_ADDRESS: AddressMap = {
 }
 
 export const Bridge_ADDRESS: AddressMap = {
-  [SupportedChainId.MAINNET]: '',
-  [SupportedChainId.POLYGON]: '',
+  [SupportedChainId.MAINNET]: '0x033A57bA228eF012f1cED3861ca21eAD5e7fD534',
+  [SupportedChainId.POLYGON]: '0x98097553Af9EB8F17F4f668C8C8eB78712eE2c43',
   [SupportedChainId.BSC]: '0x68FD40FB0713a35627C98ba9549c7cCed73827F9',
-  [SupportedChainId.AVALANCHE]: '',
-  [SupportedChainId.KAVA]: '',
+  [SupportedChainId.AVALANCHE]: '0x8Ccbc812394fDF26c58F3837aB419fbc315656C3',
+  [SupportedChainId.KAVA]: '0x18347ae09114C30E9895b8fbbd129d9611B2DC1c',
 }
