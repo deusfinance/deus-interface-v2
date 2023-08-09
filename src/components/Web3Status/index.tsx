@@ -11,7 +11,7 @@ import { truncateAddress } from 'utils/account'
 import WalletModal from 'components/WalletModal'
 import { NavButton } from 'components/Button'
 import { Connected as ConnectedIcon } from 'components/Icons'
-import { FALLBACK_CHAIN_ID } from 'constants/chains'
+import { usePreferredChain } from 'constants/chains'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 import { RowCenter } from 'components/Row'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
@@ -82,6 +82,7 @@ function Web3StatusInner() {
   const toggleWalletModal = useWalletModalToggle()
   const rpcChangerCallback = useRpcChangerCallback()
   const notSupportedChainId = !useSupportedChainId()
+  const preferredChain = usePreferredChain()
 
   if (!account) {
     return (
@@ -93,7 +94,7 @@ function Web3StatusInner() {
     )
   } else if (notSupportedChainId) {
     return (
-      <ErrorButton onClick={() => rpcChangerCallback(FALLBACK_CHAIN_ID)}>
+      <ErrorButton onClick={() => rpcChangerCallback(preferredChain)}>
         <Text>Wrong Network</Text>
       </ErrorButton>
     )

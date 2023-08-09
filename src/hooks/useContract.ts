@@ -16,6 +16,7 @@ import SWAP_ABI from 'constants/abi/SWAP_ABI.json'
 import MasterChefV2_ABI from 'constants/abi/MasterChefV2.json'
 import VEDEUS_MULTI_REWARDER_ERC20_ABI from 'constants/abi/VEDEUS_MULTI_REWARDER_ERC20.json'
 import MIGRATOR_ABI from 'constants/abi/MIGRATOR.json'
+import BRIDGE_ABI from 'constants/abi/BRIDGE.json'
 
 import CLQDR_ABI from 'constants/abi/CLQDR_ABI.json'
 import CLQDR_FULL_ABI from 'constants/abi/CLQDR_FULL_ABI.json'
@@ -31,6 +32,7 @@ import {
   veDEUSMigrator,
   veDEUSMultiRewarderERC20,
   Migrator,
+  Bridge_ADDRESS,
 } from 'constants/addresses'
 import { LiquidityType, StakingType } from 'constants/stakingPools'
 
@@ -148,4 +150,10 @@ export function useMigratorContract() {
   const { chainId } = useWeb3React()
   const address = useMemo(() => (chainId ? Migrator[chainId] : undefined), [chainId])
   return useContract(address, MIGRATOR_ABI)
+}
+
+export function useBridgeContract() {
+  const { chainId } = useWeb3React()
+  const address = useMemo(() => (chainId ? Bridge_ADDRESS[chainId] : undefined), [chainId])
+  return useContract(address, BRIDGE_ABI)
 }

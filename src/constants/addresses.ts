@@ -231,3 +231,19 @@ export const LQDR_ADDRESS: AddressMap = {
 export const Migrator: AddressMap = {
   ...constructSameAddressMap('0xe3b6CC7b76a7f67BBCcb66c010780bE0AF31Ff05', MigrationChains),
 }
+
+export const AxlDEUS_ADDRESS: AddressMap = {
+  [SupportedChainId.MAINNET]: '0x69e557b926F4eEf6d9400e36DBBFEb9600Af2880',
+  [SupportedChainId.POLYGON]: '0x12A80A285DfaBd23FC1DFe6c515F034A22d9cdCE',
+  [SupportedChainId.BSC]: '0x912922e25ac79D524734d8eC0C882B035c5b356f',
+  [SupportedChainId.AVALANCHE]: '0xf9617c66cD8a4193A4DE0a101e16D73B71828810',
+  [SupportedChainId.KAVA]: '0xebD4A18034C78A415088DF8508f102421eD693b1',
+}
+
+export const Bridge_ADDRESS: AddressMap = {
+  [SupportedChainId.MAINNET]: '',
+  [SupportedChainId.POLYGON]: '',
+  [SupportedChainId.BSC]: '0x68FD40FB0713a35627C98ba9549c7cCed73827F9',
+  [SupportedChainId.AVALANCHE]: '',
+  [SupportedChainId.KAVA]: '',
+}
