@@ -257,37 +257,34 @@ export default function MigratedTable() {
   const toggleWalletModal = useWalletModalToggle()
   const [allMigrationData, setAllMigrationData] = useState<any>(undefined)
 
-  const getAllMigrationData = useCallback(async (signature: string) => {
+  const getAllMigrationData = useCallback(async () => {
     try {
-      const res = await makeHttpRequest(`https://info.deus.finance/symm/v1/user-info?signature=${signature}`)
+      const res = await makeHttpRequest(`https://info.deus.finance/symm/v1/user-info?address=${account?.toString()}`)
       return res
     } catch (error) {
       return null
     }
-  }, [])
+  }, [account])
 
-  const handleAllMigration = useCallback(
-    async (signature: string) => {
-      setTableDataLoading(true)
-      const rest = await getAllMigrationData(signature)
-      if (rest?.status === 'error') {
-        setAllMigrationData(null)
-        setHasData(false)
-      } else if (rest) {
-        const values = Object.entries(rest)
-        setAllMigrationData(values)
-        setHasData(true)
-      }
-      setTableDataLoading(false)
-    },
-    [getAllMigrationData]
-  )
+  const handleAllMigration = useCallback(async () => {
+    setTableDataLoading(true)
+    const rest = await getAllMigrationData()
+    if (rest?.status === 'error') {
+      setAllMigrationData(null)
+      setHasData(false)
+    } else if (rest) {
+      const values = Object.entries(rest)
+      setAllMigrationData(values)
+      setHasData(true)
+    }
+    setTableDataLoading(false)
+  }, [getAllMigrationData])
 
   const handleCheck = useCallback(async () => {
     setChecked(true)
-    const signature = localStorage.getItem('migrationTermOfServiceSignature' + account?.toString())
-    if (signature) handleAllMigration(signature)
-  }, [account, handleAllMigration])
+    // const signature = localStorage.getItem('migrationTermOfServiceSignature' + account?.toString())
+    handleAllMigration()
+  }, [handleAllMigration])
 
   useEffect(() => {
     console.log('account changed')

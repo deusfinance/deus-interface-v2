@@ -112,6 +112,11 @@ export default function ConfirmationModal({
     })
   }, [handleSign, router, toggleReviewModal])
 
+  const handleCheck2 = useCallback(async () => {
+    localStorage.setItem('migrationCheck' + account?.toString(), '1')
+    toggleModal(false)
+  }, [])
+
   return (
     <MainModal
       isOpen={isOpen}
@@ -148,7 +153,7 @@ export default function ConfirmationModal({
       <ButtonsWrap>
         <Button onClick={() => toggleReviewModal(false)}>I Reject (bring me to another page)</Button>
 
-        <Button isAccept onClick={() => handleCheck()}>
+        <Button isAccept onClick={() => handleCheck2()}>
           I Confirm
         </Button>
       </ButtonsWrap>
