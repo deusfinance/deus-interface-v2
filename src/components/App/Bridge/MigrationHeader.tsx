@@ -97,7 +97,7 @@ export default function MigrationHeader() {
 
   return (
     <>
-      {chainId && BridgeChains.includes(chainId) && (
+      {chainId && BridgeChains.includes(chainId) ? (
         <ConnectedChain>
           {!isMobile && <span>Connected Chain:</span>}
           <ChainWrap onClick={() => toggle()}>
@@ -137,6 +137,10 @@ export default function MigrationHeader() {
               })}
             </InlineModal>
           </div>
+        </ConnectedChain>
+      ) : (
+        <ConnectedChain style={{ color: 'red' }}>
+          <p>Please Connect wallet to continue...</p>
         </ConnectedChain>
       )}
     </>

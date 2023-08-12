@@ -2,8 +2,8 @@ import styled from 'styled-components'
 
 import Hero from 'components/Hero'
 import { Container, Title } from 'components/App/StableCoin'
-import SwapPage from 'components/App/Bridge'
 import { Row } from 'components/Row'
+import DepositPage from 'components/App/Bridge/deposit'
 
 const Wrapper = styled(Row)`
   margin-top: 50px;
@@ -55,27 +55,15 @@ export const TopBorder = styled.div`
   width: 100%;
   display: flex;
 `
-// const ExternalLinkContainer = styled.div`
-//   align-self: center;
-//   display: flex;
-//   background: none;
-//   a {
-//     color: ${({ theme }) => theme.text2};
-//     &:hover {
-//       color: ${({ theme }) => theme.text2};
-//       text-decoration: underline;
-//     }
-//   }
-// `
 
-export default function Vest() {
+export default function Index() {
   return (
     <Container>
       <Hero>
         <Title>DEUS/axlDEUS Deposit page</Title>
       </Hero>
       <Wrapper>
-        <SwapPage />
+        <DepositPage />
       </Wrapper>
     </Container>
   )
