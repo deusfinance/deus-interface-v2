@@ -74,22 +74,20 @@ export function useGetUserMigrations(
 }
 
 export function useGetEarlyMigrationDeadline(): string {
-  // const migratorContract = useMigratorContract()
+  const migratorContract = useMigratorContract()
 
-  // const amountOutCall = useMemo(
-  //   () => [
-  //     {
-  //       methodName: 'earlyMigrationDeadline',
-  //       callInputs: [],
-  //     },
-  //   ],
-  //   []
-  // )
+  const amountOutCall = useMemo(
+    () => [
+      {
+        methodName: 'earlyMigrationDeadline',
+        callInputs: [],
+      },
+    ],
+    []
+  )
 
-  // const [result] = useSingleContractMultipleMethods(migratorContract, amountOutCall)
-  // const earlyMigrationDeadline = !result || !result.result ? '' : result.result[0]
-  const earlyMigrationDeadline = '1692624600'
-
+  const [result] = useSingleContractMultipleMethods(migratorContract, amountOutCall)
+  const earlyMigrationDeadline = !result || !result.result ? '1693229400' : result.result[0]
   return earlyMigrationDeadline
 }
 
