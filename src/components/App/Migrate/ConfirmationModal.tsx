@@ -8,6 +8,7 @@ import { useCallback, useState } from 'react'
 import { migrationTermOfServiceSignatureMessage } from 'constants/misc'
 import { useSignMessage } from 'hooks/useMigrateCallback'
 import useWeb3React from 'hooks/useWeb3'
+import { ExternalLink } from 'components/Link'
 
 const MainModal = styled(Modal)`
   display: flex;
@@ -123,6 +124,17 @@ export default function ConfirmationModal({
       <Separator />
 
       <MainWrap>
+        <div>
+          <p>• The bDEI to DEUS ratio is 185/1</p>
+          <p>• DEUS will be liquid once migration period ends.</p>
+          <p>• SYMM has a 12 months vest once migration period ends.</p>
+        </div>
+        <ExternalLink
+          href={'https://docs.deus.finance/dei-incident-05.05.2023/long-term-reimbursement-plan/symm-deusmigration'}
+          style={{ textDecoration: 'underline' }}
+        >
+          read more
+        </ExternalLink>
         <p>
           Dear users, please be aware that migrating your DEUS, legacy DEI, bDEI, and xDEUS tokens to either SYMM or
           DEUS involves a waiting period. This process is NOT INSTANT and is IRREVERSIBLE.
