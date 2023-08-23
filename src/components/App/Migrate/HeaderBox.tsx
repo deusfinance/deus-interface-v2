@@ -209,6 +209,9 @@ export const ToolTipWrap = styled.div`
 export const SymmText = styled.span`
   color: ${({ theme }) => theme.symmColor};
 `
+export const BlockSpan = styled.span`
+  display: block;
+`
 const ExternalLinkIcon = styled(LinkIcon)`
   margin-left: 3px;
   path {
@@ -376,14 +379,18 @@ export default function HeaderBox() {
                           <span style={{ color: 'white' }}>
                             <p>
                               <SymmText>UNLOCKED:</SymmText>
-                              <p>68,000,000 / Early_total_DEUS_migrated_to_SYMM ({item.subValue.unlockedCalc})</p>
-                              <p>= {item.subValue.unvested}</p>
+                              <BlockSpan>
+                                68,000,000 / Early_total_DEUS_migrated_to_SYMM ({item.subValue.unlockedCalc})
+                              </BlockSpan>
+                              <BlockSpan>= {item.subValue.unvested}</BlockSpan>
                             </p>
                             <p style={{ padding: '5px' }}></p>
                             <p>
-                              <p style={{ color: '#bea29c' }}>LOCKED:</p>
-                              <p>680,000,000 / Total_DEUS_migrated_to_SYMM ({item.subValue.lockedCalc})</p>
-                              <p>= {item.subValue.vested}</p>
+                              <BlockSpan style={{ color: '#bea29c' }}>LOCKED:</BlockSpan>
+                              <BlockSpan>
+                                680,000,000 / Total_DEUS_migrated_to_SYMM ({item.subValue.lockedCalc})
+                              </BlockSpan>
+                              <BlockSpan>= {item.subValue.vested}</BlockSpan>
                             </p>
                           </span>
                         )}

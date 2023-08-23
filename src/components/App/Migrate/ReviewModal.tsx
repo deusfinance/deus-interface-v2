@@ -11,12 +11,12 @@ import { DotFlashing } from 'components/Icons'
 import { TokenBalancesMap } from 'state/wallet/types'
 import ImageWithFallback from 'components/ImageWithFallback'
 import { useMigratorContract } from 'hooks/useContract'
-import useApproveCallbacks, { ApprovalState } from 'hooks/useApproveCallbacks'
+import { ApprovalState, useApproveCallbacksWithAmounts } from 'hooks/useApproveCallbacks'
 import useMigrateCallback from 'hooks/useMigrateCallback'
 import { ModalMigrationButton } from './ManualReviewModal'
 import useWeb3React from 'hooks/useWeb3'
 import { useWalletModalToggle } from 'state/application/hooks'
-import { formatBalance } from 'utils/numbers'
+import { formatBalance, toBN } from 'utils/numbers'
 
 const MainModal = styled(Modal)`
   display: flex;
@@ -96,7 +96,20 @@ export default function ReviewModal({
   const MigratorContract = useMigratorContract()
   const spender = useMemo(() => MigratorContract?.address, [MigratorContract])
 
-  const [approvalStates, handleApproveByIndex] = useApproveCallbacks(inputTokens ?? undefined, spender)
+  const amountsToApprove = useMemo(() => {
+    return inputTokens.map((token) => {
+      const amount = toBN(amountsIn[token?.address]?.quotient.toString()).div(1e18).toString()
+      if (!amount || isNaN(Number(amount))) return '0'
+      return amount
+    })
+  }, [amountsIn, inputTokens])
+
+  const [approvalStates, handleApproveByIndex] = useApproveCallbacksWithAmounts(
+    inputTokens ?? undefined,
+    spender,
+    amountsToApprove,
+    true
+  )
   const [showApprove, showApproveLoader, tokenIndex] = useMemo(() => {
     for (let index = 0; index < approvalStates.length; index++) {
       const approvalState = approvalStates[index]
