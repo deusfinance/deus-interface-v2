@@ -1,6 +1,6 @@
 // We allow the user to connect with these chains, so we can force them to change to Fantom.
 // E.g. if the user's chain is not in the list, web3react will deny connection and then we can't change to Fantom.
-export enum SupportedChainId {
+export enum AllChainId {
   MAINNET = 1,
   ROPSTEN = 3,
   RINKEBY = 4,
@@ -46,6 +46,17 @@ export enum SupportedChainId {
   KAVA = 2222,
 }
 
+export enum SupportedChainId {
+  MAINNET = 1,
+  BSC = 56,
+  POLYGON = 137,
+  FANTOM = 250,
+  ARBITRUM = 42161,
+  AVALANCHE = 43114,
+  METIS = 1088,
+  KAVA = 2222,
+}
+
 export const SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedChainId).filter(
   (id) => typeof id === 'number'
 ) as SupportedChainId[]
@@ -67,4 +78,15 @@ export const FALLBACK_CHAIN_ID = SupportedChainId.FANTOM
 
 export const NETWORK_URLS: { [chainId: number]: string } = {
   [SupportedChainId.FANTOM]: 'https://rpc.ftm.tools',
+}
+
+export const RPC_URLS: { [key in SupportedChainId]: string[] } = {
+  [SupportedChainId.ARBITRUM]: [`https://arb1.arbitrum.io/rpc`],
+  [SupportedChainId.FANTOM]: ['https://rpc.ftm.tools'],
+  [SupportedChainId.MAINNET]: ['https://ethereum.publicnode.com'],
+  [SupportedChainId.AVALANCHE]: ['https://avalanche.public-rpc.com'],
+  [SupportedChainId.BSC]: ['https://rpc.ankr.com/bsc'],
+  [SupportedChainId.KAVA]: ['wss://wevm.kava.io'],
+  [SupportedChainId.METIS]: ['https://andromeda.metis.io/?owner=1088'],
+  [SupportedChainId.POLYGON]: ['https://polygon.llamarpc.com'],
 }

@@ -1,5 +1,4 @@
 import { Provider as ReduxProvider } from 'react-redux'
-import { Web3ReactProvider } from '@web3-react/core'
 import { ModalProvider } from 'styled-react-modal'
 import dynamic from 'next/dynamic'
 import type { AppProps } from 'next/app'
@@ -14,10 +13,10 @@ import { useAnalyticsReporter } from '../components/analytics'
 import LiveChat from 'components/LiveChat'
 
 import store from '../state'
-import { getLibrary } from '../utils/library'
+// import { getLibrary } from '../utils/library'
 
 const Updaters = dynamic(() => import('../state/updaters'), { ssr: false })
-const Web3ProviderNetwork = dynamic(() => import('../components/Web3ProviderNetwork'), {
+const Web3Provider = dynamic(() => import('../components/Web3Provider'), {
   ssr: false,
 })
 
@@ -29,24 +28,22 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   useAnalyticsReporter()
   return (
     <ReduxProvider store={store}>
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <Web3ProviderNetwork getLibrary={getLibrary}>
-          <Web3ReactManager>
-            <ThemeProvider>
-              <ThemedGlobalStyle />
-              <ModalProvider backgroundComponent={ModalBackground}>
-                <Toaster position="bottom-center" />
-                <LiveChat />
-                <Popups />
-                <Updaters />
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
-              </ModalProvider>
-            </ThemeProvider>
-          </Web3ReactManager>
-        </Web3ProviderNetwork>
-      </Web3ReactProvider>
+      <Web3Provider>
+        <Web3ReactManager>
+          <ThemeProvider>
+            <ThemedGlobalStyle />
+            <ModalProvider backgroundComponent={ModalBackground}>
+              <Toaster position="bottom-center" />
+              <LiveChat />
+              <Popups />
+              <Updaters />
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </ModalProvider>
+          </ThemeProvider>
+        </Web3ReactManager>
+      </Web3Provider>
     </ReduxProvider>
   )
 }

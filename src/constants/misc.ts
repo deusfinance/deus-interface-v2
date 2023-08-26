@@ -9,6 +9,8 @@ export const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWai
 // Only applies to L2
 export const NETWORK_POLLING_INTERVALS: { [chainId: number]: number } = {}
 
+export const AVERAGE_L1_BLOCK_TIME = 12000
+
 export const INFO_URL = 'https://info.deus.finance'
 
 //oracle api

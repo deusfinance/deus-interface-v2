@@ -56,3 +56,39 @@ export default function Web3Network() {
     </Button>
   )
 }
+
+// import React from 'react'
+// import styled from 'styled-components'
+
+// import { useWeb3React } from '@web3-react/core'
+// import { ChainInfo } from 'constants/chainInfo'
+// import { FALLBACK_CHAIN_ID, SUPPORTED_CHAIN_IDS } from 'constants/chains'
+
+// import { NavButton } from 'components/Button'
+// import ImageWithFallback from 'components/ImageWithFallback'
+
+// const Button = styled(NavButton)`
+//   padding: 0px 5px;
+//   cursor: default;
+//   height: 40px;
+//   background: transparent;
+//   border: 1px solid ${({ theme }) => theme.bg1};
+//   border-radius: 0px 6px 6px 0px;
+// `
+
+// export default function Web3Network() {
+//   const { account, chainId } = useWeb3React()
+
+//   const Chain = ChainInfo[chainId || FALLBACK_CHAIN_ID]
+
+//   if (!account || !chainId || !Chain || !SUPPORTED_CHAIN_IDS.includes(chainId)) {
+//     return null
+//   }
+
+//   return (
+//     <Button>
+//       <ImageWithFallback src={Chain.logoUrl} alt={Chain.label} width={28} height={28} />
+//       {/* <div>{Chain.label}</div> */}
+//     </Button>
+//   )
+// }
