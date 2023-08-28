@@ -227,11 +227,13 @@ export default function HeaderBox() {
   const { chainId } = useWeb3React()
 
   const [earlyMigrationDeadline, setEarlyMigrationDeadline] = useState('')
+  const [isEarlyMigrationDeadlineFinished, setIsEarlyMigrationDeadlineFinished] = useState(false)
   const earlyMigrationDeadlineTimeStamp = useGetEarlyMigrationDeadline()
 
   useEffect(() => {
     return autoRefresh(() => {
-      const { day, hours, minutes, seconds } = getRemainingTime(Number(earlyMigrationDeadlineTimeStamp))
+      const { diff, day, hours, minutes, seconds } = getRemainingTime(Number(earlyMigrationDeadlineTimeStamp))
+      setIsEarlyMigrationDeadlineFinished(diff === 0)
       setEarlyMigrationDeadline(`${day}d : ${hours}h : ${minutes}m : ${seconds}s`)
     }, 1)
   }, [earlyMigrationDeadlineTimeStamp, chainId])
@@ -416,9 +418,17 @@ export default function HeaderBox() {
       </DataBox>
       <StickyTopWrap>
         <RowCenter>
-          <TitleSpan>Early Migration: </TitleSpan>
-          <TimeSpan>Finished</TimeSpan>
-          {/* <TimeSpan>{earlyMigrationDeadline}</TimeSpan> */}
+          {isEarlyMigrationDeadlineFinished ? (
+            <>
+              <TitleSpan>Early Migration: </TitleSpan>
+              <TimeSpan>Finished</TimeSpan>
+            </>
+          ) : (
+            <>
+              <TitleSpan>Early Migration Ends in: </TitleSpan>
+              <TimeSpan>{earlyMigrationDeadline}</TimeSpan>
+            </>
+          )}
         </RowCenter>
       </StickyTopWrap>
     </TopWrap>
