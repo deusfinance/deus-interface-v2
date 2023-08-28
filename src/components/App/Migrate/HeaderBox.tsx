@@ -174,6 +174,7 @@ const CustomTooltip = styled(ToolTip)`
   color: #bea29c !important;
   border: 1px solid #bea29c !important;
   border-radius: 6px !important;
+  max-width: 465px !important;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 0.65rem !important;
@@ -257,11 +258,16 @@ export default function HeaderBox() {
         ).toFixed(2)
       : 'N/A'
 
+    const actualDeusMigrated = migrationInfo?.total_migrated_to_deus_through_contract
+      ? toBN(+migrationInfo?.total_migrated_to_deus_through_contract * 1e-18).toFixed(2)
+      : 'N/A'
+
     return {
       balanced,
       deus,
       symm,
       totalValue,
+      actualDeusMigrated,
     }
   }, [migrationInfo])
 
@@ -290,7 +296,7 @@ export default function HeaderBox() {
           : 'N/A',
         extension: 'SYMM per DEUS',
         tooltip: 'Ratio',
-        subValue: {
+        ratioSubValue: {
           unvested: migrationInfo?.unvested_symm_per_deus
             ? toBN(migrationInfo?.unvested_symm_per_deus).toFixed(3)
             : 'N/A',
@@ -357,7 +363,12 @@ export default function HeaderBox() {
                         </span>
 
                         <span>
-                          DEUS: {totalMigratedData.deus}
+                          DEUS remaining: {totalMigratedData.deus}
+                          <DeusText> DEUS</DeusText>
+                        </span>
+
+                        <span>
+                          Migrated to DEUS: {totalMigratedData.actualDeusMigrated}
                           <DeusText> DEUS</DeusText>
                         </span>
 
@@ -377,22 +388,22 @@ export default function HeaderBox() {
                     </a>
                     <CustomTooltip2 id="multiline-id2" arrowColor={'#bea29c'}>
                       <ToolTipWrap>
-                        {item.subValue && (
+                        {item.ratioSubValue && (
                           <span style={{ color: 'white' }}>
                             <p>
                               <SymmText>UNLOCKED:</SymmText>
                               <BlockSpan>
-                                68,000,000 / Early_total_DEUS_migrated_to_SYMM ({item.subValue.unlockedCalc})
+                                68,000,000 / Early_total_DEUS_migrated_to_SYMM ({item.ratioSubValue.unlockedCalc})
                               </BlockSpan>
-                              <BlockSpan>= {item.subValue.unvested}</BlockSpan>
+                              <BlockSpan>= {item.ratioSubValue.unvested}</BlockSpan>
                             </p>
                             <p style={{ padding: '5px' }}></p>
                             <p>
                               <BlockSpan style={{ color: '#bea29c' }}>LOCKED:</BlockSpan>
                               <BlockSpan>
-                                680,000,000 / Total_DEUS_migrated_to_SYMM ({item.subValue.lockedCalc})
+                                680,000,000 / Total_DEUS_migrated_to_SYMM ({item.ratioSubValue.lockedCalc})
                               </BlockSpan>
-                              <BlockSpan>= {item.subValue.vested}</BlockSpan>
+                              <BlockSpan>= {item.ratioSubValue.vested}</BlockSpan>
                             </p>
                           </span>
                         )}
@@ -407,9 +418,9 @@ export default function HeaderBox() {
                   </span>
                 )}
 
-                {item.subValue && (
+                {item.ratioSubValue && (
                   <SubValue>
-                    ({item.subValue.unvested} <SymmText>UNLOCKED</SymmText> / {item.subValue.vested} LOCKED)
+                    ({item.ratioSubValue.unvested} <SymmText>UNLOCKED</SymmText> / {item.ratioSubValue.vested} LOCKED)
                   </SubValue>
                 )}
               </ValueBox>
@@ -418,17 +429,8 @@ export default function HeaderBox() {
       </DataBox>
       <StickyTopWrap>
         <RowCenter>
-          {isEarlyMigrationDeadlineFinished ? (
-            <>
-              <TitleSpan>Early Migration: </TitleSpan>
-              <TimeSpan>Finished</TimeSpan>
-            </>
-          ) : (
-            <>
-              <TitleSpan>Early Migration Ends in: </TitleSpan>
-              <TimeSpan>{earlyMigrationDeadline}</TimeSpan>
-            </>
-          )}
+          <TitleSpan>Early Migration{isEarlyMigrationDeadlineFinished ? ': ' : ' Ends in: '}</TitleSpan>
+          <TimeSpan>{isEarlyMigrationDeadlineFinished ? 'Finished' : earlyMigrationDeadline}</TimeSpan>
         </RowCenter>
       </StickyTopWrap>
     </TopWrap>
