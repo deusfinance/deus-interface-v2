@@ -339,47 +339,47 @@ export default function MigratedTable() {
           const migrationInfoAmount_toDeus = migrationInfoAmount.times(ratio)
 
           switch (value.token) {
-            case Tokens['DEUS'][value.chainId].address:
+            case Tokens['DEUS'][value.chainId]?.address:
               amount = amount.plus(value.amount)
               amountToDeusOnly = amountToDeusOnly.plus(migrationInfoAmount_toDeus)
               break
 
-            case Tokens['XDEUS'][value.chainId].address:
+            case Tokens['XDEUS'][value.chainId]?.address:
               amount = amount.plus(value.amount)
               amountToDeusOnly = amountToDeusOnly.plus(migrationInfoAmount_toDeus)
               break
 
-            case Tokens['bDEI_TOKEN'][value.chainId].address:
+            case Tokens['bDEI_TOKEN'][value.chainId]?.address:
               amount = amount.plus(value.amount / MigrationOptions[3].divideRatio)
               amountToDeusOnly = amountToDeusOnly.plus(migrationInfoAmount_toDeus.div(MigrationOptions[3].divideRatio))
               break
 
-            case Tokens['LEGACY_DEI'][value.chainId].address:
+            case Tokens['LEGACY_DEI'][value.chainId]?.address:
               amount = amount.plus(value.amount / MigrationOptions[2].divideRatio)
               amountToDeusOnly = amountToDeusOnly.plus(migrationInfoAmount_toDeus.div(MigrationOptions[2].divideRatio))
               break
           }
         } else {
           switch (value.token) {
-            case Tokens['DEUS'][value.chainId].address:
+            case Tokens['DEUS'][value.chainId]?.address:
               amount = amount.plus(value.amount)
               if (value.migrationPreference === MigrationType.DEUS)
                 amountToDeusOnly = amountToDeusOnly.plus(value.amount)
               break
 
-            case Tokens['XDEUS'][value.chainId].address:
+            case Tokens['XDEUS'][value.chainId]?.address:
               amount = amount.plus(value.amount)
               if (value.migrationPreference === MigrationType.DEUS)
                 amountToDeusOnly = amountToDeusOnly.plus(value.amount)
               break
 
-            case Tokens['bDEI_TOKEN'][value.chainId].address:
+            case Tokens['bDEI_TOKEN'][value.chainId]?.address:
               amount = amount.plus(value.amount / MigrationOptions[3].divideRatio)
               if (value.migrationPreference === MigrationType.DEUS)
                 amountToDeusOnly = amountToDeusOnly.plus(value.amount / MigrationOptions[3].divideRatio)
               break
 
-            case Tokens['LEGACY_DEI'][value.chainId].address:
+            case Tokens['LEGACY_DEI'][value.chainId]?.address:
               amount = amount.plus(value.amount / MigrationOptions[2].divideRatio)
               if (value.migrationPreference === MigrationType.DEUS)
                 amountToDeusOnly = amountToDeusOnly.plus(value.amount / MigrationOptions[2].divideRatio)
