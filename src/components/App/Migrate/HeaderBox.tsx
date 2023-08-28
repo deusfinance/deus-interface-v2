@@ -416,8 +416,9 @@ export default function HeaderBox() {
       </DataBox>
       <StickyTopWrap>
         <RowCenter>
-          <TitleSpan>Early Migration Ends in: </TitleSpan>
-          <TimeSpan>{earlyMigrationDeadline}</TimeSpan>
+          <TitleSpan>Early Migration: </TitleSpan>
+          <TimeSpan>Finished</TimeSpan>
+          {/* <TimeSpan>{earlyMigrationDeadline}</TimeSpan> */}
         </RowCenter>
       </StickyTopWrap>
     </TopWrap>
