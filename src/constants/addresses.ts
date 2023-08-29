@@ -1,5 +1,5 @@
 import { constructSameAddressMap } from 'utils/address'
-import { MigrationChains, SupportedChainId } from './chains'
+import { MIGRATION_CHAIN_IDS, SupportedChainId } from './chains'
 
 interface AddressMap {
   [chainId: number]: string
@@ -12,7 +12,7 @@ export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 ===================================== */
 export const USDC_ADDRESS = {
   [SupportedChainId.MAINNET]: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-  [SupportedChainId.RINKEBY]: '0x49AC7cEDdb9464DA9274b164Cd6BA7129Da2C03E',
+  // [SupportedChainId.RINKEBY]: '0x49AC7cEDdb9464DA9274b164Cd6BA7129Da2C03E',
   [SupportedChainId.POLYGON]: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   [SupportedChainId.FANTOM]: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
   [SupportedChainId.BSC]: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
@@ -115,6 +115,16 @@ export const Multicall2: AddressMap = {
   [SupportedChainId.AVALANCHE]: '0xcA11bde05977b3631167028862bE2a173976CA11',
   [SupportedChainId.METIS]: '0x3CB9ae281E511759832a074A92634d2486E6a886',
   [SupportedChainId.KAVA]: '0x731e0A91Ec7F87868124D85d87D92Aa5cF058351',
+}
+
+export const MULTICALL3_ADDRESS: AddressMap = {
+  [SupportedChainId.MAINNET]: '0x1F98415757620B543A52E61c46B32eB19261F984',
+  [SupportedChainId.ARBITRUM]: '0xadF885960B47eA2CD9B55E6DAc6B42b7Cb2806dB',
+  [SupportedChainId.POLYGON]: '0x1F98415757620B543A52E61c46B32eB19261F984',
+  [SupportedChainId.BSC]: '0x963Df249eD09c358A4819E39d9Cd5736c3087184',
+  [SupportedChainId.FANTOM]: '0x8e7aceA52fE765D24FDC952400FC9Cf77ea0c8d9',
+  // [SupportedChainId.BSC_TESTNET]: '0x7C636D5611a6EA3B9eFA582ae0Db1DB93951446e',
+  // [SupportedChainId.BASE]: '0x66EC85c6d1971Ea15472754F733fA3F956a0Ec30',
 }
 
 export const BaseV1Factory: AddressMap = {
@@ -229,5 +239,9 @@ export const LQDR_ADDRESS: AddressMap = {
 }
 
 export const Migrator: AddressMap = {
-  ...constructSameAddressMap('0xe3b6CC7b76a7f67BBCcb66c010780bE0AF31Ff05', MigrationChains),
+  ...constructSameAddressMap('0xe3b6CC7b76a7f67BBCcb66c010780bE0AF31Ff05', MIGRATION_CHAIN_IDS),
+}
+
+export const WRAPPED_NATIVE_ADDRESS: AddressMap = {
+  [SupportedChainId.ARBITRUM]: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
 }

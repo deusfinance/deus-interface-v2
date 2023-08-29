@@ -3,9 +3,9 @@ import { arrayify } from '@ethersproject/bytes'
 import { parseBytes32String } from '@ethersproject/strings'
 import { Currency, NATIVE, Token, WNATIVE } from '@sushiswap/core-sdk'
 
-import useWeb3React from './useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { isAddress } from 'utils/validate'
-import { NEVER_RELOAD, useSingleCallResult } from 'state/multicall/hooks'
+import { NEVER_RELOAD, useSingleCallResult } from 'lib/hooks/multicall'
 import { useBytes32TokenContract, useERC20Contract } from './useContract'
 import { useTokensFromMap } from './useTokenList'
 

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import { Currency, Token } from '@sushiswap/core-sdk'
 
-import useWeb3React from './useWeb3'
+import { useWeb3React } from '@web3-react/core'
 
 export default function useAddTokenToMetaMask(currencyToAdd: Currency | undefined): {
   addToken: () => void

@@ -15,7 +15,7 @@ import { FALLBACK_CHAIN_ID, SupportedChainId } from 'constants/chains'
 import { LiquidityPool, StakingType, StakingVersion } from 'constants/stakingPools'
 import { useRouter } from 'next/router'
 
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 
 import { formatAmount, formatDollarAmount } from 'utils/numbers'

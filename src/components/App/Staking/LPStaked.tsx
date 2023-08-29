@@ -9,7 +9,7 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import { useMasterChefContract } from 'hooks/useContract'
 import { useUserInfo } from 'hooks/useStakingInfo'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 
 import { toBN } from 'utils/numbers'
 import { DefaultHandlerError } from 'utils/parseError'

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { AppState, useAppDispatch, useAppSelector } from 'state'
 
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { addPopup, removePopup, setOpenModal } from './actions'
 import { ApplicationModal, Popup, PopupContent, PopupList } from './reducer'
 import { REMOVE_AFTER_MS, L2_REMOVE_AFTER_MS } from 'constants/popup'

@@ -5,11 +5,11 @@ import ERC721_ABI from 'constants/abi/ERC721.json'
 import { DeiBondRedeemNFT, veDEUS } from 'constants/addresses'
 import { toBN } from 'utils/numbers'
 
-import { useSingleContractMultipleData, useSingleContractMultipleMethods } from 'state/multicall/hooks'
+import { useSingleContractMultipleData, useSingleContractMultipleMethods } from 'lib/hooks/multicall'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
 import useDebounce from 'hooks/useDebounce'
-import useWeb3React from 'hooks/useWeb3'
-import { useContract } from 'hooks/useContract'
+import { useWeb3React } from '@web3-react/core'
+import { useContract } from 'lib/hooks/contract'
 
 function useOwnerNfts(address: string | null | undefined, ABI?: any): { results: number[]; isLoading: boolean } {
   const { account, chainId } = useWeb3React()

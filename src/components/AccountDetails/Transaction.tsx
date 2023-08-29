@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { useAllTransactions } from 'state/transactions/hooks'
 import { ExplorerLink } from 'components/Link'
 import { CheckMark, Loader, Error, Link } from 'components/Icons'

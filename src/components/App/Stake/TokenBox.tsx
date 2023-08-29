@@ -5,7 +5,7 @@ import { isMobile } from 'react-device-detect'
 import { SupportedChainId } from 'constants/chains'
 
 import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 
 import ImageWithFallback from 'components/ImageWithFallback'
 

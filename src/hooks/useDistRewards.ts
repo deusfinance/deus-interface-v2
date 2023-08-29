@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 
 import { toBN } from 'utils/numbers'
-import { useSingleContractMultipleMethods, useSingleContractMultipleData } from 'state/multicall/hooks'
+import { useSingleContractMultipleMethods, useSingleContractMultipleData } from 'lib/hooks/multicall'
 import { useVeDeusContract, useVeDeusMigratorContract, useVeDistContract } from 'hooks/useContract'
 import { useOwnerVeDeusNFTs } from 'hooks/useOwnerNfts'
 

@@ -2,7 +2,7 @@ import { useMemo, useCallback, useEffect, useState } from 'react'
 
 import { toBN } from 'utils/numbers'
 import { useCLQDRContract, usePerpetualEscrowTokenReceiverContract } from 'hooks/useContract'
-import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
+import { useSingleContractMultipleMethods } from 'lib/hooks/multicall'
 import { makeHttpRequest } from 'utils/http'
 
 export function useCalcSharesFromAmount(amountIn: string): string {

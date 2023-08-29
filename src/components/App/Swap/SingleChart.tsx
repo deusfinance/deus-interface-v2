@@ -9,7 +9,7 @@ import { getPoolStatsApolloClient } from 'apollo/client/poolstats'
 import { ChartData, VDEUS_POOL_STATS } from 'apollo/queries'
 import { toBN } from 'utils/numbers'
 
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import Dropdown from 'components/DropDown'
 
 const Wrapper = styled.div`

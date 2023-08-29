@@ -18,7 +18,7 @@ import { useIsTransactionPending, useTransactionAdder } from 'state/transactions
 import { useWalletModalToggle } from 'state/application/hooks'
 import { useDeusPrice } from 'state/dashboard/hooks'
 
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { useVestedAPY } from 'hooks/useVested'
 import { useVeDistContract } from 'hooks/useContract'
 import { useOwnerVeDeusNFTs } from 'hooks/useOwnerNfts'

@@ -8,7 +8,7 @@ import { WalletConnect as WalletConnectV1 } from '@web3-react/walletconnect'
 import { WalletConnect as WalletConnectV2 } from '@web3-react/walletconnect-v2'
 import { Connector } from '@web3-react/types'
 
-import { SolidlyChains, FALLBACK_CHAIN_ID, SupportedChainId, RPC_URLS } from 'constants/chains'
+import { APP_CHAIN_IDS, FALLBACK_CHAIN_ID, SupportedChainId, RPC_URLS } from 'constants/chains'
 import { RPC_PROVIDERS } from 'constants/providers'
 import { Z_INDEX } from 'theme'
 
@@ -94,13 +94,15 @@ const [web3WalletConnectV2, web3WalletConnectHooksV2] = initializeConnector<Wall
     }),
     {}
   )
+  console.log({ RPC_URLS_WITHOUT_FALLBACKS })
+
   return new WalletConnectV2({
     actions,
     options: {
       projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID as string,
       chains: [defaultChainId],
       rpc: RPC_URLS_WITHOUT_FALLBACKS,
-      optionalChains: SolidlyChains,
+      optionalChains: APP_CHAIN_IDS,
       showQrModal: true,
       rpcMap: RPC_URLS_WITHOUT_FALLBACKS,
       qrModalOptions: {

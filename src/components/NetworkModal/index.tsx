@@ -5,10 +5,10 @@ import { darken } from 'polished'
 
 import { useModalOpen, useNetworkModalToggle } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 
-import { SupportedChainId, SolidlyChains } from 'constants/chains'
+import { SupportedChainId, APP_CHAIN_IDS } from 'constants/chains'
 import { ChainInfo } from 'constants/chainInfo'
 import { Modal, ModalHeader } from 'components/Modal'
 import { IconWrapper, GreenCircle } from 'components/Icons'
@@ -75,7 +75,7 @@ export default function NetworkModal() {
   const rpcChangerCallback = useRpcChangerCallback()
 
   const chainMap = useMemo(() => {
-    return Object.values(SolidlyChains).reduce((acc: SupportedChainId[], id: SupportedChainId, index, arr) => {
+    return Object.values(APP_CHAIN_IDS).reduce((acc: SupportedChainId[], id: SupportedChainId, index, arr) => {
       if (chainId === id) {
         return [id, ...acc]
       }

@@ -13,6 +13,9 @@ export const AVERAGE_L1_BLOCK_TIME = 12000
 
 export const INFO_URL = 'https://info.deus.finance'
 
+// transaction popup dismissal amounts
+export const DEFAULT_TXN_DISMISS_MS = 25000
+
 //oracle api
 export const ORACLE_BASE_URL = new URL('https://oracle4.deus.finance')
 

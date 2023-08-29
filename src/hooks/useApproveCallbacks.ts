@@ -3,11 +3,11 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { MaxUint256 } from '@ethersproject/constants'
 import { Token } from '@sushiswap/core-sdk'
 
-import useWeb3React from './useWeb3'
+import { useWeb3React } from '@web3-react/core'
 
 import { usePendingApprovalList, useTransactionAdder } from 'state/transactions/hooks'
 import { calculateGasMargin } from 'utils/web3'
-import { useMultipleContractSingleData } from 'state/multicall/hooks'
+import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import ERC20_ABI from 'constants/abi/ERC20.json'
 import { Interface } from '@ethersproject/abi'
 import { getContract } from './useContract'

@@ -5,7 +5,7 @@ import { UnsupportedChainIdError } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import usePrevious from 'hooks/usePrevious'
 
 import { useModalOpen, useWalletModalToggle } from 'state/application/hooks'

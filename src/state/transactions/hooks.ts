@@ -1,66 +1,57 @@
 import { useCallback, useMemo } from 'react'
-import { useAppDispatch, useAppSelector } from 'state'
+import type { TransactionResponse } from '@ethersproject/providers'
+import { useWeb3React } from '@web3-react/core'
+import { Token } from '@uniswap/sdk-core'
 
-import useWeb3React from 'hooks/useWeb3'
+import { useAppDispatch, useAppSelector } from 'state'
 import { addTransaction } from './actions'
-import { TransactionDetails, TransactionState, Approval, Vest } from './reducer'
+import { TransactionDetails, TransactionInfo, TransactionType } from './types'
 
 export interface TransactionResponseLight {
   hash: string
 }
 
+// helper that can take a ethers library transaction response and add it to the list of transactions
 export function useTransactionAdder(): (
-  response: TransactionResponseLight,
-  customData?: {
-    summary?: string
-    approval?: Approval
-    vest?: Vest
-  }
+  response: TransactionResponse,
+  info: TransactionInfo,
+  summary?: string
 ) => void {
   const { chainId, account } = useWeb3React()
   const dispatch = useAppDispatch()
 
   return useCallback(
-    (
-      response: TransactionResponseLight,
-      {
-        summary,
-        approval,
-        vest,
-      }: {
-        summary?: string
-        approval?: Approval
-        vest?: Vest
-      } = {}
-    ) => {
-      if (!account || !chainId) return
+    (response: TransactionResponse, info: TransactionInfo, summary?: string) => {
+      if (!account) return
+      if (!chainId) return
 
       const { hash } = response
       if (!hash) {
-        throw new Error('No transaction hash found.')
+        throw Error('No transaction hash found.')
       }
-
-      dispatch(
-        addTransaction({
-          hash,
-          from: account,
-          chainId,
-          summary,
-          approval,
-          vest,
-        })
-      )
+      dispatch(addTransaction({ hash, from: account, info, chainId, summary }))
     },
-    [dispatch, chainId, account]
+    [account, chainId, dispatch]
   )
 }
 
-// Returns all the transactions for the current chain
+// returns all the transactions for the current chain
 export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
   const { chainId } = useWeb3React()
 
-  const state: TransactionState = useAppSelector((state) => state.transactions)
+  const state = useAppSelector((state) => state.transactions)
+
   return chainId ? state[chainId] ?? {} : {}
+}
+
+export function useTransaction(transactionHash?: string): TransactionDetails | undefined {
+  const allTransactions = useAllTransactions()
+
+  if (!transactionHash) {
+    return undefined
+  }
+
+  return allTransactions[transactionHash]
 }
 
 /**
@@ -68,20 +59,31 @@ export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
  * @param tx to check for recency
  */
 export function isTransactionRecent(tx: TransactionDetails): boolean {
-  return new Date().getTime() - tx.addedTime < 86400000
+  return new Date().getTime() - tx.addedTime < 86_400_000
 }
 
 export function useIsTransactionPending(transactionHash?: string): boolean {
   const transactions = useAllTransactions()
+
   if (!transactionHash || !transactions[transactionHash]) return false
+
   return !transactions[transactionHash].receipt
 }
 
-export function useHasPendingApproval(tokenAddress: string | null | undefined, spender: string | null | undefined) {
+export function useIsTransactionConfirmed(transactionHash?: string): boolean {
+  const transactions = useAllTransactions()
+
+  if (!transactionHash || !transactions[transactionHash]) return false
+
+  return Boolean(transactions[transactionHash].receipt)
+}
+
+// returns whether a token has a pending approval transaction
+export function useHasPendingApproval(token?: Token, spender?: string): boolean {
   const allTransactions = useAllTransactions()
   return useMemo(
     () =>
-      typeof tokenAddress === 'string' &&
+      typeof token?.address === 'string' &&
       typeof spender === 'string' &&
       Object.keys(allTransactions).some((hash) => {
         const tx = allTransactions[hash]
@@ -89,92 +91,10 @@ export function useHasPendingApproval(tokenAddress: string | null | undefined, s
         if (tx.receipt) {
           return false
         } else {
-          const approval = tx.approval
-          if (!approval) return false
-          return approval.spender === spender && approval.tokenAddress === tokenAddress && isTransactionRecent(tx)
+          if (tx.info.type !== TransactionType.APPROVAL) return false
+          return tx.info.spender === spender && tx.info.tokenAddress === token.address && isTransactionRecent(tx)
         }
       }),
-    [allTransactions, spender, tokenAddress]
-  )
-}
-
-export function useHasPendingVest(hash: string | null | undefined, isSingleTx?: boolean) {
-  const allTransactions = useAllTransactions()
-  return useMemo(() => {
-    if (!isSingleTx) {
-      return (
-        typeof hash === 'string' &&
-        Object.keys(allTransactions).some((hash) => {
-          const tx = allTransactions[hash]
-          if (!tx) return false
-          if (tx.receipt) {
-            return false
-          } else {
-            const vest = tx.vest
-            if (!vest) return false
-            return vest.hash === hash && isTransactionRecent(tx)
-          }
-        })
-      )
-    } else {
-      const selectedHash = Object.keys(allTransactions).find((hashItem) => hashItem === hash)
-      if (selectedHash) {
-        const tx = allTransactions[selectedHash]
-        if (!tx) return false
-        if (tx?.receipt) {
-          return false
-        } else {
-          const vest = tx?.vest
-          if (!vest) return false
-          return vest.hash === hash && isTransactionRecent(tx)
-        }
-      }
-    }
-  }, [allTransactions, hash, isSingleTx])
-}
-
-// export function useHasPendingMint(addressMap: string | null | undefined) {
-//   const allTransactions = useAllTransactions()
-//   return useMemo(
-//     () =>
-//       typeof addressMap === 'string' &&
-//       Object.keys(allTransactions).some((hash) => {
-//         const tx = allTransactions[hash]
-//         if (!tx) return false
-//         if (tx.receipt) {
-//           return false
-//         } else {
-//           const mint = tx.mint
-//           if (!mint) return false
-//           return mint.addressMap === addressMap && isTransactionRecent(tx)
-//         }
-//       }),
-//     [allTransactions, addressMap]
-//   )
-// }
-
-export function usePendingApprovalList(currenciesAddress: string[] | null, spender: string | null | undefined) {
-  const allTransactions = useAllTransactions()
-  return useMemo(
-    () =>
-      typeof spender === 'string' &&
-      currenciesAddress &&
-      Object.keys(allTransactions).some((hash) => {
-        const tx = allTransactions[hash]
-        if (!tx) return false
-        if (tx.receipt) {
-          return false
-        } else {
-          const approval = tx.approval
-          if (!approval) return false
-          return (
-            approval.spender === spender &&
-            approval.tokenAddress &&
-            currenciesAddress?.includes(approval.tokenAddress) &&
-            isTransactionRecent(tx)
-          )
-        }
-      }),
-    [allTransactions, spender, currenciesAddress]
+    [allTransactions, spender, token?.address]
   )
 }

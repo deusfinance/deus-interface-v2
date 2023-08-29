@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { useTheme } from 'styled-components'
 
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { ExplorerDataType } from 'utils/explorers'
 import { FALLBACK_CHAIN_ID } from 'constants/chains'
 import { ExplorerLink } from 'components/Link'

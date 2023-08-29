@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import useWeb3React from './useWeb3'
+import { useWeb3React } from '@web3-react/core'
 
 import { useHasPendingApproval, useTransactionAdder } from 'state/transactions/hooks'
 import BigNumber from 'bignumber.js'

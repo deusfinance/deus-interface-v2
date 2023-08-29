@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
+import { useWeb3React } from '@web3-react/core'
 
-import useWeb3React from './useWeb3'
 import { ChainInfo } from 'constants/chainInfo'
 import { SupportedChainId } from 'constants/chains'
 
 export default function useRpcChangerCallback() {
-  const { account, chainId, library } = useWeb3React()
+  const { account, chainId, provider } = useWeb3React()
 
   return useCallback(
     async (targetChainId: SupportedChainId) => {
@@ -15,7 +15,7 @@ export default function useRpcChangerCallback() {
       if (!window.ethereum) return false
 
       try {
-        await library?.send('wallet_switchEthereumChain', [{ chainId: ChainInfo[targetChainId].chainId }])
+        await provider?.send('wallet_switchEthereumChain', [{ chainId: ChainInfo[targetChainId].chainId }])
         return true
       } catch (switchError) {
         // This error code indicates that the chain has not been added to MetaMask.
@@ -27,7 +27,7 @@ export default function useRpcChangerCallback() {
               nativeCurrency: ChainInfo[targetChainId].nativeCurrency,
               rpcUrls: [ChainInfo[targetChainId].rpcUrl],
             }
-            await library?.send('wallet_addEthereumChain', [params, account])
+            await provider?.send('wallet_addEthereumChain', [params, account])
             return true
           } catch (addError) {
             console.log('Something went wrong trying to add a new  network RPC: ')
@@ -36,12 +36,12 @@ export default function useRpcChangerCallback() {
           }
         }
         // handle other "switch" errors
-        console.log('Unknown error occured when trying to change the network RPC: ')
+        console.log('Unknown error occurred when trying to change the network RPC: ')
         console.error(switchError)
         return false
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
-    [chainId, library, account]
+    [chainId, provider, account]
   )
 }

@@ -8,8 +8,7 @@ import { CLQDR_ADDRESS } from 'constants/addresses'
 import { tryParseAmount } from 'utils/parse'
 import { formatBalance, toBN } from 'utils/numbers'
 
-import { useCurrencyBalance } from 'state/wallet/hooks'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
 import useApproveCallback, { ApprovalState } from 'hooks/useApproveCallback'
 import { useDepositLQDRCallback } from 'hooks/useClqdrCallback'
@@ -36,6 +35,7 @@ import DataDropdown from 'components/App/CLqdr/DataDropdown'
 import ContractsDropdown from 'components/App/CLqdr/ContractsDropdown'
 import SingleChart from 'components/App/CLqdr/SingleChart'
 import ReadMore from 'components/App/CLqdr/ReadMore'
+import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 
 const Wrapper = styled(MainWrapper)`
   width: 100%;

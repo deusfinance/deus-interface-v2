@@ -3,7 +3,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { MaxUint256 } from '@ethersproject/constants'
 import { Currency } from '@sushiswap/core-sdk'
 
-import useWeb3React from './useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { useERC20Contract } from './useContract'
 import useERC20Allowance from './useERC20Allowance'
 

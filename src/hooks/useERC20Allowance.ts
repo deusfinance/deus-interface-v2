@@ -2,9 +2,9 @@ import { useMemo, useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Token } from '@sushiswap/core-sdk'
 
-import useWeb3React from './useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { useERC20Contract } from './useContract'
-import { useSingleCallResult } from 'state/multicall/hooks'
+import { useSingleCallResult } from 'lib/hooks/multicall'
 
 export default function useERC20Allowance(token: Token | undefined, spender: string | undefined): BigNumber {
   const { account } = useWeb3React()

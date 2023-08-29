@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { useStablePoolContract } from 'hooks/useContract'
-import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
+import { useSingleContractMultipleMethods } from 'lib/hooks/multicall'
 import { formatUnits } from '@ethersproject/units'
 import { BN_TEN, toBN } from 'utils/numbers'
 import { LiquidityPool } from 'constants/stakingPools'

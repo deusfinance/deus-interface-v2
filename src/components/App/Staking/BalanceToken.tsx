@@ -7,7 +7,7 @@ import { LiquidityType } from 'constants/stakingPools'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useDeiPrice, useDeusPrice } from 'state/dashboard/hooks'
 
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
 import { usePoolBalances } from 'hooks/useStablePoolInfo'
 

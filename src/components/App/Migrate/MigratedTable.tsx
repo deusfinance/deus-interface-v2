@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 import { Token } from '@sushiswap/core-sdk'
 
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import TokenBox from './TokenBox'
 import { makeHttpRequest } from 'utils/http'
 import { ChainInfo } from 'constants/chainInfo'

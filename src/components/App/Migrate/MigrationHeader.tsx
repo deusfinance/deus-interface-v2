@@ -5,12 +5,12 @@ import Image from 'next/image'
 import { Z_INDEX } from 'theme'
 
 import { ChainInfo } from 'constants/chainInfo'
-import { MigrationChains } from 'constants/chains'
+import { MIGRATION_CHAIN_IDS } from 'constants/chains'
 
 import { Row } from 'components/Row'
 import { Card } from 'components/Card'
 import { ChevronDown as NavToggleIcon } from 'components/Icons'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 import useOnOutsideClick from 'hooks/useOnOutsideClick'
 
@@ -123,7 +123,7 @@ export default function MigrationHeader() {
     <Row ref={ref}>
       <MainBoxTitle>Tokens Available to Migrate</MainBoxTitle>
 
-      {chainId && MigrationChains.includes(chainId) && (
+      {chainId && MIGRATION_CHAIN_IDS.includes(chainId) && (
         <ConnectedChain>
           {!isMobile && <span>Connected Chain:</span>}
           <ChainWrap onClick={() => toggle()}>
@@ -140,7 +140,7 @@ export default function MigrationHeader() {
           </ChainWrap>
           <div>
             <InlineModal isOpen={isOpen}>
-              {MigrationChains.map((chain, index) => {
+              {MIGRATION_CHAIN_IDS.map((chain, index) => {
                 return (
                   <div key={index}>
                     <InlineRow active={Number(ChainInfo[chain].chainId) === chainId} onClick={() => toggle()}>

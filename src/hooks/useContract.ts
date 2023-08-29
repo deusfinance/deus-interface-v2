@@ -1,89 +1,38 @@
 import { useMemo } from 'react'
-import { isAddress } from '@ethersproject/address'
 import { Contract } from '@ethersproject/contracts'
-import { AddressZero } from '@ethersproject/constants'
-import { Web3Provider } from '@ethersproject/providers'
-
-import useWeb3React from './useWeb3'
-
-import ERC20_ABI from 'constants/abi/ERC20.json'
-import ERC20_BYTES32_ABI from 'constants/abi/ERC20'
-import MULTICALL2_ABI from 'constants/abi/MULTICALL2.json'
-import VEDEUS_ABI from 'constants/abi/VEDEUS.json'
-import VEDEUS_MIGRATOR_ABI from 'constants/abi/VEDEUS_MIGRATOR_ABI.json'
-import VE_DIST_ABI from 'constants/abi/VE_DIST.json'
-import SWAP_ABI from 'constants/abi/SWAP_ABI.json'
-import MasterChefV2_ABI from 'constants/abi/MasterChefV2.json'
-import VEDEUS_MULTI_REWARDER_ERC20_ABI from 'constants/abi/VEDEUS_MULTI_REWARDER_ERC20.json'
-import MIGRATOR_ABI from 'constants/abi/MIGRATOR.json'
-
-import CLQDR_ABI from 'constants/abi/CLQDR_ABI.json'
-import CLQDR_FULL_ABI from 'constants/abi/CLQDR_FULL_ABI.json'
-
-import { Providers } from 'constants/providers'
+import { useContract } from 'lib/hooks/contract'
+import { useWeb3React } from '@web3-react/core'
 
 import {
   Multicall2,
-  ZERO_ADDRESS,
   veDEUS,
   veDist,
   CLQDR_ADDRESS,
   veDEUSMigrator,
   veDEUSMultiRewarderERC20,
   Migrator,
+  MULTICALL3_ADDRESS,
 } from 'constants/addresses'
 import { LiquidityType, StakingType } from 'constants/stakingPools'
+import {
+  CLQDR_ABI,
+  CLQDR_FULL_ABI,
+  ERC20_ABI,
+  ERC20_BYTES32_ABI,
+  MIGRATOR_ABI,
+  MULTICALL2_ABI,
+  MULTICALL3_ABI,
+  MasterChefV2_ABI,
+  SWAP_ABI,
+  VEDEUS_ABI,
+  VEDEUS_MIGRATOR_ABI,
+  VEDEUS_MULTI_REWARDER_ERC20_ABI,
+  VE_DIST_ABI,
+} from 'constants/abi'
 
-export function useContract<T extends Contract = Contract>(
-  addressOrAddressMap: string | null | undefined,
-  ABI: any,
-  withSignerIfPossible = true
-): T | null {
-  const { library, account, chainId } = useWeb3React()
-
-  return useMemo(() => {
-    if (!addressOrAddressMap || !ABI || !library || !chainId) return null
-    let address: string | undefined
-    if (typeof addressOrAddressMap === 'string') address = addressOrAddressMap
-    else address = addressOrAddressMap[chainId]
-    if (!address || address === ZERO_ADDRESS) return null
-    try {
-      return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined)
-    } catch (error) {
-      console.error('Failed to get contract', error)
-      return null
-    }
-  }, [addressOrAddressMap, ABI, library, chainId, withSignerIfPossible, account]) as T
-}
-
-export function getProviderOrSigner(library: any, account?: string): any {
-  return account ? getSigner(library, account) : library
-}
-
-export function getSigner(library: any, account: string): any {
-  return library.getSigner(account).connectUnchecked()
-}
-
-export function getContract(
-  address: string,
-  ABI: any,
-  library: Web3Provider,
-  account?: string,
-  targetChainId?: number
-): Contract | null {
-  if (!isAddress(address) || address === AddressZero) {
-    throw new Error(`Invalid 'address' parameter '${address}'.`)
-  }
-
-  let providerOrSigner
-  if (targetChainId) {
-    providerOrSigner = getProviderOrSigner(Providers[targetChainId], account)
-  } else {
-    providerOrSigner = getProviderOrSigner(library, account)
-  }
-
-  return new Contract(address, ABI, providerOrSigner) as any
-}
+/* ###################################
+                      HELPER
+################################### */
 
 export function useERC20Contract(tokenAddress: string | null | undefined, withSignerIfPossible?: boolean) {
   return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible)
@@ -92,6 +41,14 @@ export function useERC20Contract(tokenAddress: string | null | undefined, withSi
 export function useBytes32TokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
   return useContract(tokenAddress, ERC20_BYTES32_ABI, withSignerIfPossible)
 }
+
+export function useMultiCall3Contract() {
+  return useContract(MULTICALL3_ADDRESS, MULTICALL3_ABI, false)
+}
+
+/* ###################################
+                              DEUS 
+################################### */
 
 export function useVeDeusContract() {
   const { chainId } = useWeb3React()
@@ -124,8 +81,7 @@ export function useCLQDRContract() {
 }
 
 export function usePerpetualEscrowTokenReceiverContract() {
-  const address = '0xcd3563cd8de2602701d5d9f960db30710fcc4053'
-  return useContract(address, CLQDR_FULL_ABI)
+  return useContract('0xcd3563cd8de2602701d5d9f960db30710fcc4053', CLQDR_FULL_ABI)
 }
 
 export function useStablePoolContract(pool: LiquidityType) {

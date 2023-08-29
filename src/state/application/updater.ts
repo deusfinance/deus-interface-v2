@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { Block } from '@ethersproject/abstract-provider'
 import { useAppDispatch } from 'state'
 
-import useWeb3React from 'hooks/useWeb3'
-import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import { useWeb3React } from '@web3-react/core'
+import useIsWindowVisible from 'lib/hooks/useIsWindowVisible'
 import useDebounce from 'hooks/useDebounce'
 import { SupportedChainId } from 'constants/chains'
 

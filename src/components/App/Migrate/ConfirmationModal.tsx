@@ -7,7 +7,7 @@ import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 import { migrationTermOfServiceSignatureMessage } from 'constants/misc'
 import { useSignMessage } from 'hooks/useMigrateCallback'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { ExternalLink } from 'components/Link'
 
 const MainModal = styled(Modal)`

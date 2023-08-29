@@ -1,35 +1,9 @@
 import { createReducer } from '@reduxjs/toolkit'
 
-import {
-  addTransaction,
-  clearAllTransactions,
-  checkedTransaction,
-  finalizeTransaction,
-  SerializableTransactionReceipt,
-} from './actions'
+import { TransactionDetails } from './types'
+import { addTransaction, clearAllTransactions, checkedTransaction, finalizeTransaction } from './actions'
 
 const now = () => new Date().getTime()
-
-export interface Approval {
-  tokenAddress?: string
-  spender?: string
-}
-
-export interface Vest {
-  hash?: string
-}
-
-export interface TransactionDetails {
-  hash: string
-  approval?: Approval
-  vest?: Vest
-  summary?: string
-  receipt?: SerializableTransactionReceipt
-  lastCheckedBlockNumber?: number
-  addedTime: number
-  confirmedTime?: number
-  from: string
-}
 
 export interface TransactionState {
   [chainId: number]: {
@@ -41,20 +15,19 @@ export const initialState: TransactionState = {}
 
 export default createReducer(initialState, (builder) =>
   builder
-    .addCase(addTransaction, (state, { payload: { chainId, from, hash, summary, approval, vest } }) => {
+    .addCase(addTransaction, (state, { payload: { chainId, from, info, hash, summary } }) => {
       if (state[chainId]?.[hash]) {
         throw new Error('Attempted to add existing transaction.')
       }
       const txs = state[chainId] ?? {}
       txs[hash] = {
         hash,
+        info,
         from,
         summary,
-        approval,
-        vest,
         addedTime: now(),
       }
-      txs[hash] = { hash, from, summary, approval, vest, addedTime: now() }
+      txs[hash] = { hash, info, from, summary, addedTime: now() }
       state[chainId] = txs
     })
     .addCase(clearAllTransactions, (transactions, { payload: { chainId } }) => {

@@ -28,7 +28,7 @@ import LOADING_LOCK_MOBILE from '/public/static/images/pages/veDEUS/loadingLockM
 import { formatAmount, formatBalance } from 'utils/numbers'
 import { DefaultHandlerError } from 'utils/parseError'
 import { ButtonText, TopBorder, TopBorderWrap } from 'components/App/Vest'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import MigrateSingleNFT from './MigrateSingleNFT'
 
 dayjs.extend(utc)

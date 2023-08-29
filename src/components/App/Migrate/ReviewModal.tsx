@@ -14,7 +14,7 @@ import { useMigratorContract } from 'hooks/useContract'
 import { ApprovalState, useApproveCallbacksWithAmounts } from 'hooks/useApproveCallbacks'
 import useMigrateCallback from 'hooks/useMigrateCallback'
 import { ModalMigrationButton } from './ManualReviewModal'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { useWalletModalToggle } from 'state/application/hooks'
 import { formatBalance, toBN } from 'utils/numbers'
 

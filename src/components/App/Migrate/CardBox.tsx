@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { DEUS_TOKEN, Tokens, SYMM_TOKEN } from 'constants/tokens'
 import MigrationCard from './MigrationCard'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { useTokenBalances } from 'state/wallet/hooks'
 import { useBalancedRatio, useGetUserMigrations } from 'hooks/useMigratePage'
 import CongratsCard from './CongratsCard'

@@ -12,7 +12,7 @@ import { MigrationTypes, MigrationVersion } from 'constants/migrationOptions'
 import { MigrationOptions } from 'constants/migrationOptions'
 import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
 
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 
 import { BaseButton, PrimaryButtonWide } from 'components/Button'

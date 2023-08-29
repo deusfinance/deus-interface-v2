@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
+import { useSingleContractMultipleMethods } from 'lib/hooks/multicall'
 import { useStablePoolContract } from 'hooks/useContract'
 
 import { BN_TEN, toBN } from 'utils/numbers'

@@ -4,7 +4,7 @@ import { Currency } from '@sushiswap/core-sdk'
 import { isMobile } from 'react-device-detect'
 
 import useCurrencyLogo from 'hooks/useCurrencyLogo'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { maxAmountSpend } from 'utils/currency'
 

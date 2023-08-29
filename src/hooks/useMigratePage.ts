@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { formatUnits } from '@ethersproject/units'
 import BigNumber from 'bignumber.js'
 
-import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
+import { useSingleContractMultipleMethods } from 'lib/hooks/multicall'
 import { useMigratorContract } from './useContract'
 import { BN_ZERO, toBN } from 'utils/numbers'
 import { useMigrationData } from 'context/Migration'

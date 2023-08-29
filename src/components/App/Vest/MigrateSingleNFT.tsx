@@ -7,7 +7,7 @@ import { DefaultHandlerError } from 'utils/parseError'
 import { useHasPendingVest, useTransactionAdder } from 'state/transactions/hooks'
 import { useVeDeusMigratorContract } from 'hooks/useContract'
 import { useERC721ApproveAllCallback, ApprovalState } from 'hooks/useApproveNftCallback2'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 
 import { Modal, ModalHeader } from 'components/Modal'
 import { PrimaryButtonWide } from 'components/Button'

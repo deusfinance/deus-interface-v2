@@ -8,7 +8,7 @@ import ImageWithFallback from 'components/ImageWithFallback'
 import { useClqdrData, useFetchFirebirdData } from 'hooks/useClqdrPage'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { cLQDR_TOKEN, LQDR_TOKEN } from 'constants/tokens'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { formatBalance } from 'utils/numbers'
 
 const MainWrapper = styled.div`

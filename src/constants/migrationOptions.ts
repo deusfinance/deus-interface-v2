@@ -1,6 +1,6 @@
 import { Tokens } from 'constants/tokens'
 import { TokenMap } from 'utils/token'
-import { MigrationChains, SupportedChainId } from './chains'
+import { MIGRATION_CHAIN_IDS, SupportedChainId } from './chains'
 
 export enum MigrationVersion {
   DUAL,
@@ -21,7 +21,7 @@ export const MigrationOptions: MigrationTypes[] = [
     id: 0,
     token: Tokens['DEUS'],
     version: MigrationVersion.ONLY_SYMM,
-    supportedChains: MigrationChains,
+    supportedChains: MIGRATION_CHAIN_IDS,
     divideRatio: 1,
     active: true,
   },
@@ -37,7 +37,7 @@ export const MigrationOptions: MigrationTypes[] = [
     id: 2,
     token: Tokens['LEGACY_DEI'],
     version: MigrationVersion.DUAL,
-    supportedChains: MigrationChains,
+    supportedChains: MIGRATION_CHAIN_IDS,
     divideRatio: 217,
     active: true,
   },

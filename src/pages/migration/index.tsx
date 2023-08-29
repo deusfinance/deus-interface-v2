@@ -10,7 +10,7 @@ import MigrationHeader from 'components/App/Migrate/MigrationHeader'
 import { MigrationWrap } from 'context/Migration'
 import ConfirmationModal from 'components/App/Migrate/ConfirmationModal'
 import MigratedTable from 'components/App/Migrate/MigratedTable'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 
 export const Container = styled.div`
   display: flex;

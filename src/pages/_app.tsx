@@ -4,15 +4,15 @@ import dynamic from 'next/dynamic'
 import type { AppProps } from 'next/app'
 import { Toaster } from 'react-hot-toast'
 
-import Web3ReactManager from '../components/Web3ReactManager'
 import ThemeProvider, { ThemedGlobalStyle } from '../theme'
 import Popups from '../components/Popups'
 import Layout from '../components/Layout'
 import { ModalBackground } from '../components/Modal'
-import { useAnalyticsReporter } from '../components/analytics'
+// import { useAnalyticsReporter } from '../components/analytics'
 import LiveChat from 'components/LiveChat'
 
 import store from '../state'
+import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 // import { getLibrary } from '../utils/library'
 
 const Updaters = dynamic(() => import('../state/updaters'), { ssr: false })
@@ -25,24 +25,25 @@ if (typeof window !== 'undefined' && !!window.ethereum) {
 }
 
 export default function MyApp({ Component, pageProps }: AppProps) {
-  useAnalyticsReporter()
+  // TODO: is it ok to remove it?
+  // useAnalyticsReporter()
   return (
     <ReduxProvider store={store}>
       <Web3Provider>
-        <Web3ReactManager>
-          <ThemeProvider>
-            <ThemedGlobalStyle />
-            <ModalProvider backgroundComponent={ModalBackground}>
-              <Toaster position="bottom-center" />
+        <ThemeProvider>
+          <ThemedGlobalStyle />
+          <ModalProvider backgroundComponent={ModalBackground}>
+            <Toaster position="bottom-center" />
+            <BlockNumberProvider>
               <LiveChat />
               <Popups />
               <Updaters />
               <Layout>
                 <Component {...pageProps} />
               </Layout>
-            </ModalProvider>
-          </ThemeProvider>
-        </Web3ReactManager>
+            </BlockNumberProvider>
+          </ModalProvider>
+        </ThemeProvider>
       </Web3Provider>
     </ReduxProvider>
   )

@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import styled from 'styled-components'
 
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { useAppDispatch } from 'state'
 import { injected, walletlink } from '../../connectors'
 import { SUPPORTED_WALLETS } from 'constants/wallet'

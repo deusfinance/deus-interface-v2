@@ -12,7 +12,7 @@ import { BaseButton } from 'components/Button'
 import ThenaAirdrop from 'constants/files/5vDEUSthreshold_uThenaAirdrop.json'
 import { AddressZero } from '@ethersproject/constants'
 import { isAddress } from 'utils/address'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 
 const Container = styled(MainContainer)`
   min-height: 90vh;

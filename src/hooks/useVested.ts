@@ -5,7 +5,7 @@ import utc from 'dayjs/plugin/utc'
 import BigNumber from 'bignumber.js'
 
 import { useDeusMetrics } from 'state/dashboard/hooks'
-import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
+import { useSingleContractMultipleMethods } from 'lib/hooks/multicall'
 import { useSupportedChainId } from './useSupportedChainId'
 import { useVeDeusContract } from './useContract'
 import { useDeusPrice } from 'state/dashboard/hooks'

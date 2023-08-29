@@ -61,9 +61,10 @@ export const SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedCh
   (id) => typeof id === 'number'
 ) as SupportedChainId[]
 
-export const SolidlyChains = [SupportedChainId.FANTOM]
+export const APP_CHAIN_IDS = [SupportedChainId.FANTOM]
+export const FALLBACK_CHAIN_ID = SupportedChainId.FANTOM
 
-export const MigrationChains = [
+export const MIGRATION_CHAIN_IDS = [
   SupportedChainId.FANTOM,
   SupportedChainId.ARBITRUM,
   SupportedChainId.MAINNET,
@@ -74,14 +75,12 @@ export const MigrationChains = [
   SupportedChainId.KAVA,
 ]
 
-export const FALLBACK_CHAIN_ID = SupportedChainId.FANTOM
-
 export const NETWORK_URLS: { [chainId: number]: string } = {
   [SupportedChainId.FANTOM]: 'https://rpc.ftm.tools',
 }
 
 export const RPC_URLS: { [key in SupportedChainId]: string[] } = {
-  [SupportedChainId.ARBITRUM]: [`https://arb1.arbitrum.io/rpc`],
+  [SupportedChainId.ARBITRUM]: ['https://arb1.arbitrum.io/rpc'],
   [SupportedChainId.FANTOM]: ['https://rpc.ftm.tools'],
   [SupportedChainId.MAINNET]: ['https://ethereum.publicnode.com'],
   [SupportedChainId.AVALANCHE]: ['https://avalanche.public-rpc.com'],

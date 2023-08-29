@@ -2,11 +2,11 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import Image from 'next/image'
 
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { ChainInfo } from 'constants/chainInfo'
 
 import { NavButton } from 'components/Button'
-import { SolidlyChains } from 'constants/chains'
+import { APP_CHAIN_IDS } from 'constants/chains'
 import { useRouter } from 'next/router'
 
 const Button = styled(NavButton)`
@@ -45,7 +45,7 @@ export default function Web3Network() {
     return chainId && chainId in ChainInfo ? ChainInfo[chainId] : null
   }, [chainId])
 
-  if (!account || !chainId || !Chain || (!SolidlyChains.includes(chainId) && !router.route.includes('/migration'))) {
+  if (!account || !chainId || !Chain || (!APP_CHAIN_IDS.includes(chainId) && !router.route.includes('/migration'))) {
     return null
   }
 

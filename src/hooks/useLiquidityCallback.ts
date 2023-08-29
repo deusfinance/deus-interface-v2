@@ -3,7 +3,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider'
 import toast from 'react-hot-toast'
 
 import { useTransactionAdder } from 'state/transactions/hooks'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { useStablePoolContract } from 'hooks/useContract'
 import { calculateGasMargin } from 'utils/web3'
 import { DefaultHandlerError } from 'utils/parseError'

@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { useWalletModalToggle } from 'state/application/hooks'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 
 import { PrimaryButton } from 'components/Button'
 import { SupportedChainId } from 'constants/chains'

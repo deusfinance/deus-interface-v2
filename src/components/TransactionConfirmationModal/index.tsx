@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components'
 import { AlertTriangle } from 'react-feather'
 import { Currency } from '@sushiswap/core-sdk'
 
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import useAddTokenToMetaMask from 'hooks/useAddTokenToMetaMask'
 
 import { ExplorerDataType } from 'utils/explorers'
