@@ -1,12 +1,3 @@
-// import { JsonRpcProvider, StaticJsonRpcProvider } from '@ethersproject/providers'
-
-// import { NETWORK_URLS } from './chains'
-
-// export const Providers: { [chainId: number]: JsonRpcProvider } = {
-//   [SupportedChainId.RINKEBY]: new JsonRpcProvider(NETWORK_URLS[SupportedChainId.RINKEBY]),
-//   [SupportedChainId.FANTOM]: new JsonRpcProvider(NETWORK_URLS[SupportedChainId.FANTOM]),
-// }
-
 import { deepCopy } from '@ethersproject/properties'
 // This is the only file which should instantiate new Providers.
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
@@ -14,9 +5,8 @@ import { StaticJsonRpcProvider } from '@ethersproject/providers'
 import { isPlain } from '@reduxjs/toolkit'
 
 import { AVERAGE_L1_BLOCK_TIME } from './misc'
-import { SupportedChainId } from './chains'
-import { RPC_URLS } from './chains'
-import { ChainInfo } from './chainInfo'
+import { CHAIN_IDS_TO_NAMES, SupportedChainId } from './chains'
+import { RPC_URLS } from './networks'
 
 class AppJsonRpcProvider extends StaticJsonRpcProvider {
   private _blockCache = new Map<string, Promise<any>>()
@@ -31,7 +21,7 @@ class AppJsonRpcProvider extends StaticJsonRpcProvider {
 
   constructor(chainId: SupportedChainId) {
     // Including networkish allows ethers to skip the initial detectNetwork call.
-    super(RPC_URLS[chainId][0], /* networkish= */ { chainId, name: ChainInfo[chainId].label })
+    super(RPC_URLS[chainId][0], /* networkish= */ { chainId, name: CHAIN_IDS_TO_NAMES[chainId] })
 
     // NB: Third-party providers (eg MetaMask) will have their own polling intervals,
     // which should be left as-is to allow operations (eg transaction confirmation) to resolve faster.

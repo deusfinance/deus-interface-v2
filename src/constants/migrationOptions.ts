@@ -43,7 +43,7 @@ export const MigrationOptions: MigrationTypes[] = [
   },
   {
     id: 3,
-    token: Tokens['bDEI_TOKEN'],
+    token: Tokens['bDEI'],
     version: MigrationVersion.DUAL,
     supportedChains: [SupportedChainId.FANTOM, SupportedChainId.ARBITRUM],
     divideRatio: 185,

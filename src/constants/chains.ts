@@ -57,9 +57,24 @@ export enum SupportedChainId {
   KAVA = 2222,
 }
 
+export const CHAIN_IDS_TO_NAMES = {
+  [SupportedChainId.FANTOM]: 'Fantom',
+  [SupportedChainId.ARBITRUM]: 'Arbitrum',
+  [SupportedChainId.MAINNET]: 'Ethereum',
+  [SupportedChainId.POLYGON]: 'Polygon',
+  [SupportedChainId.BSC]: 'BSC',
+  [SupportedChainId.AVALANCHE]: 'Avalanche',
+  [SupportedChainId.METIS]: 'Metis',
+  [SupportedChainId.KAVA]: 'Kava',
+}
+
 export const SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedChainId).filter(
   (id) => typeof id === 'number'
 ) as SupportedChainId[]
+
+export function isSupportedChain(chainId: number | null | undefined): chainId is SupportedChainId {
+  return !!chainId && !!SupportedChainId[chainId]
+}
 
 export const APP_CHAIN_IDS = [SupportedChainId.FANTOM]
 export const FALLBACK_CHAIN_ID = SupportedChainId.FANTOM
@@ -74,18 +89,3 @@ export const MIGRATION_CHAIN_IDS = [
   SupportedChainId.METIS,
   SupportedChainId.KAVA,
 ]
-
-export const NETWORK_URLS: { [chainId: number]: string } = {
-  [SupportedChainId.FANTOM]: 'https://rpc.ftm.tools',
-}
-
-export const RPC_URLS: { [key in SupportedChainId]: string[] } = {
-  [SupportedChainId.ARBITRUM]: ['https://arb1.arbitrum.io/rpc'],
-  [SupportedChainId.FANTOM]: ['https://rpc.ftm.tools'],
-  [SupportedChainId.MAINNET]: ['https://ethereum.publicnode.com'],
-  [SupportedChainId.AVALANCHE]: ['https://avalanche.public-rpc.com'],
-  [SupportedChainId.BSC]: ['https://rpc.ankr.com/bsc'],
-  [SupportedChainId.KAVA]: ['wss://wevm.kava.io'],
-  [SupportedChainId.METIS]: ['https://andromeda.metis.io/?owner=1088'],
-  [SupportedChainId.POLYGON]: ['https://polygon.llamarpc.com'],
-}

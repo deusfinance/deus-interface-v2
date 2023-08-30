@@ -8,7 +8,8 @@ import { WalletConnect as WalletConnectV1 } from '@web3-react/walletconnect'
 import { WalletConnect as WalletConnectV2 } from '@web3-react/walletconnect-v2'
 import { Connector } from '@web3-react/types'
 
-import { APP_CHAIN_IDS, FALLBACK_CHAIN_ID, SupportedChainId, RPC_URLS } from 'constants/chains'
+import { APP_CHAIN_IDS, FALLBACK_CHAIN_ID } from 'constants/chains'
+import { RPC_URLS } from 'constants/networks'
 import { RPC_PROVIDERS } from 'constants/providers'
 import { Z_INDEX } from 'theme'
 
@@ -82,8 +83,6 @@ export const walletConnectConnectionV1: Connection = {
   type: ConnectionType.WALLET_CONNECT,
 }
 
-const defaultChainId = SupportedChainId.ARBITRUM
-
 const [web3WalletConnectV2, web3WalletConnectHooksV2] = initializeConnector<WalletConnectV2>((actions) => {
   // Avoid testing for the best URL by only passing a single URL per chain.
   // Otherwise, WC will not initialize until all URLs have been tested (see getBestUrl in web3-react).
@@ -94,12 +93,11 @@ const [web3WalletConnectV2, web3WalletConnectHooksV2] = initializeConnector<Wall
     }),
     {}
   )
-
   return new WalletConnectV2({
     actions,
     options: {
       projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID as string,
-      chains: [defaultChainId],
+      chains: APP_CHAIN_IDS,
       rpc: RPC_URLS_WITHOUT_FALLBACKS,
       optionalChains: APP_CHAIN_IDS,
       showQrModal: true,
@@ -133,7 +131,7 @@ const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<Coinba
       actions,
       options: {
         url: RPC_URLS[FALLBACK_CHAIN_ID][0],
-        appName: 'DEUS',
+        appName: 'DEUS Finance',
         reloadOnDisconnect: false,
       },
       onError,

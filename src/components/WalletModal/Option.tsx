@@ -83,7 +83,7 @@ export default function Option({
   onClick?: () => void
   color: string
   header: React.ReactNode
-  subheader: React.ReactNode | null
+  subheader?: React.ReactNode | null
   icon: StaticImageData
   active?: boolean
 }) {

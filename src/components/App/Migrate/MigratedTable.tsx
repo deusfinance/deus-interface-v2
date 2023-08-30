@@ -349,7 +349,7 @@ export default function MigratedTable() {
               amountToDeusOnly = amountToDeusOnly.plus(migrationInfoAmount_toDeus)
               break
 
-            case Tokens['bDEI_TOKEN'][value.chainId].address:
+            case Tokens['bDEI'][value.chainId].address:
               amount = amount.plus(value.amount / MigrationOptions[3].divideRatio)
               amountToDeusOnly = amountToDeusOnly.plus(migrationInfoAmount_toDeus.div(MigrationOptions[3].divideRatio))
               break
@@ -373,7 +373,7 @@ export default function MigratedTable() {
                 amountToDeusOnly = amountToDeusOnly.plus(value.amount)
               break
 
-            case Tokens['bDEI_TOKEN'][value.chainId].address:
+            case Tokens['bDEI'][value.chainId].address:
               amount = amount.plus(value.amount / MigrationOptions[3].divideRatio)
               if (value.migrationPreference === MigrationType.DEUS)
                 amountToDeusOnly = amountToDeusOnly.plus(value.amount / MigrationOptions[3].divideRatio)
@@ -577,7 +577,7 @@ function TableRow({ migrationInfo, chain }: { migrationInfo: IMigrationInfo; cha
   )
 }
 
-const MigrationSourceTokens = [Tokens['DEUS'], Tokens['XDEUS'], Tokens['LEGACY_DEI'], Tokens['bDEI_TOKEN']]
+const MigrationSourceTokens = [Tokens['DEUS'], Tokens['XDEUS'], Tokens['LEGACY_DEI'], Tokens['bDEI']]
 
 const TableRowContent = ({ migrationInfo, chain }: { migrationInfo: IMigrationInfo; chain: number }) => {
   const { tokenAddress, amount: migratedAmount } = migrationInfo

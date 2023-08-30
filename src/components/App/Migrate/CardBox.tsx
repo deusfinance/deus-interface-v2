@@ -84,7 +84,7 @@ export default function CardBox() {
       ) : (
         <CongratsCard
           destinationTokens={[DEUS_TOKEN, SYMM_TOKEN]}
-          sourceTokens={[Tokens['DEUS'], Tokens['XDEUS'], Tokens['LEGACY_DEI'], Tokens['bDEI_TOKEN']]}
+          sourceTokens={[Tokens['DEUS'], Tokens['XDEUS'], Tokens['LEGACY_DEI'], Tokens['bDEI']]}
           deus={userTotalMigration_toDeus.toFixed(2).toString()}
           symm={userTotalMigration_toSymm.toFixed(2).toString()}
         />

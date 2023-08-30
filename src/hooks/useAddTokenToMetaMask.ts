@@ -7,13 +7,13 @@ export default function useAddTokenToMetaMask(currencyToAdd: Currency | undefine
   addToken: () => void
   success: boolean | undefined
 } {
-  const { library } = useWeb3React()
+  const { provider } = useWeb3React()
   const token: Token | undefined = currencyToAdd?.wrapped
   const [success, setSuccess] = useState<boolean | undefined>()
 
   const addToken = useCallback(() => {
-    if (library && library.provider.isMetaMask && library.provider.request && token) {
-      library.provider
+    if (provider && provider.provider.isMetaMask && provider.provider.request && token) {
+      provider.provider
         .request({
           method: 'wallet_watchAsset',
           params: {
@@ -33,7 +33,7 @@ export default function useAddTokenToMetaMask(currencyToAdd: Currency | undefine
     } else {
       setSuccess(false)
     }
-  }, [library, token])
+  }, [provider, token])
 
   return { addToken, success }
 }
