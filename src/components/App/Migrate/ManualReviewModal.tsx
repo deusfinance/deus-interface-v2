@@ -10,7 +10,7 @@ import { MigrationButton } from './MigrationCard'
 import ImageWithFallback from 'components/ImageWithFallback'
 import useCurrencyLogo from 'hooks/useCurrencyLogo'
 import { useWeb3React } from '@web3-react/core'
-import { useCurrencyBalance } from 'state/wallet/hooks'
+import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 import { tryParseAmount } from 'utils/parse'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
 import { ApprovalState, useApproveCallbackWithAmount } from 'hooks/useApproveCallback'
@@ -155,8 +155,8 @@ export default function ManualReviewModal({
 
   const insufficientBalance = useMemo(() => {
     if (!inputAmount) return false
-    return inputBalance?.lessThan(inputAmount)
-  }, [inputBalance, inputAmount])
+    return inputBalance?.lessThan(amountIn)
+  }, [inputAmount, inputBalance, amountIn])
 
   function getApproveButton(): JSX.Element | null {
     if (!isSupportedChainId || !account) {

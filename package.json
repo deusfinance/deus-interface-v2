@@ -69,7 +69,8 @@
     "redux-persist": "^6.0.0",
     "styled-components": "^5.3.0",
     "styled-react-modal": "^2.1.0",
-    "tiny-invariant": "^1.1.0",
+    "tiny-invariant": "^1.2.0",
+    "ua-parser-js": "^0.7.28",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

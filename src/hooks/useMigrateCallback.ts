@@ -25,7 +25,7 @@ export default function useMigrateCallback(
   callback: null | (() => Promise<string>)
   error: string | null
 } {
-  const { account, chainId, library } = useWeb3React()
+  const { account, chainId, provider } = useWeb3React()
   const addTransaction = useTransactionAdder()
 
   const migrationType = useMemo(() => {
@@ -38,7 +38,7 @@ export default function useMigrateCallback(
 
   const constructCall = useCallback(() => {
     try {
-      if (!account || !library || !migratorContract || !inputAmount) {
+      if (!account || !provider || !migratorContract || !inputAmount) {
         throw new Error('Missing dependencies.')
       }
 
@@ -84,10 +84,10 @@ export default function useMigrateCallback(
         error,
       }
     }
-  }, [account, library, migratorContract, inputAmount, inputCurrency, migrationType])
+  }, [account, provider, migratorContract, inputAmount, inputCurrency, migrationType])
 
   return useMemo(() => {
-    if (!account || !chainId || !library || !migratorContract || !inputCurrency) {
+    if (!account || !chainId || !provider || !migratorContract || !inputCurrency) {
       return {
         state: TransactionCallbackState.INVALID,
         callback: null,
@@ -125,10 +125,10 @@ export default function useMigrateCallback(
 
         console.log('MIGRATE TRANSACTION', { tx, value })
 
-        const estimatedGas = await library.estimateGas(tx).catch((gasError) => {
+        const estimatedGas = await provider.estimateGas(tx).catch((gasError) => {
           console.debug('Gas estimate failed, trying eth_call to extract error', call)
 
-          return library
+          return provider
             .call(tx)
             .then((result) => {
               console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
@@ -149,7 +149,7 @@ export default function useMigrateCallback(
           throw new Error('Unexpected error. Could not estimate gas for this transaction.')
         }
 
-        return library
+        return provider
           .getSigner()
           .sendTransaction({
             ...tx,
@@ -180,7 +180,7 @@ export default function useMigrateCallback(
           })
       },
     }
-  }, [account, chainId, library, migratorContract, inputCurrency, inputAmount, constructCall, addTransaction])
+  }, [account, chainId, provider, migratorContract, inputCurrency, inputAmount, constructCall, addTransaction])
 }
 
 export function useSignMessage(message: string): {
@@ -188,12 +188,12 @@ export function useSignMessage(message: string): {
   callback: null | (() => Promise<string>)
   error: string | null
 } {
-  const { account, chainId, library } = useWeb3React()
+  const { account, chainId, provider } = useWeb3React()
 
   const migratorContract = useMigratorContract()
 
   return useMemo(() => {
-    if (!account || !chainId || !library || !migratorContract) {
+    if (!account || !chainId || !provider || !migratorContract) {
       return {
         state: TransactionCallbackState.INVALID,
         callback: null,
@@ -214,7 +214,7 @@ export function useSignMessage(message: string): {
       callback: async function onMigrate(): Promise<string> {
         console.log('onSign callback')
 
-        return library
+        return provider
           .getSigner()
           .signMessage(message)
           .then((response) => {
@@ -233,5 +233,5 @@ export function useSignMessage(message: string): {
           })
       },
     }
-  }, [account, chainId, library, migratorContract, message])
+  }, [account, chainId, provider, migratorContract, message])
 }

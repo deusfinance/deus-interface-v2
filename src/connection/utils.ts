@@ -7,7 +7,7 @@ import {
   networkConnection,
   walletConnectConnectionV1,
   walletConnectConnectionV2,
-  // okxConnection,
+  okxConnection,
 } from 'connection'
 
 export function getIsInjected(): boolean {
@@ -35,7 +35,7 @@ export function getIsCoinbaseWallet(): boolean {
 }
 
 const CONNECTIONS = [
-  // okxConnection,
+  okxConnection,
   gnosisSafeConnection,
   injectedConnection,
   coinbaseWalletConnection,
@@ -64,8 +64,8 @@ export function getConnection(c: Connector | ConnectionType) {
         return networkConnection
       case ConnectionType.GNOSIS_SAFE:
         return gnosisSafeConnection
-      // case ConnectionType.OKX:
-      //   return okxConnection
+      case ConnectionType.OKX:
+        return okxConnection
     }
   }
 }
@@ -75,8 +75,8 @@ export function getConnectionName(
   hasMetaMaskExtension: boolean = getIsMetaMaskWallet()
 ) {
   switch (connectionType) {
-    // case ConnectionType.OKX:
-    //   return 'OKX Wallet'
+    case ConnectionType.OKX:
+      return 'OKX Wallet'
     case ConnectionType.INJECTED:
       return hasMetaMaskExtension ? 'MetaMask' : 'Browser Wallet'
     case ConnectionType.COINBASE_WALLET:

@@ -1,30 +1,39 @@
 import { useCallback } from 'react'
 import styled from 'styled-components'
-
+import { darken } from 'polished'
 import { useWeb3React } from '@web3-react/core'
+
 import { useAppDispatch } from 'state'
-import { injected, walletlink } from '../../connectors'
-import { SUPPORTED_WALLETS } from 'constants/wallet'
+import {
+  getConnection,
+  getConnectionName,
+  getIsCoinbaseWallet,
+  getIsMetaMaskWallet,
+  getIsOKXWallet,
+} from 'connection/utils'
 import { ExplorerDataType } from 'utils/explorers'
-import { truncateAddress } from 'utils/account'
+import { truncateAddress } from 'utils/address'
 import { clearAllTransactions } from 'state/transactions/actions'
 
 import { Connected as ConnectedIcon, Link } from 'components/Icons'
 import { ExplorerLink } from 'components/Link'
 import Copy from 'components/Copy'
 import Transaction from './Transaction'
-import { RowEnd, RowStart } from 'components/Row'
-import { darken } from 'polished'
+import { RowBetween, RowEnd, RowStart } from 'components/Row'
+
+//todo: read this
+import { removeConnectedWallet } from 'state/wallet/reducer'
+import { updateSelectedWallet } from 'state/user/actions'
+import { isMobile } from 'utils/userAgent'
 
 const AccountWrapper = styled.div`
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
   position: relative;
-  border: 1px solid ${({ theme }) => theme.border2};
-  border-radius: 10px;
-  padding: 12px 21px;
-  height: 125px;
+  background: ${({ theme }) => theme.bg4};
+  padding: 8px 12px;
+  gap: 12px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 1rem;
@@ -32,41 +41,41 @@ const AccountWrapper = styled.div`
   `};
 `
 
-const Row = styled.div`
-  display: flex;
+const Row = styled(RowBetween)`
   flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
 `
 
 const Connected = styled.button`
-  background: ${({ theme }) => theme.specialBG1};
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-size: 1rem;
+  color: ${({ theme }) => theme.text1};
+  font-size: 12px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 0.7rem;
   `};
 `
 
+const ButtonsWrapper = styled(RowEnd)`
+  width: unset;
+  flex-direction: row-reverse;
+  gap: 10px;
+`
+
 const ActionButton = styled.button<{
   hide?: boolean
   disable?: boolean
 }>`
-  background: ${({ theme }) => theme.bg1};
   border-radius: 4px;
   outline: none;
   display: ${({ hide }) => (hide ? 'none' : 'flex')};
   justify-content: center;
   align-items: center;
-  font-size: 0.7rem;
-  padding: 0.2rem 0.5rem;
+  font-size: 10px;
+  padding: 4px 12px;
   text-align: center;
-  color: white;
-  width: 61px;
-  height: 24px;
+  color: ${({ theme }) => theme.text1};
+  background: ${({ theme }) => theme.bg5};
+  width: 70px;
+  height: 20px;
 
   &:hover {
     background: ${({ theme }) => theme.bg3};
@@ -84,7 +93,6 @@ const ActionButton = styled.button<{
 const ClearButton = styled(ActionButton)`
   font-size: 0.6rem;
   padding: 0.2rem 0.5rem;
-  font-family: 'Inter';
   font-size: 12px;
 
   color: ${({ theme }) => theme.text2};
@@ -93,33 +101,22 @@ const ClearButton = styled(ActionButton)`
 const MiddleRow = styled(RowStart)`
   color: ${({ theme }) => theme.text1};
   gap: 5px;
-  font-size: 1rem;
+  font-size: 14px;
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
       font-size: 12px;
   `}
 `
 
-const BottomRow = styled(Row)`
-  justify-content: flex-start;
-  align-items: center;
-  color: ${({ theme }) => theme.text2};
-  gap: 5px;
-  font-size: 0.8rem;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    font-size: 0.7rem;
-  `}
-`
-
 const AddressLink = styled.div`
-  font-family: 'Inter';
   display: flex;
   align-items: center;
   gap: 4px;
   margin-left: 10px;
-  font-weight: 500;
-  font-size: 12px;
+  font-size: 14px;
   white-space: nowrap;
+  text-align: right;
+  text-decoration-line: underline;
 
   color: ${({ theme }) => theme.text1};
 
@@ -137,14 +134,15 @@ const AddressLink = styled.div`
 const TransactionsWrapper = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  background: ${({ theme }) => theme.bg1};
+  justify-content: center;
+  background: ${({ theme }) => theme.bg0};
   color: ${({ theme }) => theme.text3};
-  padding: 40px 4px;
+  padding: 40px 60px;
 
   overflow: scroll;
   gap: 5px;
 
-  & > * {
+  /* & > * {
     &:first-child {
       display: flex;
       flex-flow: row nowrap;
@@ -156,15 +154,15 @@ const TransactionsWrapper = styled.div`
     &:not(:first-child) {
       max-height: 200px;
     }
-  }
+  } */
 `
 
 const AllTransactions = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  background: ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => theme.bg0};
   color: ${({ theme }) => theme.text3};
-  padding: 11px 24px;
+  padding: 16px 12px;
 
   overflow: scroll;
   gap: 4px;
@@ -207,25 +205,27 @@ interface AccountDetailsProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
   openOptions: () => void
+  ENSName?: string
 }
 
 export default function AccountDetails({
   pendingTransactions,
   confirmedTransactions,
   openOptions,
+  ENSName,
 }: AccountDetailsProps) {
   const { chainId, account, connector } = useWeb3React()
+  const connectionType = getConnection(connector).type
+
   const dispatch = useAppDispatch()
 
-  function getConnectorName() {
-    const isMetaMask = !!(window.ethereum && window.ethereum.isMetaMask)
-    const name = Object.keys(SUPPORTED_WALLETS)
-      .filter(
-        (k) =>
-          SUPPORTED_WALLETS[k].connector === connector && (connector !== injected || isMetaMask === (k === 'METAMASK'))
-      )
-      .map((k) => SUPPORTED_WALLETS[k].name)[0]
-    return <Connected>Connected with {name}</Connected>
+  const hasMetaMaskExtension = getIsMetaMaskWallet()
+  const hasOKXxtension = getIsOKXWallet()
+  const hasCoinbaseExtension = getIsCoinbaseWallet()
+  const isInjectedMobileBrowser = (hasOKXxtension || hasMetaMaskExtension || hasCoinbaseExtension) && isMobile
+
+  function formatConnectorName() {
+    return <Connected>Connected with {getConnectionName(connectionType, hasMetaMaskExtension)}</Connected>
   }
 
   const clearAllTransactionsCallback = useCallback(() => {
@@ -236,12 +236,21 @@ export default function AccountDetails({
     <>
       <AccountWrapper>
         <Row>
-          {getConnectorName()}
-          <div>
-            {connector !== injected && connector !== walletlink && (
+          {formatConnectorName()}
+          <ButtonsWrapper>
+            {!isInjectedMobileBrowser && (
               <ActionButton
                 onClick={() => {
-                  ;(connector as any).close()
+                  const walletType = getConnectionName(getConnection(connector).type)
+                  if (connector.deactivate) {
+                    connector.deactivate()
+                  } else {
+                    connector.resetState()
+                  }
+
+                  dispatch(updateSelectedWallet({ wallet: undefined }))
+                  dispatch(removeConnectedWallet({ account, walletType }))
+                  openOptions()
                 }}
               >
                 Disconnect
@@ -254,11 +263,11 @@ export default function AccountDetails({
             >
               Change
             </ActionButton>
-          </div>
+          </ButtonsWrapper>
         </Row>
         <MiddleRow>
           {connector && <ConnectedIcon style={{ minWidth: '7px' }} />}
-          {account && truncateAddress(account)}
+          {ENSName ? ENSName : account && truncateAddress(account)}
           {account && <Copy toCopy={account} text={''} />}
           {chainId && account && (
             <RowEnd>
@@ -271,7 +280,6 @@ export default function AccountDetails({
             </RowEnd>
           )}
         </MiddleRow>
-        <BottomRow></BottomRow>
       </AccountWrapper>
       {!!pendingTransactions.length || !!confirmedTransactions.length ? (
         <AllTransactions>

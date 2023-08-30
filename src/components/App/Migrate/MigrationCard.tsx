@@ -1,14 +1,13 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
-
 import { Token } from '@sushiswap/core-sdk'
 
 import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
 import { Row, RowCenter } from 'components/Row'
 import ImageWithFallback from 'components/ImageWithFallback'
 import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
-import { useTokenBalances } from 'state/wallet/hooks'
+import { useTokenBalances } from 'lib/hooks/useCurrencyBalance'
 import { BaseButton } from 'components/Button'
 import ReviewModal from './ReviewModal'
 import { useWeb3React } from '@web3-react/core'
@@ -353,7 +352,6 @@ export default function MigrationCard({
         firstDescription={firstDescription}
         secondDescription={secondDescription}
       />
-
       <LargeMigrationCard
         destinationLogos={destinationLogos}
         destinationTokens={destinationTokens}
@@ -364,7 +362,6 @@ export default function MigrationCard({
         firstDescription={firstDescription}
         secondDescription={secondDescription}
       />
-
       <ReviewModal
         title={'Full ' + reviewText}
         isOpen={isOpenReviewModal}

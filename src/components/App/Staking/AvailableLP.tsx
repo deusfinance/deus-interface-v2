@@ -11,7 +11,7 @@ import { DefaultHandlerError } from 'utils/parseError'
 
 import { useWalletModalToggle } from 'state/application/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
-import { useCurrencyBalance } from 'state/wallet/hooks'
+import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 
 import { useWeb3React } from '@web3-react/core'
 import { useMasterChefContract } from 'hooks/useContract'

@@ -98,7 +98,9 @@ export default function ReviewModal({
 
   const amountsToApprove = useMemo(() => {
     return inputTokens.map((token) => {
-      const amount = toBN(amountsIn[token?.address]?.quotient.toString()).div(1e18).toString()
+      const amount = toBN(amountsIn[token?.address]?.quotient.toString() ?? 0)
+        .div(1e18)
+        .toString()
       if (!amount || isNaN(Number(amount))) return '0'
       return amount
     })

@@ -5,14 +5,14 @@ import { isMobile } from 'react-device-detect'
 
 import useCurrencyLogo from 'hooks/useCurrencyLogo'
 import { useWeb3React } from '@web3-react/core'
-import { useCurrencyBalance } from 'state/wallet/hooks'
+import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 import { maxAmountSpend } from 'utils/currency'
 
 import ImageWithFallback from 'components/ImageWithFallback'
 import { NumericalInput } from 'components/Input'
 import { RowBetween } from '../../Row/index'
 import { ChevronDown as ChevronDownIcon } from 'components/Icons'
-import { formatBalance } from 'utils/numbers'
+import { formatAmount } from 'utils/numbers'
 import { NoWrapSpan } from './HeaderBox'
 
 const Wrapper = styled.div`
@@ -101,14 +101,9 @@ export default function InputBox({
   const logo = useCurrencyLogo(currency?.wrapped?.address)
   const currencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
 
-  const balanceDisplay = useMemo(() => {
-    if (!maxValue) return formatBalance(maxAmountSpend(currencyBalance)?.toExact() ?? '0')
-    return formatBalance(maxValue)
-  }, [currencyBalance, maxValue])
-
-  const balanceExact = useMemo(() => {
-    if (!maxValue) return maxAmountSpend(currencyBalance)?.toExact()
-    return maxValue
+  const [balanceExact, balanceDisplay] = useMemo(() => {
+    if (maxValue) return [maxValue, formatAmount(maxValue)]
+    return [maxAmountSpend(currencyBalance)?.toExact(), formatAmount(currencyBalance?.toExact(), 6, true)]
   }, [currencyBalance, maxValue])
 
   const handleClick = useCallback(() => {

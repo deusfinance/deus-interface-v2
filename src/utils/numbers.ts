@@ -1,84 +1,137 @@
 import BigNumber from 'bignumber.js'
-import numbro from 'numbro'
+import JSBI from 'jsbi'
 
 BigNumber.config({ EXPONENTIAL_AT: 30 })
 
-export const formatDollarAmount = (num: number | undefined, digits = 2, round = true) => {
-  if (num === 0) return '$0.00'
-  if (!num) return '-'
-  if (num < 0.001 && digits <= 3) {
-    return '<$0.001'
-  }
-
-  return numbro(num).formatCurrency({
-    average: round,
-    mantissa: num > 1000 ? 2 : digits,
-    abbreviations: {
-      million: 'M',
-      billion: 'B',
-    },
-  })
-}
-
-export const formatAmount = (num: number | undefined, digits = 2, thousandSeparated?: boolean) => {
-  if (num === 0) return '0'
-  if (!num) return '-'
-  if (num < 0.001) {
-    return '<0.001'
-  }
-  return numbro(num).format({
-    thousandSeparated: !!thousandSeparated,
-    average: !thousandSeparated,
-    mantissa: digits,
-    abbreviations: {
-      million: 'M',
-      billion: 'B',
-    },
-  })
-}
-
-export function toBN(num: BigNumber.Value): BigNumber {
-  return new BigNumber(num)
+export function toBN(number: BigNumber.Value): BigNumber {
+  return new BigNumber(number)
 }
 
 export const BN_ZERO: BigNumber = toBN('0')
 export const BN_ONE: BigNumber = toBN('1')
 export const BN_TEN: BigNumber = toBN('10')
 
-export function removeTrailingZeros(str: string): string {
-  return str.replace(/\.?0+$/, '')
+export const BIG_INT_ZERO = JSBI.BigInt(0)
+
+export enum RoundMode {
+  ROUND_UP,
+  ROUND_DOWN,
 }
 
-/**
- * Returns an amount rounded down to the least significant number by percentile.
- * Rounds down, so results are not EXACT but sufficient for displaying.
- */
-export function dynamicPrecision(
-  val: string,
-  threshold = 0.99999999 // 99.999999%
-): string {
-  const value = parseFloat(val)
-  if (isNaN(value)) return '0'
+export function removeTrailingZeros(number: BigNumber.Value): string {
+  return toBN(number).toString()
+}
 
-  if (value > 1e6) {
-    return value.toFixed(3)
-  } else if (value > 1e5) {
-    return value.toFixed(4)
-  } else if (value > 1e4) {
-    return value.toFixed(5)
-  } else if (value > 1000) {
-    return value.toFixed(6)
+export function formatFixedAmount(amount: BigNumber.Value | undefined | null, fixed = 2, separator = true): string {
+  if (amount === null || amount === undefined) return ''
+
+  const toFixed = toBN(amount).toFixed(fixed, RoundMode.ROUND_DOWN)
+  return separator ? toBN(toFixed).toFormat() : removeTrailingZeros(toFixed)
+}
+
+export function formatFixedDollarAmount(
+  amount: BigNumber.Value | undefined | null,
+  fixed = 2,
+  separator = true
+): string {
+  if (amount === null || amount === undefined) return ''
+
+  const bnAmount = toBN(amount)
+  if (bnAmount.isZero()) {
+    return '$0'
   }
 
-  let shift = 1
-  let part = 0
+  if (bnAmount.lt(0.001)) {
+    return '< $0.001'
+  }
 
-  do {
-    shift *= 10
-    part = Math.floor(value * shift) / shift
-  } while (part / value < threshold)
+  return '$' + formatFixedAmount(amount, fixed, separator)
+}
 
-  return part.toString()
+export const formatAmount = (
+  amount: BigNumber.Value | undefined | null,
+  fixed = 6,
+  separator = false,
+  zeroEmpty = false
+): string => {
+  if (amount === null || amount === undefined) return ''
+
+  const bnAmount = toBN(amount)
+  if (bnAmount.isZero() && zeroEmpty) {
+    return ''
+  }
+
+  if (BN_TEN.pow(fixed - 1).lte(bnAmount)) {
+    return separator ? toBN(amount).toFormat(0, BigNumber.ROUND_DOWN) : bnAmount.toFixed(0, BigNumber.ROUND_DOWN)
+  }
+
+  const rounded = bnAmount.sd(fixed, BigNumber.ROUND_DOWN)
+  return separator ? toBN(rounded.toFixed()).toFormat() : rounded.toFixed()
+}
+
+export const formatCurrency = (
+  amount: BigNumber.Value | undefined | null,
+  fixed = 6,
+  separator = false,
+  zeroEmpty = false
+) => {
+  if (amount === undefined || amount === null || amount === '') return '-'
+  const bnAmount = toBN(amount)
+  if (bnAmount.isZero()) {
+    return zeroEmpty ? '' : '0'
+  }
+  if (bnAmount.lt(0.001)) {
+    return '< 0.001'
+  }
+  if (bnAmount.gte(1e9)) {
+    return formatAmount(bnAmount.div(1e9), fixed, separator, zeroEmpty) + 'B'
+  }
+  if (bnAmount.gte(1e6)) {
+    return formatAmount(bnAmount.div(1e6), fixed, separator, zeroEmpty) + 'M'
+  }
+  if (bnAmount.gte(1e3)) {
+    return formatAmount(bnAmount.div(1e3), fixed, separator, zeroEmpty) + 'K'
+  }
+  return formatAmount(bnAmount, fixed, separator, zeroEmpty)
+}
+
+export const formatDollarAmount = (amount: BigNumber.Value | undefined | null, zeroEmpty = false) => {
+  const fixed = amount && toBN(amount).gt(1000) ? 4 : 3
+  const formattedAmount = formatCurrency(amount, fixed, true, zeroEmpty)
+
+  if (formattedAmount === '' || formattedAmount === 'NaN') return ''
+
+  if (formattedAmount === '< 0.001') {
+    return '< $0.001'
+  }
+  return formattedAmount !== '-' ? `$${formattedAmount}` : '-'
+}
+
+//TODO: toFixed is using round mode
+export function toWei(amount: BigNumber.Value | null, decimals = 18): string {
+  return toWeiBN(amount, decimals).toFixed(0)
+}
+
+export function toWeiBN(amount: BigNumber.Value | null, decimals = 18): BigNumber {
+  if (amount === undefined || amount === null || amount === '') return BN_ZERO
+  if (typeof amount === 'string' && isNaN(Number(amount))) {
+    return BN_ZERO
+  }
+  return toBN(amount).times(BN_TEN.pow(decimals))
+}
+
+export function fromWei(amount: BigNumber.Value | null, decimals = 18, defaultOutput?: string): string {
+  if (amount === undefined || amount === null || amount === '') return '0'
+  if (typeof amount === 'string' && isNaN(Number(amount))) {
+    return defaultOutput ?? '0'
+  }
+
+  return toBN(amount).div(BN_TEN.pow(decimals)).toString()
+}
+
+export function formatPrice(number: BigNumber.Value, pricePrecision = 2, separator = true): string {
+  const toFixed = toBN(number).toFixed(pricePrecision, RoundMode.ROUND_DOWN)
+  return separator ? toBN(toFixed).toFormat() : removeTrailingZeros(toFixed)
 }
 
 export const formatBalance = (balance: BigNumber.Value | undefined | null, fixed = 6): string => {

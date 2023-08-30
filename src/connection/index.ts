@@ -1,4 +1,4 @@
-// import { OKX } from './OkProvider'
+import { OKX } from './OkProvider'
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
 import { initializeConnector, Web3ReactHooks } from '@web3-react/core'
 import { GnosisSafe } from '@web3-react/gnosis-safe'
@@ -94,7 +94,6 @@ const [web3WalletConnectV2, web3WalletConnectHooksV2] = initializeConnector<Wall
     }),
     {}
   )
-  console.log({ RPC_URLS_WITHOUT_FALLBACKS })
 
   return new WalletConnectV2({
     actions,
@@ -147,9 +146,9 @@ export const coinbaseWalletConnection: Connection = {
   type: ConnectionType.COINBASE_WALLET,
 }
 
-// export const [okxWallet, okxWalletHooks] = initializeConnector<OKX>((actions) => new OKX({ actions }))
-// export const okxConnection: Connection = {
-//   connector: okxWallet,
-//   hooks: okxWalletHooks,
-//   type: ConnectionType.OKX,
-// }
+export const [okxWallet, okxWalletHooks] = initializeConnector<OKX>((actions) => new OKX({ actions }))
+export const okxConnection: Connection = {
+  connector: okxWallet,
+  hooks: okxWalletHooks,
+  type: ConnectionType.OKX,
+}

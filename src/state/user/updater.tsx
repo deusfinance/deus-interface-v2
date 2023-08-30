@@ -1,10 +1,21 @@
 import { useEffect } from 'react'
 import { useAppDispatch } from 'state'
 
+import { toBN } from 'utils/numbers'
 import { updateMatchesDarkMode } from './actions'
+import { useSetSlippageToleranceCallback, useSlippageTolerance } from './hooks'
 
 export default function Updater(): null {
   const dispatch = useAppDispatch()
+
+  const userSlippage = useSlippageTolerance()
+  const setSlippage = useSetSlippageToleranceCallback()
+
+  useEffect(() => {
+    if (toBN(userSlippage).isNaN()) {
+      setSlippage(2)
+    }
+  }, [userSlippage, setSlippage])
 
   // keep dark mode in sync with the system
   useEffect(() => {

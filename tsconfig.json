@@ -5,13 +5,15 @@
       "assets/*": ["./assets/*"],
       "components/*": ["./components/*"],
       "constants/*": ["./constants/*"],
+      "connection/*": ["./connection/*"],
       "hooks/*": ["./hooks/*"],
       "lib/*": ["./lib/*"],
       "state": ["./state"],
       "state/*": ["./state/*"],
       "theme": ["./theme"],
       "theme/*": ["./theme/*"],
-      "utils/*": ["./utils/*"]
+      "utils/*": ["./utils/*"],
+      "types/*": ["./types/*"]
     },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
