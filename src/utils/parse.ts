@@ -1,6 +1,6 @@
 import { parseUnits } from '@ethersproject/units'
 import JSBI from 'jsbi'
-import { Currency, CurrencyAmount } from '@sushiswap/core-sdk'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 export function parseBalance(value: string, decimals = 18) {
   return parseUnits(value || '0', decimals)

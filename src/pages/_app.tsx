@@ -34,8 +34,8 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           <ThemedGlobalStyle />
           <ModalProvider backgroundComponent={ModalBackground}>
             <Toaster position="bottom-center" />
+            <LiveChat />
             <BlockNumberProvider>
-              <LiveChat />
               <Popups />
               <Updaters />
               <Layout>

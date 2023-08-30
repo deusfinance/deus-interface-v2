@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { Currency, Token } from '@sushiswap/core-sdk'
+import { Currency, Token } from '@uniswap/sdk-core'
 
 import { useWeb3React } from '@web3-react/core'
 

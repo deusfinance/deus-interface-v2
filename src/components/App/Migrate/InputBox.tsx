@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import { Currency } from '@sushiswap/core-sdk'
+import { Currency } from '@uniswap/sdk-core'
 import { isMobile } from 'react-device-detect'
 
 import useCurrencyLogo from 'hooks/useCurrencyLogo'

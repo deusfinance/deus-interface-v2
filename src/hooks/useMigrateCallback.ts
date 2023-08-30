@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
-import { Currency, CurrencyAmount, NativeCurrency, Token } from '@sushiswap/core-sdk'
+import { Currency, CurrencyAmount, NativeCurrency, Token } from '@uniswap/sdk-core'
 import toast from 'react-hot-toast'
 
 import { useTransactionAdder } from 'state/transactions/hooks'

@@ -1,4 +1,4 @@
-import { Percent, JSBI } from '@sushiswap/core-sdk'
+import { Percent, JSBI } from '@uniswap/sdk-core'
 
 export const PERCENT_DENOMINATOR = 100
 export const PERCENT_SCALE = 10000

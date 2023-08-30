@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import Image from 'next/image'
-import { Token } from '@sushiswap/core-sdk'
+import { Token } from '@uniswap/sdk-core'
 
 import EMPTY_LOCK from '/public/static/images/pages/veDEUS/emptyLock.svg'
 import EMPTY_LOCK_MOBILE from '/public/static/images/pages/veDEUS/emptyLockMobile.svg'

@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components'
-import { Token } from '@sushiswap/core-sdk'
+import { Token } from '@uniswap/sdk-core'
 import { isMobile } from 'react-device-detect'
 
 import { SupportedChainId } from 'constants/chains'

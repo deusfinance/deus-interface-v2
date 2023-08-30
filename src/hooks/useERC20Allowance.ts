@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Token } from '@sushiswap/core-sdk'
+import { Token } from '@uniswap/sdk-core'
 
 import { useWeb3React } from '@web3-react/core'
 import { useERC20Contract } from './useContract'

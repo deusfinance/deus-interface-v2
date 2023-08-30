@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
-import { Token } from '@sushiswap/core-sdk'
+import { Token } from '@uniswap/sdk-core'
 
 import { ModalHeader, Modal } from 'components/Modal'
 import { Row } from 'components/Row'

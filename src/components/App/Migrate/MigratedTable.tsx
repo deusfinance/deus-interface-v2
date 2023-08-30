@@ -3,7 +3,7 @@ import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 import Image from 'next/image'
 
-import { Token } from '@sushiswap/core-sdk'
+import { Token } from '@uniswap/sdk-core'
 
 import { useWeb3React } from '@web3-react/core'
 import TokenBox from './TokenBox'

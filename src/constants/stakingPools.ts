@@ -1,4 +1,4 @@
-import { Token } from '@sushiswap/core-sdk'
+import { Token } from '@uniswap/sdk-core'
 import { DEUS_TOKEN, DEUS_VDEUS_LP_TOKEN, XDEUS_TOKEN } from 'constants/tokens'
 import { useGetDeusApy, useGetTvl, useV2GetApy } from 'hooks/useStakingInfo'
 import { useDeusPrice } from 'state/dashboard/hooks'

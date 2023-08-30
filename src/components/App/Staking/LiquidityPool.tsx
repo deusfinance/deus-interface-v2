@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
-import { Token } from '@sushiswap/core-sdk'
+import { Token } from '@uniswap/sdk-core'
 
 import { LiquidityType } from 'constants/stakingPools'
 import { LiquidityPool as LiquidityPoolList } from 'constants/stakingPools'

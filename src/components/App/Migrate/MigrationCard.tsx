@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
-import { Token } from '@sushiswap/core-sdk'
+import { Token } from '@uniswap/sdk-core'
 
 import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
 import { Row, RowCenter } from 'components/Row'

@@ -1,7 +1,7 @@
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 
-import { Token } from '@sushiswap/core-sdk'
+import { Token } from '@uniswap/sdk-core'
 
 import { RowCenter } from 'components/Row'
 import ImageWithFallback from 'components/ImageWithFallback'

@@ -1,5 +1,5 @@
 import { SupportedChainId } from 'constants/chains'
-import { Token } from '@sushiswap/core-sdk'
+import { Token } from '@uniswap/sdk-core'
 import { duplicateTokenByAddressMap, duplicateTokenByChainId, TokenMap } from 'utils/token'
 import {
   USDC_ADDRESS,

@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import Image from 'next/image'
 
-import { CurrencyAmount, Token } from '@sushiswap/core-sdk'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import SymmLogo from '/public/static/images/tokens/symm.svg'
 import DeusLogo from '/public/static/images/tokens/deus.svg'

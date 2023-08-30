@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { isMobile } from 'react-device-detect'
 
-import { Token } from '@sushiswap/core-sdk'
+import { Token } from '@uniswap/sdk-core'
 import { formatUnits } from '@ethersproject/units'
 
 import { ModalHeader, Modal } from 'components/Modal'

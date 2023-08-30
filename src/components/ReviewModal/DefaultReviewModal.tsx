@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Token } from '@sushiswap/core-sdk'
+import { Token } from '@uniswap/sdk-core'
 
 import { ModalHeader, Modal } from 'components/Modal'
 import ArrowDownDark from 'components/Icons/ArrowDownDark'

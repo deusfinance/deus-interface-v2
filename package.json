@@ -16,7 +16,6 @@
     "@livechat/widget-react": "^1.2.3",
     "@react-spring/web": "^9.3.0",
     "@reduxjs/toolkit": "^1.6.2",
-    "@sushiswap/core-sdk": "^1.0.0-canary.34",
     "@types/react-window": "^1.8.5",
     "@uniswap/redux-multicall": "^1.1.8",
     "@uniswap/sdk-core": "^4.0.6",
@@ -70,7 +69,7 @@
     "styled-components": "^5.3.0",
     "styled-react-modal": "^2.1.0",
     "tiny-invariant": "^1.2.0",
-    "ua-parser-js": "^0.7.28",
+    "ua-parser-js": "^0.7.33",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -127,9 +126,7 @@
     "typescript": "^4.5.4"
   },
   "resolutions": {
-    "@walletconnect/ethereum-provider": "1.7.1",
     "minimist": "1.2.6",
-    "ua-parser-js": "^0.7.33",
     "json5": "1.0.2"
   }
 }

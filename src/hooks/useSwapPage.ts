@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Token } from '@sushiswap/core-sdk'
+import { Token } from '@uniswap/sdk-core'
 import { formatUnits } from '@ethersproject/units'
 
 import { useSingleContractMultipleMethods } from 'lib/hooks/multicall'

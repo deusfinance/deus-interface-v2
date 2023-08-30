@@ -1,4 +1,4 @@
-import { BigintIsh, JSBI } from '@sushiswap/core-sdk'
+import { BigintIsh, JSBI } from '@uniswap/sdk-core'
 
 export function toHex(bigintIsh: BigintIsh) {
   const bigInt = JSBI.BigInt(bigintIsh)

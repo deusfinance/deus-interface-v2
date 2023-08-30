@@ -1,4 +1,4 @@
-import { Token } from '@sushiswap/core-sdk'
+import { Token } from '@uniswap/sdk-core'
 import { SupportedChainId } from 'constants/chains'
 
 export const DEUS_TOKEN = new Token(

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { useTheme } from 'styled-components'
 import { AlertTriangle } from 'react-feather'
-import { Currency } from '@sushiswap/core-sdk'
+import { Currency } from '@uniswap/sdk-core'
 
 import { useWeb3React } from '@web3-react/core'
 import useAddTokenToMetaMask from 'hooks/useAddTokenToMetaMask'

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Currency, Token } from '@sushiswap/core-sdk'
+import { Currency, Token } from '@uniswap/sdk-core'
 import { isMobile } from 'react-device-detect'
 
 import useCurrencyLogo from 'hooks/useCurrencyLogo'

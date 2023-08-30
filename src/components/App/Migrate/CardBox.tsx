@@ -9,7 +9,7 @@ import { useBalancedRatio, useGetUserMigrations } from 'hooks/useMigratePage'
 import CongratsCard from './CongratsCard'
 import { isMobile } from 'react-device-detect'
 import { MigrationOptions, MigrationVersion } from 'constants/migrationOptions'
-import { TokenMap } from '@sushiswap/core-sdk'
+import { TokenMap } from '@uniswap/sdk-core'
 
 const Wrapper = styled.div`
   display: flex;

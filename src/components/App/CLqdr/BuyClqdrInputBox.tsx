@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import React from 'react'
-import { Currency, Token } from '@sushiswap/core-sdk'
+import { Currency, Token } from '@uniswap/sdk-core'
 import { isMobile } from 'react-device-detect'
 
 import { ArrowUpRight } from 'react-feather'

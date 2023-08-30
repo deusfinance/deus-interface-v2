@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { arrayify } from '@ethersproject/bytes'
 import { parseBytes32String } from '@ethersproject/strings'
-import { Currency, NATIVE, Token, WNATIVE } from '@sushiswap/core-sdk'
+import { Currency, NATIVE, Token, WNATIVE } from '@uniswap/sdk-core'
 
 import { useWeb3React } from '@web3-react/core'
 import { isAddress } from 'utils/validate'
