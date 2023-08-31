@@ -7,9 +7,6 @@ export const updateBlockTimestamp = createAction<{
   chainId: number
   blockTimestamp: number
 }>('application/updateBlockTimestamp')
-export const updateAverageBlockTime = createAction<{ chainId: number; averageBlockTime: number }>(
-  'application/updateAverageBlockTime'
-) //PerSeconds
 export const updateChainId = createAction<{ chainId: number }>('application/updateChainId')
 export const setChainConnectivityWarning = createAction<{ chainConnectivityWarning: boolean }>(
   'application/setChainConnectivityWarning'
@@ -21,3 +18,7 @@ export const addPopup = createAction<{
   content: PopupContent
 }>('application/addPopup')
 export const removePopup = createAction<{ key: string }>('application/removePopup')
+
+export const updateTokenId = createAction<number | null>('user/updateTokenId')
+
+export const updatePositionId = createAction<number | null>('user/updatePositionId')

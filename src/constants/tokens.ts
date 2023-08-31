@@ -19,6 +19,7 @@ import {
 export const DEI_TOKEN = new Token(SupportedChainId.FANTOM, DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'DEI', 'DEI')
 
 export const USDC_TOKEN = new Token(SupportedChainId.FANTOM, USDC_ADDRESS[SupportedChainId.FANTOM], 6, 'USDC', 'USDC')
+export const USDC_TOKEN2 = duplicateTokenByAddressMap(USDC_ADDRESS, 6, 'USDC.e', 'Bridged USD Coin')
 
 export const DEUS_TOKEN = new Token(SupportedChainId.FANTOM, DEUS_ADDRESS[SupportedChainId.FANTOM], 18, 'DEUS', 'DEUS')
 
@@ -163,4 +164,18 @@ export const WRAPPED_NATIVE_CURRENCY: TokenMap = {
     'WETH',
     'Wrapped Ether'
   ),
+}
+
+//todo: remove it
+export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedChainId]?: string } } = {
+  USDC: {
+    [SupportedChainId.ARBITRUM]: USDC_TOKEN2[SupportedChainId.ARBITRUM].address,
+    [SupportedChainId.FANTOM]: USDC_TOKEN2[SupportedChainId.FANTOM].address,
+    [SupportedChainId.AVALANCHE]: USDC_TOKEN2[SupportedChainId.AVALANCHE].address,
+    [SupportedChainId.BSC]: USDC_TOKEN2[SupportedChainId.BSC].address,
+    [SupportedChainId.KAVA]: USDC_TOKEN2[SupportedChainId.KAVA].address,
+    [SupportedChainId.MAINNET]: USDC_TOKEN2[SupportedChainId.MAINNET].address,
+    [SupportedChainId.METIS]: USDC_TOKEN2[SupportedChainId.METIS].address,
+    [SupportedChainId.POLYGON]: USDC_TOKEN2[SupportedChainId.POLYGON].address,
+  },
 }

@@ -1,4 +1,5 @@
 import { createReducer, nanoid } from '@reduxjs/toolkit'
+import { SupportedChainId } from 'constants/chains'
 
 import {
   addPopup,
@@ -8,23 +9,29 @@ import {
   updateBlockNumber,
   updateBlockTimestamp,
   updateChainId,
-  updateAverageBlockTime,
+  updateTokenId,
+  updatePositionId,
 } from './actions'
 
 export enum ApplicationModal {
   WALLET = 'WALLET',
   NETWORK = 'NETWORK',
+  VE = 'VE',
   DASHBOARD = 'DASHBOARD',
-  VOUCHER = 'VOUCHER',
+  POSITION = 'POSITION',
 }
 
-export type PopupContent = {
-  txn: {
-    hash: string
-    success: boolean
-    summary?: string
-  }
-}
+export type PopupContent =
+  | {
+      txn: {
+        hash: string
+        success: boolean
+        summary?: string
+      }
+    }
+  | {
+      failedSwitchNetwork: SupportedChainId
+    }
 
 export type Popup = {
   key: string
@@ -38,9 +45,10 @@ export type PopupList = Array<Popup>
 export interface ApplicationState {
   readonly blockNumber: { readonly [chainId: number]: number }
   readonly blockTimestamp: { readonly [chainId: number]: number }
-  readonly averageBlockTime: { readonly [chainId: number]: number }
   readonly chainConnectivityWarning: boolean
   readonly chainId: number | null
+  readonly tokenId: number | null
+  readonly positionId: number | null
   readonly popupList: PopupList
   readonly openModal: ApplicationModal | null
 }
@@ -48,9 +56,10 @@ export interface ApplicationState {
 const initialState: ApplicationState = {
   blockNumber: {},
   blockTimestamp: {},
-  averageBlockTime: {},
   chainConnectivityWarning: false,
   chainId: null,
+  tokenId: null,
+  positionId: null,
   openModal: null,
   popupList: [],
 }
@@ -73,14 +82,6 @@ export default createReducer(initialState, (builder) =>
         state.blockTimestamp[chainId] = Math.max(blockTimestamp, state.blockTimestamp[chainId])
       }
     })
-    .addCase(updateAverageBlockTime, (state, action) => {
-      const { chainId, averageBlockTime } = action.payload
-      if (typeof state.averageBlockTime[chainId] !== 'number') {
-        state.averageBlockTime[chainId] = averageBlockTime
-      } else {
-        state.averageBlockTime[chainId] = Math.max(averageBlockTime, state.averageBlockTime[chainId])
-      }
-    })
     .addCase(updateChainId, (state, { payload }) => {
       const { chainId } = payload
       state.chainId = chainId
@@ -91,6 +92,12 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(setOpenModal, (state, { payload }) => {
       state.openModal = payload
+    })
+    .addCase(updateTokenId, (state, { payload }) => {
+      state.tokenId = payload
+    })
+    .addCase(updatePositionId, (state, { payload }) => {
+      state.positionId = payload
     })
     .addCase(addPopup, (state, { payload: { content, key, removeAfterMs = 25000 } }) => {
       state.popupList = (key ? state.popupList.filter((popup) => popup.key !== key) : state.popupList).concat([

@@ -1,4 +1,4 @@
-import { SupportedChainId } from './chains'
+import { AllChainId } from './chains'
 
 interface Info {
   chainId: string
@@ -15,7 +15,7 @@ interface Info {
 }
 
 export const ChainInfo: { [chainId: number]: Info } = {
-  [SupportedChainId.MAINNET]: {
+  [AllChainId.MAINNET]: {
     chainId: '0x1',
     chainName: 'Ethereum Mainnet',
     label: 'Ethereum',
@@ -28,7 +28,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://mainnet.infura.io/v3/',
     blockExplorerUrl: 'https://etherscan.io',
   },
-  [SupportedChainId.ROPSTEN]: {
+  [AllChainId.ROPSTEN]: {
     chainId: '0x3',
     chainName: 'Ropsten Testnet',
     label: 'Ropsten',
@@ -41,7 +41,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://ropsten.infura.io/v3/',
     blockExplorerUrl: 'https://ropsten.etherscan.io',
   },
-  [SupportedChainId.RINKEBY]: {
+  [AllChainId.RINKEBY]: {
     chainId: '0x4',
     chainName: 'Rinkeby Testnet',
     label: 'Rinkeby',
@@ -54,7 +54,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://rinkeby.infura.io/v3/',
     blockExplorerUrl: 'https://rinkeby.etherscan.io',
   },
-  [SupportedChainId.GOERLI]: {
+  [AllChainId.GOERLI]: {
     chainId: '0x5',
     chainName: 'Görli Testnet',
     label: 'Görli',
@@ -67,7 +67,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://goerli.infura.io/v3/',
     blockExplorerUrl: 'https://goerli.etherscan.io',
   },
-  [SupportedChainId.KOVAN]: {
+  [AllChainId.KOVAN]: {
     chainId: '0x29',
     chainName: 'Kovan Testnet',
     label: 'Kovan',
@@ -80,7 +80,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://kovan.infura.io/v3/',
     blockExplorerUrl: 'https://kovan.etherscan.io',
   },
-  [SupportedChainId.BSC]: {
+  [AllChainId.BSC]: {
     chainId: '0x38',
     chainName: 'Binance Smart Chain Mainnet',
     label: 'BSC',
@@ -93,7 +93,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://bsc-dataseed1.binance.org',
     blockExplorerUrl: 'https://bscscan.com',
   },
-  [SupportedChainId.XDAI]: {
+  [AllChainId.XDAI]: {
     chainId: '0x64',
     chainName: 'xDAI Chain',
     label: 'xDAI',
@@ -106,7 +106,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://rpc.xdaichain.com',
     blockExplorerUrl: 'https://blockscout.com/poa/xdai',
   },
-  [SupportedChainId.HARMONY]: {
+  [AllChainId.HARMONY]: {
     chainId: '0x63564C40',
     chainName: 'Harmony',
     label: 'Harmony',
@@ -119,7 +119,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://api.harmony.one',
     blockExplorerUrl: 'https://explorer.harmony.one',
   },
-  [SupportedChainId.HECO]: {
+  [AllChainId.HECO]: {
     chainId: '0x80',
     chainName: 'Huobi ECO Chain Mainnet',
     label: 'HECO',
@@ -132,7 +132,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://http-mainnet.hecochain.com',
     blockExplorerUrl: 'https://hecoinfo.com',
   },
-  [SupportedChainId.POLYGON]: {
+  [AllChainId.POLYGON]: {
     chainId: '0x89',
     chainName: 'Matic Mainnet',
     label: 'Polygon',
@@ -145,7 +145,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://polygon-rpc.com',
     blockExplorerUrl: 'https://polygonscan.com',
   },
-  [SupportedChainId.FANTOM]: {
+  [AllChainId.FANTOM]: {
     chainId: '0xfa',
     chainName: 'Fantom Opera',
     label: 'Fantom',
@@ -158,7 +158,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://rpc.ftm.tools',
     blockExplorerUrl: 'https://ftmscan.com',
   },
-  [SupportedChainId.AVALANCHE]: {
+  [AllChainId.AVALANCHE]: {
     chainId: '0xA86A',
     chainName: 'Avalanche Mainnet C-Chain',
     label: 'Avalanche',
@@ -171,7 +171,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
     blockExplorerUrl: 'https://snowtrace.io',
   },
-  [SupportedChainId.OKEX]: {
+  [AllChainId.OKEX]: {
     chainId: '0x42',
     chainName: 'OKEx',
     label: 'OKEx',
@@ -184,7 +184,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://exchainrpc.okex.org',
     blockExplorerUrl: 'https://www.oklink.com/okexchain',
   },
-  [SupportedChainId.ARBITRUM]: {
+  [AllChainId.ARBITRUM]: {
     chainId: '0xA4B1',
     chainName: 'Arbitrum',
     label: 'Arbitrum',
@@ -197,7 +197,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://arb1.arbitrum.io/rpc',
     blockExplorerUrl: 'https://arbiscan.io',
   },
-  [SupportedChainId.CELO]: {
+  [AllChainId.CELO]: {
     chainId: '0xA4EC',
     chainName: 'Celo',
     label: 'Celo',
@@ -210,7 +210,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://forno.celo.org',
     blockExplorerUrl: 'https://explorer.celo.org',
   },
-  [SupportedChainId.MOONRIVER]: {
+  [AllChainId.MOONRIVER]: {
     chainId: '0x505',
     chainName: 'Moonriver',
     label: 'Moonriver',
@@ -223,7 +223,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://rpc.moonriver.moonbeam.network',
     blockExplorerUrl: 'https://moonriver.moonscan.io',
   },
-  [SupportedChainId.FUSE]: {
+  [AllChainId.FUSE]: {
     chainId: '0x7A',
     chainName: 'Fuse',
     label: 'Fuse',
@@ -236,7 +236,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://rpc.fuse.io',
     blockExplorerUrl: 'https://explorer.fuse.io',
   },
-  [SupportedChainId.TELOS]: {
+  [AllChainId.TELOS]: {
     chainId: '0x28',
     chainName: 'Telos',
     label: 'Telos',
@@ -249,7 +249,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://mainnet.telos.net/evm',
     blockExplorerUrl: 'https://rpc1.us.telos.net/v2/explore',
   },
-  [SupportedChainId.PALM]: {
+  [AllChainId.PALM]: {
     chainId: '0x2A15C308D',
     chainName: 'Palm',
     label: 'Palm',
@@ -262,7 +262,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://palm-mainnet.infura.io/v3/da5fbfafcca14b109e2665290681e267',
     blockExplorerUrl: 'https://explorer.palm.io',
   },
-  [SupportedChainId.METIS]: {
+  [AllChainId.METIS]: {
     chainId: '0x440',
     chainName: 'Metis Andromeda Mainnet',
     label: 'Metis',
@@ -275,7 +275,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://andromeda.metis.io/?owner=1088',
     blockExplorerUrl: 'https://andromeda-explorer.metis.io/',
   },
-  [SupportedChainId.KAVA]: {
+  [AllChainId.KAVA]: {
     chainId: '0x8ae',
     chainName: 'Kava EVM',
     label: 'Kava',
@@ -288,4 +288,19 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://evm.kava.io',
     blockExplorerUrl: 'https://explorer.kava.io/',
   },
+}
+
+/**
+ * Overloaded method for returning ChainInfo given a chainID
+ * Return type varies depending on input type:
+ * number | undefined -> returns ChainInfo | undefined
+ * SupportedChainId -> returns L1ChainInfo | L2ChainInfo
+ * SupportedL1ChainId -> returns L1ChainInfo
+ * SupportedL2ChainId -> returns L2ChainInfo
+ */
+export function getChainInfo(chainId: any): any {
+  if (chainId) {
+    return ChainInfo[chainId] ?? undefined
+  }
+  return undefined
 }

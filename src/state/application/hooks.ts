@@ -1,10 +1,14 @@
 import { useCallback, useMemo } from 'react'
-import { AppState, useAppDispatch, useAppSelector } from 'state'
-
 import { useWeb3React } from '@web3-react/core'
-import { addPopup, removePopup, setOpenModal } from './actions'
-import { ApplicationModal, Popup, PopupContent, PopupList } from './reducer'
-import { REMOVE_AFTER_MS, L2_REMOVE_AFTER_MS } from 'constants/popup'
+
+import { DEFAULT_TXN_DISMISS_MS } from 'constants/misc'
+import { AppState, useAppDispatch, useAppSelector } from 'state'
+import { addPopup, removePopup, setOpenModal, updatePositionId, updateTokenId } from './actions'
+import { ApplicationState, ApplicationModal, Popup, PopupContent, PopupList } from './reducer'
+
+export function useApplicationState(): ApplicationState {
+  return useAppSelector((state) => state.application)
+}
 
 export function useBlockNumber(): number | undefined {
   const { chainId } = useWeb3React()
@@ -14,11 +18,6 @@ export function useBlockNumber(): number | undefined {
 export function useBlockTimestamp(): number | undefined {
   const { chainId } = useWeb3React()
   return useAppSelector((state: AppState) => state.application.blockTimestamp[chainId ?? -1])
-}
-
-export function useAverageBlockTime(): number | undefined {
-  const { chainId } = useWeb3React()
-  return useAppSelector((state: AppState) => state.application.averageBlockTime[chainId ?? -1])
 }
 
 export function useModalOpen(modal: ApplicationModal): boolean {
@@ -32,10 +31,6 @@ export function useToggleModal(modal: ApplicationModal): () => void {
   return useCallback(() => dispatch(setOpenModal(open ? null : modal)), [dispatch, modal, open])
 }
 
-export function useWalletModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.WALLET)
-}
-
 export function useToggleWalletModal(): () => void {
   return useToggleModal(ApplicationModal.WALLET)
 }
@@ -44,27 +39,25 @@ export function useNetworkModalToggle(): () => void {
   return useToggleModal(ApplicationModal.NETWORK)
 }
 
-export function useDashboardModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.DASHBOARD)
+export function useVeModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.VE)
 }
 
-export function useVoucherModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.VOUCHER)
+export function usePositionModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.POSITION)
 }
 
+// returns a function that allows adding a popup
 export function useAddPopup(): (content: PopupContent, key?: string, removeAfterMs?: number) => void {
   const dispatch = useAppDispatch()
-  const { chainId } = useWeb3React()
 
   return useCallback(
     (content: PopupContent, key?: string, removeAfterMs?: number) => {
-      const ms = removeAfterMs ?? chainId == 1 ? REMOVE_AFTER_MS : L2_REMOVE_AFTER_MS
-      dispatch(addPopup({ content, key, removeAfterMs: ms }))
+      dispatch(addPopup({ content, key, removeAfterMs: removeAfterMs ?? DEFAULT_TXN_DISMISS_MS }))
     },
-    [dispatch, chainId]
+    [dispatch]
   )
 }
-
 export function useRemovePopup(): (key: string) => void {
   const dispatch = useAppDispatch()
   return useCallback(
@@ -80,4 +73,35 @@ export function useActivePopups(): PopupList {
     return state.application.popupList
   })
   return useMemo(() => list.filter((item: Popup) => item.show), [list])
+}
+
+//global TokenId for veModal
+export function useTokenId(): number | null {
+  const { tokenId } = useApplicationState()
+  return useMemo(() => tokenId, [tokenId])
+}
+
+export function useSeTTokenId() {
+  const dispatch = useAppDispatch()
+  return useCallback(
+    (tokenId: number | null) => {
+      dispatch(updateTokenId(tokenId))
+    },
+    [dispatch]
+  )
+}
+
+export function usePositionId(): number | null {
+  const { positionId } = useApplicationState()
+  return useMemo(() => positionId, [positionId])
+}
+
+export function useSeTPositionId() {
+  const dispatch = useAppDispatch()
+  return useCallback(
+    (positionId: number | null) => {
+      dispatch(updatePositionId(positionId))
+    },
+    [dispatch]
+  )
 }
