@@ -431,6 +431,12 @@ export default function HeaderBox() {
         <RowCenter>
           <TitleSpan>Early Migration{isEarlyMigrationDeadlineFinished ? ': ' : ' Ends in: '}</TitleSpan>
           <TimeSpan>{isEarlyMigrationDeadlineFinished ? 'Finished' : earlyMigrationDeadline}</TimeSpan>
+          {isEarlyMigrationDeadlineFinished && (
+            <>
+              <TitleSpan> / Late Migration: </TitleSpan>
+              <TimeSpan style={{ color: 'green', fontWeight: 'bolder' }}> Ongoing </TimeSpan>
+            </>
+          )}
         </RowCenter>
       </StickyTopWrap>
     </TopWrap>
