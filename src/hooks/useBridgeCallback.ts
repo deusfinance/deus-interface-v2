@@ -5,7 +5,7 @@ import toast from 'react-hot-toast'
 
 import { useTransactionAdder } from 'state/transactions/hooks'
 import useWeb3React from 'hooks/useWeb3'
-import { useBridgeContract } from 'hooks/useContract'
+import { useBridgeContract, useAxlGatewayContract } from 'hooks/useContract'
 import { calculateGasMargin } from 'utils/web3'
 import { toHex } from 'utils/hex'
 import { DefaultHandlerError } from 'utils/parseError'
@@ -27,11 +27,11 @@ export default function useBridgeCallback(
   const { account, chainId, library } = useWeb3React()
   const addTransaction = useTransactionAdder()
 
-  const bridgeContract = useBridgeContract()
+  const axlGatewayContract = useAxlGatewayContract()
 
   const constructCall = useCallback(() => {
     try {
-      if (!account || !library || !bridgeContract || !inputAmount) {
+      if (!account || !library || !axlGatewayContract || !inputAmount) {
         throw new Error('Missing dependencies.')
       }
 
@@ -40,8 +40,8 @@ export default function useBridgeCallback(
       const args = [toHex(inputAmount.quotient)]
 
       return {
-        address: bridgeContract.address,
-        calldata: bridgeContract.interface.encodeFunctionData(methodName, args) ?? '',
+        address: axlGatewayContract.address,
+        calldata: axlGatewayContract.interface.encodeFunctionData(methodName, args) ?? '',
         value: 0,
       }
     } catch (error) {
@@ -49,10 +49,10 @@ export default function useBridgeCallback(
         error,
       }
     }
-  }, [account, library, bridgeContract, inputAmount, inputCurrency?.symbol])
+  }, [account, library, axlGatewayContract, inputAmount, inputCurrency?.symbol])
 
   return useMemo(() => {
-    if (!account || !chainId || !library || !bridgeContract || !inputCurrency) {
+    if (!account || !chainId || !library || !axlGatewayContract || !inputCurrency) {
       return {
         state: TransactionCallbackState.INVALID,
         callback: null,
@@ -113,6 +113,7 @@ export default function useBridgeCallback(
         if ('error' in estimatedGas) {
           throw new Error('Unexpected error. Could not estimate gas for this transaction.')
         }
+        // estimatedGas = BigNumber.from(500_000)
 
         return library
           .getSigner()
@@ -140,7 +141,7 @@ export default function useBridgeCallback(
           })
       },
     }
-  }, [account, chainId, library, bridgeContract, inputCurrency, inputAmount, constructCall, addTransaction])
+  }, [account, chainId, library, axlGatewayContract, inputCurrency, inputAmount, constructCall, addTransaction])
 }
 
 export function useDepositCallback(

@@ -232,7 +232,7 @@ export const Migrator: AddressMap = {
   ...constructSameAddressMap('0xe3b6CC7b76a7f67BBCcb66c010780bE0AF31Ff05', MigrationChains),
 }
 
-export const AxlDEUS_ADDRESS: AddressMap = {
+export const AxlGateway_ADDRESS: AddressMap = {
   [SupportedChainId.MAINNET]: '0x714bCAF508c6e2e405EAA379BA54804EeD401add',
   [SupportedChainId.POLYGON]: '0x8878Eb7F44f969D0ed72c6010932791397628546',
   [SupportedChainId.BSC]: '0x38A0b1cf61581f290D14016b2D37807d28CfF57b',
@@ -246,4 +246,14 @@ export const Bridge_ADDRESS: AddressMap = {
   [SupportedChainId.BSC]: '0x68FD40FB0713a35627C98ba9549c7cCed73827F9',
   [SupportedChainId.AVALANCHE]: '0x8Ccbc812394fDF26c58F3837aB419fbc315656C3',
   [SupportedChainId.KAVA]: '0x18347ae09114C30E9895b8fbbd129d9611B2DC1c',
+}
+
+export const AxlWrappedDeus_ADDRESS: AddressMap = {
+  [SupportedChainId.MAINNET]: '0x69e557b926F4eEf6d9400e36DBBFEb9600Af2880',
+  [SupportedChainId.POLYGON]: '0x12A80A285DfaBd23FC1DFe6c515F034A22d9cdCE',
+  [SupportedChainId.BSC]: '0x912922e25ac79D524734d8eC0C882B035c5b356f',
+  [SupportedChainId.AVALANCHE]: '0xf9617c66cD8a4193A4DE0a101e16D73B71828810',
+  [SupportedChainId.KAVA]: '0xebD4A18034C78A415088DF8508f102421eD693b1',
+  [SupportedChainId.FANTOM]: '0x912922e25ac79D524734d8eC0C882B035c5b356f',
+  [SupportedChainId.ARBITRUM]: '0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44',
 }
