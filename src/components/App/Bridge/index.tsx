@@ -16,7 +16,7 @@ import { PrimaryButton } from 'components/Button'
 import { DotFlashing } from 'components/Icons'
 import InputBox from 'components/InputBox'
 import { SupportedChainId } from 'constants/chains'
-import { useBridgeContract } from 'hooks/useContract'
+import { useAxlGatewayContract } from 'hooks/useContract'
 import useBridgeCallback from 'hooks/useBridgeCallback'
 import MigrationHeader from './MigrationHeader'
 
@@ -80,8 +80,8 @@ export default function SwapPage() {
   const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState<boolean>(false)
   const [awaitingBridgeConfirmation, setAwaitingBridgeConfirmation] = useState<boolean>(false)
 
-  const BridgeContract = useBridgeContract()
-  const spender = useMemo(() => BridgeContract?.address, [BridgeContract])
+  const AxlGatewayContract = useAxlGatewayContract()
+  const spender = useMemo(() => AxlGatewayContract?.address, [AxlGatewayContract])
 
   const [approvalState, approveCallback] = useApproveCallback(inputCurrency ?? undefined, spender)
   const [showApprove, showApproveLoader] = useMemo(() => {
