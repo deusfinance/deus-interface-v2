@@ -3,17 +3,16 @@ import styled from 'styled-components'
 import Hero from 'components/Hero'
 import { Container, Title } from 'components/App/StableCoin'
 import SwapPage from 'components/App/Bridge'
-import { Row } from 'components/Row'
+import InfoBox from 'components/App/Bridge/InfoBox'
 
-const Wrapper = styled(Row)`
+const Wrapper = styled.div`
   margin-top: 50px;
-  width: clamp(500px, 90%, 1000px);
-  align-items: flex-start;
+  display: flex;
   flex-direction: row;
   gap: 2rem;
-
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;
+    align-items: flex-start;
   `};
 `
 export const ButtonText = styled.span<{ gradientText?: boolean }>`
@@ -55,18 +54,6 @@ export const TopBorder = styled.div`
   width: 100%;
   display: flex;
 `
-// const ExternalLinkContainer = styled.div`
-//   align-self: center;
-//   display: flex;
-//   background: none;
-//   a {
-//     color: ${({ theme }) => theme.text2};
-//     &:hover {
-//       color: ${({ theme }) => theme.text2};
-//       text-decoration: underline;
-//     }
-//   }
-// `
 
 export default function Vest() {
   return (
@@ -75,6 +62,7 @@ export default function Vest() {
         <Title>DEUS/axlDEUS Bridge</Title>
       </Hero>
       <Wrapper>
+        <InfoBox />
         <SwapPage />
       </Wrapper>
     </Container>
