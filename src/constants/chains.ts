@@ -48,6 +48,7 @@ export enum SupportedChainId {
 
   METIS = 1088,
   KAVA = 2222,
+  BASE = 8453,
 }
 
 export const SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedChainId).filter(
@@ -73,6 +74,7 @@ export const BridgeChains = [
   SupportedChainId.POLYGON,
   SupportedChainId.AVALANCHE,
   SupportedChainId.KAVA,
+  SupportedChainId.BASE,
 ]
 
 export const FALLBACK_CHAIN_ID = SupportedChainId.FANTOM

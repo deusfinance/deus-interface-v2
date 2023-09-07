@@ -165,6 +165,7 @@ export const Tokens: { [key: string]: TokenMap } = {
     [SupportedChainId.BSC]: new Token(56, AxlWrappedDeus_ADDRESS[56], 18, 'axlDEUS', 'Axelar Wrapped DEUS'),
     [SupportedChainId.AVALANCHE]: new Token(43114, AxlWrappedDeus_ADDRESS[43114], 18, 'axlDEUS', 'Axelar Wrapped DEUS'),
     [SupportedChainId.KAVA]: new Token(2222, AxlWrappedDeus_ADDRESS[2222], 18, 'axlDEUS', 'Axelar Wrapped DEUS'),
+    [SupportedChainId.BASE]: new Token(2222, AxlWrappedDeus_ADDRESS[8453], 18, 'axlDEUS', 'Axelar Wrapped DEUS'),
   },
 
   WNATIVE: {

@@ -115,6 +115,7 @@ export const Multicall2: AddressMap = {
   [SupportedChainId.AVALANCHE]: '0xcA11bde05977b3631167028862bE2a173976CA11',
   [SupportedChainId.METIS]: '0x3CB9ae281E511759832a074A92634d2486E6a886',
   [SupportedChainId.KAVA]: '0x731e0A91Ec7F87868124D85d87D92Aa5cF058351',
+  [SupportedChainId.BASE]: '0xD9a273Dd2723a14B63b575ED9e5ac8E1B76f5f12',
 }
 
 export const BaseV1Factory: AddressMap = {
@@ -238,6 +239,7 @@ export const AxlGateway_ADDRESS: AddressMap = {
   [SupportedChainId.BSC]: '0x38A0b1cf61581f290D14016b2D37807d28CfF57b',
   [SupportedChainId.AVALANCHE]: '0x44Fa47B1787Db408803ED688c5dC7Eb88199050a',
   [SupportedChainId.KAVA]: '0xC8c1073Bb5b83f28778E5844469604BD0c4E293d',
+  [SupportedChainId.BASE]: '0x0013efdA0FE688894b85707B89d7F0fb1a39f354',
 }
 
 export const Bridge_ADDRESS: AddressMap = {
@@ -256,4 +258,5 @@ export const AxlWrappedDeus_ADDRESS: AddressMap = {
   [SupportedChainId.KAVA]: '0xebD4A18034C78A415088DF8508f102421eD693b1',
   [SupportedChainId.FANTOM]: '0x912922e25ac79D524734d8eC0C882B035c5b356f',
   [SupportedChainId.ARBITRUM]: '0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44',
+  [SupportedChainId.BASE]: '0xebD4A18034C78A415088DF8508f102421eD693b1',
 }
