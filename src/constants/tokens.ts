@@ -13,6 +13,7 @@ import {
   SOLID_TOKEN_ADDRESS,
   LEGACY_DEI_ADDRESS,
   BDEI_ADDRESS,
+  AxlWrappedDeus_ADDRESS,
 } from './addresses'
 
 export const DEI_TOKEN = new Token(SupportedChainId.FANTOM, DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'DEI', 'DEI')
@@ -157,6 +158,16 @@ export const Tokens: { [key: string]: TokenMap } = {
     ),
   },
   DEUS: duplicateTokenByChainId('0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44', 18, 'DEUS', 'DEUS'),
+
+  AxlDEUS: {
+    [SupportedChainId.MAINNET]: new Token(1, AxlWrappedDeus_ADDRESS[1], 18, 'axlDEUS', 'Axelar Wrapped DEUS'),
+    [SupportedChainId.POLYGON]: new Token(137, AxlWrappedDeus_ADDRESS[137], 18, 'axlDEUS', 'Axelar Wrapped DEUS'),
+    [SupportedChainId.BSC]: new Token(56, AxlWrappedDeus_ADDRESS[56], 18, 'axlDEUS', 'Axelar Wrapped DEUS'),
+    [SupportedChainId.AVALANCHE]: new Token(43114, AxlWrappedDeus_ADDRESS[43114], 18, 'axlDEUS', 'Axelar Wrapped DEUS'),
+    [SupportedChainId.KAVA]: new Token(2222, AxlWrappedDeus_ADDRESS[2222], 18, 'axlDEUS', 'Axelar Wrapped DEUS'),
+    [SupportedChainId.BASE]: new Token(2222, AxlWrappedDeus_ADDRESS[8453], 18, 'axlDEUS', 'Axelar Wrapped DEUS'),
+  },
+
   WNATIVE: {
     [SupportedChainId.MAINNET]: new Token(1, WRAPPED_NATIVE[1], 18, 'WETH', 'Wrapped Ether'),
     [SupportedChainId.RINKEBY]: new Token(4, WRAPPED_NATIVE[4], 18, 'WETH', 'Wrapped Ether'),

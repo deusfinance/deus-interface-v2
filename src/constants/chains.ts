@@ -1,4 +1,8 @@
 // We allow the user to connect with these chains, so we can force them to change to Fantom.
+
+import { useRouter } from 'next/router'
+import { useMemo } from 'react'
+
 // E.g. if the user's chain is not in the list, web3react will deny connection and then we can't change to Fantom.
 export enum SupportedChainId {
   MAINNET = 1,
@@ -44,6 +48,7 @@ export enum SupportedChainId {
 
   METIS = 1088,
   KAVA = 2222,
+  BASE = 8453,
 }
 
 export const SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedChainId).filter(
@@ -63,7 +68,25 @@ export const MigrationChains = [
   SupportedChainId.KAVA,
 ]
 
+export const BridgeChains = [
+  SupportedChainId.BSC,
+  SupportedChainId.MAINNET,
+  SupportedChainId.POLYGON,
+  SupportedChainId.AVALANCHE,
+  SupportedChainId.KAVA,
+  SupportedChainId.BASE,
+]
+
 export const FALLBACK_CHAIN_ID = SupportedChainId.FANTOM
+
+export function usePreferredChain() {
+  const router = useRouter()
+  return useMemo(() => {
+    if (router.route.includes('/migration')) return MigrationChains[0]
+    else if (router.route.includes('/bridge')) return BridgeChains[0]
+    return SolidlyChains[0]
+  }, [router.route])
+}
 
 export const NETWORK_URLS: { [chainId: number]: string } = {
   [SupportedChainId.FANTOM]: 'https://rpc.ftm.tools',

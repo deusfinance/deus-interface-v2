@@ -6,7 +6,7 @@ import useWeb3React from 'hooks/useWeb3'
 import { ChainInfo } from 'constants/chainInfo'
 
 import { NavButton } from 'components/Button'
-import { SolidlyChains } from 'constants/chains'
+import { BridgeChains, MigrationChains, SolidlyChains } from 'constants/chains'
 import { useRouter } from 'next/router'
 
 const Button = styled(NavButton)`
@@ -45,7 +45,17 @@ export default function Web3Network() {
     return chainId && chainId in ChainInfo ? ChainInfo[chainId] : null
   }, [chainId])
 
-  if (!account || !chainId || !Chain || (!SolidlyChains.includes(chainId) && !router.route.includes('/migration'))) {
+  if (!account || !chainId || !Chain) {
+    return null
+  } else if (router.route.includes('/migration') && !MigrationChains.includes(chainId)) {
+    return null
+  } else if (router.route.includes('/bridge') && !BridgeChains.includes(chainId)) {
+    return null
+  } else if (
+    !router.route.includes('/migration') &&
+    !router.route.includes('/bridge') &&
+    !SolidlyChains.includes(chainId)
+  ) {
     return null
   }
 
