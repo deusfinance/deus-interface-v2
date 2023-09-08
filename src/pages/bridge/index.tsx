@@ -6,6 +6,8 @@ import SwapPage from 'components/App/Bridge'
 import InfoBox from 'components/App/Bridge/InfoBox'
 
 const Wrapper = styled.div`
+  width: clamp(500px, 90%, 1000px);
+  /* align-items: flex-start; */
   margin-top: 50px;
   display: flex;
   flex-direction: row;
