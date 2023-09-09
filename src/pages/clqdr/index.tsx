@@ -23,7 +23,6 @@ import {
   InputWrapper,
   Wrapper as MainWrapper,
   MainButton as MainButtonWrap,
-  ConnectWallet,
 } from 'components/App/StableCoin'
 import { Row, RowCenter } from 'components/Row'
 import Tableau from 'components/App/CLqdr/Tableau'
@@ -36,6 +35,7 @@ import ContractsDropdown from 'components/App/CLqdr/ContractsDropdown'
 import SingleChart from 'components/App/CLqdr/SingleChart'
 import ReadMore from 'components/App/CLqdr/ReadMore'
 import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
+import ConnectWallet from 'components/ConnectWallet'
 
 const Wrapper = styled(MainWrapper)`
   width: 100%;

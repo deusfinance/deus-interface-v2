@@ -25,7 +25,7 @@ import RewardBox from 'components/App/Stake/RewardBox'
 import { ExternalLink } from 'components/Link'
 import { Divider, HStack, VStack } from '../Staking/common/Layout'
 import { PrimaryButtonWide } from 'components/Button'
-import { useWalletModalToggle } from 'state/application/hooks'
+import { useToggleWalletModal } from 'state/application/hooks'
 
 const Wrapper = styled.div`
   display: flex;
@@ -430,7 +430,7 @@ const TableRowLargeContent = ({
 const TableRowContent = ({ staking }: { staking: StakingType }) => {
   const { chainId, account } = useWeb3React()
   const rpcChangerCallback = useRpcChangerCallback()
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
   const { id, rewardTokens, active, name, provideLink = undefined, version, chain } = staking
   const liquidityPool = LiquidityPool.find((p) => p.id === staking.id) || LiquidityPool[0]
   const tokens = liquidityPool?.tokens

@@ -1,4 +1,4 @@
-import { SupportedChainId } from 'constants/chains'
+import { SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
 import { Token } from '@uniswap/sdk-core'
 import { duplicateTokenByAddressMap, duplicateTokenByChainId, TokenMap } from 'utils/token'
 import {
@@ -139,9 +139,15 @@ export const Tokens: { [key: string]: TokenMap } = {
   },
   WETH: duplicateTokenByAddressMap(WETH, 18, 'WETH', 'wETH'),
   USDC: duplicateTokenByAddressMap(USDC, 6, 'USDC', 'USD//C', { [SupportedChainId.BSC]: 18 }),
-  DEUS: duplicateTokenByChainId(DEUS_ADDRESS[SupportedChainId.FANTOM], 18, 'DEUS', 'DEUS'),
-  DEI: duplicateTokenByChainId(DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'DEI', 'DEI'),
-  LEGACY_DEI: duplicateTokenByChainId(LEGACY_DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'LegacyDEI', 'LegacyDEI'),
+  DEUS: duplicateTokenByChainId(DEUS_ADDRESS[SupportedChainId.FANTOM], 18, 'DEUS', 'DEUS', SUPPORTED_CHAIN_IDS),
+  DEI: duplicateTokenByChainId(DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'DEI', 'DEI', SUPPORTED_CHAIN_IDS),
+  LEGACY_DEI: duplicateTokenByChainId(
+    LEGACY_DEI_ADDRESS[SupportedChainId.FANTOM],
+    18,
+    'LegacyDEI',
+    'LegacyDEI',
+    SUPPORTED_CHAIN_IDS
+  ),
   XDEUS: duplicateTokenByAddressMap(XDEUS_ADDRESS, 18, 'xDEUS', 'xDEUS'),
   bDEI: duplicateTokenByAddressMap(BDEI_ADDRESS, 18, 'bDEI', 'bDEI'),
   WNATIVE: {

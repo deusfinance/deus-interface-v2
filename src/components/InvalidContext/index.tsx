@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useWalletModalToggle } from 'state/application/hooks'
+import { useToggleWalletModal } from 'state/application/hooks'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 import { useWeb3React } from '@web3-react/core'
@@ -26,7 +26,7 @@ export function useInvalidContext() {
 
 export function InvalidContext({ connectText }: { connectText?: string }) {
   const invalidContext = useInvalidContext()
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
   const rpcChangerCallback = useRpcChangerCallback()
 
   return useMemo(() => {

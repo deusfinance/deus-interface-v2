@@ -15,7 +15,7 @@ import { tryParseAmount } from 'utils/parse'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
 import { ApprovalState, useApproveCallbackWithAmount } from 'hooks/useApproveCallback'
 import { useMigratorContract } from 'hooks/useContract'
-import { useWalletModalToggle } from 'state/application/hooks'
+import { useToggleWalletModal } from 'state/application/hooks'
 import useMigrateCallback from 'hooks/useMigrateCallback'
 import { DEUS_TOKEN } from 'constants/tokens'
 import InputBox from './InputBox'
@@ -87,7 +87,7 @@ export default function ManualReviewModal({
 }) {
   const { chainId, account } = useWeb3React()
   const isSupportedChainId = useSupportedChainId()
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   function toggleReviewModal(arg: boolean) {

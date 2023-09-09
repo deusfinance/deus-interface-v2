@@ -16,7 +16,7 @@ import { useWeb3React } from '@web3-react/core'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 
 import { BaseButton, PrimaryButtonWide } from 'components/Button'
-import { useWalletModalToggle } from 'state/application/hooks'
+import { useToggleWalletModal } from 'state/application/hooks'
 import TokenBox from './TokenBox'
 
 import { useTokenBalance } from 'state/wallet/hooks'
@@ -367,7 +367,7 @@ const TableRowContent = ({
 }) => {
   const { chainId, account } = useWeb3React()
   const rpcChangerCallback = useRpcChangerCallback()
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
   const { token: tokens, version, active } = migrationOption
 
   const token = chainId ? tokens[chainId] : undefined

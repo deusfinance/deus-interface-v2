@@ -1,51 +1,35 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useRef } from 'react'
 import styled from 'styled-components'
-import { UnsupportedChainIdError } from '@web3-react/core'
-
+import { lighten } from 'polished'
 import { useWeb3React } from '@web3-react/core'
-import { useWalletModalToggle } from 'state/application/hooks'
+
+import { useAppSelector } from 'state'
+import { FALLBACK_CHAIN_ID, APP_CHAIN_IDS } from 'constants/chains'
+import { ChainInfo } from 'constants/chainInfo'
+import { getConnection } from 'connection/utils'
+import { truncateAddress } from 'utils/address'
+import useRpcChangerCallback from 'lib/hooks/useRpcChangerCallback'
+import { useSpaceIdOnChain } from 'lib/hooks/useSpaceId'
+
 import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
-import { TransactionDetails } from 'state/transactions/reducer'
-import { truncateAddress } from 'utils/account'
+import { TransactionDetails } from 'state/transactions/types'
+import { useToggleWalletModal } from 'state/application/hooks'
 
 import WalletModal from 'components/WalletModal'
-import { NavButton } from 'components/Button'
+import { ConnectButton, NavButton } from 'components/Button'
 import { Connected as ConnectedIcon } from 'components/Icons'
-import { FALLBACK_CHAIN_ID } from 'constants/chains'
-import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
-import { RowCenter } from 'components/Row'
-import { useSupportedChainId } from 'hooks/useSupportedChainId'
+import ImageWithFallback from 'components/ImageWithFallback'
 
-const ConnectButtonWrap = styled.div`
-  border: none;
-  background: ${({ theme }) => theme.deusColor};
-  padding: 1px;
-  border-radius: 8px;
-  width: 148px;
-  height: 36px;
+const ConnectedButton = styled(ConnectButton)`
+  background: ${({ theme }) => theme.bg0};
+  color: ${({ theme }) => theme.text1};
+  border-radius: 6px 0px 0px 6px;
+  border: 1px solid ${({ theme }) => theme.text2};
 
-  &:hover,
-  &:focus {
-    border: none;
-    cursor: pointer;
+  &:hover {
+    background: ${({ theme }) => theme.text3};
+    border-color: ${({ theme }) => theme.text3};
   }
-`
-
-const ConnectButton = styled(RowCenter)`
-  border-radius: 8px;
-  background: ${({ theme }) => theme.bg2};
-  height: 100%;
-  width: 100%;
-  white-space: nowrap;
-`
-
-const ConnectButtonText = styled.span`
-  background: -webkit-linear-gradient(0deg, #0badf4 -10.26%, #30efe4 80%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-`
-
-const ConnectedButton = styled(NavButton)`
   & > * {
     &:first-child {
       margin-right: 5px;
@@ -54,14 +38,11 @@ const ConnectedButton = styled(NavButton)`
 `
 
 const ErrorButton = styled(NavButton)`
-  background: ${({ theme }) => theme.red1};
-  border-color: ${({ theme }) => theme.text1};
-  color: white;
-
+  border: 1px solid ${({ theme }) => theme.red1};
+  padding: 0 5px;
   &:hover,
   &:focus {
-    cursor: pointer;
-    border: 1px solid ${({ theme }) => theme.text1};
+    background: ${({ theme }) => lighten(0.05, theme.bg1)};
   }
 `
 
@@ -77,52 +58,52 @@ function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
   return b.addedTime - a.addedTime
 }
 
-function Web3StatusInner() {
-  const { account, error } = useWeb3React()
-  const toggleWalletModal = useWalletModalToggle()
-  const rpcChangerCallback = useRpcChangerCallback()
-  const notSupportedChainId = !useSupportedChainId()
+function Web3StatusInner({ ENSName }: { ENSName?: string }) {
+  const { account, connector, chainId } = useWeb3React()
+  const connectionType = getConnection(connector).type
 
-  if (!account) {
-    return (
-      <ConnectButtonWrap onClick={toggleWalletModal}>
-        <ConnectButton>
-          <ConnectButtonText>Connect Wallet</ConnectButtonText>
-        </ConnectButton>
-      </ConnectButtonWrap>
-    )
-  } else if (notSupportedChainId) {
+  const Chain = ChainInfo[chainId || FALLBACK_CHAIN_ID] ?? ChainInfo[FALLBACK_CHAIN_ID]
+
+  const toggleWalletModal = useToggleWalletModal()
+  const rpcChangerCallback = useRpcChangerCallback()
+  const error = useAppSelector((state) => state.connection.errorByConnectionType[connectionType])
+
+  const showCallbackError: boolean = useMemo(() => {
+    if (!chainId || !account) return false
+    return !APP_CHAIN_IDS.includes(chainId)
+  }, [chainId, account])
+
+  if (showCallbackError) {
     return (
       <ErrorButton onClick={() => rpcChangerCallback(FALLBACK_CHAIN_ID)}>
-        <Text>Wrong Network</Text>
+        <ImageWithFallback src={Chain.logoUrl} alt={Chain.label} width={40} height={40} />
+        {/* <Text>Wrong Network</Text> */}
       </ErrorButton>
     )
   } else if (account) {
     return (
       <ConnectedButton onClick={toggleWalletModal}>
         <ConnectedIcon />
-        <Text>{truncateAddress(account)}</Text>
+        <Text>{ENSName || truncateAddress(account)}</Text>
       </ConnectedButton>
     )
   } else if (error) {
     return (
       <ErrorButton onClick={toggleWalletModal}>
-        <Text>{error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error'}</Text>
+        <Text>{'Error'}</Text>
       </ErrorButton>
     )
   } else {
-    return (
-      <ConnectButtonWrap onClick={toggleWalletModal}>
-        <ConnectButton>
-          <ConnectButtonText>Connect Wallet</ConnectButtonText>
-        </ConnectButton>
-      </ConnectButtonWrap>
-    )
+    return <ConnectButton onClick={toggleWalletModal}>Connect Wallet</ConnectButton>
   }
 }
 
 export default function Web3Status() {
-  const { account } = useWeb3React()
+  const { ENSName, account } = useWeb3React()
+  const spaceIDName = useSpaceIdOnChain()
+
+  //todo:why
+  const ref = useRef<HTMLDivElement>(null)
   const allTransactions = useAllTransactions()
 
   const sortedRecentTransactions = useMemo(() => {
@@ -137,9 +118,13 @@ export default function Web3Status() {
   const confirmed = sortedRecentTransactions.filter((tx) => tx.receipt).map((tx) => tx.hash)
 
   return (
-    <>
-      <Web3StatusInner />
-      <WalletModal pendingTransactions={pending} confirmedTransactions={confirmed} />
-    </>
+    <span ref={ref}>
+      <Web3StatusInner ENSName={spaceIDName ?? ENSName ?? undefined} />
+      <WalletModal
+        ENSName={spaceIDName ?? ENSName ?? undefined}
+        pendingTransactions={pending}
+        confirmedTransactions={confirmed}
+      />
+    </span>
   )
 }

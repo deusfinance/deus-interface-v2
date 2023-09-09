@@ -15,7 +15,7 @@ import { ApprovalState, useApproveCallbacksWithAmounts } from 'hooks/useApproveC
 import useMigrateCallback from 'hooks/useMigrateCallback'
 import { ModalMigrationButton } from './ManualReviewModal'
 import { useWeb3React } from '@web3-react/core'
-import { useWalletModalToggle } from 'state/application/hooks'
+import { useToggleWalletModal } from 'state/application/hooks'
 import { formatBalance, toBN } from 'utils/numbers'
 
 const MainModal = styled(Modal)`
@@ -88,7 +88,7 @@ export default function ReviewModal({
   awaiting: boolean
 }) {
   const { chainId, account } = useWeb3React()
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
 
   const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState(false)
   const [awaitingMigrateConfirmation, setAwaitingMigrateConfirmation] = useState(false)

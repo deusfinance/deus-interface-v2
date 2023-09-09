@@ -1,9 +1,9 @@
 import { SupportedChainId } from './chains'
 
-const INFURA_KEY = process.env.NEXT_PUBLIC_INFURA_KEY
-if (typeof INFURA_KEY === 'undefined') {
-  throw new Error(`NEXT_PUBLIC_INFURA_KEY must be a defined environment variable`)
-}
+// const INFURA_KEY = process.env.NEXT_PUBLIC_INFURA_KEY
+// if (typeof INFURA_KEY === 'undefined') {
+//   throw new Error(`NEXT_PUBLIC_INFURA_KEY must be a defined environment variable`)
+// }
 
 /**
  * Fallback JSON-RPC endpoints.

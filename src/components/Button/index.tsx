@@ -1,3 +1,4 @@
+import { lighten } from 'polished'
 import styled from 'styled-components'
 
 export const BaseButton = styled.div<{
@@ -148,5 +149,17 @@ export const OptionButton = styled(BaseButton)<{ active?: boolean }>`
 
   &:hover {
     border: 1.5px solid ${({ theme, active }) => (active ? theme.border3 : theme.text1)};
+  }
+`
+
+export const ConnectButton = styled(PrimaryButton)`
+  background: ${({ theme }) => theme.bg0};
+  border: 1px solid ${({ theme }) => theme.border1};
+  color: ${({ theme }) => theme.border1};
+  &:focus {
+    box-shadow: 0 0 0 1px ${({ theme }) => theme.bg0};
+  }
+  &:hover {
+    background: ${({ theme }) => lighten(0.1, theme.bg0)};
   }
 `

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { useWalletModalToggle } from 'state/application/hooks'
+import { useToggleWalletModal } from 'state/application/hooks'
 import { DotFlashing } from 'components/Icons'
 import { PrimaryButton } from 'components/Button'
 import { Row, RowCenter, RowBetween, RowEnd } from 'components/Row'
@@ -145,7 +145,7 @@ export function GradientButton({
   )
 }
 
-export function ConnectWallet() {
-  const toggleWalletModal = useWalletModalToggle()
+export default function ConnectWallet(): JSX.Element | null {
+  const toggleWalletModal = useToggleWalletModal()
   return <GradientButton title="Connect Wallet" onClick={toggleWalletModal} />
 }

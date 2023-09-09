@@ -22,7 +22,7 @@ import { useBalancedRatio } from 'hooks/useMigratePage'
 import { truncateAddress } from 'utils/account'
 import { Tokens } from 'constants/tokens'
 import { useMigrationData } from 'context/Migration'
-import { useWalletModalToggle } from 'state/application/hooks'
+import { useToggleWalletModal } from 'state/application/hooks'
 import { MigrationOptions } from 'constants/migrationOptions'
 
 const Wrapper = styled.div`
@@ -254,7 +254,7 @@ export default function MigratedTable() {
   const [hasData, setHasData] = useState(false)
   const [checked, setChecked] = useState(false)
   const [tableDataLoading, setTableDataLoading] = useState(false)
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
   const [allMigrationData, setAllMigrationData] = useState<any>(undefined)
 
   const getAllMigrationData = useCallback(async (signature: string) => {

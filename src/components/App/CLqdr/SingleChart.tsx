@@ -299,7 +299,7 @@ export default function SingleChart({ label, uniqueID }: { label: string; unique
     [uniqueID, filteredData]
   )
 
-  const tickFomatter = (value: any): any => {
+  const tickFormatter = (value: any): any => {
     if (uniqueID === 'totalSupply') return formatAmount(value, 0)
     return value
   }
@@ -375,7 +375,7 @@ export default function SingleChart({ label, uniqueID }: { label: string; unique
           <YAxis
             dataKey={dataKey}
             tick={{ fontSize: '12px' }}
-            tickFormatter={tickFomatter}
+            tickFormatter={tickFormatter}
             interval={0}
             tickLine={false}
             axisLine={false}

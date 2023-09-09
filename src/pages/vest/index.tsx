@@ -15,7 +15,7 @@ import { getMaximumDate } from 'utils/vest'
 import { DefaultHandlerError } from 'utils/parseError'
 
 import { useIsTransactionPending, useTransactionAdder } from 'state/transactions/hooks'
-import { useWalletModalToggle } from 'state/application/hooks'
+import { useToggleWalletModal } from 'state/application/hooks'
 import { useDeusPrice } from 'state/dashboard/hooks'
 
 import { useWeb3React } from '@web3-react/core'
@@ -123,7 +123,7 @@ export default function Vest() {
   const rewards = useDistRewards()
   const migData = useVeMigrationData(nftIds)
 
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
 
   const { snapshot, searchProps } = useSearch()
   const snapshotList = useMemo(() => {

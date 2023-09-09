@@ -3,7 +3,7 @@ import { Ether, NativeCurrency, Currency, CurrencyAmount, Token } from '@uniswap
 
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { WRAPPED_NATIVE_ADDRESS } from 'constants/addresses'
-import { FALLBACK_CHAIN_ID, SupportedChainId, SUPPORTED_CHAIN_IDS } from 'constants/chains'
+import { FALLBACK_CHAIN_ID, SupportedChainId } from 'constants/chains'
 import { AddressMap, DecimalMap } from 'utils/address'
 import { SerializedToken } from 'types/token'
 
@@ -23,7 +23,7 @@ export function duplicateTokenByChainId(
   decimals: number,
   name: string,
   symbol: string,
-  chains: SupportedChainId[] = SUPPORTED_CHAIN_IDS
+  chains: SupportedChainId[]
 ): TokenMap {
   return chains.reduce((acc: TokenMap, chainId: number) => {
     acc[chainId] = new Token(chainId, address, decimals, symbol, name)

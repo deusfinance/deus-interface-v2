@@ -16,6 +16,10 @@ export const USDC_ADDRESS = {
   [SupportedChainId.POLYGON]: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   [SupportedChainId.FANTOM]: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
   [SupportedChainId.BSC]: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+  [SupportedChainId.ARBITRUM]: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+  [SupportedChainId.AVALANCHE]: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
+  [SupportedChainId.KAVA]: '0xfa9343c3897324496a05fc75abed6bac29f8a40f',
+  [SupportedChainId.METIS]: '0xea32a96608495e54156ae48931a7c20f0dcc1a21',
 }
 /* =====================================
                 DEI ADDRESS

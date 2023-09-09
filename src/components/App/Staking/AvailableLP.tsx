@@ -9,7 +9,7 @@ import { maxAmountSpend } from 'utils/currency'
 import { toBN } from 'utils/numbers'
 import { DefaultHandlerError } from 'utils/parseError'
 
-import { useWalletModalToggle } from 'state/application/hooks'
+import { useToggleWalletModal } from 'state/application/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 
@@ -81,7 +81,7 @@ const ActionButton = styled(PrimaryButton)`
 const AvailableLP = ({ pool }: { pool: LiquidityType }) => {
   const { account, chainId } = useWeb3React()
   const isSupportedChainId = useSupportedChainId()
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
   const addTransaction = useTransactionAdder()
 
   const lpCurrency = pool.lpToken

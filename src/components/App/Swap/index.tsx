@@ -7,7 +7,7 @@ import { StablePools } from 'constants/sPools'
 import { tryParseAmount } from 'utils/parse'
 
 import { useCurrencyBalance } from 'state/wallet/hooks'
-import { useWalletModalToggle } from 'state/application/hooks'
+import { useToggleWalletModal } from 'state/application/hooks'
 import { useWeb3React } from '@web3-react/core'
 import useDebounce from 'hooks/useDebounce'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
@@ -52,7 +52,7 @@ const MainButton = styled(PrimaryButton)`
 
 export default function SwapPage() {
   const { chainId, account } = useWeb3React()
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
   const isSupportedChainId = useSupportedChainId()
   const [amountIn, setAmountIn] = useState('')
   const [slippage, setSlippage] = useState(0.5)

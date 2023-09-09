@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { isMobile } from 'react-device-detect'
 
-import { useCurrencyBalance } from 'state/wallet/hooks'
+import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 import useCurrencyLogo from 'hooks/useCurrencyLogo'
 import { useWeb3React } from '@web3-react/core'
 import { maxAmountSpend } from 'utils/currency'

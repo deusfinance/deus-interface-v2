@@ -11,7 +11,7 @@ import { Connector } from '@web3-react/types'
 import { APP_CHAIN_IDS, FALLBACK_CHAIN_ID } from 'constants/chains'
 import { RPC_URLS } from 'constants/networks'
 import { RPC_PROVIDERS } from 'constants/providers'
-import { Z_INDEX } from 'theme'
+// import { Z_INDEX } from 'theme'
 
 export enum ConnectionType {
   INJECTED = 'INJECTED',
@@ -109,10 +109,10 @@ const [web3WalletConnectV2, web3WalletConnectHooksV2] = initializeConnector<Wall
         privacyPolicyUrl: undefined,
         termsOfServiceUrl: undefined,
         themeMode: 'dark',
-        themeVariables: {
-          '--wcm-font-family': '"Inter custom", sans-serif',
-          '--wcm-z-index': Z_INDEX.modal.toString(),
-        },
+        // themeVariables: {
+        //   '--wcm-font-family': '"Inter custom", sans-serif',
+        //   '--wcm-z-index': Z_INDEX.modal.toString(),
+        // },
       },
     },
     onError,

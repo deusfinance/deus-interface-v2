@@ -7,7 +7,7 @@ import { LiquidityType } from 'constants/stakingPools'
 import { LiquidityPool as LiquidityPoolList } from 'constants/stakingPools'
 
 import { useCurrencyBalance } from 'state/wallet/hooks'
-import { useWalletModalToggle } from 'state/application/hooks'
+import { useToggleWalletModal } from 'state/application/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
 import useApproveCallback, { ApprovalState } from 'hooks/useApproveCallback'
@@ -321,7 +321,7 @@ const WithdrawCombo = ({
 
 export default function LiquidityPool({ pool }: { pool: LiquidityType }) {
   const { chainId, account } = useWeb3React()
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
   const isSupportedChainId = useSupportedChainId()
   const [amountIn, setAmountIn] = useState('')
   const [amountIn2, setAmountIn2] = useState('')

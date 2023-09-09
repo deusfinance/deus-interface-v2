@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import numbro from 'numbro'
 import JSBI from 'jsbi'
 
 BigNumber.config({ EXPONENTIAL_AT: 30 })
@@ -48,7 +49,7 @@ export function formatFixedDollarAmount(
   return '$' + formatFixedAmount(amount, fixed, separator)
 }
 
-export const formatAmount = (
+export const extendedFormatAmount = (
   amount: BigNumber.Value | undefined | null,
   fixed = 6,
   separator = false,
@@ -69,6 +70,23 @@ export const formatAmount = (
   return separator ? toBN(rounded.toFixed()).toFormat() : rounded.toFixed()
 }
 
+export const formatAmount = (num: number | undefined, digits = 2, thousandSeparated?: boolean) => {
+  if (num === 0) return '0'
+  if (!num) return '-'
+  if (num < 0.001) {
+    return '<0.001'
+  }
+  return numbro(num).format({
+    thousandSeparated: !!thousandSeparated,
+    average: !thousandSeparated,
+    mantissa: digits,
+    abbreviations: {
+      million: 'M',
+      billion: 'B',
+    },
+  })
+}
+
 export const formatCurrency = (
   amount: BigNumber.Value | undefined | null,
   fixed = 6,
@@ -84,15 +102,15 @@ export const formatCurrency = (
     return '< 0.001'
   }
   if (bnAmount.gte(1e9)) {
-    return formatAmount(bnAmount.div(1e9), fixed, separator, zeroEmpty) + 'B'
+    return extendedFormatAmount(bnAmount.div(1e9), fixed, separator, zeroEmpty) + 'B'
   }
   if (bnAmount.gte(1e6)) {
-    return formatAmount(bnAmount.div(1e6), fixed, separator, zeroEmpty) + 'M'
+    return extendedFormatAmount(bnAmount.div(1e6), fixed, separator, zeroEmpty) + 'M'
   }
   if (bnAmount.gte(1e3)) {
-    return formatAmount(bnAmount.div(1e3), fixed, separator, zeroEmpty) + 'K'
+    return extendedFormatAmount(bnAmount.div(1e3), fixed, separator, zeroEmpty) + 'K'
   }
-  return formatAmount(bnAmount, fixed, separator, zeroEmpty)
+  return extendedFormatAmount(bnAmount, fixed, separator, zeroEmpty)
 }
 
 export const formatDollarAmount = (amount: BigNumber.Value | undefined | null, zeroEmpty = false) => {
