@@ -9,7 +9,7 @@ import { NavButton } from 'components/Button'
 import { APP_CHAIN_IDS } from 'constants/chains'
 import { useRouter } from 'next/router'
 
-const Button = styled(NavButton)`
+export const Button = styled(NavButton)`
   background: ${({ theme }) => theme.bg1};
   justify-content: space-between;
   gap: 5px;

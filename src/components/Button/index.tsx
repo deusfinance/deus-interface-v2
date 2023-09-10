@@ -152,7 +152,7 @@ export const OptionButton = styled(BaseButton)<{ active?: boolean }>`
   }
 `
 
-export const ConnectButton = styled(PrimaryButton)`
+export const ConnectButton = styled(BaseButton)`
   background: ${({ theme }) => theme.bg0};
   border: 1px solid ${({ theme }) => theme.border1};
   color: ${({ theme }) => theme.border1};

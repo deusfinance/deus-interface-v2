@@ -9,32 +9,42 @@ import { ChainInfo } from 'constants/chainInfo'
 import { getConnection } from 'connection/utils'
 import { truncateAddress } from 'utils/address'
 import useRpcChangerCallback from 'lib/hooks/useRpcChangerCallback'
-import { useSpaceIdOnChain } from 'lib/hooks/useSpaceId'
 
 import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
 import { TransactionDetails } from 'state/transactions/types'
 import { useToggleWalletModal } from 'state/application/hooks'
 
 import WalletModal from 'components/WalletModal'
-import { ConnectButton, NavButton } from 'components/Button'
+import { NavButton } from 'components/Button'
 import { Connected as ConnectedIcon } from 'components/Icons'
 import ImageWithFallback from 'components/ImageWithFallback'
+import { Button } from 'components/Web3Network'
+import { RowCenter } from 'components/Row'
 
-const ConnectedButton = styled(ConnectButton)`
-  background: ${({ theme }) => theme.bg0};
-  color: ${({ theme }) => theme.text1};
-  border-radius: 6px 0px 0px 6px;
-  border: 1px solid ${({ theme }) => theme.text2};
-
-  &:hover {
-    background: ${({ theme }) => theme.text3};
-    border-color: ${({ theme }) => theme.text3};
+const ConnectButtonWrap = styled.div`
+  border: none;
+  background: ${({ theme }) => theme.deusColor};
+  padding: 1px;
+  border-radius: 8px;
+  width: 148px;
+  height: 36px;
+  &:hover,
+  &:focus {
+    border: none;
+    cursor: pointer;
   }
-  & > * {
-    &:first-child {
-      margin-right: 5px;
-    }
-  }
+`
+const ConnectButton = styled(RowCenter)`
+  border-radius: 8px;
+  background: ${({ theme }) => theme.bg2};
+  height: 100%;
+  width: 100%;
+  white-space: nowrap;
+`
+const ConnectButtonText = styled.span`
+  background: -webkit-linear-gradient(0deg, #0badf4 -10.26%, #30efe4 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 `
 
 const ErrorButton = styled(NavButton)`
@@ -76,16 +86,16 @@ function Web3StatusInner({ ENSName }: { ENSName?: string }) {
   if (showCallbackError) {
     return (
       <ErrorButton onClick={() => rpcChangerCallback(FALLBACK_CHAIN_ID)}>
-        <ImageWithFallback src={Chain.logoUrl} alt={Chain.label} width={40} height={40} />
+        <ImageWithFallback src={Chain.logoUrl} alt={Chain.label} width={22} height={22} />
         {/* <Text>Wrong Network</Text> */}
       </ErrorButton>
     )
   } else if (account) {
     return (
-      <ConnectedButton onClick={toggleWalletModal}>
+      <Button style={{ cursor: 'pointer' }} onClick={toggleWalletModal}>
         <ConnectedIcon />
         <Text>{ENSName || truncateAddress(account)}</Text>
-      </ConnectedButton>
+      </Button>
     )
   } else if (error) {
     return (
@@ -94,13 +104,18 @@ function Web3StatusInner({ ENSName }: { ENSName?: string }) {
       </ErrorButton>
     )
   } else {
-    return <ConnectButton onClick={toggleWalletModal}>Connect Wallet</ConnectButton>
+    return (
+      <ConnectButtonWrap onClick={toggleWalletModal}>
+        <ConnectButton>
+          <ConnectButtonText>Connect Wallet</ConnectButtonText>
+        </ConnectButton>
+      </ConnectButtonWrap>
+    )
   }
 }
 
 export default function Web3Status() {
   const { ENSName, account } = useWeb3React()
-  const spaceIDName = useSpaceIdOnChain()
 
   //todo:why
   const ref = useRef<HTMLDivElement>(null)
@@ -119,12 +134,8 @@ export default function Web3Status() {
 
   return (
     <span ref={ref}>
-      <Web3StatusInner ENSName={spaceIDName ?? ENSName ?? undefined} />
-      <WalletModal
-        ENSName={spaceIDName ?? ENSName ?? undefined}
-        pendingTransactions={pending}
-        confirmedTransactions={confirmed}
-      />
+      <Web3StatusInner ENSName={ENSName ?? undefined} />
+      <WalletModal ENSName={ENSName ?? undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
     </span>
   )
 }

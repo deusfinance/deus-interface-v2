@@ -8,7 +8,6 @@ import ThemeProvider, { ThemedGlobalStyle } from '../theme'
 import Popups from '../components/Popups'
 import Layout from '../components/Layout'
 import { ModalBackground } from '../components/Modal'
-// import { useAnalyticsReporter } from '../components/analytics'
 import LiveChat from 'components/LiveChat'
 
 import store from '../state'
@@ -25,8 +24,6 @@ if (typeof window !== 'undefined' && !!window.ethereum) {
 }
 
 export default function MyApp({ Component, pageProps }: AppProps) {
-  // TODO: is it ok to remove it?
-  // useAnalyticsReporter()
   return (
     <ReduxProvider store={store}>
       <Web3Provider>
