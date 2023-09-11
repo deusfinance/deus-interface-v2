@@ -288,6 +288,19 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://evm.kava.io',
     blockExplorerUrl: 'https://explorer.kava.io/',
   },
+  [SupportedChainId.BASE]: {
+    chainId: '0x2105',
+    chainName: 'Base',
+    label: 'Base',
+    logoUrl: require('/public/static/images/networks/base.svg'),
+    nativeCurrency: {
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    rpcUrl: 'https://mainnet.base.org',
+    blockExplorerUrl: 'https://basescan.org/',
+  },
 }
 
 /**

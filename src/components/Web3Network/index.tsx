@@ -6,7 +6,7 @@ import { useWeb3React } from '@web3-react/core'
 import { ChainInfo } from 'constants/chainInfo'
 
 import { NavButton } from 'components/Button'
-import { APP_CHAIN_IDS } from 'constants/chains'
+import { BRIDGE_CHAIN_IDS, MIGRATION_CHAIN_IDS, APP_CHAIN_IDS } from 'constants/chains'
 import { useRouter } from 'next/router'
 
 export const Button = styled(NavButton)`
@@ -46,6 +46,16 @@ export default function Web3Network() {
   }, [chainId])
 
   if (!account || !chainId || !Chain || (!APP_CHAIN_IDS.includes(chainId) && !router.route.includes('/migration'))) {
+    return null
+  } else if (router.route.includes('/migration') && !MIGRATION_CHAIN_IDS.includes(chainId)) {
+    return null
+  } else if (router.route.includes('/bridge') && !BRIDGE_CHAIN_IDS.includes(chainId)) {
+    return null
+  } else if (
+    !router.route.includes('/migration') &&
+    !router.route.includes('/bridge') &&
+    !APP_CHAIN_IDS.includes(chainId)
+  ) {
     return null
   }
 

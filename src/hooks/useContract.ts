@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { Contract } from '@ethersproject/contracts'
 import { useContract } from 'lib/hooks/contract'
-import { useWeb3React } from '@web3-react/core'
 
 import {
   Multicall2,
@@ -12,6 +11,8 @@ import {
   veDEUSMultiRewarderERC20,
   Migrator,
   MULTICALL3_ADDRESS,
+  Bridge_ADDRESS,
+  AxlGateway_ADDRESS,
 } from 'constants/addresses'
 import { LiquidityType, StakingType } from 'constants/stakingPools'
 import {
@@ -28,7 +29,10 @@ import {
   VEDEUS_MIGRATOR_ABI,
   VEDEUS_MULTI_REWARDER_ERC20_ABI,
   VE_DIST_ABI,
+  BRIDGE_ABI,
+  AXL_GATEWAY_ABI,
 } from 'constants/abi'
+import { useWeb3React } from '@web3-react/core'
 
 /* ###################################
                       HELPER
@@ -104,4 +108,16 @@ export function useMigratorContract() {
   const { chainId } = useWeb3React()
   const address = useMemo(() => (chainId ? Migrator[chainId] : undefined), [chainId])
   return useContract(address, MIGRATOR_ABI)
+}
+
+export function useBridgeContract() {
+  const { chainId } = useWeb3React()
+  const address = useMemo(() => (chainId ? Bridge_ADDRESS[chainId] : undefined), [chainId])
+  return useContract(address, BRIDGE_ABI)
+}
+
+export function useAxlGatewayContract() {
+  const { chainId } = useWeb3React()
+  const address = useMemo(() => (chainId ? AxlGateway_ADDRESS[chainId] : undefined), [chainId])
+  return useContract(address, AXL_GATEWAY_ABI)
 }

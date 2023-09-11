@@ -14,6 +14,7 @@ import {
   LEGACY_DEI_ADDRESS,
   BDEI_ADDRESS,
   WRAPPED_NATIVE_ADDRESS,
+  AxlWrappedDeus_ADDRESS,
 } from './addresses'
 
 export const DEI_TOKEN = new Token(SupportedChainId.FANTOM, DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'DEI', 'DEI')
@@ -150,6 +151,24 @@ export const Tokens: { [key: string]: TokenMap } = {
   ),
   XDEUS: duplicateTokenByAddressMap(XDEUS_ADDRESS, 18, 'xDEUS', 'xDEUS'),
   bDEI: duplicateTokenByAddressMap(BDEI_ADDRESS, 18, 'bDEI', 'bDEI'),
+  bDEI_TOKEN: {
+    [SupportedChainId.ARBITRUM]: new Token(
+      SupportedChainId.ARBITRUM,
+      BDEI_ADDRESS[SupportedChainId.ARBITRUM],
+      18,
+      'bDEI',
+      'bDEI'
+    ),
+    [SupportedChainId.FANTOM]: new Token(
+      SupportedChainId.FANTOM,
+      BDEI_ADDRESS[SupportedChainId.FANTOM],
+      18,
+      'bDEI',
+      'bDEI'
+    ),
+  },
+  AxlDEUS: duplicateTokenByAddressMap(AxlWrappedDeus_ADDRESS, 18, 'axlDEUS', 'Axelar Wrapped DEUS'),
+
   WNATIVE: {
     [SupportedChainId.MAINNET]: new Token(1, WRAPPED_NATIVE[1], 18, 'WETH', 'Wrapped Ether'),
     // [SupportedChainId.RINKEBY]: new Token(4, WRAPPED_NATIVE[4], 18, 'WETH', 'Wrapped Ether'),
