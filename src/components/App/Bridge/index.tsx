@@ -1,11 +1,11 @@
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { RefreshCcw, RefreshCw } from 'react-feather'
 
 import { DEUS_TOKEN, Tokens } from 'constants/tokens'
 import { tryParseAmount } from 'utils/parse'
 
-import { useCurrencyBalance } from 'state/wallet/hooks'
+import { useCurrencyBalance, useCurrencyBalances } from 'state/wallet/hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import useWeb3React from 'hooks/useWeb3'
 import useDebounce from 'hooks/useDebounce'
@@ -19,6 +19,9 @@ import { SupportedChainId } from 'constants/chains'
 import { useAxlGatewayContract } from 'hooks/useContract'
 import useBridgeCallback from 'hooks/useBridgeCallback'
 import MigrationHeader from './MigrationHeader'
+import { ChainInfo } from 'constants/chainInfo'
+import { Link as LinkIcon } from 'components/Icons'
+import { ExternalLink } from 'components/Link'
 
 const Container = styled.div`
   display: flex;
@@ -26,7 +29,6 @@ const Container = styled.div`
   overflow: visible;
   margin: 0 auto;
 `
-
 const Wrapper = styled(Container)`
   width: clamp(250px, 75%, 500px);
   background-color: rgb(13 13 13);
@@ -44,9 +46,14 @@ const Wrapper = styled(Container)`
     }
   }
 `
-
 const MainButton = styled(PrimaryButton)`
   border-radius: 12px;
+`
+const ExternalLinkIcon = styled(LinkIcon)`
+  margin-left: 4px;
+  path {
+    fill: ${({ theme }) => theme.text1};
+  }
 `
 
 export default function SwapPage() {
@@ -55,6 +62,7 @@ export default function SwapPage() {
   const isSupportedChainId = useSupportedChainId()
 
   const [amountIn, setAmountIn] = useState('')
+  const [reversed, setReversed] = useState(false)
   const debouncedAmountIn = useDebounce(amountIn, 500)
 
   const [inputCurrency, setInputCurrency] = useState(Tokens['DEUS'][chainId ?? SupportedChainId.BSC])
@@ -82,6 +90,12 @@ export default function SwapPage() {
 
   const AxlGatewayContract = useAxlGatewayContract()
   const spender = useMemo(() => AxlGatewayContract?.address, [AxlGatewayContract])
+
+  const currencyBalances = useCurrencyBalances(spender, [inputCurrency, outputCurrency])
+
+  const [inputCurrencyBalanceDisplay, outputCurrencyBalanceDisplay] = useMemo(() => {
+    return [currencyBalances[0]?.toSignificant(8), currencyBalances[1]?.toSignificant(8)]
+  }, [currencyBalances])
 
   const [approvalState, approveCallback] = useApproveCallback(inputCurrency ?? undefined, spender)
   const [showApprove, showApproveLoader] = useMemo(() => {
@@ -151,17 +165,31 @@ export default function SwapPage() {
     return <MainButton onClick={() => handleSwap()}>Swap</MainButton>
   }
 
+  useEffect(() => {
+    if (chainId) {
+      if (!reversed) {
+        setInputCurrency(Tokens['DEUS'][chainId])
+        setOutputCurrency(Tokens['AxlDEUS'][chainId])
+      } else {
+        setInputCurrency(Tokens['AxlDEUS'][chainId])
+        setOutputCurrency(Tokens['DEUS'][chainId])
+      }
+    }
+  }, [chainId])
+
   return (
     <Wrapper>
       <MigrationHeader />
 
       <InputBox currency={inputCurrency} value={amountIn} onChange={(value: string) => setAmountIn(value)} />
-      {inputCurrency.symbol === DEUS_TOKEN.symbol ? (
+
+      {inputCurrency?.symbol === DEUS_TOKEN.symbol ? (
         <RefreshCw
           style={{ cursor: 'pointer' }}
           onClick={() => {
             setInputCurrency(outputCurrency)
             setOutputCurrency(inputCurrency)
+            setReversed((prev) => !prev)
           }}
         />
       ) : (
@@ -170,15 +198,31 @@ export default function SwapPage() {
           onClick={() => {
             setInputCurrency(outputCurrency)
             setOutputCurrency(inputCurrency)
+            setReversed((prev) => !prev)
           }}
         />
       )}
+
       <InputBox
         currency={outputCurrency}
         value={debouncedAmountIn}
         onChange={(value: string) => console.log(value)}
-        disabled={true}
+        disabled
       />
+
+      {chainId && chainId !== SupportedChainId.FANTOM && (
+        <React.Fragment>
+          <div style={{ marginTop: '20px' }} />
+          <span style={{ fontSize: '13px' }}>
+            {ChainInfo[chainId].label} Chain Pool: {inputCurrencyBalanceDisplay ?? 'N/A'} {inputCurrency.symbol} /{' '}
+            {outputCurrencyBalanceDisplay ?? 'N/A'} {outputCurrency.symbol}
+            <ExternalLink href="https://docs.deus.finance/bridge/how-to-bridge">
+              <ExternalLinkIcon />
+            </ExternalLink>
+          </span>
+        </React.Fragment>
+      )}
+
       <div style={{ marginTop: '60px' }}></div>
       {getApproveButton()}
       {getActionButton()}

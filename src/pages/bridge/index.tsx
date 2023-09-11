@@ -57,7 +57,7 @@ export const TopBorder = styled.div`
   display: flex;
 `
 
-export default function Vest() {
+export default function Bridge() {
   return (
     <Container>
       <Hero>
