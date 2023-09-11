@@ -6,11 +6,10 @@ import { Token } from '@uniswap/sdk-core'
 import { LiquidityType } from 'constants/stakingPools'
 import { LiquidityPool as LiquidityPoolList } from 'constants/stakingPools'
 
-import { useCurrencyBalance } from 'state/wallet/hooks'
+import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
-import useApproveCallback, { ApprovalState } from 'hooks/useApproveCallback'
 import useDebounce from 'hooks/useDebounce'
 import { useAddLiquidity, useRemoveLiquidity } from 'hooks/useStablePoolInfo'
 import useManageLiquidity from 'hooks/useLiquidityCallback'
@@ -25,6 +24,7 @@ import { maxAmountSpend } from 'utils/currency'
 import { PrimaryButton } from 'components/Button'
 import { DotFlashing } from 'components/Icons'
 import ActionSetter, { ActionTypes } from './ActionSetter'
+import { ApprovalState, useApproveCallback } from 'lib/hooks/useApproveCallback'
 
 const Wrapper = styled.div`
   display: flex;

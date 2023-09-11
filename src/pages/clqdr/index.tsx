@@ -10,7 +10,6 @@ import { formatBalance, toBN } from 'utils/numbers'
 
 import { useWeb3React } from '@web3-react/core'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
-import useApproveCallback, { ApprovalState } from 'hooks/useApproveCallback'
 import { useDepositLQDRCallback } from 'hooks/useClqdrCallback'
 import { useCalcSharesFromAmount, useClqdrData, useFetchFirebirdData } from 'hooks/useClqdrPage'
 import useDebounce from 'hooks/useDebounce'
@@ -36,6 +35,7 @@ import SingleChart from 'components/App/CLqdr/SingleChart'
 import ReadMore from 'components/App/CLqdr/ReadMore'
 import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 import ConnectWallet from 'components/ConnectWallet'
+import { ApprovalState, useApproveCallback } from 'lib/hooks/useApproveCallback'
 
 const Wrapper = styled(MainWrapper)`
   width: 100%;

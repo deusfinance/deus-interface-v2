@@ -5,7 +5,7 @@ import { isMobile } from 'react-device-detect'
 
 import useCurrencyLogo from 'hooks/useCurrencyLogo'
 import { useWeb3React } from '@web3-react/core'
-import { useCurrencyBalance } from 'state/wallet/hooks'
+import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 import { maxAmountSpend } from 'utils/currency'
 
 import ImageWithFallback from 'components/ImageWithFallback'

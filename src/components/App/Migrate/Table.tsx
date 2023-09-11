@@ -19,7 +19,7 @@ import { BaseButton, PrimaryButtonWide } from 'components/Button'
 import { useToggleWalletModal } from 'state/application/hooks'
 import TokenBox from './TokenBox'
 
-import { useTokenBalance } from 'state/wallet/hooks'
+import { useTokenBalance } from 'lib/hooks/useCurrencyBalance'
 import ManualReviewModal from './ManualReviewModal'
 import { useBalancedRatio, useGetUserMigrations } from 'hooks/useMigratePage'
 import BigNumber from 'bignumber.js'

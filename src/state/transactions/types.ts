@@ -25,16 +25,22 @@ interface BaseTransactionInfo {
   type: TransactionType
 }
 
-export interface WrapTransactionInfo extends BaseTransactionInfo {
-  type: TransactionType.WRAP
-  wrap: boolean
-  amount: string
+export interface ApproveTransactionInfo extends BaseTransactionInfo {
+  type: TransactionType.APPROVAL
+  tokenAddress: string
+  spender: string
 }
 
-export type TransactionInfo = WrapTransactionInfo
+export type TransactionInfo = ApproveTransactionInfo
+
+export interface Approval {
+  tokenAddress?: string
+  spender?: string
+}
 
 export interface TransactionDetails {
   hash: string
+  approval?: Approval
   summary?: string
   receipt?: SerializableTransactionReceipt
   lastCheckedBlockNumber?: number

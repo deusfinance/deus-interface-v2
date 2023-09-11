@@ -6,12 +6,11 @@ import { DEUS_TOKEN, XDEUS_TOKEN } from 'constants/tokens'
 import { StablePools } from 'constants/sPools'
 import { tryParseAmount } from 'utils/parse'
 
-import { useCurrencyBalance } from 'state/wallet/hooks'
+import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { useWeb3React } from '@web3-react/core'
 import useDebounce from 'hooks/useDebounce'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
-import useApproveCallback, { ApprovalState } from 'hooks/useApproveCallback'
 import useSwapCallback from 'hooks/useSwapCallback'
 
 import { PrimaryButton } from 'components/Button'
@@ -20,6 +19,7 @@ import { useSwapAmountsOut } from 'hooks/useSwapPage'
 import AdvancedOptions from './AdvancedOptions'
 import InputBox from './InputBox'
 import { LiquidityPool } from 'constants/stakingPools'
+import { ApprovalState, useApproveCallback } from 'lib/hooks/useApproveCallback'
 
 const Container = styled.div`
   display: flex;

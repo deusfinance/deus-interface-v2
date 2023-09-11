@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { LiquidityType, Stakings } from 'constants/stakingPools'
 
-import { useCurrencyBalance } from 'state/wallet/hooks'
+import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 import { useWeb3React } from '@web3-react/core'
 import { useCurrencyLogos } from 'hooks/useCurrencyLogo'
 import { usePoolInfo, useRemoveLiquidity } from 'hooks/useStablePoolInfo'

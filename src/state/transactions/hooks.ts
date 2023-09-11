@@ -98,3 +98,29 @@ export function useHasPendingApproval(token?: Token, spender?: string): boolean 
     [allTransactions, spender, token?.address]
   )
 }
+
+export function usePendingApprovalList(currenciesAddress: string[] | null, spender: string | null | undefined) {
+  const allTransactions = useAllTransactions()
+  return useMemo(
+    () =>
+      typeof spender === 'string' &&
+      currenciesAddress &&
+      Object.keys(allTransactions).some((hash) => {
+        const tx = allTransactions[hash]
+        if (!tx) return false
+        if (tx.receipt) {
+          return false
+        } else {
+          const approval = tx.approval
+          if (!approval) return false
+          return (
+            approval.spender === spender &&
+            approval.tokenAddress &&
+            currenciesAddress?.includes(approval.tokenAddress) &&
+            isTransactionRecent(tx)
+          )
+        }
+      }),
+    [allTransactions, spender, currenciesAddress]
+  )
+}

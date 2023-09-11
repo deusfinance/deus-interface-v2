@@ -10,7 +10,7 @@ import { calculateGasMargin } from 'utils/web3'
 import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import ERC20_ABI from 'constants/abi/ERC20.json'
 import { Interface } from '@ethersproject/abi'
-import { getContract } from './useContract'
+import { getContract } from 'utils/web3'
 import { BN_TEN } from 'utils/numbers'
 
 export enum ApprovalState {
@@ -20,95 +20,95 @@ export enum ApprovalState {
   APPROVED = 'APPROVED',
 }
 
-export default function useApproveCallbacks(
-  currencies: Token[],
-  spender: string | undefined
-): [ApprovalState[], (index: number | null) => Promise<void>] {
-  const { library, account, chainId } = useWeb3React()
+// export default function useApproveCallbacks(
+//   currencies: Token[],
+//   spender: string | undefined
+// ): [ApprovalState[], (index: number | null) => Promise<void>] {
+//   const { provider, account, chainId } = useWeb3React()
 
-  const addTransaction = useTransactionAdder()
-  const currenciesAddress = useMemo(() => currencies.map((currency) => currency.address), [currencies])
-  const pendingApproval = usePendingApprovalList(currenciesAddress, spender)
+//   const addTransaction = useTransactionAdder()
+//   const currenciesAddress = useMemo(() => currencies.map((currency) => currency.address), [currencies])
+//   const pendingApproval = usePendingApprovalList(currenciesAddress, spender)
 
-  const contracts = currencies.map((currency) => currency.address)
-  const allowances = useMultipleContractSingleData(contracts, new Interface(ERC20_ABI), 'allowance', [
-    account ?? undefined,
-    spender,
-  ])
+//   const contracts = currencies.map((currency) => currency.address)
+//   const allowances = useMultipleContractSingleData(contracts, new Interface(ERC20_ABI), 'allowance', [
+//     account ?? undefined,
+//     spender,
+//   ])
 
-  const approvalStates = useMemo(() => {
-    return currencies.map((currency, index) => {
-      const currencyResult = allowances[index]?.result
+//   const approvalStates = useMemo(() => {
+//     return currencies.map((currency, index) => {
+//       const currencyResult = allowances[index]?.result
 
-      if (!currency) return ApprovalState.UNKNOWN
-      if (!spender) return ApprovalState.UNKNOWN
-      if (currency.isNative) return ApprovalState.APPROVED
-      if (!currencyResult?.length) return ApprovalState.UNKNOWN
+//       if (!currency) return ApprovalState.UNKNOWN
+//       if (!spender) return ApprovalState.UNKNOWN
+//       if (currency.isNative) return ApprovalState.APPROVED
+//       if (!currencyResult?.length) return ApprovalState.UNKNOWN
 
-      return currencyResult[0].gt(0)
-        ? ApprovalState.APPROVED
-        : pendingApproval
-        ? ApprovalState.PENDING
-        : ApprovalState.NOT_APPROVED
-    })
-  }, [pendingApproval, currencies, spender, allowances])
+//       return currencyResult[0].gt(0)
+//         ? ApprovalState.APPROVED
+//         : pendingApproval
+//         ? ApprovalState.PENDING
+//         : ApprovalState.NOT_APPROVED
+//     })
+//   }, [pendingApproval, currencies, spender, allowances])
 
-  const handleApproveByIndex = useCallback(
-    async (index) => {
-      const approvalState = approvalStates[index]
-      const token = currencies[index]
+//   const handleApproveByIndex = useCallback(
+//     async (index) => {
+//       const approvalState = approvalStates[index]
+//       const token = currencies[index]
 
-      if (!library) {
-        console.error('library is null')
-        return
-      }
+//       if (!provider) {
+//         console.error('library is null')
+//         return
+//       }
 
-      const TokenContract = getContract(token.address, ERC20_ABI, library, account ? account : undefined)
+//       const TokenContract = getContract(token.address, ERC20_ABI, provider, account ? account : undefined)
 
-      if (approvalState === ApprovalState.APPROVED) {
-        console.error('approve was called unnecessarily')
-        return
-      }
+//       if (approvalState === ApprovalState.APPROVED) {
+//         console.error('approve was called unnecessarily')
+//         return
+//       }
 
-      if (!chainId) {
-        console.error('no chainId')
-        return
-      }
+//       if (!chainId) {
+//         console.error('no chainId')
+//         return
+//       }
 
-      if (!TokenContract) {
-        console.error('TokenContract is null')
-        return
-      }
+//       if (!TokenContract) {
+//         console.error('TokenContract is null')
+//         return
+//       }
 
-      if (!account) {
-        console.error('account is null')
-        return
-      }
+//       if (!account) {
+//         console.error('account is null')
+//         return
+//       }
 
-      if (!spender) {
-        console.error('no spender')
-        return
-      }
+//       if (!spender) {
+//         console.error('no spender')
+//         return
+//       }
 
-      const estimatedGas = await TokenContract.estimateGas.approve(spender, MaxUint256)
-      return TokenContract.approve(spender, MaxUint256, {
-        gasLimit: calculateGasMargin(estimatedGas),
-      })
-        .then((response: TransactionResponse) => {
-          addTransaction(response, {
-            summary: 'Approve ' + token?.symbol,
-            approval: { tokenAddress: token?.address, spender },
-          })
-        })
-        .catch((error: Error) => {
-          console.error('Failed to approve token for an unknown reason', error)
-        })
-    },
-    [currencies, spender, addTransaction, chainId, account, library, approvalStates]
-  )
+//       const estimatedGas = await TokenContract.estimateGas.approve(spender, MaxUint256)
+//       return TokenContract.approve(spender, MaxUint256, {
+//         gasLimit: calculateGasMargin(estimatedGas),
+//       })
+//         .then((response: TransactionResponse) => {
+//           addTransaction(response, {
+//             summary: 'Approve ' + token?.symbol,
+//             approval: { tokenAddress: token?.address, spender },
+//           })
+//         })
+//         .catch((error: Error) => {
+//           console.error('Failed to approve token for an unknown reason', error)
+//         })
+//     },
+//     [approvalStates, currencies, provider, account, chainId, spender, addTransaction]
+//   )
 
-  return [approvalStates, handleApproveByIndex]
-}
+//   return [approvalStates, handleApproveByIndex]
+// }
 
 export function useApproveCallbacksWithAmounts(
   currencies: Token[],
@@ -116,7 +116,7 @@ export function useApproveCallbacksWithAmounts(
   typedAmounts?: string[] | number[] | undefined,
   limitedApprove?: boolean
 ): [ApprovalState[], (index: number | null) => Promise<void>] {
-  const { library, account, chainId } = useWeb3React()
+  const { provider, account, chainId } = useWeb3React()
 
   const addTransaction = useTransactionAdder()
 
@@ -167,12 +167,12 @@ export function useApproveCallbacksWithAmounts(
       const approvalState = approvalStates[index]
       const token = currencies[index]
 
-      if (!library) {
+      if (!provider) {
         console.error('library is null')
         return
       }
 
-      const TokenContract = getContract(token.address, ERC20_ABI, library, account ? account : undefined)
+      const TokenContract = getContract(token.address, ERC20_ABI, provider, account ? account : undefined)
 
       if (approvalState === ApprovalState.APPROVED) {
         console.error('approve was called unnecessarily')
@@ -213,7 +213,7 @@ export function useApproveCallbacksWithAmounts(
           console.error('Failed to approve token for an unknown reason', error)
         })
     },
-    [approvalStates, currencies, library, account, chainId, spender, amountToApprove, addTransaction]
+    [approvalStates, currencies, provider, account, chainId, spender, amountToApprove, addTransaction]
   )
 
   return [approvalStates, handleApproveByIndex]

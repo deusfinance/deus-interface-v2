@@ -16,13 +16,13 @@ import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 import { useWeb3React } from '@web3-react/core'
 import { useMasterChefContract } from 'hooks/useContract'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
-import useApproveCallback, { ApprovalState } from 'hooks/useApproveCallback'
 
 import { PrimaryButton } from 'components/Button'
 import { InputField } from 'components/Input'
 import Container from './common/Container'
 import { Divider, HStack } from './common/Layout'
 import { DotFlashing } from 'components/Icons'
+import { ApprovalState, useApproveCallback } from 'lib/hooks/useApproveCallback'
 
 const Wrapper = styled(HStack)`
   justify-content: space-between;

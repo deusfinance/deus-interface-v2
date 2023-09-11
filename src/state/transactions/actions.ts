@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit'
 
-import { SerializableTransactionReceipt, TransactionInfo } from './types'
+import { Approval, SerializableTransactionReceipt, TransactionInfo } from './types'
 
 export const addTransaction = createAction<{
   chainId: number
@@ -8,6 +8,7 @@ export const addTransaction = createAction<{
   hash: string
   info: TransactionInfo
   summary?: string
+  approval?: Approval
 }>('transactions/addTransaction')
 export const clearAllTransactions = createAction<{ chainId: number }>('transactions/clearAllTransactions')
 export const finalizeTransaction = createAction<{

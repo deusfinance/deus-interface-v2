@@ -13,12 +13,13 @@ import { useWeb3React } from '@web3-react/core'
 import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 import { tryParseAmount } from 'utils/parse'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
-import { ApprovalState, useApproveCallbackWithAmount } from 'hooks/useApproveCallback'
 import { useMigratorContract } from 'hooks/useContract'
 import { useToggleWalletModal } from 'state/application/hooks'
 import useMigrateCallback from 'hooks/useMigrateCallback'
 import { DEUS_TOKEN } from 'constants/tokens'
 import InputBox from './InputBox'
+import { ApprovalState } from 'lib/hooks/useApproval'
+import { useApproveCallback } from 'lib/hooks/useApproveCallback'
 
 const MainModal = styled(Modal)`
   display: flex;
@@ -102,12 +103,7 @@ export default function ManualReviewModal({
 
   const MigratorContract = useMigratorContract()
   const spender = useMemo(() => MigratorContract?.address, [MigratorContract])
-  const [approvalState, approveCallback] = useApproveCallbackWithAmount(
-    inputToken ?? undefined,
-    spender,
-    amountIn,
-    true
-  )
+  const [approvalState, approveCallback] = useApproveCallback(inputToken ?? undefined, amountIn, spender)
   const [showApprove, showApproveLoader] = useMemo(() => {
     const show = inputToken && approvalState !== ApprovalState.APPROVED && !!amountIn
     return [show, show && approvalState === ApprovalState.PENDING]
