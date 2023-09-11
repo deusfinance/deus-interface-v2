@@ -11,6 +11,7 @@ import {
   updateChainId,
   updateTokenId,
   updatePositionId,
+  updateAverageBlockTime,
 } from './actions'
 
 export enum ApplicationModal {
@@ -51,6 +52,7 @@ export interface ApplicationState {
   readonly positionId: number | null
   readonly popupList: PopupList
   readonly openModal: ApplicationModal | null
+  readonly averageBlockTime: { readonly [chainId: number]: number }
 }
 
 const initialState: ApplicationState = {
@@ -62,6 +64,7 @@ const initialState: ApplicationState = {
   positionId: null,
   openModal: null,
   popupList: [],
+  averageBlockTime: {},
 }
 
 export default createReducer(initialState, (builder) =>
@@ -116,5 +119,13 @@ export default createReducer(initialState, (builder) =>
           p.show = false
         }
       })
+    })
+    .addCase(updateAverageBlockTime, (state, action) => {
+      const { chainId, averageBlockTime } = action.payload
+      if (typeof state.averageBlockTime[chainId] !== 'number') {
+        state.averageBlockTime[chainId] = averageBlockTime
+      } else {
+        state.averageBlockTime[chainId] = Math.max(averageBlockTime, state.averageBlockTime[chainId])
+      }
     })
 )

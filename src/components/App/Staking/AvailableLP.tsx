@@ -23,6 +23,7 @@ import Container from './common/Container'
 import { Divider, HStack } from './common/Layout'
 import { DotFlashing } from 'components/Icons'
 import { ApprovalState, useApproveCallback } from 'lib/hooks/useApproveCallback'
+import { TransactionType } from 'state/transactions/types'
 
 const Wrapper = styled(HStack)`
   justify-content: space-between;
@@ -123,7 +124,7 @@ const AvailableLP = ({ pool }: { pool: LiquidityType }) => {
       if (!masterChefContract || !account || !isSupportedChainId || !amountIn) return
       setAwaitingDepositConfirmation(true)
       const response = await masterChefContract.deposit(stakingPool?.pid, toBN(amountIn).times(1e18).toFixed(), account)
-      addTransaction(response, { summary: `Deposit`, vest: { hash: response.hash } })
+      addTransaction(response, { type: TransactionType.DEPOSIT })
       setAwaitingDepositConfirmation(false)
       setAmountIn('')
       // setPendingTxHash(response.hash)

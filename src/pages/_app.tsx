@@ -12,7 +12,6 @@ import LiveChat from 'components/LiveChat'
 
 import store from '../state'
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
-// import { getLibrary } from '../utils/library'
 
 const Updaters = dynamic(() => import('../state/updaters'), { ssr: false })
 const Web3Provider = dynamic(() => import('../components/Web3Provider'), {

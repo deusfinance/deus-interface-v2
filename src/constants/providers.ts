@@ -65,4 +65,5 @@ export const RPC_PROVIDERS: { [key in SupportedChainId]: StaticJsonRpcProvider }
   [SupportedChainId.MAINNET]: new AppJsonRpcProvider(SupportedChainId.MAINNET),
   [SupportedChainId.METIS]: new AppJsonRpcProvider(SupportedChainId.METIS),
   [SupportedChainId.POLYGON]: new AppJsonRpcProvider(SupportedChainId.POLYGON),
+  [SupportedChainId.BASE]: new AppJsonRpcProvider(SupportedChainId.BASE),
 }

@@ -110,27 +110,27 @@ const InfoIcon = styled(Info)`
   margin: auto 8px;
 `
 
-const AprWrapper = styled.a`
-  align-items: center;
-  text-decoration: none;
-  justify-content: center;
-  color: ${({ theme }) => theme.text1};
-  display: flex;
+// const AprWrapper = styled.a`
+//   align-items: center;
+//   text-decoration: none;
+//   justify-content: center;
+//   color: ${({ theme }) => theme.text1};
+//   display: flex;
 
-  :hover {
-    opacity: 0.7;
-    text-decoration: underline;
-    color: ${({ theme }) => theme.yellow4};
-  }
-  :focus {
-    outline: none;
-  }
-`
+//   :hover {
+//     opacity: 0.7;
+//     text-decoration: underline;
+//     color: ${({ theme }) => theme.yellow4};
+//   }
+//   :focus {
+//     outline: none;
+//   }
+// `
 
-const TextContent = styled.p`
-  margin-right: 10px;
-  font-size: 14px;
-`
+// const TextContent = styled.p`
+//   margin-right: 10px;
+//   font-size: 14px;
+// `
 
 const ItemBox2 = styled.div<{ rightBorder?: boolean }>`
   display: inline-block;

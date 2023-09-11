@@ -72,6 +72,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.AVALANCHE]: 'Avalanche',
   [SupportedChainId.METIS]: 'Metis',
   [SupportedChainId.KAVA]: 'Kava',
+  [SupportedChainId.BASE]: 'Base',
 }
 
 export const SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedChainId).filter(

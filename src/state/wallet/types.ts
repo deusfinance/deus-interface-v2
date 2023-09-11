@@ -7,3 +7,4 @@ export interface Wallet {
 
 type TokenAddress = string
 export type TokenBalancesMap = Record<TokenAddress, CurrencyAmount<Token>>
+export type TokenBalancesMapWithUndefined = Record<TokenAddress, CurrencyAmount<Token> | undefined>

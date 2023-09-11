@@ -12,6 +12,7 @@ import { DefaultHandlerError } from 'utils/parseError'
 import { toBN } from 'utils/numbers'
 import { getTokenIndex, StablePoolType } from 'constants/sPools'
 import { LiquidityPool } from 'constants/stakingPools'
+import { TransactionType } from 'state/transactions/types'
 
 export enum TransactionCallbackState {
   INVALID = 'INVALID',
@@ -31,7 +32,7 @@ export default function useSwapCallback(
   callback: null | (() => Promise<string>)
   error: string | null
 } {
-  const { account, chainId, library } = useWeb3React()
+  const { account, chainId, provider } = useWeb3React()
   const addTransaction = useTransactionAdder()
   const liquidityPool = LiquidityPool.find((liqPool) => liqPool.id === pool.id) || LiquidityPool[0]
   const swapContract = useStablePoolContract(liquidityPool)
@@ -48,7 +49,7 @@ export default function useSwapCallback(
 
   const constructCall = useCallback(() => {
     try {
-      if (!account || !library || !swapContract || !outputAmount || !inputAmount || !positions) {
+      if (!account || !provider || !swapContract || !outputAmount || !inputAmount || !positions) {
         throw new Error('Missing dependencies.')
       }
 
@@ -70,10 +71,10 @@ export default function useSwapCallback(
         error,
       }
     }
-  }, [account, library, swapContract, outputAmount, positions, inputAmount, slippage, deadlineValue])
+  }, [account, provider, swapContract, outputAmount, positions, inputAmount, slippage, deadlineValue])
 
   return useMemo(() => {
-    if (!account || !chainId || !library || !swapContract || !inputCurrency || !outputCurrency || !outputAmount) {
+    if (!account || !chainId || !provider || !swapContract || !inputCurrency || !outputCurrency || !outputAmount) {
       return {
         state: TransactionCallbackState.INVALID,
         callback: null,
@@ -111,10 +112,10 @@ export default function useSwapCallback(
 
         console.log('SWAP TRANSACTION', { tx, value })
 
-        const estimatedGas = await library.estimateGas(tx).catch((gasError) => {
+        const estimatedGas = await provider.estimateGas(tx).catch((gasError) => {
           console.debug('Gas estimate failed, trying eth_call to extract error', call)
 
-          return library
+          return provider
             .call(tx)
             .then((result) => {
               console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
@@ -135,7 +136,7 @@ export default function useSwapCallback(
           throw new Error('Unexpected error. Could not estimate gas for this transaction.')
         }
 
-        return library
+        return provider
           .getSigner()
           .sendTransaction({
             ...tx,
@@ -144,10 +145,11 @@ export default function useSwapCallback(
           })
           .then((response: TransactionResponse) => {
             console.log(response)
-            const summary = `Swap ${inputAmount?.toSignificant()} ${
-              inputCurrency?.symbol
-            } for ${outputAmount?.toSignificant()} ${outputCurrency?.symbol}`
-            addTransaction(response, { summary })
+            // const summary = `Swap ${inputAmount?.toSignificant()} ${
+            //   inputCurrency?.symbol
+            // } for ${outputAmount?.toSignificant()} ${outputCurrency?.symbol}`
+            // addTransaction(response, { summary })
+            addTransaction(response, { type: TransactionType.SWAP })
 
             return response.hash
           })
@@ -166,7 +168,7 @@ export default function useSwapCallback(
   }, [
     account,
     chainId,
-    library,
+    provider,
     addTransaction,
     constructCall,
     swapContract,

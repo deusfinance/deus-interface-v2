@@ -12,6 +12,7 @@ import ERC20_ABI from 'constants/abi/ERC20.json'
 import { Interface } from '@ethersproject/abi'
 import { getContract } from 'utils/web3'
 import { BN_TEN } from 'utils/numbers'
+import { TransactionType } from 'state/transactions/types'
 
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',
@@ -59,7 +60,7 @@ export enum ApprovalState {
 //       const token = currencies[index]
 
 //       if (!provider) {
-//         console.error('library is null')
+//         console.error('provider is null')
 //         return
 //       }
 
@@ -168,7 +169,7 @@ export function useApproveCallbacksWithAmounts(
       const token = currencies[index]
 
       if (!provider) {
-        console.error('library is null')
+        console.error('provider is null')
         return
       }
 
@@ -204,10 +205,11 @@ export function useApproveCallbacksWithAmounts(
         gasLimit: calculateGasMargin(estimatedGas),
       })
         .then((response: TransactionResponse) => {
-          addTransaction(response, {
-            summary: 'Approve ' + token?.symbol,
-            approval: { tokenAddress: token?.address, spender },
-          })
+          // addTransaction(response, {
+          //   summary: 'Approve ' + token?.symbol,
+          //   approval: { tokenAddress: token?.address, spender },
+          // })
+          addTransaction(response, { type: TransactionType.APPROVAL, tokenAddress: token?.address, spender })
         })
         .catch((error: Error) => {
           console.error('Failed to approve token for an unknown reason', error)

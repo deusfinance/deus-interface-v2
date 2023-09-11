@@ -12,7 +12,7 @@ import ImageWithFallback from 'components/ImageWithFallback'
 import { NumericalInput } from 'components/Input'
 import { RowBetween } from '../../Row/index'
 import { ChevronDown as ChevronDownIcon } from 'components/Icons'
-import { formatAmount } from 'utils/numbers'
+import { extendedFormatAmount } from 'utils/numbers'
 
 const Wrapper = styled.div`
   background: rgb(28 28 28);
@@ -119,8 +119,8 @@ export default function InputBox({
 
   //for showing formatted balance to user
   const balanceDisplay = useMemo(() => {
-    if (!maxValue) return formatAmount(maxAmountSpend(currencyBalance)?.toExact() ?? '0')
-    return formatAmount(maxValue)
+    if (!maxValue) return extendedFormatAmount(maxAmountSpend(currencyBalance)?.toExact() ?? '0')
+    return extendedFormatAmount(maxValue)
   }, [currencyBalance, maxValue])
 
   //for clicking on the max button

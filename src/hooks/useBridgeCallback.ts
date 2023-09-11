@@ -1,15 +1,16 @@
 import { useCallback, useMemo } from 'react'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
-import { Currency, CurrencyAmount, NativeCurrency, Token } from '@sushiswap/core-sdk'
+import { Currency, CurrencyAmount, NativeCurrency, Token } from '@uniswap/sdk-core'
 import toast from 'react-hot-toast'
 
 import { useTransactionAdder } from 'state/transactions/hooks'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import { useBridgeContract, useAxlGatewayContract } from 'hooks/useContract'
 import { calculateGasMargin } from 'utils/web3'
 import { toHex } from 'utils/hex'
 import { DefaultHandlerError } from 'utils/parseError'
 import { DEUS_TOKEN } from 'constants/tokens'
+import { TransactionType } from 'state/transactions/types'
 
 export enum TransactionCallbackState {
   INVALID = 'INVALID',
@@ -24,14 +25,14 @@ export default function useBridgeCallback(
   callback: null | (() => Promise<string>)
   error: string | null
 } {
-  const { account, chainId, library } = useWeb3React()
+  const { account, chainId, provider } = useWeb3React()
   const addTransaction = useTransactionAdder()
 
   const axlGatewayContract = useAxlGatewayContract()
 
   const constructCall = useCallback(() => {
     try {
-      if (!account || !library || !axlGatewayContract || !inputAmount) {
+      if (!account || !provider || !axlGatewayContract || !inputAmount) {
         throw new Error('Missing dependencies.')
       }
 
@@ -49,10 +50,10 @@ export default function useBridgeCallback(
         error,
       }
     }
-  }, [account, library, axlGatewayContract, inputAmount, inputCurrency?.symbol])
+  }, [account, provider, axlGatewayContract, inputAmount, inputCurrency?.symbol])
 
   return useMemo(() => {
-    if (!account || !chainId || !library || !axlGatewayContract || !inputCurrency) {
+    if (!account || !chainId || !provider || !axlGatewayContract || !inputCurrency) {
       return {
         state: TransactionCallbackState.INVALID,
         callback: null,
@@ -90,10 +91,10 @@ export default function useBridgeCallback(
 
         console.log('SWAP TRANSACTION', { tx, value })
 
-        const estimatedGas = await library.estimateGas(tx).catch((gasError) => {
+        const estimatedGas = await provider.estimateGas(tx).catch((gasError) => {
           console.debug('Gas estimate failed, trying eth_call to extract error', call)
 
-          return library
+          return provider
             .call(tx)
             .then((result) => {
               console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
@@ -115,7 +116,7 @@ export default function useBridgeCallback(
         }
         // estimatedGas = BigNumber.from(500_000)
 
-        return library
+        return provider
           .getSigner()
           .sendTransaction({
             ...tx,
@@ -124,8 +125,9 @@ export default function useBridgeCallback(
           })
           .then((response: TransactionResponse) => {
             console.log(response)
-            const summary = `Bridge ${inputAmount?.toSignificant()} ${inputCurrency?.symbol}`
-            addTransaction(response, { summary })
+            // const summary = `Bridge ${inputAmount?.toSignificant()} ${inputCurrency?.symbol}`
+            // addTransaction(response, { summary })
+            addTransaction(response, { type: TransactionType.BRIDGE })
 
             return response.hash
           })
@@ -141,7 +143,7 @@ export default function useBridgeCallback(
           })
       },
     }
-  }, [account, chainId, library, axlGatewayContract, inputCurrency, inputAmount, constructCall, addTransaction])
+  }, [account, chainId, provider, axlGatewayContract, inputCurrency, inputAmount, constructCall, addTransaction])
 }
 
 export function useDepositCallback(
@@ -154,14 +156,14 @@ export function useDepositCallback(
   callback: null | (() => Promise<string>)
   error: string | null
 } {
-  const { account, chainId, library } = useWeb3React()
+  const { account, chainId, provider } = useWeb3React()
   const addTransaction = useTransactionAdder()
 
   const bridgeContract = useBridgeContract()
 
   const constructCall = useCallback(() => {
     try {
-      if (!account || !library || !bridgeContract) {
+      if (!account || !provider || !bridgeContract) {
         throw new Error('Missing dependencies.')
       }
 
@@ -178,10 +180,10 @@ export function useDepositCallback(
         error,
       }
     }
-  }, [account, library, bridgeContract, inputAmount, outputAmount])
+  }, [account, provider, bridgeContract, inputAmount, outputAmount])
 
   return useMemo(() => {
-    if (!account || !chainId || !library || !bridgeContract || !inputCurrency || !outputCurrency) {
+    if (!account || !chainId || !provider || !bridgeContract || !inputCurrency || !outputCurrency) {
       return {
         state: TransactionCallbackState.INVALID,
         callback: null,
@@ -212,10 +214,10 @@ export function useDepositCallback(
 
         console.log('Deposit TRANSACTION', { tx, value })
 
-        const estimatedGas = await library.estimateGas(tx).catch((gasError) => {
+        const estimatedGas = await provider.estimateGas(tx).catch((gasError) => {
           console.debug('Gas estimate failed, trying eth_call to extract error', call)
 
-          return library
+          return provider
             .call(tx)
             .then((result) => {
               console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
@@ -236,7 +238,7 @@ export function useDepositCallback(
           throw new Error('Unexpected error. Could not estimate gas for this transaction.')
         }
 
-        return library
+        return provider
           .getSigner()
           .sendTransaction({
             ...tx,
@@ -245,10 +247,10 @@ export function useDepositCallback(
           })
           .then((response: TransactionResponse) => {
             console.log(response)
-            const summary = `Deposit ${inputAmount ? inputAmount?.toSignificant() : 0} ${inputCurrency?.symbol} and ${
-              outputAmount ? outputAmount?.toSignificant() : 0
-            } ${outputCurrency?.symbol}`
-            addTransaction(response, { summary })
+            // const summary = `Deposit ${inputAmount ? inputAmount?.toSignificant() : 0} ${inputCurrency?.symbol} and ${
+            //   outputAmount ? outputAmount?.toSignificant() : 0
+            // } ${outputCurrency?.symbol}`
+            addTransaction(response, { type: TransactionType.DEPOSIT })
 
             return response.hash
           })
@@ -264,18 +266,7 @@ export function useDepositCallback(
           })
       },
     }
-  }, [
-    account,
-    chainId,
-    library,
-    bridgeContract,
-    inputCurrency,
-    outputCurrency,
-    inputAmount,
-    outputAmount,
-    constructCall,
-    addTransaction,
-  ])
+  }, [account, chainId, provider, bridgeContract, inputCurrency, outputCurrency, constructCall, addTransaction])
 }
 
 export function useWithdrawCallback(
@@ -288,14 +279,14 @@ export function useWithdrawCallback(
   callback: null | (() => Promise<string>)
   error: string | null
 } {
-  const { account, chainId, library } = useWeb3React()
+  const { account, chainId, provider } = useWeb3React()
   const addTransaction = useTransactionAdder()
 
   const bridgeContract = useBridgeContract()
 
   const constructCall = useCallback(() => {
     try {
-      if (!account || !library || !bridgeContract) {
+      if (!account || !provider || !bridgeContract) {
         throw new Error('Missing dependencies.')
       }
 
@@ -312,10 +303,10 @@ export function useWithdrawCallback(
         error,
       }
     }
-  }, [account, library, bridgeContract, inputAmount, outputAmount])
+  }, [account, provider, bridgeContract, inputAmount, outputAmount])
 
   return useMemo(() => {
-    if (!account || !chainId || !library || !bridgeContract || !inputCurrency || !outputCurrency) {
+    if (!account || !chainId || !provider || !bridgeContract || !inputCurrency || !outputCurrency) {
       return {
         state: TransactionCallbackState.INVALID,
         callback: null,
@@ -346,10 +337,10 @@ export function useWithdrawCallback(
 
         console.log('Withdraw TRANSACTION', { tx, value })
 
-        const estimatedGas = await library.estimateGas(tx).catch((gasError) => {
+        const estimatedGas = await provider.estimateGas(tx).catch((gasError) => {
           console.debug('Gas estimate failed, trying eth_call to extract error', call)
 
-          return library
+          return provider
             .call(tx)
             .then((result) => {
               console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
@@ -370,7 +361,7 @@ export function useWithdrawCallback(
           throw new Error('Unexpected error. Could not estimate gas for this transaction.')
         }
 
-        return library
+        return provider
           .getSigner()
           .sendTransaction({
             ...tx,
@@ -379,10 +370,11 @@ export function useWithdrawCallback(
           })
           .then((response: TransactionResponse) => {
             console.log(response)
-            const summary = `Withdraw ${inputAmount ? inputAmount?.toSignificant() : 0} ${inputCurrency?.symbol} and ${
-              outputAmount ? outputAmount?.toSignificant() : 0
-            } ${outputCurrency?.symbol}`
-            addTransaction(response, { summary })
+            // const summary = `Withdraw ${inputAmount ? inputAmount?.toSignificant() : 0} ${inputCurrency?.symbol} and ${
+            //   outputAmount ? outputAmount?.toSignificant() : 0
+            // } ${outputCurrency?.symbol}`
+            // addTransaction(response, { summary })
+            addTransaction(response, { type: TransactionType.WITHDRAW })
 
             return response.hash
           })
@@ -398,16 +390,5 @@ export function useWithdrawCallback(
           })
       },
     }
-  }, [
-    account,
-    chainId,
-    library,
-    bridgeContract,
-    inputCurrency,
-    outputCurrency,
-    inputAmount,
-    outputAmount,
-    constructCall,
-    addTransaction,
-  ])
+  }, [account, chainId, provider, bridgeContract, inputCurrency, outputCurrency, constructCall, addTransaction])
 }

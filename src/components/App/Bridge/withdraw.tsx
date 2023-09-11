@@ -5,8 +5,8 @@ import { Plus } from 'react-feather'
 import { Tokens } from 'constants/tokens'
 import { tryParseAmount } from 'utils/parse'
 
-import { useWalletModalToggle } from 'state/application/hooks'
-import useWeb3React from 'hooks/useWeb3'
+import { useToggleWalletModal } from 'state/application/hooks'
+import { useWeb3React } from '@web3-react/core'
 
 import { PrimaryButton } from 'components/Button'
 import { DotFlashing } from 'components/Icons'
@@ -48,7 +48,7 @@ const MainButton = styled(PrimaryButton)`
 
 export default function WithdrawPage() {
   const { chainId, account } = useWeb3React()
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
 
   const deposits = useDeposits()
   const [amountIn, setAmountIn] = useState('')

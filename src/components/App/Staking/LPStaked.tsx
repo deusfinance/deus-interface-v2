@@ -17,6 +17,7 @@ import { DefaultHandlerError } from 'utils/parseError'
 import Container from './common/Container'
 import { Divider, HStack, VStack } from './common/Layout'
 import { InputField } from 'components/Input'
+import { TransactionType } from 'state/transactions/types'
 
 const Wrapper = styled(HStack)`
   justify-content: space-between;
@@ -29,7 +30,7 @@ const StakedLPHeader = styled(Wrapper)`
   background-color: ${({ theme }) => theme.bg1};
   cursor: pointer;
   & > p {
-    color:${({ theme }) => theme.text1}
+    color: ${({ theme }) => theme.text1};
     font-size: 0.875rem;
     font-weight: medium;
   }
@@ -150,7 +151,7 @@ const StakedLP = ({ pid }: { pid: number }) => {
         toBN(amountIn).times(1e18).toFixed(),
         account
       )
-      addTransaction(response, { summary: `Withdraw ${amountIn}`, vest: { hash: response.hash } })
+      addTransaction(response, { type: TransactionType.WITHDRAW })
       setAwaitingWithdrawConfirmation(false)
       setAmountIn('')
       // setPendingTxHash(response.hash)
@@ -167,7 +168,7 @@ const StakedLP = ({ pid }: { pid: number }) => {
       if (!masterChefContract || !account || !isSupportedChainId) return
       setAwaitClaimConfirmation(true)
       const response = await masterChefContract.harvest(stakingPool?.pid, account)
-      addTransaction(response, { summary: `Claim Rewards`, vest: { hash: response.hash } })
+      addTransaction(response, { type: TransactionType.CLAIM })
       setAwaitClaimConfirmation(false)
       // setPendingTxHash(response.hash)
     } catch (err) {

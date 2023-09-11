@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
+import { useSingleContractMultipleMethods } from 'lib/hooks/multicall'
 import { useBridgeContract } from './useContract'
-import useWeb3React from './useWeb3'
+import { useWeb3React } from '@web3-react/core'
 
 export function useDeposits(): string {
   const { account } = useWeb3React()

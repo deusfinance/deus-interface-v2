@@ -50,7 +50,7 @@ export async function createTransactionCallback(
   addTransaction: any,
   txInfo: TransactionInfo,
   account: undefined | null | string,
-  library: any,
+  provider: any,
   summary?: string,
   expertMode?: boolean | null
 ) {
@@ -71,10 +71,10 @@ export async function createTransactionCallback(
     : { from: account, to: address, data: calldata, value: BigNumber.from(value.toString()) }
 
   console.log(methodName.toUpperCase() + ' TRANSACTION', { tx, value })
-  let estimatedGas = await library.estimateGas(tx).catch((gasError: any) => {
+  let estimatedGas = await provider.estimateGas(tx).catch((gasError: any) => {
     console.debug('Gas estimate failed, trying eth_call to extract error', call)
 
-    return library
+    return provider
       .call(tx)
       .then((result: any) => {
         if (gasError.reason) toast.error(DefaultHandlerError(gasError))
@@ -102,7 +102,7 @@ export async function createTransactionCallback(
     }
   }
 
-  return library
+  return provider
     .getSigner()
     .sendTransaction({
       ...tx,

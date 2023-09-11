@@ -6,20 +6,21 @@ import { useCLQDRContract } from 'hooks/useContract'
 import { createTransactionCallback, TransactionCallbackState } from 'utils/web3'
 import { toBN } from 'utils/numbers'
 import { useCalcSharesFromAmount } from 'hooks/useClqdrPage'
+import { MintTransactionInfo, TransactionType } from 'state/transactions/types'
 
 export function useDepositLQDRCallback(amountIn: string): {
   state: TransactionCallbackState
   callback: null | (() => Promise<string>)
   error: string | null
 } {
-  const { account, chainId, library } = useWeb3React()
+  const { account, chainId, provider } = useWeb3React()
   const addTransaction = useTransactionAdder()
   const CLQDRContract = useCLQDRContract()
   const shares = useCalcSharesFromAmount(amountIn)
 
   const constructCall = useCallback(() => {
     try {
-      if (!account || !library || !CLQDRContract) {
+      if (!account || !provider || !CLQDRContract) {
         throw new Error('Missing dependencies.')
       }
 
@@ -35,10 +36,10 @@ export function useDepositLQDRCallback(amountIn: string): {
         error,
       }
     }
-  }, [account, library, CLQDRContract, amountIn, shares])
+  }, [account, provider, CLQDRContract, amountIn, shares])
 
   return useMemo(() => {
-    if (!account || !chainId || !library || !CLQDRContract) {
+    if (!account || !chainId || !provider || !CLQDRContract) {
       return {
         state: TransactionCallbackState.INVALID,
         callback: null,
@@ -47,11 +48,15 @@ export function useDepositLQDRCallback(amountIn: string): {
     }
 
     const summary = `Minting ${toBN(shares).div(1e18).toFixed()} cLQDR by ${amountIn} LQDR`
+    const txInfo = {
+      type: TransactionType.MINT,
+    } as MintTransactionInfo
 
     return {
       state: TransactionCallbackState.VALID,
       error: null,
-      callback: () => createTransactionCallback('deposit', constructCall, addTransaction, summary, account, library),
+      callback: () =>
+        createTransactionCallback('deposit', constructCall, addTransaction, txInfo, account, provider, summary),
     }
-  }, [account, chainId, library, shares, CLQDRContract, amountIn, constructCall, addTransaction])
+  }, [account, chainId, provider, shares, CLQDRContract, amountIn, constructCall, addTransaction])
 }

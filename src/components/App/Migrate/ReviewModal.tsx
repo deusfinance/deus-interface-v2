@@ -8,7 +8,7 @@ import { formatUnits } from '@ethersproject/units'
 import { ModalHeader, Modal } from 'components/Modal'
 import { Row } from 'components/Row'
 import { DotFlashing } from 'components/Icons'
-import { TokenBalancesMap } from 'state/wallet/types'
+import { TokenBalancesMapWithUndefined } from 'state/wallet/types'
 import ImageWithFallback from 'components/ImageWithFallback'
 import { useMigratorContract } from 'hooks/useContract'
 import { ApprovalState, useApproveCallbacksWithAmounts } from 'hooks/useApproveCallbacks'
@@ -76,7 +76,7 @@ export default function ReviewModal({
   title: string
   inputTokens: Token[]
   outputTokens: Token[]
-  amountsIn: TokenBalancesMap
+  amountsIn: TokenBalancesMapWithUndefined
   // amountsOut: TokenBalancesMap
   inputTokenLogos: string[]
   outputTokenLogos: string[]

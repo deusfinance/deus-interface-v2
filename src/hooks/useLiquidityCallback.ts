@@ -9,6 +9,7 @@ import { calculateGasMargin } from 'utils/web3'
 import { DefaultHandlerError } from 'utils/parseError'
 import { BN_TEN, toBN } from 'utils/numbers'
 import { LiquidityType } from 'constants/stakingPools'
+import { TransactionType } from 'state/transactions/types'
 
 export enum LiquidityCallbackState {
   INVALID = 'INVALID',
@@ -27,7 +28,7 @@ export default function useManageLiquidity(
   callback: null | (() => Promise<string>)
   error: string | null
 } {
-  const { account, chainId, library } = useWeb3React()
+  const { account, chainId, provider } = useWeb3React()
   const addTransaction = useTransactionAdder()
   const swapContract = useStablePoolContract(pool)
 
@@ -40,7 +41,7 @@ export default function useManageLiquidity(
 
   const constructCall = useCallback(() => {
     try {
-      if (!account || !library || !swapContract || !amounts || !amounts.length) {
+      if (!account || !provider || !swapContract || !amounts || !amounts.length) {
         throw new Error('Missing dependencies.')
       }
       let args = []
@@ -71,10 +72,10 @@ export default function useManageLiquidity(
         error,
       }
     }
-  }, [account, library, swapContract, amounts, slippage, isRemove, minAmountOutBN, amountsInBN, deadlineValue])
+  }, [account, provider, swapContract, amounts, slippage, isRemove, minAmountOutBN, amountsInBN, deadlineValue])
 
   return useMemo(() => {
-    if (!account || !chainId || !library || !swapContract || !pool || !slippage || !deadline) {
+    if (!account || !chainId || !provider || !swapContract || !pool || !slippage || !deadline) {
       return {
         state: LiquidityCallbackState.INVALID,
         callback: null,
@@ -112,10 +113,10 @@ export default function useManageLiquidity(
 
         console.log('SWAP TRANSACTION', { tx, value })
 
-        const estimatedGas = await library.estimateGas(tx).catch((gasError) => {
+        const estimatedGas = await provider.estimateGas(tx).catch((gasError) => {
           console.debug('Gas estimate failed, trying eth_call to extract error', call)
 
-          return library
+          return provider
             .call(tx)
             .then((result) => {
               console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
@@ -136,7 +137,7 @@ export default function useManageLiquidity(
           throw new Error('Unexpected error. Could not estimate gas for this transaction.')
         }
 
-        return library
+        return provider
           .getSigner()
           .sendTransaction({
             ...tx,
@@ -145,11 +146,12 @@ export default function useManageLiquidity(
           })
           .then((response: TransactionResponse) => {
             console.log(response)
-            const lpSymbol = pool.lpToken.symbol
-            const summary = isRemove
-              ? `Remove ${minAmountOut} ${lpSymbol} from pool`
-              : `Deposit into pool for ${minAmountOut} ${lpSymbol}`
-            addTransaction(response, { summary })
+            // const lpSymbol = pool.lpToken.symbol
+            // const summary = isRemove
+            //   ? `Remove ${minAmountOut} ${lpSymbol} from pool`
+            //   : `Deposit into pool for ${minAmountOut} ${lpSymbol}`
+            // addTransaction(response, { summary })
+            addTransaction(response, { type: TransactionType.LIQUIDITY })
 
             return response.hash
           })
@@ -168,7 +170,7 @@ export default function useManageLiquidity(
   }, [
     account,
     chainId,
-    library,
+    provider,
     amounts,
     deadline,
     minAmountOut,
@@ -177,6 +179,5 @@ export default function useManageLiquidity(
     addTransaction,
     constructCall,
     swapContract,
-    isRemove,
   ])
 }

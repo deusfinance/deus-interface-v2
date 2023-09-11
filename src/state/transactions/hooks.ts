@@ -11,7 +11,7 @@ export interface TransactionResponseLight {
   hash: string
 }
 
-// helper that can take a ethers library transaction response and add it to the list of transactions
+// helper that can take a ethers provider transaction response and add it to the list of transactions
 export function useTransactionAdder(): (
   response: TransactionResponse,
   info: TransactionInfo,
@@ -123,4 +123,39 @@ export function usePendingApprovalList(currenciesAddress: string[] | null, spend
       }),
     [allTransactions, spender, currenciesAddress]
   )
+}
+
+export function useHasPendingVest(hash: string | null | undefined, isSingleTx?: boolean) {
+  const allTransactions = useAllTransactions()
+  return useMemo(() => {
+    if (!isSingleTx) {
+      return (
+        typeof hash === 'string' &&
+        Object.keys(allTransactions).some((hash) => {
+          const tx = allTransactions[hash]
+          if (!tx) return false
+          if (tx.receipt) {
+            return false
+          } else {
+            const vest = tx.vest
+            if (!vest) return false
+            return vest.hash === hash && isTransactionRecent(tx)
+          }
+        })
+      )
+    } else {
+      const selectedHash = Object.keys(allTransactions).find((hashItem) => hashItem === hash)
+      if (selectedHash) {
+        const tx = allTransactions[selectedHash]
+        if (!tx) return false
+        if (tx?.receipt) {
+          return false
+        } else {
+          const vest = tx?.vest
+          if (!vest) return false
+          return vest.hash === hash && isTransactionRecent(tx)
+        }
+      }
+    }
+  }, [allTransactions, hash, isSingleTx])
 }

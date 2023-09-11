@@ -12,6 +12,8 @@ import VEDEUS_MULTI_REWARDER_ERC20_ABI from 'constants/abi/VEDEUS_MULTI_REWARDER
 import MIGRATOR_ABI from 'constants/abi/MIGRATOR.json'
 import CLQDR_ABI from 'constants/abi/CLQDR_ABI.json'
 import CLQDR_FULL_ABI from 'constants/abi/CLQDR_FULL_ABI.json'
+import BRIDGE_ABI from 'constants/abi/BRIDGE.json'
+import AXL_GATEWAY_ABI from 'constants/abi/AXL_GATEWAY.json'
 
 export {
   ERC20_ABI,
@@ -28,4 +30,6 @@ export {
   MIGRATOR_ABI,
   CLQDR_ABI,
   CLQDR_FULL_ABI,
+  BRIDGE_ABI,
+  AXL_GATEWAY_ABI,
 }

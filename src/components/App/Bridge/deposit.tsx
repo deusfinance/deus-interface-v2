@@ -5,11 +5,10 @@ import { Plus } from 'react-feather'
 import { Tokens } from 'constants/tokens'
 import { tryParseAmount } from 'utils/parse'
 
-import { useCurrencyBalance } from 'state/wallet/hooks'
-import { useWalletModalToggle } from 'state/application/hooks'
-import useWeb3React from 'hooks/useWeb3'
+import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
+import { useToggleWalletModal } from 'state/application/hooks'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
-import useApproveCallback, { ApprovalState } from 'hooks/useApproveCallback'
+import { ApprovalState, useApproveCallback } from 'lib/hooks/useApproveCallback'
 
 import { PrimaryButton } from 'components/Button'
 import { DotFlashing } from 'components/Icons'
@@ -18,6 +17,7 @@ import { SupportedChainId } from 'constants/chains'
 import { useBridgeContract } from 'hooks/useContract'
 import { useDepositCallback } from 'hooks/useBridgeCallback'
 import MigrationHeader from './MigrationHeader'
+import { useWeb3React } from '@web3-react/core'
 
 const Container = styled.div`
   display: flex;
@@ -50,7 +50,7 @@ const MainButton = styled(PrimaryButton)`
 
 export default function DepositPage() {
   const { chainId, account } = useWeb3React()
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
   const isSupportedChainId = useSupportedChainId()
 
   const [amountIn, setAmountIn] = useState('')

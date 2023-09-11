@@ -8,8 +8,9 @@ import useDebounce from 'lib/hooks/useDebounce'
 import { SupportedChainId } from 'constants/chains'
 import { useTokenId } from 'state/application/hooks'
 
-import { updateBlockNumber, updateBlockTimestamp, updateChainId } from './actions'
+import { updateBlockNumber, updateBlockTimestamp, updateChainId, updateAverageBlockTime } from './actions'
 import { useSeTTokenId } from './hooks'
+import { toBN } from 'utils/numbers'
 // import { useBiggestNFTTokenId } from 'hooks/useVeRam'
 // import { useGetVeRamById, useGetVeRams } from 'state/veram/hooks'
 
@@ -23,6 +24,9 @@ export default function Updater(): null {
   const tokenId = useTokenId()
   // const { tokenId: bigId } = useBiggestNFTTokenId()
   // const isOwnerVeRam = useGetVeRamById(tokenId ?? undefined) ? true : false
+
+  const [blockTimestampBefore, setBlockTimestampBefore] = useState<number | null>(null)
+  const BlockLength = 20_000
 
   const [state, setState] = useState<{
     chainId: number | undefined
@@ -86,6 +90,30 @@ export default function Updater(): null {
     if (!debouncedState.chainId || !debouncedState.blockTimestamp || !windowVisible) return
     dispatch(updateBlockTimestamp({ chainId: debouncedState.chainId, blockTimestamp: debouncedState.blockTimestamp }))
   }, [windowVisible, dispatch, debouncedState.blockTimestamp, debouncedState.chainId])
+
+  //getting blockTimeStamp at - 20_000th
+  useEffect(() => {
+    if (!provider || !chainId || !windowVisible) return undefined
+
+    if (state.blockNumber && state.blockNumber > 0) {
+      provider
+        .getBlock(state.blockNumber - 20_000)
+        .then((block) => {
+          setBlockTimestampBefore(block.timestamp)
+        })
+        .catch((error) => console.error(`Failed to get block for chainId: ${chainId}`, error))
+    }
+  }, [dispatch, chainId, provider, windowVisible, state.blockNumber])
+
+  useEffect(() => {
+    if (!debouncedState.chainId || !debouncedState.blockTimestamp || !windowVisible || !blockTimestampBefore) return
+    dispatch(
+      updateAverageBlockTime({
+        chainId: debouncedState.chainId,
+        averageBlockTime: toBN(debouncedState.blockTimestamp).minus(blockTimestampBefore).div(BlockLength).toNumber(),
+      })
+    )
+  }, [windowVisible, dispatch, debouncedState.blockTimestamp, debouncedState.chainId, blockTimestampBefore])
 
   useEffect(() => {
     dispatch(

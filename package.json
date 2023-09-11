@@ -18,6 +18,7 @@
     "@reduxjs/toolkit": "^1.6.2",
     "@siddomains/sidjs": "^0.1.29",
     "@types/react-window": "^1.8.5",
+    "ethers": "^5.7.2",
     "@uniswap/redux-multicall": "^1.1.8",
     "@uniswap/sdk-core": "^4.0.6",
     "@walletconnect/ethereum-provider": "^2.10.0",
@@ -70,7 +71,7 @@
     "styled-components": "^5.3.0",
     "styled-react-modal": "^2.1.0",
     "tiny-invariant": "^1.2.0",
-    "ua-parser-js": "^0.7.33",
+    "ua-parser-js": "^0.7.28",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -109,6 +110,7 @@
     "@typescript-eslint/eslint-plugin": "^5.9.0",
     "@typescript-eslint/parser": "^5.9.0",
     "babel-jest": "^27.5.1",
+    "@types/ua-parser-js": "^0.7.35",
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-plugin-styled-components": "^2.0.2",
     "eslint": "^8.6.0",

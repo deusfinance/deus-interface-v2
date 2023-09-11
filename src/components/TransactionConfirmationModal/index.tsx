@@ -170,7 +170,7 @@ function TransactionSubmittedContent({
   onDismiss: () => void
   currencyToAdd?: Currency | undefined
 }) {
-  const { library } = useWeb3React()
+  const { provider } = useWeb3React()
   const { addToken, success } = useAddTokenToMetaMask(currencyToAdd)
 
   return (
@@ -182,7 +182,7 @@ function TransactionSubmittedContent({
         <ExplorerLink chainId={chainId} type={ExplorerDataType.TRANSACTION} value={hash}>
           View on Explorer
         </ExplorerLink>
-        {currencyToAdd && library?.provider?.isMetaMask && (
+        {currencyToAdd && provider?.provider?.isMetaMask && (
           <PrimaryButton onClick={!success ? addToken : onDismiss}>
             Add {currencyToAdd.symbol} to Metamask
           </PrimaryButton>

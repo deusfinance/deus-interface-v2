@@ -5,10 +5,10 @@ import Image from 'next/image'
 import { Z_INDEX } from 'theme'
 
 import { ChainInfo } from 'constants/chainInfo'
-import { BridgeChains } from 'constants/chains'
+import { BRIDGE_CHAIN_IDS } from 'constants/chains'
 import { Card } from 'components/Card'
 import { ChevronDown as NavToggleIcon } from 'components/Icons'
-import useWeb3React from 'hooks/useWeb3'
+import { useWeb3React } from '@web3-react/core'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 import useOnOutsideClick from 'hooks/useOnOutsideClick'
 
@@ -97,7 +97,7 @@ export default function MigrationHeader() {
 
   return (
     <>
-      {chainId && BridgeChains.includes(chainId) ? (
+      {chainId && BRIDGE_CHAIN_IDS.includes(chainId) ? (
         <ConnectedChain>
           {!isMobile && <span>Connected Chain:</span>}
           <ChainWrap onClick={() => toggle()}>
@@ -114,7 +114,7 @@ export default function MigrationHeader() {
           </ChainWrap>
           <div>
             <InlineModal isOpen={isOpen}>
-              {BridgeChains.map((chain, index) => {
+              {BRIDGE_CHAIN_IDS.map((chain, index) => {
                 return (
                   <div key={index}>
                     <InlineRow active={Number(ChainInfo[chain].chainId) === chainId} onClick={() => toggle()}>

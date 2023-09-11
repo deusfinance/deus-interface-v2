@@ -29,6 +29,7 @@ export const FALLBACK_URLS: { [key in SupportedChainId]: string[] } = {
   [SupportedChainId.KAVA]: ['https://kava-evm.publicnode.com', 'https://evm2.kava.io'],
   [SupportedChainId.METIS]: ['https://metis-mainnet.public.blastapi.io'],
   [SupportedChainId.POLYGON]: ['https://polygon-rpc.com', 'https://poly-rpc.gateway.pokt.network'],
+  [SupportedChainId.BASE]: ['wss://base.gateway.tenderly.co', 'https://base.publicnode.com'],
 }
 
 export const RPC_URLS: { [key in SupportedChainId]: string[] } = {
@@ -40,4 +41,5 @@ export const RPC_URLS: { [key in SupportedChainId]: string[] } = {
   [SupportedChainId.KAVA]: ['wss://wevm.kava.io'],
   [SupportedChainId.METIS]: ['https://andromeda.metis.io/?owner=1088'],
   [SupportedChainId.POLYGON]: ['https://polygon.llamarpc.com'],
+  [SupportedChainId.BASE]: ['https://base.meowrpc.com'],
 }

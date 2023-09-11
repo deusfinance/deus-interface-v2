@@ -10,6 +10,7 @@ import { calculateGasMargin } from 'utils/web3'
 import { DefaultHandlerError } from 'utils/parseError'
 import { MigrationType } from 'components/App/Migrate/Table'
 import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
+import { TransactionType } from 'state/transactions/types'
 
 export enum TransactionCallbackState {
   INVALID = 'INVALID',
@@ -18,7 +19,7 @@ export enum TransactionCallbackState {
 
 export default function useMigrateCallback(
   inputCurrency: (Currency | undefined)[],
-  inputAmount: CurrencyAmount<NativeCurrency | Token>[] | null | undefined,
+  inputAmount: (CurrencyAmount<NativeCurrency | Token> | undefined)[] | null | undefined,
   outputTokens: Currency[]
 ): {
   state: TransactionCallbackState
@@ -49,7 +50,7 @@ export default function useMigrateCallback(
       })
 
       const amounts = inputAmount.map((amount) => {
-        return amount.quotient.toString()
+        return amount?.quotient.toString()
       })
 
       const len = inputCurrency.length
@@ -158,13 +159,14 @@ export default function useMigrateCallback(
           })
           .then((response: TransactionResponse) => {
             console.log(response)
-            const summary = 'Migrated Successfully'
+            // const summary = 'Migrated Successfully'
             // migrationType === MigrationType.BALANCED
             //   ? 'Balanced Migrated'
             //   : migrationType === MigrationType.DEUS
             //   ? 'Migrated to DEUS'
             //   : 'Migrated to SYMM'
-            addTransaction(response, { summary })
+            // addTransaction(response, { summary })
+            addTransaction(response, { type: TransactionType.MIGRATE })
 
             return response.hash
           })

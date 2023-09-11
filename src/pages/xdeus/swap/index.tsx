@@ -88,7 +88,7 @@ export default function Vest() {
 
   const items = useMemo(
     () => [
-      { name: 'DEUS Price', value: formatDollarAmount(parseFloat(deusPrice), 2) },
+      { name: 'DEUS Price', value: formatDollarAmount(parseFloat(deusPrice)) },
       { name: 'xDeus Ratio', value: formatAmount(swapRatio, 2) + ' DEUS' },
       {
         name: '',

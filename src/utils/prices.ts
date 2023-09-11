@@ -1,4 +1,5 @@
-import { Percent, JSBI } from '@uniswap/sdk-core'
+import { Percent } from '@uniswap/sdk-core'
+import JSBI from 'jsbi'
 
 export const PERCENT_DENOMINATOR = 100
 export const PERCENT_SCALE = 10000

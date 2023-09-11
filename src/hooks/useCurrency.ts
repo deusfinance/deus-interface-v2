@@ -1,13 +1,18 @@
 import { useMemo } from 'react'
 import { arrayify } from '@ethersproject/bytes'
 import { parseBytes32String } from '@ethersproject/strings'
-import { Currency, NATIVE, Token, WNATIVE } from '@uniswap/sdk-core'
-
+import { Currency, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
+
+import { TOKEN_SHORTHANDS } from 'constants/tokens'
+import { isSupportedChain } from 'constants/chains'
+import { DEFAULT_ERC20_DECIMALS } from 'utils/token'
 import { isAddress } from 'utils/validate'
+import { supportedChainId } from 'utils/supportedChainId'
+
 import { NEVER_RELOAD, useSingleCallResult } from 'lib/hooks/multicall'
-import { useBytes32TokenContract, useERC20Contract } from './useContract'
-import { useTokensFromMap } from './useTokenList'
+import { useBytes32TokenContract, useERC20Contract } from 'hooks/useContract'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 // parse a name or symbol from a token response
 const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/
@@ -21,73 +26,90 @@ function parseStringOrBytes32(str: string | undefined, bytes32: string | undefin
     : defaultValue
 }
 
-export function useToken(tokenAddress?: string | null): Token | null | undefined {
+const UNKNOWN_TOKEN_SYMBOL = 'UNKNOWN'
+const UNKNOWN_TOKEN_NAME = 'Unknown Token'
+
+/**
+ * Returns a Token from the tokenAddress.
+ * Returns null if token is loading or null was passed.
+ * Returns undefined if tokenAddress is invalid or token does not exist.
+ */
+export function useTokenFromActiveNetwork(tokenAddress: string | undefined): Token | null | undefined {
   const { chainId } = useWeb3React()
-  const tokens = useTokensFromMap()
 
-  const address = isAddress(tokenAddress)
+  const formattedAddress = isAddress(tokenAddress)
+  const tokenContract = useERC20Contract(formattedAddress ? formattedAddress : undefined, false)
+  const tokenContractBytes32 = useBytes32TokenContract(formattedAddress ? formattedAddress : undefined, false)
 
-  const tokenContract = useERC20Contract(address ? address : undefined, false)
-  const tokenContractBytes32 = useBytes32TokenContract(address ? address : undefined, false)
-  const token: Token | undefined = address ? tokens[address] : undefined
+  // TODO: Fix redux-multicall so that these values do not reload.
+  const tokenName = useSingleCallResult(tokenContract, 'name', undefined, NEVER_RELOAD)
+  const tokenNameBytes32 = useSingleCallResult(tokenContractBytes32, 'name', undefined, NEVER_RELOAD)
+  const symbol = useSingleCallResult(tokenContract, 'symbol', undefined, NEVER_RELOAD)
+  const symbolBytes32 = useSingleCallResult(tokenContractBytes32, 'symbol', undefined, NEVER_RELOAD)
+  const decimals = useSingleCallResult(tokenContract, 'decimals', undefined, NEVER_RELOAD)
 
-  const tokenName = useSingleCallResult(token ? undefined : tokenContract, 'name', undefined, NEVER_RELOAD)
-  const tokenNameBytes32 = useSingleCallResult(
-    token ? undefined : tokenContractBytes32,
-    'name',
-    undefined,
-    NEVER_RELOAD
+  const isLoading = useMemo(
+    () => decimals.loading || symbol.loading || tokenName.loading,
+    [decimals.loading, symbol.loading, tokenName.loading]
   )
-  const symbol = useSingleCallResult(token ? undefined : tokenContract, 'symbol', undefined, NEVER_RELOAD)
-  const symbolBytes32 = useSingleCallResult(token ? undefined : tokenContractBytes32, 'symbol', undefined, NEVER_RELOAD)
-  const decimals = useSingleCallResult(token ? undefined : tokenContract, 'decimals', undefined, NEVER_RELOAD)
+  const parsedDecimals = useMemo(() => decimals?.result?.[0] ?? DEFAULT_ERC20_DECIMALS, [decimals.result])
+
+  const parsedSymbol = useMemo(
+    () => parseStringOrBytes32(symbol.result?.[0], symbolBytes32.result?.[0], UNKNOWN_TOKEN_SYMBOL),
+    [symbol.result, symbolBytes32.result]
+  )
+  const parsedName = useMemo(
+    () => parseStringOrBytes32(tokenName.result?.[0], tokenNameBytes32.result?.[0], UNKNOWN_TOKEN_NAME),
+    [tokenName.result, tokenNameBytes32.result]
+  )
 
   return useMemo(() => {
-    if (token) return token
-    if (tokenAddress === null) return null
-    if (!chainId || !address) return undefined
-    if (decimals.loading || symbol.loading || tokenName.loading) return null
-    if (decimals.result) {
-      return new Token(
-        chainId,
-        address,
-        decimals.result[0],
-        parseStringOrBytes32(symbol.result?.[0], symbolBytes32.result?.[0], 'UNKNOWN'),
-        parseStringOrBytes32(tokenName.result?.[0], tokenNameBytes32.result?.[0], 'Unknown Token')
-      )
-    }
-    return undefined
-  }, [
-    address,
-    chainId,
-    decimals.loading,
-    decimals.result,
-    symbol.loading,
-    symbol.result,
-    symbolBytes32.result,
-    token,
-    tokenAddress,
-    tokenName.loading,
-    tokenName.result,
-    tokenNameBytes32.result,
-  ])
+    // If the token is on another chain, we cannot fetch it on-chain, and it is invalid.
+    if (typeof tokenAddress !== 'string' || !isSupportedChain(chainId) || !formattedAddress) return undefined
+    if (isLoading || !chainId) return null
+
+    return new Token(chainId, formattedAddress, parsedDecimals, parsedSymbol, parsedName)
+  }, [chainId, tokenAddress, formattedAddress, isLoading, parsedDecimals, parsedSymbol, parsedName])
 }
 
-export function useCurrency(currencyId?: string | null): Currency | undefined {
+type TokenMap = { [address: string]: Token }
+
+/**
+ * Returns a Token from the tokenAddress.
+ * Returns null if token is loading or null was passed.
+ * Returns undefined if tokenAddress is invalid or token does not exist.
+ */
+export function useTokenFromMapOrNetwork(tokens: TokenMap, tokenAddress?: string | null): Token | null | undefined {
+  const address = isAddress(tokenAddress)
+  const token: Token | undefined = address ? tokens[address] : undefined
+
+  const tokenFromNetwork = useTokenFromActiveNetwork(token ? undefined : address ? address : undefined)
+  return tokenFromNetwork ?? token
+}
+
+/**
+ * Returns a Currency from the currencyId.
+ * Returns null if currency is loading or null was passed.
+ * Returns undefined if currencyId is invalid or token does not exist.
+ */
+export function useCurrencyFromMap(tokens: TokenMap, currencyId?: string | null): Currency | null | undefined {
   const { chainId } = useWeb3React()
-  const isETH = currencyId?.toUpperCase() === 'ETH'
-  const token = useToken(isETH ? undefined : currencyId)
+  const nativeCurrency = useNativeCurrency()
+  const isNative = Boolean(nativeCurrency && currencyId?.toUpperCase() === 'ETH')
 
-  const { native, wnative } = useMemo(
-    () => ({
-      // @ts-ignore TYPE NEEDS FIXING
-      native: chainId && chainId in NATIVE ? NATIVE[chainId] : undefined,
-      wnative: chainId && chainId in WNATIVE ? WNATIVE[chainId] : undefined,
-    }),
-    [chainId]
-  )
+  const shorthandMatchAddress = useMemo(() => {
+    const chain = supportedChainId(chainId)
+    //TODO
+    return chain && currencyId ? TOKEN_SHORTHANDS[currencyId.toUpperCase()]?.[chain] : undefined
+  }, [chainId, currencyId])
 
-  if (wnative?.address?.toLowerCase() === currencyId?.toLowerCase()) return wnative
+  const token = useTokenFromMapOrNetwork(tokens, isNative ? undefined : shorthandMatchAddress ?? currencyId)
 
-  return isETH ? native : token
+  if (currencyId === null || currencyId === undefined || !isSupportedChain(chainId)) return null
+
+  // this case so we use our builtin wrapped token instead of wrapped tokens on token lists
+  const wrappedNative = nativeCurrency?.wrapped
+  if (wrappedNative?.address?.toUpperCase() === currencyId?.toUpperCase()) return wrappedNative
+
+  return isNative ? nativeCurrency : token
 }

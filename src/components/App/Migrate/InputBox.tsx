@@ -12,7 +12,7 @@ import ImageWithFallback from 'components/ImageWithFallback'
 import { NumericalInput } from 'components/Input'
 import { RowBetween } from '../../Row/index'
 import { ChevronDown as ChevronDownIcon } from 'components/Icons'
-import { formatAmount } from 'utils/numbers'
+import { extendedFormatAmount } from 'utils/numbers'
 import { NoWrapSpan } from './HeaderBox'
 
 const Wrapper = styled.div`
@@ -102,8 +102,8 @@ export default function InputBox({
   const currencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
 
   const [balanceExact, balanceDisplay] = useMemo(() => {
-    if (maxValue) return [maxValue, formatAmount(maxValue)]
-    return [maxAmountSpend(currencyBalance)?.toExact(), formatAmount(currencyBalance?.toExact(), 6, true)]
+    if (maxValue) return [maxValue, extendedFormatAmount(maxValue)]
+    return [maxAmountSpend(currencyBalance)?.toExact(), extendedFormatAmount(currencyBalance?.toExact(), 6, true)]
   }, [currencyBalance, maxValue])
 
   const handleClick = useCallback(() => {

@@ -4,8 +4,8 @@ import styled from 'styled-components'
 import { ModalHeader, Modal } from 'components/Modal'
 import AdvancedOptions from './AdvancedOptions'
 import TransactionFee from './TransactionFee'
-import ThemeSelector from './ThemeSelector'
-import { useUserSlippageTolerance, useSetUserSlippageTolerance, useDarkModeManager } from 'state/user/hooks'
+// import ThemeSelector from './ThemeSelector'
+// import { useUserSlippageTolerance, useSetUserSlippageTolerance, useDarkModeManager } from 'state/user/hooks'
 
 const MainModal = styled(Modal)`
   display: flex;
@@ -43,7 +43,7 @@ export default function SettingsModal({
   toggleModal: (action: boolean) => void
 }) {
   const [deadline, setDeadline] = useState('20')
-  const [darkMode, setDarkMode] = useDarkModeManager()
+  // const [darkMode, setDarkMode] = useDarkModeManager()
 
   const [useUserTxnSpeed, useSetUserTxnSpeed] = useState(0)
 
@@ -62,7 +62,7 @@ export default function SettingsModal({
       >
         <ModalHeader onClose={() => toggleModal(false)} title={title} border={true} />
         <Wrapper>
-          <ThemeSelector title="Theme" amount={darkMode} setAmount={setDarkMode} />
+          {/* <ThemeSelector title="Theme" amount={darkMode} setAmount={setDarkMode} /> */}
 
           <TransactionFee
             title="Txn Speed"
@@ -72,14 +72,14 @@ export default function SettingsModal({
             toolTipData={txnFeeInfo}
           />
 
-          <AdvancedOptions
+          {/* <AdvancedOptions
             amount={useUserSlippageTolerance().toString()}
             setAmount={useSetUserSlippageTolerance()}
             title="Slippage Tolerance"
             defaultAmounts={['0.1', '0.5', '1.0']}
             unit={'%'}
             toolTipData={slippageInfo}
-          />
+          /> */}
 
           <AdvancedOptions
             amount={deadline}

@@ -288,7 +288,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     rpcUrl: 'https://evm.kava.io',
     blockExplorerUrl: 'https://explorer.kava.io/',
   },
-  [SupportedChainId.BASE]: {
+  [AllChainId.BASE]: {
     chainId: '0x2105',
     chainName: 'Base',
     label: 'Base',

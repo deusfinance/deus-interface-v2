@@ -5,12 +5,12 @@ import { RefreshCcw, RefreshCw } from 'react-feather'
 import { DEUS_TOKEN, Tokens } from 'constants/tokens'
 import { tryParseAmount } from 'utils/parse'
 
-import { useCurrencyBalance, useCurrencyBalances } from 'state/wallet/hooks'
-import { useWalletModalToggle } from 'state/application/hooks'
-import useWeb3React from 'hooks/useWeb3'
+import useCurrencyBalance, { useCurrencyBalances } from 'lib/hooks/useCurrencyBalance'
+import { useToggleWalletModal } from 'state/application/hooks'
+import { useWeb3React } from '@web3-react/core'
 import useDebounce from 'hooks/useDebounce'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
-import useApproveCallback, { ApprovalState } from 'hooks/useApproveCallback'
+import { ApprovalState, useApproveCallback } from 'lib/hooks/useApproveCallback'
 
 import { PrimaryButton } from 'components/Button'
 import { DotFlashing } from 'components/Icons'
@@ -58,7 +58,7 @@ const ExternalLinkIcon = styled(LinkIcon)`
 
 export default function SwapPage() {
   const { chainId, account } = useWeb3React()
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
   const isSupportedChainId = useSupportedChainId()
 
   const [amountIn, setAmountIn] = useState('')
