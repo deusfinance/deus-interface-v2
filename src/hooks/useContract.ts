@@ -3,7 +3,6 @@ import { Contract } from '@ethersproject/contracts'
 import { useContract } from 'lib/hooks/contract'
 
 import {
-  Multicall2,
   veDEUS,
   veDist,
   CLQDR_ADDRESS,
@@ -21,7 +20,6 @@ import {
   ERC20_ABI,
   ERC20_BYTES32_ABI,
   MIGRATOR_ABI,
-  MULTICALL2_ABI,
   MULTICALL3_ABI,
   MasterChefV2_ABI,
   SWAP_ABI,
@@ -72,11 +70,11 @@ export function useVeDistContract() {
   return useContract(address, VE_DIST_ABI)
 }
 
-export function useMulticall2Contract() {
-  const { chainId } = useWeb3React()
-  const address = useMemo(() => (chainId ? Multicall2[chainId] : undefined), [chainId])
-  return useContract(address, MULTICALL2_ABI)
-}
+// export function useMulticall2Contract() {
+//   const { chainId } = useWeb3React()
+//   const address = useMemo(() => (chainId ? Multicall2[chainId] : undefined), [chainId])
+//   return useContract(address, MULTICALL2_ABI)
+// }
 
 export function useCLQDRContract() {
   const { chainId } = useWeb3React()

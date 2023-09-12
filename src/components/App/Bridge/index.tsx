@@ -15,7 +15,7 @@ import { ApprovalState, useApproveCallback } from 'lib/hooks/useApproveCallback'
 import { PrimaryButton } from 'components/Button'
 import { DotFlashing } from 'components/Icons'
 import InputBox from 'components/InputBox'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId, isSupportedChain } from 'constants/chains'
 import { useAxlGatewayContract } from 'hooks/useContract'
 import useBridgeCallback from 'hooks/useBridgeCallback'
 import MigrationHeader from './MigrationHeader'
@@ -210,12 +210,12 @@ export default function SwapPage() {
         disabled
       />
 
-      {chainId && chainId !== SupportedChainId.FANTOM && (
+      {chainId && chainId !== SupportedChainId.FANTOM && isSupportedChain(chainId) && (
         <React.Fragment>
           <div style={{ marginTop: '20px' }} />
           <span style={{ fontSize: '13px' }}>
-            {ChainInfo[chainId].label} Chain Pool: {inputCurrencyBalanceDisplay ?? 'N/A'} {inputCurrency.symbol} /{' '}
-            {outputCurrencyBalanceDisplay ?? 'N/A'} {outputCurrency.symbol}
+            {ChainInfo[chainId]?.label} Chain Pool: {inputCurrencyBalanceDisplay ?? 'N/A'} {inputCurrency?.symbol} /{' '}
+            {outputCurrencyBalanceDisplay ?? 'N/A'} {outputCurrency?.symbol}
             <ExternalLink href="https://docs.deus.finance/bridge/how-to-bridge">
               <ExternalLinkIcon />
             </ExternalLink>

@@ -2,6 +2,7 @@ import ApplicationUpdater from './application/updater'
 import TransactionUpdater from './transactions/updater'
 import UserUpdater from './user/updater'
 import DashboardUpdater from './dashboard/updater'
+import { MulticallUpdater } from 'lib/state/multicall'
 
 export default function Updaters() {
   return (
@@ -9,6 +10,7 @@ export default function Updaters() {
       <ApplicationUpdater />
       <TransactionUpdater />
       <UserUpdater />
+      <MulticallUpdater />
       <DashboardUpdater />
     </>
   )

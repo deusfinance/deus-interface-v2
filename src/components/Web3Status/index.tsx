@@ -4,7 +4,13 @@ import { lighten } from 'polished'
 import { useWeb3React } from '@web3-react/core'
 
 import { useAppSelector } from 'state'
-import { FALLBACK_CHAIN_ID, APP_CHAIN_IDS } from 'constants/chains'
+import {
+  FALLBACK_CHAIN_ID,
+  APP_CHAIN_IDS,
+  MIGRATION_CHAIN_IDS,
+  BRIDGE_CHAIN_IDS,
+  usePreferredChain,
+} from 'constants/chains'
 import { ChainInfo } from 'constants/chainInfo'
 import { getConnection } from 'connection/utils'
 import { truncateAddress } from 'utils/address'
@@ -20,6 +26,7 @@ import { Connected as ConnectedIcon } from 'components/Icons'
 import ImageWithFallback from 'components/ImageWithFallback'
 import { Button } from 'components/Web3Network'
 import { RowCenter } from 'components/Row'
+import { useRouter } from 'next/router'
 
 const ConnectButtonWrap = styled.div`
   border: none;
@@ -71,6 +78,8 @@ function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
 function Web3StatusInner({ ENSName }: { ENSName?: string }) {
   const { account, connector, chainId } = useWeb3React()
   const connectionType = getConnection(connector).type
+  const router = useRouter()
+  const preferredChain = usePreferredChain()
 
   const Chain = ChainInfo[chainId || FALLBACK_CHAIN_ID] ?? ChainInfo[FALLBACK_CHAIN_ID]
 
@@ -79,13 +88,25 @@ function Web3StatusInner({ ENSName }: { ENSName?: string }) {
   const error = useAppSelector((state) => state.connection.errorByConnectionType[connectionType])
 
   const showCallbackError: boolean = useMemo(() => {
-    if (!chainId || !account) return false
-    return !APP_CHAIN_IDS.includes(chainId)
-  }, [chainId, account])
+    if (!account || !chainId) {
+      return false
+    } else if (router.route.includes('/migration') && !MIGRATION_CHAIN_IDS.includes(chainId)) {
+      return true
+    } else if (router.route.includes('/bridge') && !BRIDGE_CHAIN_IDS.includes(chainId)) {
+      return true
+    } else if (
+      !router.route.includes('/migration') &&
+      !router.route.includes('/bridge') &&
+      !APP_CHAIN_IDS.includes(chainId)
+    ) {
+      return true
+    }
+    return false
+  }, [chainId, account, router.route])
 
   if (showCallbackError) {
     return (
-      <ErrorButton onClick={() => rpcChangerCallback(FALLBACK_CHAIN_ID)}>
+      <ErrorButton onClick={() => rpcChangerCallback(preferredChain)}>
         <ImageWithFallback src={Chain.logoUrl} alt={Chain.label} width={22} height={22} />
         {/* <Text>Wrong Network</Text> */}
       </ErrorButton>

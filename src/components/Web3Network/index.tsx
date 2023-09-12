@@ -45,7 +45,12 @@ export default function Web3Network() {
     return chainId && chainId in ChainInfo ? ChainInfo[chainId] : null
   }, [chainId])
 
-  if (!account || !chainId || !Chain || (!APP_CHAIN_IDS.includes(chainId) && !router.route.includes('/migration'))) {
+  if (
+    !account ||
+    !chainId ||
+    !Chain ||
+    (!APP_CHAIN_IDS.includes(chainId) && !router.route.includes('/migration') && !router.route.includes('/bridge'))
+  ) {
     return null
   } else if (router.route.includes('/migration') && !MIGRATION_CHAIN_IDS.includes(chainId)) {
     return null
