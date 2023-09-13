@@ -53,7 +53,7 @@ export const getImageSize = () => {
 
 export default function Migrate() {
   const { account } = useWeb3React()
-  const [selected, setSelected] = useState<ActionTypes>(ActionTypes.DASHBOARD)
+  const [selected, setSelected] = useState<ActionTypes>(ActionTypes.EASY)
   const showModal = useMemo(() => {
     return localStorage.getItem('migrationCheck' + account?.toString()) ? false : true
   }, [account])
