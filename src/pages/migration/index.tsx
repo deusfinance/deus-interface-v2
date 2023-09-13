@@ -73,8 +73,8 @@ export default function Migrate() {
           <Wrapper>
             {selected !== ActionTypes.DASHBOARD && <MigrationHeader />}
 
-            {selected === ActionTypes.MANUAL && <Table />}
             {selected === ActionTypes.EASY && <CardBox />}
+            {selected === ActionTypes.MANUAL && <Table />}
             {selected === ActionTypes.DASHBOARD && <MigratedTable />}
           </Wrapper>
         </MigrationWrap>
