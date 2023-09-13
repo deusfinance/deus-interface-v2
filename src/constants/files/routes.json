@@ -12,5 +12,10 @@
     "id": "7",
     "text": "Migration",
     "path": "/migration"
+  },
+  {
+    "id": "8",
+    "text": "Bridge",
+    "path": "/bridge"
   }
 ]

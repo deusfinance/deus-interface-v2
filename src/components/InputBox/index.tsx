@@ -139,12 +139,14 @@ export default function InputBox({
   onChange,
   onTokenSelect,
   disabled,
+  hideBalance,
 }: {
   currency: Currency
   value: string
   onChange(values: string): void
   onTokenSelect?: () => void
   disabled?: boolean
+  hideBalance?: boolean
 }) {
   const { account } = useWeb3React()
   const logo = useCurrencyLogo((currency as Token)?.address)
@@ -180,10 +182,12 @@ export default function InputBox({
           >
             {currency?.symbol}
           </CurrencySymbol>
-          <Balance disabled={disabled} onClick={handleClick}>
-            balance: {balanceDisplay ? balanceDisplay : '0.00'}
-            {!disabled && <span>MAX</span>}
-          </Balance>
+          {!hideBalance && (
+            <Balance disabled={disabled} onClick={handleClick}>
+              balance: {balanceDisplay ? balanceDisplay : '0.00'}
+              {!disabled && <span>MAX</span>}
+            </Balance>
+          )}
         </RowBetween>
         <NumericalWrapper>
           <NumericalInput

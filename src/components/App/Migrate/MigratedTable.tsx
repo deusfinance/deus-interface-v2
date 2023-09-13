@@ -240,10 +240,10 @@ function getAllUpperRow() {
   return (
     <UpperRow>
       <div style={{ display: 'flex', width: '100%', position: 'relative' }}>
-        <TableTitle width="20%">Token</TableTitle>
-        <TableTitle width="20%">Chain</TableTitle>
-        <TableTitle width="25%">My Migrated Amount</TableTitle>
-        <TableTitle width="35%">Claimable Token</TableTitle>
+        <TableTitle width="15%">Token</TableTitle>
+        <TableTitle width="15%">Chain</TableTitle>
+        <TableTitle width="20%">My Migrated Amount</TableTitle>
+        <TableTitle width="20%">Claimable Token</TableTitle>
       </div>
     </UpperRow>
   )
@@ -508,8 +508,20 @@ const TableContent = styled.div`
     padding-inline:12px;
   `};
 `
-const MyBalance = styled(Cell)`
-  width: 20%;
+const TokenContainer = styled(Cell)`
+  width: 15%;
+  & > div {
+    height: 100%;
+  }
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  `};
+`
+const ChainWrap = styled(Cell)`
+  width: 15%;
   & > div {
     height: 100%;
     display: flex;
@@ -531,39 +543,91 @@ const Label = styled.p`
   `};
 `
 const MyMigratedAmount = styled(Cell)`
-  width: 25%;
+  width: 20%;
   margin-block: auto;
   height: 100%;
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    width:100%;
-    display:flex;
-    justify-content:space-between;
-    &>div{
-      column-gap:12px;
-      display:flex;
-      align-items:center;
-      &>div{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    & > div{
+      column-gap: 12px;
+      display: flex;
+      align-items: center;
+      & > div{
         color:#82828C;
       }
     }
   `};
 `
-const TokenContainer = styled(Cell)`
-  width: 20%;
-  & > div {
-    height: 100%;
-  }
+const ButtonWrap = styled(Cell)`
+  width: 30%;
+  margin-block: auto;
+  height: 100%;
+  display: flex;
+  gap: 12px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100%;
-    display: flex;
     justify-content: space-between;
-    margin-top: 10px;
+    margin-bottom: 10px;
   `};
+`
+const InlineRow = styled.div<{ active?: boolean }>`
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  color: ${({ theme }) => theme.text2};
+  &:hover {
+    cursor: pointer;
+    color: ${({ theme }) => theme.text1};
+  }
+  ${({ active, theme }) =>
+    active &&
+    ` color: ${theme.text1};
+      pointer-events: none;
+  `};
+`
+const ChainDiv = styled.div`
+  margin-right: auto;
+  margin-left: 6px;
+  margin-top: 2px;
+`
+const MigrationButton = styled(BaseButton)<{ deus?: boolean }>`
+  width: 130px;
+  height: 40px;
+  border-radius: 8px;
+  background: #141414;
+  color: ${({ theme, deus }) => (deus ? '#01F5E4' : theme.symmColor)};
+  text-align: center;
+  font-size: 14px;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  padding: 2px;
+  margin: 0 auto;
+  cursor: not-allowed;
+  opacity: 50%;
+  & > span {
+    font-size: 12px;
+    color: gray;
+  }
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    font-size: 12px;
+  `}
+`
+const FakeButton = styled.div`
+  width: 130px;
+  padding: 2px;
+  margin: 0 auto;
 `
 export enum MigrationType {
   BALANCED,
   DEUS,
   SYMM,
+}
+export const getImageSize = () => {
+  return isMobile ? 15 : 20
 }
 
 function TableRow({ migrationInfo, chain }: { migrationInfo: IMigrationInfo; chain: number }) {
@@ -634,31 +698,6 @@ const TableRowContent = ({ migrationInfo, chain }: { migrationInfo: IMigrationIn
   )
 }
 
-export const getImageSize = () => {
-  return isMobile ? 15 : 20
-}
-
-const InlineRow = styled.div<{ active?: boolean }>`
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  color: ${({ theme }) => theme.text2};
-  &:hover {
-    cursor: pointer;
-    color: ${({ theme }) => theme.text1};
-  }
-  ${({ active, theme }) =>
-    active &&
-    ` color: ${theme.text1};
-      pointer-events: none;
-  `};
-`
-const ChainDiv = styled.div`
-  margin-right: auto;
-  margin-left: 6px;
-  margin-top: 2px;
-`
-
 const TableRowContentWrapper = ({
   token,
   migratedAmount,
@@ -686,8 +725,7 @@ const TableRowContentWrapper = ({
       <TokenContainer>
         <TokenBox token={token} active />
       </TokenContainer>
-
-      <MyBalance>
+      <ChainWrap>
         <Label>Chain:</Label>
         <Value>
           <div>
@@ -702,8 +740,7 @@ const TableRowContentWrapper = ({
             </InlineRow>
           </div>
         </Value>
-      </MyBalance>
-
+      </ChainWrap>
       <MyMigratedAmount>
         <Label>My Migrated Amount:</Label>
         <div>
@@ -712,7 +749,6 @@ const TableRowContentWrapper = ({
           </Value>
         </div>
       </MyMigratedAmount>
-
       <MyMigratedAmount>
         <Label>Claimable Token:</Label>
         <div>
@@ -731,6 +767,23 @@ const TableRowContentWrapper = ({
           </Value>
         </div>
       </MyMigratedAmount>
+
+      <ButtonWrap>
+        {migratedToDEUS.toString() !== '0' ? (
+          <MigrationButton disabled deus>
+            CLAIM DEUS <span style={{ display: 'contents' }}>(coming in Q4-Q1)</span>
+          </MigrationButton>
+        ) : (
+          <FakeButton />
+        )}
+        {migratedToSYMM.toString() !== '0' ? (
+          <MigrationButton disabled>
+            CLAIM SYMM <span style={{ display: 'contents' }}>(coming in Q4-Q1)</span>
+          </MigrationButton>
+        ) : (
+          <FakeButton />
+        )}
+      </ButtonWrap>
     </TableContent>
   )
 }

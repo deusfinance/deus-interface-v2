@@ -36,6 +36,12 @@ const MainWrap = styled.div`
     color: #f1f1f1;
     font-size: 14px;
   }
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    & > * {
+      font-size: 11px;
+    }
+  `};
 `
 
 const ButtonsWrap = styled.div`
@@ -58,6 +64,10 @@ export const Button = styled(BaseButton)<{ isAccept?: boolean }>`
   font-family: Inter;
   background: ${({ theme, isAccept }) => (isAccept ? theme.success : theme.error)};
   color: white;
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    font-size: 12px;
+  `};
 
   &:hover {
     filter: ${({ disabled }) => (disabled ? 'none' : 'brightness(1.2)')};

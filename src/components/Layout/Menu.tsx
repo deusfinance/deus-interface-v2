@@ -117,6 +117,11 @@ export default function Menu() {
               <div>Migration</div>
             </Row>
           </Link>
+          <Link href="/bridge" passHref>
+            <Row active={router.route.includes('/bridge')} onClick={() => toggle()}>
+              <div>Bridge</div>
+            </Row>
+          </Link>
           <Link href="/clqdr" passHref>
             <Row active={router.route.includes('/clqdr')} onClick={() => toggle()}>
               <div>cLQDR</div>
