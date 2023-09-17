@@ -10,7 +10,7 @@ import { useWalletModalToggle } from 'state/application/hooks'
 import useWeb3React from 'hooks/useWeb3'
 import useDebounce from 'hooks/useDebounce'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
-import useApproveCallback, { ApprovalState } from 'hooks/useApproveCallback'
+import { ApprovalState, useApproveCallbackWithAmount } from 'hooks/useApproveCallback'
 
 import { PrimaryButton } from 'components/Button'
 import { DotFlashing } from 'components/Icons'
@@ -97,7 +97,12 @@ export default function SwapPage() {
     return [currencyBalances[0]?.toSignificant(8), currencyBalances[1]?.toSignificant(8)]
   }, [currencyBalances])
 
-  const [approvalState, approveCallback] = useApproveCallback(inputCurrency ?? undefined, spender)
+  const [approvalState, approveCallback] = useApproveCallbackWithAmount(
+    inputCurrency ?? undefined,
+    spender,
+    amountIn,
+    true
+  )
   const [showApprove, showApproveLoader] = useMemo(() => {
     const show = inputCurrency && approvalState !== ApprovalState.APPROVED && !!amountIn
     return [show, show && approvalState === ApprovalState.PENDING]
