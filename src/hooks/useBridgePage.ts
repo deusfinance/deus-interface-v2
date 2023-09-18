@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 
 import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
-import { useBridgeContract } from './useContract'
+import { useAxlGatewayContract } from './useContract'
 import useWeb3React from './useWeb3'
 
 export function useDeposits(): string {
   const { account } = useWeb3React()
-  const bridgeContract = useBridgeContract()
+  const bridgeContract = useAxlGatewayContract()
 
   const amountOutCall = useMemo(
     () =>
