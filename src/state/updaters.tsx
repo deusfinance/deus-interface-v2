@@ -9,8 +9,8 @@ export default function Updaters() {
     <>
       <ApplicationUpdater />
       <TransactionUpdater />
-      <UserUpdater />
       <MulticallUpdater />
+      <UserUpdater />
       <DashboardUpdater />
     </>
   )

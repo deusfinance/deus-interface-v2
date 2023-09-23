@@ -97,7 +97,7 @@ export default function SwapPage() {
     return [currencyBalances[0]?.toSignificant(8), currencyBalances[1]?.toSignificant(8)]
   }, [currencyBalances])
 
-  const [approvalState, approveCallback] = useApproveCallback(inputCurrency ?? undefined, spender)
+  const [approvalState, approveCallback] = useApproveCallback(inputCurrency ?? undefined, debouncedAmountIn, spender)
   const [showApprove, showApproveLoader] = useMemo(() => {
     const show = inputCurrency && approvalState !== ApprovalState.APPROVED && !!amountIn
     return [show, show && approvalState === ApprovalState.PENDING]

@@ -6,22 +6,22 @@ import { useAppDispatch } from 'state'
 import useIsWindowVisible from 'lib/hooks/useIsWindowVisible'
 import useDebounce from 'lib/hooks/useDebounce'
 import { SupportedChainId } from 'constants/chains'
-import { useTokenId } from 'state/application/hooks'
+// import { useTokenId } from 'state/application/hooks'
 
 import { updateBlockNumber, updateBlockTimestamp, updateChainId, updateAverageBlockTime } from './actions'
-import { useSeTTokenId } from './hooks'
+// import { useSeTTokenId } from './hooks'
 import { toBN } from 'utils/numbers'
 // import { useBiggestNFTTokenId } from 'hooks/useVeRam'
 // import { useGetVeRamById, useGetVeRams } from 'state/veram/hooks'
 
 export default function Updater(): null {
-  const { provider, chainId, account } = useWeb3React()
+  const { provider, chainId } = useWeb3React()
   const dispatch = useAppDispatch()
 
   const windowVisible = useIsWindowVisible()
   // const { loading } = useGetVeRams()
-  const setTokenId = useSeTTokenId()
-  const tokenId = useTokenId()
+  // const setTokenId = useSeTTokenId()
+  // const tokenId = useTokenId()
   // const { tokenId: bigId } = useBiggestNFTTokenId()
   // const isOwnerVeRam = useGetVeRamById(tokenId ?? undefined) ? true : false
 
