@@ -18,7 +18,7 @@ import { InputField } from 'components/Input'
 import { BaseButton, PrimaryButtonWide } from 'components/Button'
 import { RowBetween } from 'components/Row'
 import { ArrowRight } from 'react-feather'
-import { useBalancedRatio } from 'hooks/useMigratePage'
+import { useBalancedRatio, useGetEarlyMigrationDeadline } from 'hooks/useMigratePage'
 import { truncateAddress } from 'utils/account'
 import { Tokens } from 'constants/tokens'
 import { useMigrationData } from 'context/Migration'
@@ -240,8 +240,8 @@ function getAllUpperRow() {
   return (
     <UpperRow>
       <div style={{ display: 'flex', width: '100%', position: 'relative' }}>
-        <TableTitle width="15%">Token</TableTitle>
-        <TableTitle width="15%">Chain</TableTitle>
+        <TableTitle width="25%">Token</TableTitle>
+        {/* <TableTitle width="15%">Chain</TableTitle> */}
         <TableTitle width="20%">My Migrated Amount</TableTitle>
         <TableTitle width="20%">Claimable Token</TableTitle>
       </div>
@@ -256,6 +256,8 @@ export default function MigratedTable() {
   const [tableDataLoading, setTableDataLoading] = useState(false)
   const toggleWalletModal = useWalletModalToggle()
   const [allMigrationData, setAllMigrationData] = useState<any>(undefined)
+
+  const earlyMigrationDeadline = useGetEarlyMigrationDeadline()
 
   const getAllMigrationData = useCallback(async (signature: string) => {
     try {
@@ -458,20 +460,19 @@ export default function MigratedTable() {
               allMigrationData.map(([key, values]: [string, []]) =>
                 values.map((migrationInfo, index) => (
                   <React.Fragment key={index}>
-                    <>
-                      <DividerContainer />
-                      <TableRow
-                        migrationInfo={{
-                          user: migrationInfo[0],
-                          tokenAddress: migrationInfo[1],
-                          amount: migrationInfo[2],
-                          timestamp: migrationInfo[3],
-                          block: migrationInfo[4],
-                          migrationPreference: migrationInfo[5],
-                        }}
-                        chain={+key}
-                      />
-                    </>
+                    <DividerContainer />
+                    <TableRow
+                      migrationInfo={{
+                        user: migrationInfo[0],
+                        tokenAddress: migrationInfo[1],
+                        amount: migrationInfo[2],
+                        timestamp: migrationInfo[3],
+                        block: migrationInfo[4],
+                        migrationPreference: migrationInfo[5],
+                      }}
+                      chain={+key}
+                      isEarly={migrationInfo[3] <= Number(earlyMigrationDeadline)}
+                    />
                   </React.Fragment>
                 ))
               )}
@@ -503,16 +504,18 @@ const TableRowContainer = styled.div`
 `
 const TableContent = styled.div`
   display: flex;
+  padding-top: 4px;
+  padding-bottom: 4px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    background:${({ theme }) => theme.bg2};
-    padding-inline:12px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background: ${({ theme }) => theme.bg2};
+    padding-inline: 12px;
   `};
 `
 const TokenContainer = styled(Cell)`
-  width: 15%;
+  width: 23%;
   & > div {
     height: 100%;
   }
@@ -524,7 +527,7 @@ const TokenContainer = styled(Cell)`
   `};
 `
 const ChainWrap = styled(Cell)`
-  width: 15%;
+  width: 2%;
   & > div {
     height: 100%;
     display: flex;
@@ -536,6 +539,16 @@ const ChainWrap = styled(Cell)`
     display:flex;
     justify-content:space-between;
   `};
+`
+const SmallChainWrap = styled(Row)`
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  /* border: 1px solid red; */
+  & > div > * {
+    margin-right: 4px;
+    margin-top: 1px;
+  }
 `
 const Label = styled.p`
   display: none;
@@ -568,7 +581,7 @@ const ButtonWrap = styled(Cell)`
   margin-block: auto;
   height: 100%;
   display: flex;
-  gap: 12px;
+  gap: 15px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100%;
     justify-content: space-between;
@@ -591,59 +604,106 @@ const InlineRow = styled.div<{ active?: boolean }>`
   `};
 `
 const ChainDiv = styled.div`
-  margin-right: auto;
-  margin-left: 6px;
-  margin-top: 2px;
+  /* margin-right: auto; */
+  /* margin-left: 6px; */
+  /* margin-top: 2px; */
 `
-const MigrationButton = styled(BaseButton)<{ deus?: boolean }>`
-  width: 130px;
-  height: 40px;
-  border-radius: 8px;
-  background: #141414;
-  color: ${({ theme, deus }) => (deus ? '#01F5E4' : theme.symmColor)};
-  text-align: center;
+// const MigrationButton = styled(BaseButton)<{ deus?: boolean }>`
+//   width: 130px;
+//   height: 40px;
+//   border-radius: 8px;
+//   background: #141414;
+//   color: ${({ theme, deus }) => (deus ? '#01F5E4' : theme.symmColor)};
+//   text-align: center;
+//   font-size: 14px;
+//   font-family: Inter;
+//   font-style: normal;
+//   font-weight: 600;
+//   line-height: normal;
+//   padding: 2px;
+//   margin: 0 auto;
+//   cursor: not-allowed;
+//   opacity: 50%;
+//   & > span {
+//     font-size: 12px;
+//     color: gray;
+//   }
+//   ${({ theme }) => theme.mediaWidth.upToLarge`
+//     font-size: 12px;
+//   `}
+// `
+const SimpleButton = styled(BaseButton)<{ width?: string }>`
+  width: ${({ width }) => (width ? width : '120px')};
+  height: 30px;
+  background-color: ${({ theme }) => theme.bg0};
+  border: 1px solid ${({ theme }) => theme.gray2};
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  color: #d9d9d9;
   font-size: 14px;
-  font-family: Inter;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  padding: 2px;
-  margin: 0 auto;
-  cursor: not-allowed;
-  opacity: 50%;
-  & > span {
-    font-size: 12px;
-    color: gray;
+  padding: 0;
+  font-weight: 500;
+  margin-top: 6px;
+  &:hover {
+    background-color: ${({ theme }) => theme.bg3};
   }
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    font-size: 12px;
+  ${({ theme, disabled }) =>
+    disabled &&
+    `
+      background: ${theme.gray2};
+      cursor: not-allowed;
+      color: #717273;
+
+      &:focus,
+      &:hover {
+        background: ${theme.gray2};
+      }
   `}
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+     font-size: 12px;
+   `}
 `
-const FakeButton = styled.div`
-  width: 130px;
-  padding: 2px;
-  margin: 0 auto;
-`
+// const FakeButton = styled.div`
+//   width: 130px;
+//   padding: 2px;
+//   margin: 0 auto;
+// `
 export enum MigrationType {
   BALANCED,
   DEUS,
   SYMM,
 }
 export const getImageSize = () => {
-  return isMobile ? 15 : 20
+  return isMobile ? 12 : 15
 }
 
-function TableRow({ migrationInfo, chain }: { migrationInfo: IMigrationInfo; chain: number }) {
+function TableRow({
+  migrationInfo,
+  chain,
+  isEarly,
+}: {
+  migrationInfo: IMigrationInfo
+  chain: number
+  isEarly: boolean
+}) {
   return (
     <ZebraStripesRow>
-      <TableRowContent migrationInfo={migrationInfo} chain={chain} />
+      <TableRowContent migrationInfo={migrationInfo} chain={chain} isEarly={isEarly} />
     </ZebraStripesRow>
   )
 }
 
 const MigrationSourceTokens = [Tokens['DEUS'], Tokens['XDEUS'], Tokens['LEGACY_DEI'], Tokens['bDEI_TOKEN']]
 
-const TableRowContent = ({ migrationInfo, chain }: { migrationInfo: IMigrationInfo; chain: number }) => {
+const TableRowContent = ({
+  migrationInfo,
+  chain,
+  isEarly,
+}: {
+  migrationInfo: IMigrationInfo
+  chain: number
+  isEarly: boolean
+}) => {
   const { tokenAddress, amount: migratedAmount } = migrationInfo
   const [token, setToken] = useState<Token | undefined>(undefined)
 
@@ -694,6 +754,7 @@ const TableRowContent = ({ migrationInfo, chain }: { migrationInfo: IMigrationIn
             migratedAmount={migratedAmount}
             migratedToDEUS={migratedToDEUS}
             migratedToSYMM={migratedToSYMM}
+            isEarly={isEarly}
           />
         </TableRowContainer>
       )}
@@ -706,11 +767,13 @@ const TableRowContentWrapper = ({
   migratedAmount,
   migratedToDEUS,
   migratedToSYMM,
+  isEarly,
 }: {
   token: Token
   migratedAmount: number
   migratedToDEUS: BigNumber
   migratedToSYMM: BigNumber
+  isEarly: boolean
 }) => {
   const chain = token?.chainId
   const migrationContextData = useMigrationData()
@@ -726,31 +789,36 @@ const TableRowContentWrapper = ({
   return (
     <TableContent>
       <TokenContainer>
-        <TokenBox token={token} active />
+        <Row>
+          <TokenBox token={token} active />
+        </Row>
+        <SmallChainWrap>
+          <InlineRow active>
+            <ChainDiv>
+              <span>{isEarly ? 'Early' : 'Late'} Migration on </span>
+              <span style={{ color: ChainInfo[chain].color }}>{ChainInfo[chain].label}</span>
+            </ChainDiv>
+            <Image
+              src={ChainInfo[chain].logoUrl}
+              width={getImageSize() + 'px'}
+              height={getImageSize() + 'px'}
+              alt={`${ChainInfo[chain].label}-logo`}
+            />
+          </InlineRow>
+        </SmallChainWrap>
       </TokenContainer>
       <ChainWrap>
         <Label>Chain:</Label>
-        <Value>
-          <div>
-            <InlineRow active>
-              <Image
-                src={ChainInfo[chain].logoUrl}
-                width={getImageSize() + 'px'}
-                height={getImageSize() + 'px'}
-                alt={`${ChainInfo[chain].label}-logo`}
-              />
-              <ChainDiv>{ChainInfo[chain].label}</ChainDiv>
-            </InlineRow>
-          </div>
-        </Value>
       </ChainWrap>
       <MyMigratedAmount>
         <Label>My Migrated Amount:</Label>
         <div>
           <Value>
-            {formatNumber(formatBalance(toBN(migratedAmount * 1e-18).toString(), 3)) ?? 'N/A'} {token.symbol}
+            {formatNumber(formatBalance(toBN(migratedAmount * 1e-18).toString(), 3)) ?? 'N/A'}{' '}
+            <span style={{ color: '#8B8B8B' }}>{token.symbol}</span>
           </Value>
         </div>
+        <SimpleButton>Withdraw</SimpleButton>
       </MyMigratedAmount>
       <MyMigratedAmount>
         <Label>Claimable Token:</Label>
@@ -769,10 +837,11 @@ const TableRowContentWrapper = ({
             )}
           </Value>
         </div>
+        <SimpleButton>Change Plan</SimpleButton>
       </MyMigratedAmount>
 
       <ButtonWrap>
-        {migratedToDEUS.toString() !== '0' ? (
+        {/* {migratedToDEUS.toString() !== '0' ? (
           <MigrationButton disabled deus>
             CLAIM DEUS <span style={{ display: 'contents' }}>(coming in Q4-Q1)</span>
           </MigrationButton>
@@ -785,7 +854,12 @@ const TableRowContentWrapper = ({
           </MigrationButton>
         ) : (
           <FakeButton />
-        )}
+        )} */}
+        <SimpleButton width={'80px'}>Split</SimpleButton>
+        <SimpleButton width={'80px'}>Transfer</SimpleButton>
+        <SimpleButton disabled width={'140px'}>
+          Claim not Started
+        </SimpleButton>
       </ButtonWrap>
     </TableContent>
   )

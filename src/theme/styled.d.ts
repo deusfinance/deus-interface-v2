@@ -50,6 +50,9 @@ export interface Colors {
   secondary1: Color
   secondary2: Color
 
+  gray: Color
+  gray2: Color
+
   // other
   red1: Color
   red2: Color

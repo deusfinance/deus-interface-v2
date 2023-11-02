@@ -101,7 +101,7 @@ export default function MigrationHeader() {
         <ConnectedChain>
           {!isMobile && <span>Connected Chain:</span>}
           <ChainWrap onClick={() => toggle()}>
-            <InlineRow active>
+            <InlineRow style={{ color: ChainInfo[chainId].color }} active>
               <Image
                 src={ChainInfo[chainId].logoUrl}
                 width={getImageSize() + 'px'}
