@@ -12,7 +12,7 @@ import { TokenBalancesMap } from 'state/wallet/types'
 import ImageWithFallback from 'components/ImageWithFallback'
 import { useMigratorContract } from 'hooks/useContract'
 import { ApprovalState, useApproveCallbacksWithAmounts } from 'hooks/useApproveCallbacks'
-import useMigrateCallback from 'hooks/useMigrateCallback'
+import useDepositCallback from 'hooks/useMigrateCallback'
 import { ModalMigrationButton } from './ManualReviewModal'
 import useWeb3React from 'hooks/useWeb3'
 import { useWalletModalToggle } from 'state/application/hooks'
@@ -148,7 +148,7 @@ export default function ReviewModal({
     state: migrateCallbackState,
     callback: migrateCallback,
     error: migrateCallbackError,
-  } = useMigrateCallback(inputTokens, inputAmounts, outputTokens)
+  } = useDepositCallback(inputTokens, inputAmounts, outputTokens)
 
   const handleMigrate = useCallback(async () => {
     console.log('called handleMigrate')

@@ -24,6 +24,9 @@ import { Tokens } from 'constants/tokens'
 import { useMigrationData } from 'context/Migration'
 import { useWalletModalToggle } from 'state/application/hooks'
 import { MigrationOptions } from 'constants/migrationOptions'
+import { useUndoCallback } from 'hooks/useMigrateCallback'
+import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
+import toast from 'react-hot-toast'
 
 const Wrapper = styled.div`
   display: flex;
@@ -234,6 +237,7 @@ interface IMigrationInfo {
   timestamp: number
   block: number
   migrationPreference: number
+  indexInChain: number
 }
 
 function getAllUpperRow() {
@@ -469,6 +473,7 @@ export default function MigratedTable() {
                         timestamp: migrationInfo[3],
                         block: migrationInfo[4],
                         migrationPreference: migrationInfo[5],
+                        indexInChain: index,
                       }}
                       chain={+key}
                       isEarly={migrationInfo[3] <= Number(earlyMigrationDeadline)}
@@ -691,7 +696,7 @@ const TableRowContent = ({
   chain: number
   isEarly: boolean
 }) => {
-  const { tokenAddress, amount: migratedAmount } = migrationInfo
+  const { tokenAddress } = migrationInfo
   const [token, setToken] = useState<Token | undefined>(undefined)
 
   const handleToken = useCallback(() => {
@@ -738,9 +743,9 @@ const TableRowContent = ({
         <TableRowContainer>
           <TableRowContentWrapper
             token={token}
-            migratedAmount={migratedAmount}
             migratedToDEUS={migratedToDEUS}
             migratedToSYMM={migratedToSYMM}
+            migrationInfo={migrationInfo}
             isEarly={isEarly}
           />
         </TableRowContainer>
@@ -751,19 +756,23 @@ const TableRowContent = ({
 
 const TableRowContentWrapper = ({
   token,
-  migratedAmount,
   migratedToDEUS,
   migratedToSYMM,
+  migrationInfo,
   isEarly,
 }: {
   token: Token
-  migratedAmount: number
   migratedToDEUS: BigNumber
   migratedToSYMM: BigNumber
+  migrationInfo: IMigrationInfo
   isEarly: boolean
 }) => {
   const chain = token?.chainId
+  const { chainId } = useWeb3React()
   const migrationContextData = useMigrationData()
+  const rpcChangerCallback = useRpcChangerCallback()
+
+  const { indexInChain, amount: migratedAmount } = migrationInfo
 
   const calculatedSymmPerDeus = useMemo(
     () =>
@@ -772,6 +781,36 @@ const TableRowContentWrapper = ({
       ).multipliedBy(migratedToSYMM),
     [migrationContextData, migratedToSYMM]
   )
+
+  const {
+    state: undoMigrateCallbackState,
+    callback: undoMigrateCallback,
+    error: undoMigrateCallbackError,
+  } = useUndoCallback(indexInChain)
+
+  const handleUndoMigrate = useCallback(async () => {
+    console.log('called handleUndoMigrate')
+    console.log(undoMigrateCallbackState, undoMigrateCallbackError)
+    if (!undoMigrateCallback) return
+    if (chain !== chainId) {
+      rpcChangerCallback(Number(ChainInfo[chain].chainId))
+      toast.error('Changed network, please retry')
+    }
+    try {
+      // setAwaitingMigrateConfirmation(true)
+      const txHash = await undoMigrateCallback()
+      // setAwaitingMigrateConfirmation(false)
+      // toggleReviewModal(false)
+      console.log({ txHash })
+    } catch (e) {
+      // setAwaitingMigrateConfirmation(false)
+      // toggleReviewModal(false)
+      if (e instanceof Error) {
+      } else {
+        console.error(e)
+      }
+    }
+  }, [chain, chainId, rpcChangerCallback, undoMigrateCallback, undoMigrateCallbackError, undoMigrateCallbackState])
 
   return (
     <TableContent>
@@ -802,7 +841,7 @@ const TableRowContentWrapper = ({
             <span style={{ color: '#8B8B8B' }}>{token.symbol}</span>
           </Value>
         </div>
-        <SimpleButton>Withdraw</SimpleButton>
+        <SimpleButton onClick={() => handleUndoMigrate()}>Withdraw</SimpleButton>
       </MyMigratedAmount>
       <MyMigratedAmount>
         <Label>Claimable Token:</Label>

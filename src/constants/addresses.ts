@@ -230,7 +230,9 @@ export const LQDR_ADDRESS: AddressMap = {
 }
 
 export const Migrator: AddressMap = {
-  ...constructSameAddressMap('0xe3b6CC7b76a7f67BBCcb66c010780bE0AF31Ff05', MigrationChains),
+  // for test only
+  ...constructSameAddressMap('0xAeA306Ff09d72306b59A66C56c5523801FDd1b10', MigrationChains),
+  // ...constructSameAddressMap('0xe3b6CC7b76a7f67BBCcb66c010780bE0AF31Ff05', MigrationChains),
 }
 
 export const AxlGateway_ADDRESS: AddressMap = {

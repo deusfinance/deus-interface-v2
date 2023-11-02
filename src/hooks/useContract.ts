@@ -154,12 +154,6 @@ export function useMigratorContract() {
   return useContract(address, MIGRATOR_ABI)
 }
 
-// export function useBridgeContract() {
-//   const { chainId } = useWeb3React()
-//   const address = useMemo(() => (chainId ? Bridge_ADDRESS[chainId] : undefined), [chainId])
-//   return useContract(address, BRIDGE_ABI)
-// }
-
 export function useAxlGatewayContract() {
   const { chainId } = useWeb3React()
   const address = useMemo(() => (chainId ? AxlGateway_ADDRESS[chainId] : undefined), [chainId])
