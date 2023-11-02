@@ -515,7 +515,7 @@ const TableContent = styled.div`
   `};
 `
 const TokenContainer = styled(Cell)`
-  width: 23%;
+  width: 25%;
   & > div {
     height: 100%;
   }
@@ -524,20 +524,6 @@ const TokenContainer = styled(Cell)`
     display: flex;
     justify-content: space-between;
     margin-top: 10px;
-  `};
-`
-const ChainWrap = styled(Cell)`
-  width: 2%;
-  & > div {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    margin-top: 0px;
-  }
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width:100%;
-    display:flex;
-    justify-content:space-between;
   `};
 `
 const SmallChainWrap = styled(Row)`
@@ -659,9 +645,10 @@ const SimpleButton = styled(BaseButton)<{ width?: string }>`
         background: ${theme.gray2};
       }
   `}
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-     font-size: 12px;
-   `}
+  ${({ theme, width }) => theme.mediaWidth.upToSmall`
+    width: ${width ? width : '90px'};
+    font-size: 12px;
+  `}
 `
 // const FakeButton = styled.div`
 //   width: 130px;
@@ -789,7 +776,7 @@ const TableRowContentWrapper = ({
   return (
     <TableContent>
       <TokenContainer>
-        <Row>
+        <Row style={{ marginBottom: '12px' }}>
           <TokenBox token={token} active />
         </Row>
         <SmallChainWrap>
@@ -807,9 +794,6 @@ const TableRowContentWrapper = ({
           </InlineRow>
         </SmallChainWrap>
       </TokenContainer>
-      <ChainWrap>
-        <Label>Chain:</Label>
-      </ChainWrap>
       <MyMigratedAmount>
         <Label>My Migrated Amount:</Label>
         <div>
