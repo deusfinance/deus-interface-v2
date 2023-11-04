@@ -96,7 +96,7 @@ export const MigrationButton = styled(BaseButton)<{ migrationStatus?: string; di
     disabled &&
     `
       opacity: 0.4;
-      cursor: default;
+      cursor: not-allowed;
   `}
 
   &:hover {

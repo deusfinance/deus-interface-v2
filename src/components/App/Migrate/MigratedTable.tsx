@@ -24,7 +24,7 @@ import { Tokens } from 'constants/tokens'
 import { useMigrationData } from 'context/Migration'
 import { useWalletModalToggle } from 'state/application/hooks'
 import { MigrationOptions } from 'constants/migrationOptions'
-import WithdrawModal from './WithdrawModal'
+import ActionModal from './ActionModal'
 
 const Wrapper = styled.div`
   display: flex;
@@ -718,6 +718,11 @@ const TableRowContent = ({
   )
 }
 
+export enum ModalType {
+  WITHDRAW = 'Withdraw',
+  SPLIT = 'Split',
+}
+
 const TableRowContentWrapper = ({
   token,
   migratedToDEUS,
@@ -731,11 +736,17 @@ const TableRowContentWrapper = ({
   migrationInfo: IMigrationInfo
   isEarly: boolean
 }) => {
-  const chain = token?.chainId
-  const migrationContextData = useMigrationData()
+  const [modalType, setModalType] = useState<ModalType>(ModalType.WITHDRAW)
+  const [isOpenModal, toggleModal] = useState(false)
 
-  const [isOpenWithdrawModal, toggleWithdrawModal] = useState(false)
+  function toggleReviewModal(arg: boolean, type: ModalType) {
+    setModalType(type)
+    toggleModal(arg)
+  }
+
+  const migrationContextData = useMigrationData()
   const { amount: migratedAmount } = migrationInfo
+  const chain = token?.chainId
 
   const calculatedSymmPerDeus = useMemo(
     () =>
@@ -775,7 +786,7 @@ const TableRowContentWrapper = ({
               <span style={{ color: '#8B8B8B' }}>{token.symbol}</span>
             </Value>
           </div>
-          <SimpleButton onClick={() => toggleWithdrawModal(true)}>Withdraw</SimpleButton>
+          <SimpleButton onClick={() => toggleReviewModal(true, ModalType.WITHDRAW)}>Withdraw</SimpleButton>
         </MyMigratedAmount>
         <MyMigratedAmount>
           <Label>Claimable Token:</Label>
@@ -798,7 +809,9 @@ const TableRowContentWrapper = ({
         </MyMigratedAmount>
 
         <ButtonWrap>
-          <SimpleButton width={'80px'}>Split</SimpleButton>
+          <SimpleButton onClick={() => toggleReviewModal(true, ModalType.SPLIT)} width={'80px'}>
+            Split
+          </SimpleButton>
           <SimpleButton width={'80px'}>Transfer</SimpleButton>
           <SimpleButton disabled width={'140px'}>
             Claim not started
@@ -806,11 +819,12 @@ const TableRowContentWrapper = ({
         </ButtonWrap>
       </TableContent>
 
-      <WithdrawModal
-        isOpen={isOpenWithdrawModal}
-        toggleModal={(action: boolean) => toggleWithdrawModal(action)}
+      <ActionModal
+        isOpen={isOpenModal}
+        toggleModal={(action: boolean) => toggleModal(action)}
         migrationInfo={migrationInfo}
         token={token}
+        modalType={modalType}
       />
     </>
   )

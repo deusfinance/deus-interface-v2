@@ -128,7 +128,7 @@ export default function InputBox({
         <TokenName>{currency?.symbol}</TokenName>
         {!hideBalance && (
           <Balance onClick={handleClick}>
-            <NoWrapSpan>Balance: </NoWrapSpan>
+            <NoWrapSpan>{maxValue ? 'Available:' : 'Balance:'}</NoWrapSpan>
             {balanceDisplay ? balanceDisplay : '0.00'}
             {!disabled && <MaxButton>MAX</MaxButton>}
           </Balance>
