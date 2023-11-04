@@ -69,7 +69,7 @@ function getImageSize() {
   return isMobile ? 20 : 24
 }
 
-export default function TokenBox({ token, active }: { token: Token; active: boolean }) {
+export default function TokenBox({ token }: { token: Token }) {
   const logo = useCurrencyLogo(token.address)
 
   return (

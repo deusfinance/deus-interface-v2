@@ -25,6 +25,7 @@ import { useMigrationData } from 'context/Migration'
 import { useWalletModalToggle } from 'state/application/hooks'
 import { MigrationOptions } from 'constants/migrationOptions'
 import ActionModal from './ActionModal'
+import TransferModal from './TransferModal'
 
 const Wrapper = styled.div`
   display: flex;
@@ -93,7 +94,7 @@ const LargeContent = styled.div`
     display: none;
   `}
 `
-const TableInputWrapper = styled.div`
+export const TableInputWrapper = styled.div`
   border: 1px solid #4b4949e5;
   display: flex;
   padding: 4px 8px;
@@ -109,7 +110,7 @@ const TableInputWrapper = styled.div`
     font-family: Inter;
   }
 `
-const CheckButton = styled(BaseButton)`
+export const CheckButton = styled(BaseButton)`
   background: linear-gradient(90deg, #dc756b, #f095a2, #d9a199, #d7c7c1, #d4fdf9);
   width: 120px;
   position: relative;
@@ -529,7 +530,7 @@ const TokenContainer = styled(Cell)`
     margin-top: 10px;
   `};
 `
-const SmallChainWrap = styled(Row)`
+export const SmallChainWrap = styled(Row)`
   display: flex;
   align-items: center;
   font-size: 11px;
@@ -577,7 +578,7 @@ const ButtonWrap = styled(Cell)`
     margin-bottom: 10px;
   `};
 `
-const InlineRow = styled.div<{ active?: boolean }>`
+export const InlineRow = styled.div<{ active?: boolean }>`
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
@@ -721,6 +722,7 @@ const TableRowContent = ({
 export enum ModalType {
   WITHDRAW = 'Withdraw',
   SPLIT = 'Split',
+  TRANSFER = 'Transfer',
 }
 
 const TableRowContentWrapper = ({
@@ -761,7 +763,7 @@ const TableRowContentWrapper = ({
       <TableContent>
         <TokenContainer>
           <Row style={{ marginBottom: '12px' }}>
-            <TokenBox token={token} active />
+            <TokenBox token={token} />
           </Row>
           <SmallChainWrap>
             <InlineRow active>
@@ -790,21 +792,19 @@ const TableRowContentWrapper = ({
         </MyMigratedAmount>
         <MyMigratedAmount>
           <Label>Claimable Token:</Label>
-          <div>
-            <Value>
-              {migratedToDEUS.toString() !== '0' && (
-                <span>
-                  {formatNumber(formatBalance(migratedToDEUS.toString(), 3))} <DeusText>DEUS</DeusText>
-                </span>
-              )}
-              {migratedToDEUS.toString() !== '0' && migratedToSYMM.toString() !== '0' && <span>, </span>}
-              {migratedToSYMM.toString() !== '0' && (
-                <span>
-                  {formatNumber(formatBalance(calculatedSymmPerDeus.toString(), 3))} <SymmText>SYMM</SymmText>
-                </span>
-              )}
-            </Value>
-          </div>
+          <Value>
+            {migratedToDEUS.toString() !== '0' && (
+              <span>
+                {formatNumber(formatBalance(migratedToDEUS.toString(), 3))} <DeusText>DEUS</DeusText>
+              </span>
+            )}
+            {migratedToDEUS.toString() !== '0' && migratedToSYMM.toString() !== '0' && <span>, </span>}
+            {migratedToSYMM.toString() !== '0' && (
+              <span>
+                {formatNumber(formatBalance(calculatedSymmPerDeus.toString(), 3))} <SymmText>SYMM</SymmText>
+              </span>
+            )}
+          </Value>
           <SimpleButton>Change Plan</SimpleButton>
         </MyMigratedAmount>
 
@@ -812,15 +812,28 @@ const TableRowContentWrapper = ({
           <SimpleButton onClick={() => toggleReviewModal(true, ModalType.SPLIT)} width={'80px'}>
             Split
           </SimpleButton>
-          <SimpleButton width={'80px'}>Transfer</SimpleButton>
+          <SimpleButton onClick={() => toggleReviewModal(true, ModalType.TRANSFER)} width={'80px'}>
+            Transfer
+          </SimpleButton>
           <SimpleButton disabled width={'140px'}>
             Claim not started
           </SimpleButton>
         </ButtonWrap>
       </TableContent>
 
+      <TransferModal
+        isOpen={isOpenModal && modalType === ModalType.TRANSFER}
+        toggleModal={(action: boolean) => toggleModal(action)}
+        migrationInfo={migrationInfo}
+        token={token}
+        modalType={modalType}
+        isEarly={isEarly}
+        migratedToDEUS={migratedToDEUS}
+        migratedToSYMM={migratedToSYMM}
+        calculatedSymmPerDeus={calculatedSymmPerDeus}
+      />
       <ActionModal
-        isOpen={isOpenModal}
+        isOpen={isOpenModal && (modalType === ModalType.WITHDRAW || modalType === ModalType.SPLIT)}
         toggleModal={(action: boolean) => toggleModal(action)}
         migrationInfo={migrationInfo}
         token={token}

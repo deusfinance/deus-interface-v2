@@ -161,7 +161,7 @@ export default function ActionModal({
           style={{ background: ChainInfo[tokenChain].color }}
           onClick={() => rpcChangerCallback(Number(ChainInfo[tokenChain].chainId))}
         >
-          Switch to {ChainInfo[tokenChain].chainName}
+          Switch to {ChainInfo[tokenChain].label}
         </ModalMigrationButton>
       )
     } else if (insufficientBalance) {
