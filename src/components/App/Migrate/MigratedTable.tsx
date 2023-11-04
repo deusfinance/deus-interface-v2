@@ -24,9 +24,7 @@ import { Tokens } from 'constants/tokens'
 import { useMigrationData } from 'context/Migration'
 import { useWalletModalToggle } from 'state/application/hooks'
 import { MigrationOptions } from 'constants/migrationOptions'
-import { useUndoCallback } from 'hooks/useMigrateCallback'
-import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
-import toast from 'react-hot-toast'
+import WithdrawModal from './WithdrawModal'
 
 const Wrapper = styled.div`
   display: flex;
@@ -230,7 +228,7 @@ const WalletConnectButton = styled(PrimaryButtonWide)`
   max-width: 160px;
   max-height: 32px;
 `
-interface IMigrationInfo {
+export interface IMigrationInfo {
   user: string
   tokenAddress: string
   amount: number
@@ -594,35 +592,6 @@ const InlineRow = styled.div<{ active?: boolean }>`
       pointer-events: none;
   `};
 `
-const ChainDiv = styled.div`
-  /* margin-right: auto; */
-  /* margin-left: 6px; */
-  /* margin-top: 2px; */
-`
-// const MigrationButton = styled(BaseButton)<{ deus?: boolean }>`
-//   width: 130px;
-//   height: 40px;
-//   border-radius: 8px;
-//   background: #141414;
-//   color: ${({ theme, deus }) => (deus ? '#01F5E4' : theme.symmColor)};
-//   text-align: center;
-//   font-size: 14px;
-//   font-family: Inter;
-//   font-style: normal;
-//   font-weight: 600;
-//   line-height: normal;
-//   padding: 2px;
-//   margin: 0 auto;
-//   cursor: not-allowed;
-//   opacity: 50%;
-//   & > span {
-//     font-size: 12px;
-//     color: gray;
-//   }
-//   ${({ theme }) => theme.mediaWidth.upToLarge`
-//     font-size: 12px;
-//   `}
-// `
 const SimpleButton = styled(BaseButton)<{ width?: string }>`
   width: ${({ width }) => (width ? width : '120px')};
   height: 30px;
@@ -655,11 +624,6 @@ const SimpleButton = styled(BaseButton)<{ width?: string }>`
     font-size: 12px;
   `}
 `
-// const FakeButton = styled.div`
-//   width: 130px;
-//   padding: 2px;
-//   margin: 0 auto;
-// `
 export enum MigrationType {
   BALANCED,
   DEUS,
@@ -768,11 +732,10 @@ const TableRowContentWrapper = ({
   isEarly: boolean
 }) => {
   const chain = token?.chainId
-  const { chainId } = useWeb3React()
   const migrationContextData = useMigrationData()
-  const rpcChangerCallback = useRpcChangerCallback()
 
-  const { indexInChain, amount: migratedAmount } = migrationInfo
+  const [isOpenWithdrawModal, toggleWithdrawModal] = useState(false)
+  const { amount: migratedAmount } = migrationInfo
 
   const calculatedSymmPerDeus = useMemo(
     () =>
@@ -782,108 +745,73 @@ const TableRowContentWrapper = ({
     [migrationContextData, migratedToSYMM]
   )
 
-  const {
-    state: undoMigrateCallbackState,
-    callback: undoMigrateCallback,
-    error: undoMigrateCallbackError,
-  } = useUndoCallback(indexInChain)
-
-  const handleUndoMigrate = useCallback(async () => {
-    console.log('called handleUndoMigrate')
-    console.log(undoMigrateCallbackState, undoMigrateCallbackError)
-    if (!undoMigrateCallback) return
-    if (chain !== chainId) {
-      rpcChangerCallback(Number(ChainInfo[chain].chainId))
-      toast.error('Changed network, please retry')
-    }
-    try {
-      // setAwaitingMigrateConfirmation(true)
-      const txHash = await undoMigrateCallback()
-      // setAwaitingMigrateConfirmation(false)
-      // toggleReviewModal(false)
-      console.log({ txHash })
-    } catch (e) {
-      // setAwaitingMigrateConfirmation(false)
-      // toggleReviewModal(false)
-      if (e instanceof Error) {
-      } else {
-        console.error(e)
-      }
-    }
-  }, [chain, chainId, rpcChangerCallback, undoMigrateCallback, undoMigrateCallbackError, undoMigrateCallbackState])
-
   return (
-    <TableContent>
-      <TokenContainer>
-        <Row style={{ marginBottom: '12px' }}>
-          <TokenBox token={token} active />
-        </Row>
-        <SmallChainWrap>
-          <InlineRow active>
-            <ChainDiv>
-              <span>{isEarly ? 'Early' : 'Late'} Migration on </span>
-              <span style={{ color: ChainInfo[chain].color }}>{ChainInfo[chain].label}</span>
-            </ChainDiv>
-            <Image
-              src={ChainInfo[chain].logoUrl}
-              width={getImageSize() + 'px'}
-              height={getImageSize() + 'px'}
-              alt={`${ChainInfo[chain].label}-logo`}
-            />
-          </InlineRow>
-        </SmallChainWrap>
-      </TokenContainer>
-      <MyMigratedAmount>
-        <Label>My Migrated Amount:</Label>
-        <div>
-          <Value>
-            {formatNumber(formatBalance(toBN(migratedAmount * 1e-18).toString(), 3)) ?? 'N/A'}{' '}
-            <span style={{ color: '#8B8B8B' }}>{token.symbol}</span>
-          </Value>
-        </div>
-        <SimpleButton onClick={() => handleUndoMigrate()}>Withdraw</SimpleButton>
-      </MyMigratedAmount>
-      <MyMigratedAmount>
-        <Label>Claimable Token:</Label>
-        <div>
-          <Value>
-            {migratedToDEUS.toString() !== '0' && (
-              <span>
-                {formatNumber(formatBalance(migratedToDEUS.toString(), 3))} <DeusText>DEUS</DeusText>
-              </span>
-            )}
-            {migratedToDEUS.toString() !== '0' && migratedToSYMM.toString() !== '0' && <span>, </span>}
-            {migratedToSYMM.toString() !== '0' && (
-              <span>
-                {formatNumber(formatBalance(calculatedSymmPerDeus.toString(), 3))} <SymmText>SYMM</SymmText>
-              </span>
-            )}
-          </Value>
-        </div>
-        <SimpleButton>Change Plan</SimpleButton>
-      </MyMigratedAmount>
+    <>
+      <TableContent>
+        <TokenContainer>
+          <Row style={{ marginBottom: '12px' }}>
+            <TokenBox token={token} active />
+          </Row>
+          <SmallChainWrap>
+            <InlineRow active>
+              <div>
+                <span>{isEarly ? 'Early' : 'Late'} Migration on </span>
+                <span style={{ color: ChainInfo[chain].color }}>{ChainInfo[chain].label}</span>
+              </div>
+              <Image
+                src={ChainInfo[chain].logoUrl}
+                width={getImageSize() + 'px'}
+                height={getImageSize() + 'px'}
+                alt={`${ChainInfo[chain].label}-logo`}
+              />
+            </InlineRow>
+          </SmallChainWrap>
+        </TokenContainer>
+        <MyMigratedAmount>
+          <Label>My Migrated Amount:</Label>
+          <div>
+            <Value>
+              {formatNumber(formatBalance(toBN(migratedAmount * 1e-18).toString(), 3)) ?? 'N/A'}{' '}
+              <span style={{ color: '#8B8B8B' }}>{token.symbol}</span>
+            </Value>
+          </div>
+          <SimpleButton onClick={() => toggleWithdrawModal(true)}>Withdraw</SimpleButton>
+        </MyMigratedAmount>
+        <MyMigratedAmount>
+          <Label>Claimable Token:</Label>
+          <div>
+            <Value>
+              {migratedToDEUS.toString() !== '0' && (
+                <span>
+                  {formatNumber(formatBalance(migratedToDEUS.toString(), 3))} <DeusText>DEUS</DeusText>
+                </span>
+              )}
+              {migratedToDEUS.toString() !== '0' && migratedToSYMM.toString() !== '0' && <span>, </span>}
+              {migratedToSYMM.toString() !== '0' && (
+                <span>
+                  {formatNumber(formatBalance(calculatedSymmPerDeus.toString(), 3))} <SymmText>SYMM</SymmText>
+                </span>
+              )}
+            </Value>
+          </div>
+          <SimpleButton>Change Plan</SimpleButton>
+        </MyMigratedAmount>
 
-      <ButtonWrap>
-        {/* {migratedToDEUS.toString() !== '0' ? (
-          <MigrationButton disabled deus>
-            CLAIM DEUS <span style={{ display: 'contents' }}>(coming in Q4-Q1)</span>
-          </MigrationButton>
-        ) : (
-          <FakeButton />
-        )}
-        {migratedToSYMM.toString() !== '0' ? (
-          <MigrationButton disabled>
-            CLAIM SYMM <span style={{ display: 'contents' }}>(coming in Q4-Q1)</span>
-          </MigrationButton>
-        ) : (
-          <FakeButton />
-        )} */}
-        <SimpleButton width={'80px'}>Split</SimpleButton>
-        <SimpleButton width={'80px'}>Transfer</SimpleButton>
-        <SimpleButton disabled width={'140px'}>
-          Claim not Started
-        </SimpleButton>
-      </ButtonWrap>
-    </TableContent>
+        <ButtonWrap>
+          <SimpleButton width={'80px'}>Split</SimpleButton>
+          <SimpleButton width={'80px'}>Transfer</SimpleButton>
+          <SimpleButton disabled width={'140px'}>
+            Claim not started
+          </SimpleButton>
+        </ButtonWrap>
+      </TableContent>
+
+      <WithdrawModal
+        isOpen={isOpenWithdrawModal}
+        toggleModal={(action: boolean) => toggleWithdrawModal(action)}
+        migrationInfo={migrationInfo}
+        token={token}
+      />
+    </>
   )
 }

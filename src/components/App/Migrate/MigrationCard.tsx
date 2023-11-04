@@ -74,7 +74,7 @@ const MultipleImageWrapper = styled.div<{ isSingle?: boolean }>`
 `}
 `
 
-export const MigrationButton = styled(BaseButton)<{ migrationStatus: string; disabled?: boolean }>`
+export const MigrationButton = styled(BaseButton)<{ migrationStatus?: string; disabled?: boolean }>`
   height: 40px;
   border-radius: 8px;
   background: #141414;
