@@ -111,6 +111,7 @@ function colors(themeName: SupportedThemes): Colors {
 
       gray: '#8B8B8B',
       gray2: '#272929',
+      gray3: '#2c2c2c',
 
       // other
       red1: '#DD5D5D',
@@ -191,6 +192,7 @@ function colors(themeName: SupportedThemes): Colors {
 
       gray: '#8B8B8B',
       gray2: '#272929',
+      gray3: '#2c2c2c',
 
       // other
       red1: '#DD5D5D',

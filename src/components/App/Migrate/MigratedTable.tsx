@@ -26,6 +26,7 @@ import { useWalletModalToggle } from 'state/application/hooks'
 import { MigrationOptions } from 'constants/migrationOptions'
 import ActionModal from './ActionModal'
 import TransferModal from './TransferModal'
+import PreferenceModal from './PreferenceModal'
 
 const Wrapper = styled.div`
   display: flex;
@@ -721,6 +722,7 @@ const TableRowContent = ({
 
 export enum ModalType {
   WITHDRAW = 'Withdraw',
+  ChangePlan = 'Change plan',
   SPLIT = 'Split',
   TRANSFER = 'Transfer',
 }
@@ -805,7 +807,7 @@ const TableRowContentWrapper = ({
               </span>
             )}
           </Value>
-          <SimpleButton>Change Plan</SimpleButton>
+          <SimpleButton onClick={() => toggleReviewModal(true, ModalType.ChangePlan)}>Change Plan</SimpleButton>
         </MyMigratedAmount>
 
         <ButtonWrap>
@@ -821,13 +823,12 @@ const TableRowContentWrapper = ({
         </ButtonWrap>
       </TableContent>
 
-      <TransferModal
-        isOpen={isOpenModal && modalType === ModalType.TRANSFER}
+      <PreferenceModal
+        isOpen={isOpenModal && modalType === ModalType.ChangePlan}
         toggleModal={(action: boolean) => toggleModal(action)}
         migrationInfo={migrationInfo}
         token={token}
         modalType={modalType}
-        isEarly={isEarly}
         migratedToDEUS={migratedToDEUS}
         migratedToSYMM={migratedToSYMM}
         calculatedSymmPerDeus={calculatedSymmPerDeus}
@@ -838,6 +839,17 @@ const TableRowContentWrapper = ({
         migrationInfo={migrationInfo}
         token={token}
         modalType={modalType}
+      />
+      <TransferModal
+        isOpen={isOpenModal && modalType === ModalType.TRANSFER}
+        toggleModal={(action: boolean) => toggleModal(action)}
+        migrationInfo={migrationInfo}
+        token={token}
+        modalType={modalType}
+        isEarly={isEarly}
+        migratedToDEUS={migratedToDEUS}
+        migratedToSYMM={migratedToSYMM}
+        calculatedSymmPerDeus={calculatedSymmPerDeus}
       />
     </>
   )

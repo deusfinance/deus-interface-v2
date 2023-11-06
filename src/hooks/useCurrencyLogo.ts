@@ -17,6 +17,8 @@ const LogoMap: { [contractOrSymbol: string]: string } = {
   FTM: 'https://assets.spooky.fi/tokens/FTM.png',
   DEI: DEI_LOGO,
   DEUS: DEUS_LOGO,
+  deus: DEUS_LOGO,
+  SYMM: SYMM_LOGO,
   // contracts
   // make sure these values are checksummed! https://ethsum.netlify.app/
   '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83': 'https://assets.spooky.fi/tokens/wFTM.png', // wFTM
@@ -33,7 +35,6 @@ const LogoMap: { [contractOrSymbol: string]: string } = {
   '0x777172D858dC1599914a1C4c6c9fC48c99a60990': SOLID_ICON.src,
   '0xECd9E18356bb8d72741c539e75CEAdB3C5869ea0': NotFound.src, // default the logo of dv-lp token address to that of a not found one
   usdc: USDC_LOGO,
-  deus: DEUS_LOGO,
 }
 
 export default function useCurrencyLogo(contractOrSymbol?: string): string {
