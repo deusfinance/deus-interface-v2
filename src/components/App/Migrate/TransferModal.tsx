@@ -23,6 +23,7 @@ import { DeusText } from '../Stake/RewardBox'
 import { SymmText } from './HeaderBox'
 import { formatBalance, formatNumber } from 'utils/numbers'
 import { InputField } from 'components/Input'
+import toast from 'react-hot-toast'
 
 const MainModal = styled(Modal)`
   display: flex;
@@ -191,7 +192,8 @@ export default function TransferModal({
   const pasteFromClipboard = async () => {
     try {
       const text = await navigator.clipboard.readText()
-      setAmountIn(text)
+      if (isAddress(text)) setAmountIn(text)
+      else toast.error('Paste a valid address')
     } catch (error) {
       console.error('Error pasting text: ', error)
     }

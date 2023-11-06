@@ -176,7 +176,12 @@ export default function ActionModal({
           {isWithdraw ? 'Withdrawing' : 'Splitting'} <DotFlashing />
         </ModalMigrationButton>
       )
-    } else if (isSplit) return <ModalMigrationButton onClick={() => handleSplitMigrate()}>Split</ModalMigrationButton>
+    } else if (isSplit)
+      return (
+        <ModalMigrationButton disabled={!amountIn} onClick={() => handleSplitMigrate()}>
+          Split
+        </ModalMigrationButton>
+      )
     return (
       <ModalMigrationButton solidOrange onClick={() => handleUndoMigrate()}>
         Cancel Migration & Withdraw {token.symbol}

@@ -6,7 +6,7 @@ import { DotFlashing } from 'components/Icons'
 import { MigrationButton } from './MigrationCard'
 import useWeb3React from 'hooks/useWeb3'
 import { useWalletModalToggle } from 'state/application/hooks'
-import { useUndoCallback } from 'hooks/useMigrateCallback'
+import { useChangePreferenceCallback } from 'hooks/useMigrateCallback'
 import { IMigrationInfo, ModalType } from './MigratedTable'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 import { ChainInfo } from 'constants/chainInfo'
@@ -14,6 +14,8 @@ import { Token } from '@sushiswap/core-sdk'
 import { Row } from 'components/Row'
 import BigNumber from 'bignumber.js'
 import MigrationBox from './MigrationBox'
+import MigrationBox2 from './MigrationBox2'
+import { MigrationType } from './Table'
 
 const MainModal = styled(Modal)`
   display: flex;
@@ -61,7 +63,6 @@ export const ModalMigrationButton = styled(MigrationButton)<{ insufficientBalanc
 export enum MigrationBoxType {
   First,
   Second,
-  Third,
 }
 
 export default function PreferenceModal({
@@ -71,7 +72,7 @@ export default function PreferenceModal({
   token,
   modalType,
   migratedToDEUS,
-  migratedToSYMM,
+  // migratedToSYMM,
   calculatedSymmPerDeus,
 }: {
   isOpen: boolean
@@ -80,7 +81,7 @@ export default function PreferenceModal({
   token: Token
   modalType: ModalType
   migratedToDEUS: BigNumber
-  migratedToSYMM: BigNumber
+  // migratedToSYMM: BigNumber
   calculatedSymmPerDeus: BigNumber
 }) {
   const { chainId, account } = useWeb3React()
@@ -92,18 +93,18 @@ export default function PreferenceModal({
   const [selected, setSelected] = useState(null)
 
   const {
-    state: undoMigrateCallbackState,
-    callback: undoMigrateCallback,
-    error: undoMigrateCallbackError,
-  } = useUndoCallback(migrationInfo?.indexInChain)
+    state: changePreferenceMigrateCallbackState,
+    callback: changePreferenceMigrateCallback,
+    error: changePreferenceMigrateCallbackError,
+  } = useChangePreferenceCallback(migrationInfo?.indexInChain, getPreferenceStatus()[selected ?? 0])
 
-  const handleUndoMigrate = useCallback(async () => {
-    console.log('called handleUndoMigrate')
-    console.log(undoMigrateCallbackState, undoMigrateCallbackError)
-    if (!undoMigrateCallback) return
+  const handleChangePreferenceMigrate = useCallback(async () => {
+    console.log('called handleChangePreferenceMigrate')
+    console.log(changePreferenceMigrateCallbackState, changePreferenceMigrateCallbackError)
+    if (!changePreferenceMigrateCallback) return
     try {
       setAwaitingConfirmation(true)
-      const txHash = await undoMigrateCallback()
+      const txHash = await changePreferenceMigrateCallback()
       setAwaitingConfirmation(false)
       toggleModal(false)
       console.log({ txHash })
@@ -115,7 +116,12 @@ export default function PreferenceModal({
         console.error(e)
       }
     }
-  }, [toggleModal, undoMigrateCallback, undoMigrateCallbackError, undoMigrateCallbackState])
+  }, [
+    toggleModal,
+    changePreferenceMigrateCallback,
+    changePreferenceMigrateCallbackError,
+    changePreferenceMigrateCallbackState,
+  ])
 
   function getActionButton(): JSX.Element | null {
     if (!chainId || !account) {
@@ -129,7 +135,7 @@ export default function PreferenceModal({
           Switch to {ChainInfo[tokenChain].label}
         </ModalMigrationButton>
       )
-    } else if (!selected) return <ModalMigrationButton disabled>Select a new plan</ModalMigrationButton>
+    } else if (selected === null) return <ModalMigrationButton disabled>Select a new plan</ModalMigrationButton>
     else if (awaitingConfirmation) {
       return (
         <ModalMigrationButton migrationStatus="full_symm">
@@ -138,10 +144,17 @@ export default function PreferenceModal({
       )
     }
     return (
-      <ModalMigrationButton migrationStatus="full_symm" onClick={() => handleUndoMigrate()}>
+      <ModalMigrationButton migrationStatus="full_symm" onClick={() => handleChangePreferenceMigrate()}>
         Confirm New Plan
       </ModalMigrationButton>
     )
+  }
+
+  function getPreferenceStatus() {
+    const pref = migrationInfo?.migrationPreference
+    if (pref === MigrationType.BALANCED) return [MigrationType.DEUS, MigrationType.SYMM]
+    else if (pref === MigrationType.DEUS) return [MigrationType.BALANCED, MigrationType.SYMM]
+    else return [MigrationType.DEUS, MigrationType.BALANCED]
   }
 
   return (
@@ -151,30 +164,26 @@ export default function PreferenceModal({
       <Separator />
       <FromWrapper>
         <MigrationBox
-          id={MigrationBoxType.First}
-          migrationInfo={migrationInfo}
+          migrationPreference={migrationInfo?.migrationPreference}
           migratedToDEUS={migratedToDEUS}
-          migratedToSYMM={migratedToSYMM}
+          // migratedToSYMM={migratedToSYMM}
           calculatedSymmPerDeus={calculatedSymmPerDeus}
-          active
         />
         <Row>Select New Plan</Row>
-        <MigrationBox
-          id={MigrationBoxType.Second}
-          migrationInfo={migrationInfo}
-          migratedToDEUS={migratedToDEUS}
-          migratedToSYMM={migratedToSYMM}
-          calculatedSymmPerDeus={calculatedSymmPerDeus}
-          selected={selected === MigrationBoxType.Second}
+        <MigrationBox2
+          id={MigrationBoxType.First}
+          migrationPreference={getPreferenceStatus()[MigrationBoxType.First]}
+          token={token}
+          amount={migrationInfo?.amount}
+          selected={selected === MigrationBoxType.First}
           setSelected={setSelected}
         />
-        <MigrationBox
-          id={MigrationBoxType.Third}
-          migrationInfo={migrationInfo}
-          migratedToDEUS={migratedToDEUS}
-          migratedToSYMM={migratedToSYMM}
-          calculatedSymmPerDeus={calculatedSymmPerDeus}
-          selected={selected === MigrationBoxType.Third}
+        <MigrationBox2
+          id={MigrationBoxType.Second}
+          migrationPreference={getPreferenceStatus()[MigrationBoxType.Second]}
+          token={token}
+          amount={migrationInfo?.amount}
+          selected={selected === MigrationBoxType.Second}
           setSelected={setSelected}
         />
       </FromWrapper>

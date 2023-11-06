@@ -653,6 +653,37 @@ function TableRow({
 
 const MigrationSourceTokens = [Tokens['DEUS'], Tokens['XDEUS'], Tokens['LEGACY_DEI'], Tokens['bDEI_TOKEN']]
 
+export function getMigratedAmounts(
+  balancedRatio: string,
+  chain: number,
+  token: Token | undefined,
+  amount: number,
+  migrationPreference: MigrationType
+) {
+  const ratio = Number(balancedRatio)
+  let migratedToDEUS = BN_ZERO
+  let migratedToSYMM = BN_ZERO
+  const migrationInfoAmount = toBN(amount.toString()).toString()
+
+  const divideRatio = MigrationOptions.find((option) => option.token[chain]?.name === token?.name)?.divideRatio || 1
+
+  if (migrationPreference === MigrationType.BALANCED) {
+    const amount: BigNumber = toBN(formatUnits(migrationInfoAmount, 18)).times(ratio)
+    migratedToDEUS = migratedToDEUS.plus(amount).div(divideRatio)
+
+    const amount2: BigNumber = toBN(formatUnits(migrationInfoAmount, 18)).minus(amount)
+    migratedToSYMM = migratedToSYMM.plus(amount2).div(divideRatio)
+  } else {
+    const amount: BigNumber = toBN(formatUnits(migrationInfoAmount, 18))
+    if (migrationPreference === MigrationType.DEUS) {
+      migratedToDEUS = migratedToDEUS.plus(amount).div(divideRatio)
+    } else if (migrationPreference === MigrationType.SYMM) {
+      migratedToSYMM = migratedToSYMM.plus(amount).div(divideRatio)
+    }
+  }
+  return [migratedToDEUS, migratedToSYMM]
+}
+
 const TableRowContent = ({
   migrationInfo,
   chain,
@@ -681,27 +712,13 @@ const TableRowContent = ({
   }, [])
 
   const balancedRatio = useBalancedRatio()
-  const ratio = Number(balancedRatio)
-  let migratedToDEUS = BN_ZERO
-  let migratedToSYMM = BN_ZERO
-  const migrationInfoAmount = toBN(migrationInfo?.amount.toString()).toString()
-
-  const divideRatio = MigrationOptions.find((option) => option.token[chain]?.name === token?.name)?.divideRatio || 1
-
-  if (migrationInfo.migrationPreference === MigrationType.BALANCED) {
-    const amount: BigNumber = toBN(formatUnits(migrationInfoAmount, 18)).times(ratio)
-    migratedToDEUS = migratedToDEUS.plus(amount).div(divideRatio)
-
-    const amount2: BigNumber = toBN(formatUnits(migrationInfoAmount, 18)).minus(amount)
-    migratedToSYMM = migratedToSYMM.plus(amount2).div(divideRatio)
-  } else {
-    const amount: BigNumber = toBN(formatUnits(migrationInfoAmount, 18))
-    if (migrationInfo.migrationPreference === MigrationType.DEUS) {
-      migratedToDEUS = migratedToDEUS.plus(amount).div(divideRatio)
-    } else if (migrationInfo.migrationPreference === MigrationType.SYMM) {
-      migratedToSYMM = migratedToSYMM.plus(amount).div(divideRatio)
-    }
-  }
+  const [migratedToDEUS, migratedToSYMM] = getMigratedAmounts(
+    balancedRatio,
+    chain,
+    token,
+    migrationInfo?.amount,
+    migrationInfo?.migrationPreference
+  )
 
   return (
     <React.Fragment>
@@ -830,7 +847,7 @@ const TableRowContentWrapper = ({
         token={token}
         modalType={modalType}
         migratedToDEUS={migratedToDEUS}
-        migratedToSYMM={migratedToSYMM}
+        // migratedToSYMM={migratedToSYMM}
         calculatedSymmPerDeus={calculatedSymmPerDeus}
       />
       <ActionModal
