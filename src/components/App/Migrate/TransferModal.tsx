@@ -24,6 +24,7 @@ import { SymmText } from './HeaderBox'
 import { formatBalance, formatNumber } from 'utils/numbers'
 import { InputField } from 'components/Input'
 import toast from 'react-hot-toast'
+import RightArrow from 'components/Icons/RightArrow'
 
 const MainModal = styled(Modal)`
   display: flex;
@@ -235,6 +236,9 @@ export default function TransferModal({
               />
             </SmallChainWrap>
           </Card>
+
+          <RightArrow />
+
           <Card2>
             {migratedToDEUS.toString() !== '0' && (
               <span>
