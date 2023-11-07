@@ -242,13 +242,13 @@ export const AxlGateway_ADDRESS: AddressMap = {
   [SupportedChainId.BASE]: '0x0013efdA0FE688894b85707B89d7F0fb1a39f354',
 }
 
-export const Bridge_ADDRESS: AddressMap = {
-  [SupportedChainId.MAINNET]: '0x033A57bA228eF012f1cED3861ca21eAD5e7fD534',
-  [SupportedChainId.POLYGON]: '0x98097553Af9EB8F17F4f668C8C8eB78712eE2c43',
-  [SupportedChainId.BSC]: '0x68FD40FB0713a35627C98ba9549c7cCed73827F9',
-  [SupportedChainId.AVALANCHE]: '0x8Ccbc812394fDF26c58F3837aB419fbc315656C3',
-  [SupportedChainId.KAVA]: '0x18347ae09114C30E9895b8fbbd129d9611B2DC1c',
-}
+// export const Bridge_ADDRESS: AddressMap = {
+//   [SupportedChainId.MAINNET]: '0x033A57bA228eF012f1cED3861ca21eAD5e7fD534',
+//   [SupportedChainId.POLYGON]: '0x98097553Af9EB8F17F4f668C8C8eB78712eE2c43',
+//   [SupportedChainId.BSC]: '0x68FD40FB0713a35627C98ba9549c7cCed73827F9',
+//   [SupportedChainId.AVALANCHE]: '0x8Ccbc812394fDF26c58F3837aB419fbc315656C3',
+//   [SupportedChainId.KAVA]: '0x18347ae09114C30E9895b8fbbd129d9611B2DC1c',
+// }
 
 export const AxlWrappedDeus_ADDRESS: AddressMap = {
   [SupportedChainId.MAINNET]: '0x69e557b926F4eEf6d9400e36DBBFEb9600Af2880',

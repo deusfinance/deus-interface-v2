@@ -5,7 +5,7 @@ import toast from 'react-hot-toast'
 
 import { useTransactionAdder } from 'state/transactions/hooks'
 import useWeb3React from 'hooks/useWeb3'
-import { useBridgeContract, useAxlGatewayContract } from 'hooks/useContract'
+import { useAxlGatewayContract } from 'hooks/useContract'
 import { calculateGasMargin } from 'utils/web3'
 import { toHex } from 'utils/hex'
 import { DefaultHandlerError } from 'utils/parseError'
@@ -157,11 +157,11 @@ export function useDepositCallback(
   const { account, chainId, library } = useWeb3React()
   const addTransaction = useTransactionAdder()
 
-  const bridgeContract = useBridgeContract()
+  const axlGatewayContract = useAxlGatewayContract()
 
   const constructCall = useCallback(() => {
     try {
-      if (!account || !library || !bridgeContract) {
+      if (!account || !library || !axlGatewayContract) {
         throw new Error('Missing dependencies.')
       }
 
@@ -169,8 +169,8 @@ export function useDepositCallback(
       const args = [inputAmount ? toHex(inputAmount.quotient) : 0, outputAmount ? toHex(outputAmount.quotient) : 0]
 
       return {
-        address: bridgeContract.address,
-        calldata: bridgeContract.interface.encodeFunctionData(methodName, args) ?? '',
+        address: axlGatewayContract.address,
+        calldata: axlGatewayContract.interface.encodeFunctionData(methodName, args) ?? '',
         value: 0,
       }
     } catch (error) {
@@ -178,10 +178,10 @@ export function useDepositCallback(
         error,
       }
     }
-  }, [account, library, bridgeContract, inputAmount, outputAmount])
+  }, [account, library, axlGatewayContract, inputAmount, outputAmount])
 
   return useMemo(() => {
-    if (!account || !chainId || !library || !bridgeContract || !inputCurrency || !outputCurrency) {
+    if (!account || !chainId || !library || !axlGatewayContract || !inputCurrency || !outputCurrency) {
       return {
         state: TransactionCallbackState.INVALID,
         callback: null,
@@ -268,7 +268,7 @@ export function useDepositCallback(
     account,
     chainId,
     library,
-    bridgeContract,
+    axlGatewayContract,
     inputCurrency,
     outputCurrency,
     inputAmount,
@@ -291,11 +291,11 @@ export function useWithdrawCallback(
   const { account, chainId, library } = useWeb3React()
   const addTransaction = useTransactionAdder()
 
-  const bridgeContract = useBridgeContract()
+  const axlGatewayContract = useAxlGatewayContract()
 
   const constructCall = useCallback(() => {
     try {
-      if (!account || !library || !bridgeContract) {
+      if (!account || !library || !axlGatewayContract) {
         throw new Error('Missing dependencies.')
       }
 
@@ -303,8 +303,8 @@ export function useWithdrawCallback(
       const args = [inputAmount ? toHex(inputAmount.quotient) : 0, outputAmount ? toHex(outputAmount.quotient) : 0]
 
       return {
-        address: bridgeContract.address,
-        calldata: bridgeContract.interface.encodeFunctionData(methodName, args) ?? '',
+        address: axlGatewayContract.address,
+        calldata: axlGatewayContract.interface.encodeFunctionData(methodName, args) ?? '',
         value: 0,
       }
     } catch (error) {
@@ -312,10 +312,10 @@ export function useWithdrawCallback(
         error,
       }
     }
-  }, [account, library, bridgeContract, inputAmount, outputAmount])
+  }, [account, library, axlGatewayContract, inputAmount, outputAmount])
 
   return useMemo(() => {
-    if (!account || !chainId || !library || !bridgeContract || !inputCurrency || !outputCurrency) {
+    if (!account || !chainId || !library || !axlGatewayContract || !inputCurrency || !outputCurrency) {
       return {
         state: TransactionCallbackState.INVALID,
         callback: null,
@@ -402,7 +402,7 @@ export function useWithdrawCallback(
     account,
     chainId,
     library,
-    bridgeContract,
+    axlGatewayContract,
     inputCurrency,
     outputCurrency,
     inputAmount,

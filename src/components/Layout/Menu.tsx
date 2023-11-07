@@ -117,11 +117,14 @@ export default function Menu() {
               <div>Migration</div>
             </Row>
           </Link>
-          <Link href="/bridge" passHref>
-            <Row active={router.route.includes('/bridge')} onClick={() => toggle()}>
-              <div>Bridge</div>
+          <ExternalLink href=" https://v2.app.squidrouter.com/">
+            <Row onClick={() => toggle()}>
+              <ExternalItem>
+                <div>Bridge</div>
+                <ExternalLinkIcon />
+              </ExternalItem>
             </Row>
-          </Link>
+          </ExternalLink>
           <Link href="/clqdr" passHref>
             <Row active={router.route.includes('/clqdr')} onClick={() => toggle()}>
               <div>cLQDR</div>
@@ -135,6 +138,7 @@ export default function Menu() {
               </ExternalItem>
             </Row>
           </ExternalLink>
+
           {/* <ExternalLink href="https://app.multichain.org/#/router">
             <Row onClick={() => toggle()}>
               <ExternalItem>
