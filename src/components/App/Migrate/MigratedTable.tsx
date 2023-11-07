@@ -739,7 +739,7 @@ const TableRowContent = ({
 
 export enum ModalType {
   WITHDRAW = 'Withdraw',
-  ChangePlan = 'Change plan',
+  ChangePlan = 'Change',
   SPLIT = 'Split',
   TRANSFER = 'Transfer',
 }
@@ -772,9 +772,10 @@ const TableRowContentWrapper = ({
   const calculatedSymmPerDeus = useMemo(
     () =>
       toBN(
-        Number(migrationContextData?.unvested_symm_per_deus) + Number(migrationContextData?.vested_symm_per_deus)
+        Number(migrationContextData?.unvested_symm_per_deus) +
+          (isEarly ? Number(migrationContextData?.vested_symm_per_deus) : 0)
       ).multipliedBy(migratedToSYMM),
-    [migrationContextData, migratedToSYMM]
+    [migrationContextData?.unvested_symm_per_deus, migrationContextData?.vested_symm_per_deus, isEarly, migratedToSYMM]
   )
 
   return (
@@ -824,7 +825,7 @@ const TableRowContentWrapper = ({
               </span>
             )}
           </Value>
-          <SimpleButton onClick={() => toggleReviewModal(true, ModalType.ChangePlan)}>Change Plan</SimpleButton>
+          <SimpleButton onClick={() => toggleReviewModal(true, ModalType.ChangePlan)}>Change</SimpleButton>
         </MyMigratedAmount>
 
         <ButtonWrap>
@@ -847,6 +848,7 @@ const TableRowContentWrapper = ({
         token={token}
         modalType={modalType}
         migratedToDEUS={migratedToDEUS}
+        isEarly={isEarly}
         // migratedToSYMM={migratedToSYMM}
         calculatedSymmPerDeus={calculatedSymmPerDeus}
       />

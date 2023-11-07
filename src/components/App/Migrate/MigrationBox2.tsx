@@ -14,6 +14,7 @@ export default function MigrationBox2({
   migrationPreference,
   token,
   amount,
+  isEarly,
   selected,
   setSelected,
 }: {
@@ -21,6 +22,7 @@ export default function MigrationBox2({
   migrationPreference: MigrationType
   token: Token
   amount: number
+  isEarly: boolean
   selected?: boolean
   setSelected?: (value: any) => void
 }) {
@@ -46,12 +48,26 @@ export default function MigrationBox2({
   )
 
   const migrationContextData = useMigrationData()
+  // const calculatedSymmPerDeus = useMemo(
+  //   () =>
+  //     toBN(
+  //       Number(migrationContextData?.unvested_symm_per_deus) + Number(migrationContextData?.vested_symm_per_deus)
+  //     ).multipliedBy(totalMigratedToSYMM),
+  //   [migrationContextData, totalMigratedToSYMM]
+  // )
+
   const calculatedSymmPerDeus = useMemo(
     () =>
       toBN(
-        Number(migrationContextData?.unvested_symm_per_deus) + Number(migrationContextData?.vested_symm_per_deus)
+        Number(migrationContextData?.unvested_symm_per_deus) +
+          (isEarly ? Number(migrationContextData?.vested_symm_per_deus) : 0)
       ).multipliedBy(totalMigratedToSYMM),
-    [migrationContextData, totalMigratedToSYMM]
+    [
+      isEarly,
+      migrationContextData?.unvested_symm_per_deus,
+      migrationContextData?.vested_symm_per_deus,
+      totalMigratedToSYMM,
+    ]
   )
 
   return (

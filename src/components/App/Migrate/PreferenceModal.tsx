@@ -72,6 +72,7 @@ export default function PreferenceModal({
   token,
   modalType,
   migratedToDEUS,
+  isEarly,
   // migratedToSYMM,
   calculatedSymmPerDeus,
 }: {
@@ -81,6 +82,7 @@ export default function PreferenceModal({
   token: Token
   modalType: ModalType
   migratedToDEUS: BigNumber
+  isEarly: boolean
   // migratedToSYMM: BigNumber
   calculatedSymmPerDeus: BigNumber
 }) {
@@ -175,6 +177,7 @@ export default function PreferenceModal({
           migrationPreference={getPreferenceStatus()[MigrationBoxType.First]}
           token={token}
           amount={migrationInfo?.amount}
+          isEarly={isEarly}
           selected={selected === MigrationBoxType.First}
           setSelected={setSelected}
         />
@@ -183,6 +186,7 @@ export default function PreferenceModal({
           migrationPreference={getPreferenceStatus()[MigrationBoxType.Second]}
           token={token}
           amount={migrationInfo?.amount}
+          isEarly={isEarly}
           selected={selected === MigrationBoxType.Second}
           setSelected={setSelected}
         />
