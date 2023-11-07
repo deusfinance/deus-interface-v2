@@ -291,8 +291,8 @@ export default function HeaderBox() {
       },
       {
         name: 'SYMM per DEUS ratio:',
-        value: migrationInfo?.unvested_symm_per_deus
-          ? toBN(Number(migrationInfo?.unvested_symm_per_deus) + Number(migrationInfo?.vested_symm_per_deus)).toFixed(2)
+        value: migrationInfo?.vested_symm_per_deus
+          ? toBN(Number(migrationInfo?.vested_symm_per_deus)).toFixed(2)
           : 'N/A',
         extension: 'SYMM per DEUS',
         tooltip: 'Ratio',
@@ -430,7 +430,7 @@ export default function HeaderBox() {
       <StickyTopWrap>
         <RowCenter>
           <TitleSpan>Early Migration{isEarlyMigrationDeadlineFinished ? ': ' : ' Ends in: '}</TitleSpan>
-          <TimeSpan>{isEarlyMigrationDeadlineFinished ? 'Finished' : earlyMigrationDeadline}</TimeSpan>
+          <TimeSpan>{isEarlyMigrationDeadlineFinished ? 'Closed' : earlyMigrationDeadline}</TimeSpan>
           {isEarlyMigrationDeadlineFinished && (
             <>
               <TitleSpan> / Late Migration: </TitleSpan>
