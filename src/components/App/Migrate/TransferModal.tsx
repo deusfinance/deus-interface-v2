@@ -75,6 +75,8 @@ const Card = styled.div`
 `
 const Card2 = styled(Card)`
   width: 35%;
+  min-height: 75px;
+  justify-content: center;
 `
 const TokenContainer = styled(Row)`
   margin-bottom: 12px;
