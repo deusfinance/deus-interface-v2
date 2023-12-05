@@ -323,8 +323,8 @@ export default function HeaderBox() {
           lets you customize the amount you want to migrate.
         </p>
         <p>
-          • bDEI and legacyDEI to DEUS swaps are not instant, information to be released in Q3, swaps anticipated to
-          occur late Q3 or during Q4; We urge users to understand the associated delays involved.
+          • bDEI and legacyDEI to DEUS swaps are not instant, information to be released in Q3; We urge users to
+          understand the associated delays involved.
         </p>
       </SubTitleSpan>
       <DataBox>
