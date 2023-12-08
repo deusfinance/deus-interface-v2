@@ -33,34 +33,25 @@ const Title = styled.span`
 `
 
 export default function InfoBox() {
-  const satelliteLink =
-    'https://satellite.money/?source=arbitrum&destination=ethereum&asset_denom=deus-wei&destination_address='
+  const squidRouterLink = 'https://v2.app.squidrouter.com/'
 
   return (
     <Wrapper>
       <Title>Explainer: </Title>
       <p>
-        I. If the destination chain is Arbitrum, swap to axlDEUS and bridge{' '}
-        <ExternalLink href={satelliteLink} style={{ textDecoration: 'underline' }}>
+        1. If bridging to or from Base and Optimism, swap to axlDEUS, bridge{' '}
+        <ExternalLink href={squidRouterLink} style={{ textDecoration: 'underline' }}>
           here
         </ExternalLink>
-        .
+        , then swap to DEUS
       </p>
       <p>
-        II. If the source chain is Arbitrum, bridge{' '}
-        <ExternalLink href={satelliteLink} style={{ textDecoration: 'underline' }}>
-          here
-        </ExternalLink>{' '}
-        then swap to DEUS.
-      </p>
-      <p>
-        III. If both the source and destination chains are not Arbitrum, swap to axlDEUS, bridge{' '}
-        <ExternalLink href={satelliteLink} style={{ textDecoration: 'underline' }}>
+        2. For all other chains, bridge DEUS directly{' '}
+        <ExternalLink href={squidRouterLink} style={{ textDecoration: 'underline' }}>
           here
         </ExternalLink>
-        , then swap to DEUS.
       </p>
-      <p>
+      <p style={{ paddingTop: '20px' }}>
         Find the full guide{' '}
         <ExternalLink href="https://docs.deus.finance/bridge/how-to-bridge" style={{ textDecoration: 'underline' }}>
           here

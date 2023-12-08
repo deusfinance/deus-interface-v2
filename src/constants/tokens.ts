@@ -1,4 +1,4 @@
-import { SupportedChainId } from 'constants/chains'
+import { SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
 import { Token } from '@sushiswap/core-sdk'
 import { duplicateTokenByAddressMap, duplicateTokenByChainId, TokenMap } from 'utils/token'
 import {
@@ -21,6 +21,7 @@ export const DEI_TOKEN = new Token(SupportedChainId.FANTOM, DEI_ADDRESS[Supporte
 export const USDC_TOKEN = new Token(SupportedChainId.FANTOM, USDC_ADDRESS[SupportedChainId.FANTOM], 6, 'USDC', 'USDC')
 
 export const DEUS_TOKEN = new Token(SupportedChainId.FANTOM, DEUS_ADDRESS[SupportedChainId.FANTOM], 18, 'DEUS', 'DEUS')
+export const DEUS_TOKEN_OP = new Token(SupportedChainId.OP, DEUS_ADDRESS[SupportedChainId.OP], 18, 'DEUS', 'DEUS')
 
 export const XDEUS_TOKEN = new Token(
   SupportedChainId.FANTOM,
@@ -157,7 +158,14 @@ export const Tokens: { [key: string]: TokenMap } = {
       'bDEI'
     ),
   },
-  DEUS: duplicateTokenByChainId('0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44', 18, 'DEUS', 'DEUS'),
+  DEUS: duplicateTokenByChainId(
+    '0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44',
+    18,
+    'DEUS',
+    'DEUS',
+    SUPPORTED_CHAIN_IDS,
+    DEUS_TOKEN_OP
+  ),
   AxlDEUS: duplicateTokenByAddressMap(AxlWrappedDeus_ADDRESS, 18, 'axlDEUS', 'Axelar Wrapped DEUS'),
 
   WNATIVE: {
