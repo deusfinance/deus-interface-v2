@@ -4,7 +4,7 @@ import { isMobile } from 'react-device-detect'
 
 import Table from 'components/App/Migrate/Table'
 import ActionSetter, { ActionTypes } from 'components/App/Migrate/ActionSetter'
-import CardBox from 'components/App/Migrate/CardBox'
+// import CardBox from 'components/App/Migrate/CardBox'
 import HeaderBox from 'components/App/Migrate/HeaderBox'
 import MigrationHeader from 'components/App/Migrate/MigrationHeader'
 import { MigrationWrap } from 'context/Migration'
@@ -53,7 +53,7 @@ export const getImageSize = () => {
 
 export default function Migrate() {
   const { account } = useWeb3React()
-  const [selected, setSelected] = useState<ActionTypes>(ActionTypes.EASY)
+  const [selected, setSelected] = useState<ActionTypes>(ActionTypes.MANUAL)
   const showModal = useMemo(() => {
     return localStorage.getItem('migrationTermOfServiceSignature' + account?.toString()) ? false : true
   }, [account])
@@ -73,7 +73,7 @@ export default function Migrate() {
           <Wrapper>
             {selected !== ActionTypes.DASHBOARD && <MigrationHeader />}
 
-            {selected === ActionTypes.EASY && <CardBox />}
+            {/* {selected === ActionTypes.EASY && <CardBox />} */}
             {selected === ActionTypes.MANUAL && <Table />}
             {selected === ActionTypes.DASHBOARD && <MigratedTable />}
           </Wrapper>
