@@ -117,14 +117,11 @@ export default function Menu() {
               <div>Migration</div>
             </Row>
           </Link>
-          <ExternalLink href=" https://v2.app.squidrouter.com/">
+          <Link href="/bridge" passHref>
             <Row onClick={() => toggle()}>
-              <ExternalItem>
-                <div>Bridge</div>
-                <ExternalLinkIcon />
-              </ExternalItem>
+              <div>Bridge</div>
             </Row>
-          </ExternalLink>
+          </Link>
           <Link href="/clqdr" passHref>
             <Row active={router.route.includes('/clqdr')} onClick={() => toggle()}>
               <div>cLQDR</div>
@@ -171,7 +168,7 @@ export default function Menu() {
             </Row>
           </ExternalLink>
 
-          <ExternalLink href="https://discord.gg/xTTaBBAMgG">
+          <ExternalLink href="https://discord.gg/deusfinance">
             <Row onClick={() => toggle()}>
               <div>Discord</div>
             </Row>

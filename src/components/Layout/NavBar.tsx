@@ -268,7 +268,7 @@ export default function NavBar() {
                 </SimpleLinkWrapper>
               )
             })}
-            {getExternalNavBar('Bridge', ' https://v2.app.squidrouter.com')}
+            {/* {getExternalNavBar('Bridge', ' https://v2.app.squidrouter.com')} */}
             {getExternalNavBar(
               'Buy $DEUS',
               'https://app.firebird.finance/swap?inputCurrency=FTM&outputCurrency=0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44&net=250'
