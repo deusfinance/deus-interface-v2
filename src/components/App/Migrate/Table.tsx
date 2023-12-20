@@ -7,7 +7,7 @@ import { CurrencyAmount, Token } from '@sushiswap/core-sdk'
 import SymmLogo from '/public/static/images/tokens/symm.svg'
 import DeusLogo from '/public/static/images/tokens/deus.svg'
 
-import { FALLBACK_CHAIN_ID, SupportedChainId } from 'constants/chains'
+import { FALLBACK_CHAIN_ID } from 'constants/chains'
 import { MigrationTypes, MigrationVersion } from 'constants/migrationOptions'
 import { MigrationOptions } from 'constants/migrationOptions'
 import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
@@ -459,10 +459,9 @@ const TableRowContentWrapper = ({
 
       <MigrationButtonCell>
         <Cell style={{ paddingLeft: 5 }}>
-          {account && !chainIdError && (version === MigrationVersion.DUAL || chainId === SupportedChainId.FANTOM) && (
+          {account && !chainIdError && version === MigrationVersion.DUAL && (
             <MigrationButton onClick={() => handleClickModal(MigrationType.DEUS, token)} deus>
               Migrate to {DEUS_TOKEN.name}
-              {chainId === SupportedChainId.FANTOM && token.symbol?.includes('DEUS') && '(ARB)'}
             </MigrationButton>
           )}
         </Cell>
@@ -484,10 +483,9 @@ const TableRowContentWrapper = ({
         </Cell>
       </MigrationButtonCell>
       <LargeButtonCellContainer>
-        {account && !chainIdError && (version === MigrationVersion.DUAL || chainId === SupportedChainId.FANTOM) && (
+        {account && !chainIdError && version === MigrationVersion.DUAL && (
           <MigrationButton onClick={() => handleClickModal(MigrationType.DEUS, token)} deus>
             Migrate to {DEUS_TOKEN.name}
-            {chainId === SupportedChainId.FANTOM && token.symbol?.includes('DEUS') && '(ARB)'}
           </MigrationButton>
         )}
       </LargeButtonCellContainer>

@@ -40,13 +40,13 @@ const Line = styled.div`
 `
 
 export enum ActionTypes {
-  EASY = 'EASY',
+  // EASY = 'EASY',
   MANUAL = 'MANUAL',
   DASHBOARD = 'DASHBOARD',
 }
 
 const ActionLabels = {
-  [ActionTypes.EASY]: 'Easy Migration',
+  // [ActionTypes.EASY]: 'Easy Migration',
   [ActionTypes.MANUAL]: 'Manual Migration',
   [ActionTypes.DASHBOARD]: 'My Migrations (Dashboard)',
 }

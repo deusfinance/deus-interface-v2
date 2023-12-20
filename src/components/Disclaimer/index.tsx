@@ -65,7 +65,7 @@ export default function Disclaimer() {
         <ExternalLink href="https://docs.deus.finance/">
           <Image src={Docs} alt="Docs Logo" width={getImageSize()} height={getImageSize()} />
         </ExternalLink>
-        <ExternalLink href="https://discord.gg/xTTaBBAMgG">
+        <ExternalLink href="https://discord.gg/deusfinance">
           <Image src={Discord} alt="Discord Logo" width={getImageSize()} height={getImageSize()} />
         </ExternalLink>
         <ExternalLink href="https://twitter.com/DeusDao">

@@ -23,12 +23,19 @@ export function duplicateTokenByChainId(
   decimals: number,
   name: string,
   symbol: string,
-  chains: SupportedChainId[] = SUPPORTED_CHAIN_IDS
+  chains: SupportedChainId[] = SUPPORTED_CHAIN_IDS,
+  tokenToAdd?: Token // Optional parameter for the token to add
 ): TokenMap {
-  return chains.reduce((acc: TokenMap, chainId: number) => {
-    acc[chainId] = new Token(chainId, address, decimals, symbol, name)
-    return acc
-  }, {})
+  // If tokenToAdd is provided, filter out its chainId from the chains array
+  const filteredChains = tokenToAdd ? chains.filter((chainId) => chainId !== tokenToAdd.chainId) : chains
+
+  return filteredChains.reduce(
+    (acc: TokenMap, chainId: number) => {
+      acc[chainId] = new Token(chainId, address, decimals, symbol, name)
+      return acc
+    },
+    tokenToAdd ? { [tokenToAdd.chainId]: tokenToAdd } : {}
+  ) // Conditionally add tokenToAdd
 }
 
 //generate same tokens by given AddressMap

@@ -228,8 +228,11 @@ export default function HeaderBox() {
   const { chainId } = useWeb3React()
 
   const [earlyMigrationDeadline, setEarlyMigrationDeadline] = useState('')
+  const [lateMigrationDeadline, setLateMigrationDeadline] = useState('')
   const [isEarlyMigrationDeadlineFinished, setIsEarlyMigrationDeadlineFinished] = useState(false)
+  const [isLateMigrationDeadlineFinished, setIsLateMigrationDeadlineFinished] = useState(false)
   const earlyMigrationDeadlineTimeStamp = useGetEarlyMigrationDeadline()
+  const lateMigrationDeadlineTimeStamp = '1704067199'
 
   useEffect(() => {
     return autoRefresh(() => {
@@ -238,6 +241,14 @@ export default function HeaderBox() {
       setEarlyMigrationDeadline(`${day}d : ${hours}h : ${minutes}m : ${seconds}s`)
     }, 1)
   }, [earlyMigrationDeadlineTimeStamp, chainId])
+
+  useEffect(() => {
+    return autoRefresh(() => {
+      const { diff, day, hours } = getRemainingTime(Number(lateMigrationDeadlineTimeStamp))
+      setIsLateMigrationDeadlineFinished(diff === 0)
+      setLateMigrationDeadline(`${day}d : ${hours}h`)
+    }, 1)
+  }, [lateMigrationDeadlineTimeStamp, chainId])
 
   const migrationInfo = useMigrationData()
 
@@ -323,8 +334,8 @@ export default function HeaderBox() {
           lets you customize the amount you want to migrate.
         </p>
         <p>
-          • bDEI and legacyDEI to DEUS swaps are not instant, information to be released in Q3, swaps anticipated to
-          occur late Q3 or during Q4; We urge users to understand the associated delays involved.
+          • bDEI and legacyDEI to DEUS swaps are not instant, information to be released in Q3; We urge users to
+          understand the associated delays involved.
         </p>
       </SubTitleSpan>
       <DataBox>
@@ -431,10 +442,18 @@ export default function HeaderBox() {
         <RowCenter>
           <TitleSpan>Early Migration{isEarlyMigrationDeadlineFinished ? ': ' : ' Ends in: '}</TitleSpan>
           <TimeSpan>{isEarlyMigrationDeadlineFinished ? 'Closed' : earlyMigrationDeadline}</TimeSpan>
-          {isEarlyMigrationDeadlineFinished && (
+
+          {isEarlyMigrationDeadlineFinished && !isLateMigrationDeadlineFinished && (
             <>
-              <TitleSpan> / Late Migration: </TitleSpan>
-              <TimeSpan style={{ color: 'green', fontWeight: 'bolder' }}> Ongoing </TimeSpan>
+              <TitleSpan> / Late Migration Ends In: </TitleSpan>
+              <TimeSpan style={{ color: 'green', fontWeight: 'bolder' }}> {lateMigrationDeadline} </TimeSpan>
+            </>
+          )}
+
+          {isEarlyMigrationDeadlineFinished && isLateMigrationDeadlineFinished && (
+            <>
+              <TitleSpan> / Late Migration: Closed </TitleSpan>
+              <TimeSpan>Closed</TimeSpan>
             </>
           )}
         </RowCenter>

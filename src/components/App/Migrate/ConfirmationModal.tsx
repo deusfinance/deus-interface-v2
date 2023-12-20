@@ -153,7 +153,8 @@ export default function ConfirmationModal({
         <p>
           You understand the migration process is not instant. You accept that once completed, the migration cannot be
           reversed. The specifics surrounding token distribution will be officially communicated in the third quarter
-          (Q3). Anticipate token distributions to occur in the fourth quarter (Q4).
+          (Q3). Anticipate token distributions to occur in the fourth quarter of 2023 for $DEUS and the first quarter of
+          2024 for $SYMM.
         </p>
         <p>
           Please consider these potential delays prior to depositing your funds. We appreciate your patience and

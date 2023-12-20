@@ -311,4 +311,17 @@ export const ChainInfo: { [chainId: number]: Info } = {
     blockExplorerUrl: 'https://basescan.org/',
     color: '#2c2ad8',
   },
+  [SupportedChainId.OP]: {
+    chainId: '0xa',
+    chainName: 'OP Mainnet',
+    label: 'OP Mainnet',
+    logoUrl: require('/public/static/images/networks/optimism.svg'),
+    nativeCurrency: {
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    rpcUrl: 'https://optimism.llamarpc.com',
+    blockExplorerUrl: 'https://optimistic.etherscan.io/',
+  },
 }
