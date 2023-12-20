@@ -219,6 +219,12 @@ const ExternalLinkIcon = styled(LinkIcon)`
     fill: #bea29c;
   }
 `
+const ExternalLinkIconWhite = styled(LinkIcon)`
+  margin-left: 3px;
+  path {
+    fill: #fff;
+  }
+`
 
 export const getImageSize = () => {
   return isMobile ? 15 : 20
@@ -329,14 +335,9 @@ export default function HeaderBox() {
     <TopWrap>
       <MainTitleSpan>Deposit your DEUS ecosystem tokens to migrate.</MainTitleSpan>
       <SubTitleSpan>
-        <p>
-          • Easy migration tab auto-migrates 100% of your DEUS ecosystem wallet balances into selected option. Manual
-          lets you customize the amount you want to migrate.
-        </p>
-        <p>
-          • bDEI and legacyDEI to DEUS swaps are not instant, information to be released in Q3; We urge users to
-          understand the associated delays involved.
-        </p>
+        <ExternalLink href="https://docs.deus.finance/migration/migration-updates" style={{ textDecoration: 'none' }}>
+          Learn more about the new migration updates <ExternalLinkIconWhite />
+        </ExternalLink>
       </SubTitleSpan>
       <DataBox>
         {TopWrapItems &&
