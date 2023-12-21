@@ -336,7 +336,7 @@ export default function HeaderBox() {
       <MainTitleSpan>Deposit your DEUS ecosystem tokens to migrate.</MainTitleSpan>
       <SubTitleSpan>
         <ExternalLink href="https://docs.deus.finance/migration/migration-updates" style={{ textDecoration: 'none' }}>
-          Learn more about the new migration updates <ExternalLinkIconWhite />
+          Learn more about the latest migration updates <ExternalLinkIconWhite />
         </ExternalLink>
       </SubTitleSpan>
       <DataBox>

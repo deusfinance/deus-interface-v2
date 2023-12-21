@@ -808,7 +808,9 @@ const TableRowContentWrapper = ({
               <span style={{ color: '#8B8B8B' }}>{token.symbol}</span>
             </Value>
           </div>
-          <SimpleButton onClick={() => toggleReviewModal(true, ModalType.WITHDRAW)}>Withdraw</SimpleButton>
+          {token?.symbol !== 'LegacyDEI' && token?.symbol !== 'bDEI' && (
+            <SimpleButton onClick={() => toggleReviewModal(true, ModalType.WITHDRAW)}>Withdraw</SimpleButton>
+          )}
         </MyMigratedAmount>
         <MyMigratedAmount>
           <Label>Claimable Token:</Label>
