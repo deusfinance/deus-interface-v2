@@ -109,6 +109,10 @@ function colors(themeName: SupportedThemes): Colors {
       secondary1: '#1749FA',
       secondary2: 'rgba(23, 73, 250, 0.2)',
 
+      gray: '#8B8B8B',
+      gray2: '#272929',
+      gray3: '#2c2c2c',
+
       // other
       red1: '#DD5D5D',
       red2: '#DF1F38',
@@ -185,6 +189,10 @@ function colors(themeName: SupportedThemes): Colors {
       // secondary colors
       secondary1: '#1749FA',
       secondary2: 'rgba(23, 73, 250, 0.2)',
+
+      gray: '#8B8B8B',
+      gray2: '#272929',
+      gray3: '#2c2c2c',
 
       // other
       red1: '#DD5D5D',

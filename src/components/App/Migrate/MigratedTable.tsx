@@ -18,12 +18,15 @@ import { InputField } from 'components/Input'
 import { BaseButton, PrimaryButtonWide } from 'components/Button'
 import { RowBetween } from 'components/Row'
 import { ArrowRight } from 'react-feather'
-import { useBalancedRatio } from 'hooks/useMigratePage'
+import { useBalancedRatio, useGetEarlyMigrationDeadline } from 'hooks/useMigratePage'
 import { truncateAddress } from 'utils/account'
 import { Tokens } from 'constants/tokens'
 import { useMigrationData } from 'context/Migration'
 import { useWalletModalToggle } from 'state/application/hooks'
 import { MigrationOptions } from 'constants/migrationOptions'
+import ActionModal from './ActionModal'
+import TransferModal from './TransferModal'
+import PreferenceModal from './PreferenceModal'
 
 const Wrapper = styled.div`
   display: flex;
@@ -92,7 +95,7 @@ const LargeContent = styled.div`
     display: none;
   `}
 `
-const TableInputWrapper = styled.div`
+export const TableInputWrapper = styled.div`
   border: 1px solid #4b4949e5;
   display: flex;
   padding: 4px 8px;
@@ -108,7 +111,7 @@ const TableInputWrapper = styled.div`
     font-family: Inter;
   }
 `
-const CheckButton = styled(BaseButton)`
+export const CheckButton = styled(BaseButton)`
   background: linear-gradient(90deg, #dc756b, #f095a2, #d9a199, #d7c7c1, #d4fdf9);
   width: 120px;
   position: relative;
@@ -227,21 +230,22 @@ const WalletConnectButton = styled(PrimaryButtonWide)`
   max-width: 160px;
   max-height: 32px;
 `
-interface IMigrationInfo {
+export interface IMigrationInfo {
   user: string
   tokenAddress: string
   amount: number
   timestamp: number
   block: number
   migrationPreference: number
+  indexInChain: number
 }
 
 function getAllUpperRow() {
   return (
     <UpperRow>
       <div style={{ display: 'flex', width: '100%', position: 'relative' }}>
-        <TableTitle width="15%">Token</TableTitle>
-        <TableTitle width="15%">Chain</TableTitle>
+        <TableTitle width="25%">Token</TableTitle>
+        {/* <TableTitle width="15%">Chain</TableTitle> */}
         <TableTitle width="20%">My Migrated Amount</TableTitle>
         <TableTitle width="20%">Claimable Token</TableTitle>
       </div>
@@ -256,6 +260,8 @@ export default function MigratedTable() {
   const [tableDataLoading, setTableDataLoading] = useState(false)
   const toggleWalletModal = useWalletModalToggle()
   const [allMigrationData, setAllMigrationData] = useState<any>(undefined)
+
+  const earlyMigrationDeadline = useGetEarlyMigrationDeadline()
 
   const getAllMigrationData = useCallback(async (signature: string) => {
     try {
@@ -458,20 +464,20 @@ export default function MigratedTable() {
               allMigrationData.map(([key, values]: [string, []]) =>
                 values.map((migrationInfo, index) => (
                   <React.Fragment key={index}>
-                    <>
-                      <DividerContainer />
-                      <TableRow
-                        migrationInfo={{
-                          user: migrationInfo[0],
-                          tokenAddress: migrationInfo[1],
-                          amount: migrationInfo[2],
-                          timestamp: migrationInfo[3],
-                          block: migrationInfo[4],
-                          migrationPreference: migrationInfo[5],
-                        }}
-                        chain={+key}
-                      />
-                    </>
+                    <DividerContainer />
+                    <TableRow
+                      migrationInfo={{
+                        user: migrationInfo[0],
+                        tokenAddress: migrationInfo[1],
+                        amount: migrationInfo[2],
+                        timestamp: migrationInfo[3],
+                        block: migrationInfo[4],
+                        migrationPreference: migrationInfo[5],
+                        indexInChain: index,
+                      }}
+                      chain={+key}
+                      isEarly={migrationInfo[3] <= Number(earlyMigrationDeadline)}
+                    />
                   </React.Fragment>
                 ))
               )}
@@ -503,16 +509,18 @@ const TableRowContainer = styled.div`
 `
 const TableContent = styled.div`
   display: flex;
+  padding-top: 4px;
+  padding-bottom: 4px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    background:${({ theme }) => theme.bg2};
-    padding-inline:12px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background: ${({ theme }) => theme.bg2};
+    padding-inline: 12px;
   `};
 `
 const TokenContainer = styled(Cell)`
-  width: 15%;
+  width: 25%;
   & > div {
     height: 100%;
   }
@@ -523,19 +531,15 @@ const TokenContainer = styled(Cell)`
     margin-top: 10px;
   `};
 `
-const ChainWrap = styled(Cell)`
-  width: 15%;
-  & > div {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    margin-top: 0px;
+export const SmallChainWrap = styled(Row)`
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  /* border: 1px solid red; */
+  & > div > * {
+    margin-right: 4px;
+    margin-top: 1px;
   }
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width:100%;
-    display:flex;
-    justify-content:space-between;
-  `};
 `
 const Label = styled.p`
   display: none;
@@ -568,14 +572,14 @@ const ButtonWrap = styled(Cell)`
   margin-block: auto;
   height: 100%;
   display: flex;
-  gap: 12px;
+  gap: 15px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100%;
     justify-content: space-between;
     margin-bottom: 10px;
   `};
 `
-const InlineRow = styled.div<{ active?: boolean }>`
+export const InlineRow = styled.div<{ active?: boolean }>`
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
@@ -590,39 +594,37 @@ const InlineRow = styled.div<{ active?: boolean }>`
       pointer-events: none;
   `};
 `
-const ChainDiv = styled.div`
-  margin-right: auto;
-  margin-left: 6px;
-  margin-top: 2px;
-`
-const MigrationButton = styled(BaseButton)<{ deus?: boolean }>`
-  width: 130px;
-  height: 40px;
-  border-radius: 8px;
-  background: #141414;
-  color: ${({ theme, deus }) => (deus ? '#01F5E4' : theme.symmColor)};
-  text-align: center;
+const SimpleButton = styled(BaseButton)<{ width?: string }>`
+  width: ${({ width }) => (width ? width : '120px')};
+  height: 30px;
+  background-color: ${({ theme }) => theme.bg0};
+  border: 1px solid ${({ theme }) => theme.gray2};
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  color: #d9d9d9;
   font-size: 14px;
-  font-family: Inter;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  padding: 2px;
-  margin: 0 auto;
-  cursor: not-allowed;
-  opacity: 50%;
-  & > span {
-    font-size: 12px;
-    color: gray;
+  padding: 0;
+  font-weight: 500;
+  margin-top: 6px;
+  &:hover {
+    background-color: ${({ theme }) => theme.bg3};
   }
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${({ theme, disabled }) =>
+    disabled &&
+    `
+      background: ${theme.gray2};
+      cursor: not-allowed;
+      color: #717273;
+
+      &:focus,
+      &:hover {
+        background: ${theme.gray2};
+      }
+  `}
+  ${({ theme, width }) => theme.mediaWidth.upToSmall`
+    width: ${width ? width : '90px'};
     font-size: 12px;
   `}
-`
-const FakeButton = styled.div`
-  width: 130px;
-  padding: 2px;
-  margin: 0 auto;
 `
 export enum MigrationType {
   BALANCED,
@@ -630,21 +632,68 @@ export enum MigrationType {
   SYMM,
 }
 export const getImageSize = () => {
-  return isMobile ? 15 : 20
+  return isMobile ? 12 : 15
 }
 
-function TableRow({ migrationInfo, chain }: { migrationInfo: IMigrationInfo; chain: number }) {
+function TableRow({
+  migrationInfo,
+  chain,
+  isEarly,
+}: {
+  migrationInfo: IMigrationInfo
+  chain: number
+  isEarly: boolean
+}) {
   return (
     <ZebraStripesRow>
-      <TableRowContent migrationInfo={migrationInfo} chain={chain} />
+      <TableRowContent migrationInfo={migrationInfo} chain={chain} isEarly={isEarly} />
     </ZebraStripesRow>
   )
 }
 
 const MigrationSourceTokens = [Tokens['DEUS'], Tokens['XDEUS'], Tokens['LEGACY_DEI'], Tokens['bDEI_TOKEN']]
 
-const TableRowContent = ({ migrationInfo, chain }: { migrationInfo: IMigrationInfo; chain: number }) => {
-  const { tokenAddress, amount: migratedAmount } = migrationInfo
+export function getMigratedAmounts(
+  balancedRatio: string,
+  chain: number,
+  token: Token | undefined,
+  amount: number,
+  migrationPreference: MigrationType
+) {
+  const ratio = Number(balancedRatio)
+  let migratedToDEUS = BN_ZERO
+  let migratedToSYMM = BN_ZERO
+  const migrationInfoAmount = toBN(amount.toString()).toString()
+
+  const divideRatio = MigrationOptions.find((option) => option.token[chain]?.name === token?.name)?.divideRatio || 1
+
+  if (migrationPreference === MigrationType.BALANCED) {
+    const amount: BigNumber = toBN(formatUnits(migrationInfoAmount, 18)).times(ratio)
+    migratedToDEUS = migratedToDEUS.plus(amount).div(divideRatio)
+
+    const amount2: BigNumber = toBN(formatUnits(migrationInfoAmount, 18)).minus(amount)
+    migratedToSYMM = migratedToSYMM.plus(amount2).div(divideRatio)
+  } else {
+    const amount: BigNumber = toBN(formatUnits(migrationInfoAmount, 18))
+    if (migrationPreference === MigrationType.DEUS) {
+      migratedToDEUS = migratedToDEUS.plus(amount).div(divideRatio)
+    } else if (migrationPreference === MigrationType.SYMM) {
+      migratedToSYMM = migratedToSYMM.plus(amount).div(divideRatio)
+    }
+  }
+  return [migratedToDEUS, migratedToSYMM]
+}
+
+const TableRowContent = ({
+  migrationInfo,
+  chain,
+  isEarly,
+}: {
+  migrationInfo: IMigrationInfo
+  chain: number
+  isEarly: boolean
+}) => {
+  const { tokenAddress } = migrationInfo
   const [token, setToken] = useState<Token | undefined>(undefined)
 
   const handleToken = useCallback(() => {
@@ -663,27 +712,13 @@ const TableRowContent = ({ migrationInfo, chain }: { migrationInfo: IMigrationIn
   }, [])
 
   const balancedRatio = useBalancedRatio()
-  const ratio = Number(balancedRatio)
-  let migratedToDEUS = BN_ZERO
-  let migratedToSYMM = BN_ZERO
-  const migrationInfoAmount = toBN(migrationInfo?.amount.toString()).toString()
-
-  const divideRatio = MigrationOptions.find((option) => option.token[chain]?.name === token?.name)?.divideRatio || 1
-
-  if (migrationInfo.migrationPreference === MigrationType.BALANCED) {
-    const amount: BigNumber = toBN(formatUnits(migrationInfoAmount, 18)).times(ratio)
-    migratedToDEUS = migratedToDEUS.plus(amount).div(divideRatio)
-
-    const amount2: BigNumber = toBN(formatUnits(migrationInfoAmount, 18)).minus(amount)
-    migratedToSYMM = migratedToSYMM.plus(amount2).div(divideRatio)
-  } else {
-    const amount: BigNumber = toBN(formatUnits(migrationInfoAmount, 18))
-    if (migrationInfo.migrationPreference === MigrationType.DEUS) {
-      migratedToDEUS = migratedToDEUS.plus(amount).div(divideRatio)
-    } else if (migrationInfo.migrationPreference === MigrationType.SYMM) {
-      migratedToSYMM = migratedToSYMM.plus(amount).div(divideRatio)
-    }
-  }
+  const [migratedToDEUS, migratedToSYMM] = getMigratedAmounts(
+    balancedRatio,
+    chain,
+    token,
+    migrationInfo?.amount,
+    migrationInfo?.migrationPreference
+  )
 
   return (
     <React.Fragment>
@@ -691,9 +726,10 @@ const TableRowContent = ({ migrationInfo, chain }: { migrationInfo: IMigrationIn
         <TableRowContainer>
           <TableRowContentWrapper
             token={token}
-            migratedAmount={migratedAmount}
             migratedToDEUS={migratedToDEUS}
             migratedToSYMM={migratedToSYMM}
+            migrationInfo={migrationInfo}
+            isEarly={isEarly}
           />
         </TableRowContainer>
       )}
@@ -701,60 +737,83 @@ const TableRowContent = ({ migrationInfo, chain }: { migrationInfo: IMigrationIn
   )
 }
 
+export enum ModalType {
+  WITHDRAW = 'Withdraw',
+  ChangePlan = 'Change',
+  SPLIT = 'Split',
+  TRANSFER = 'Transfer',
+}
+
 const TableRowContentWrapper = ({
   token,
-  migratedAmount,
   migratedToDEUS,
   migratedToSYMM,
+  migrationInfo,
+  isEarly,
 }: {
   token: Token
-  migratedAmount: number
   migratedToDEUS: BigNumber
   migratedToSYMM: BigNumber
+  migrationInfo: IMigrationInfo
+  isEarly: boolean
 }) => {
-  const chain = token?.chainId
+  const [modalType, setModalType] = useState<ModalType>(ModalType.WITHDRAW)
+  const [isOpenModal, toggleModal] = useState(false)
+
+  function toggleReviewModal(arg: boolean, type: ModalType) {
+    setModalType(type)
+    toggleModal(arg)
+  }
+
   const migrationContextData = useMigrationData()
+  const { amount: migratedAmount } = migrationInfo
+  const chain = token?.chainId
 
   const calculatedSymmPerDeus = useMemo(
     () =>
       toBN(
-        Number(migrationContextData?.unvested_symm_per_deus) + Number(migrationContextData?.vested_symm_per_deus)
+        Number(migrationContextData?.unvested_symm_per_deus) +
+          (isEarly ? Number(migrationContextData?.vested_symm_per_deus) : 0)
       ).multipliedBy(migratedToSYMM),
-    [migrationContextData, migratedToSYMM]
+    [migrationContextData?.unvested_symm_per_deus, migrationContextData?.vested_symm_per_deus, isEarly, migratedToSYMM]
   )
 
   return (
-    <TableContent>
-      <TokenContainer>
-        <TokenBox token={token} active />
-      </TokenContainer>
-      <ChainWrap>
-        <Label>Chain:</Label>
-        <Value>
-          <div>
+    <>
+      <TableContent>
+        <TokenContainer>
+          <Row style={{ marginBottom: '12px' }}>
+            <TokenBox token={token} />
+          </Row>
+          <SmallChainWrap>
             <InlineRow active>
+              <div>
+                <span>{isEarly ? 'Early' : 'Late'} Migration on </span>
+                <span style={{ color: ChainInfo[chain].color }}>{ChainInfo[chain].label}</span>
+              </div>
               <Image
                 src={ChainInfo[chain].logoUrl}
                 width={getImageSize() + 'px'}
                 height={getImageSize() + 'px'}
                 alt={`${ChainInfo[chain].label}-logo`}
               />
-              <ChainDiv>{ChainInfo[chain].label}</ChainDiv>
             </InlineRow>
+          </SmallChainWrap>
+        </TokenContainer>
+        <MyMigratedAmount>
+          <Label>My Migrated Amount:</Label>
+          <div>
+            <Value>
+              {formatNumber(formatBalance(toBN(migratedAmount * 1e-18).toString(), 3)) ?? 'N/A'}{' '}
+              <span style={{ color: '#8B8B8B' }}>{token.symbol}</span>
+            </Value>
           </div>
-        </Value>
-      </ChainWrap>
-      <MyMigratedAmount>
-        <Label>My Migrated Amount:</Label>
-        <div>
-          <Value>
-            {formatNumber(formatBalance(toBN(migratedAmount * 1e-18).toString(), 3)) ?? 'N/A'} {token.symbol}
-          </Value>
-        </div>
-      </MyMigratedAmount>
-      <MyMigratedAmount>
-        <Label>Claimable Token:</Label>
-        <div>
+          {token?.symbol !== 'LegacyDEI' && token?.symbol !== 'bDEI' && (
+            <SimpleButton onClick={() => toggleReviewModal(true, ModalType.WITHDRAW)}>Withdraw</SimpleButton>
+          )}
+        </MyMigratedAmount>
+        <MyMigratedAmount>
+          <Label>Claimable Token:</Label>
           <Value>
             {migratedToDEUS.toString() !== '0' && (
               <span>
@@ -768,25 +827,51 @@ const TableRowContentWrapper = ({
               </span>
             )}
           </Value>
-        </div>
-      </MyMigratedAmount>
+          <SimpleButton onClick={() => toggleReviewModal(true, ModalType.ChangePlan)}>Change</SimpleButton>
+        </MyMigratedAmount>
 
-      <ButtonWrap>
-        {migratedToDEUS.toString() !== '0' ? (
-          <MigrationButton disabled deus>
-            CLAIM DEUS <span style={{ display: 'contents' }}>(coming in Q4-Q1)</span>
-          </MigrationButton>
-        ) : (
-          <FakeButton />
-        )}
-        {migratedToSYMM.toString() !== '0' ? (
-          <MigrationButton disabled>
-            CLAIM SYMM <span style={{ display: 'contents' }}>(coming in Q4-Q1)</span>
-          </MigrationButton>
-        ) : (
-          <FakeButton />
-        )}
-      </ButtonWrap>
-    </TableContent>
+        <ButtonWrap>
+          <SimpleButton onClick={() => toggleReviewModal(true, ModalType.SPLIT)} width={'80px'}>
+            Split
+          </SimpleButton>
+          <SimpleButton onClick={() => toggleReviewModal(true, ModalType.TRANSFER)} width={'80px'}>
+            Transfer
+          </SimpleButton>
+          <SimpleButton disabled width={'140px'}>
+            Claim not started
+          </SimpleButton>
+        </ButtonWrap>
+      </TableContent>
+
+      <PreferenceModal
+        isOpen={isOpenModal && modalType === ModalType.ChangePlan}
+        toggleModal={(action: boolean) => toggleModal(action)}
+        migrationInfo={migrationInfo}
+        token={token}
+        modalType={modalType}
+        migratedToDEUS={migratedToDEUS}
+        isEarly={isEarly}
+        // migratedToSYMM={migratedToSYMM}
+        calculatedSymmPerDeus={calculatedSymmPerDeus}
+      />
+      <ActionModal
+        isOpen={isOpenModal && (modalType === ModalType.WITHDRAW || modalType === ModalType.SPLIT)}
+        toggleModal={(action: boolean) => toggleModal(action)}
+        migrationInfo={migrationInfo}
+        token={token}
+        modalType={modalType}
+      />
+      <TransferModal
+        isOpen={isOpenModal && modalType === ModalType.TRANSFER}
+        toggleModal={(action: boolean) => toggleModal(action)}
+        migrationInfo={migrationInfo}
+        token={token}
+        modalType={modalType}
+        isEarly={isEarly}
+        migratedToDEUS={migratedToDEUS}
+        migratedToSYMM={migratedToSYMM}
+        calculatedSymmPerDeus={calculatedSymmPerDeus}
+      />
+    </>
   )
 }

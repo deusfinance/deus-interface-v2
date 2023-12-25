@@ -427,7 +427,7 @@ const TableRowContentWrapper = ({
   return (
     <TableContent>
       <TokenContainer>
-        <TokenBox token={token} active={active} />
+        <TokenBox token={token} />
       </TokenContainer>
 
       <MyBalance>

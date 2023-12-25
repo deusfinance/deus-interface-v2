@@ -36,7 +36,7 @@ export default function useRpcChangerCallback() {
           }
         }
         // handle other "switch" errors
-        console.log('Unknown error occured when trying to change the network RPC: ')
+        console.log('Unknown error occurred when trying to change the network RPC: ')
         console.error(switchError)
         return false
       }

@@ -89,6 +89,7 @@ export default function InputBox({
   disabled,
   maxValue,
   onTokenSelect,
+  hideBalance,
 }: {
   currency: Currency
   value: string
@@ -96,6 +97,7 @@ export default function InputBox({
   disabled?: boolean
   maxValue?: string | null
   onTokenSelect?: () => void
+  hideBalance?: boolean
 }) {
   const { account } = useWeb3React()
   const logo = useCurrencyLogo(currency?.wrapped?.address)
@@ -124,11 +126,13 @@ export default function InputBox({
     <Wrapper>
       <RowBetween alignItems={'center'}>
         <TokenName>{currency?.symbol}</TokenName>
-        <Balance onClick={handleClick}>
-          <NoWrapSpan>Balance: </NoWrapSpan>
-          {balanceDisplay ? balanceDisplay : '0.00'}
-          {!disabled && <MaxButton>MAX</MaxButton>}
-        </Balance>
+        {!hideBalance && (
+          <Balance onClick={handleClick}>
+            <NoWrapSpan>{maxValue ? 'Available:' : 'Balance:'}</NoWrapSpan>
+            {balanceDisplay ? balanceDisplay : '0.00'}
+            {!disabled && <MaxButton>MAX</MaxButton>}
+          </Balance>
+        )}
       </RowBetween>
       <RowBetween>
         <NumericalInput

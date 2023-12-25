@@ -16,7 +16,7 @@ import { useSupportedChainId } from 'hooks/useSupportedChainId'
 import { ApprovalState, useApproveCallbackWithAmount } from 'hooks/useApproveCallback'
 import { useMigratorContract } from 'hooks/useContract'
 import { useWalletModalToggle } from 'state/application/hooks'
-import useMigrateCallback from 'hooks/useMigrateCallback'
+import useDepositCallback from 'hooks/useMigrateCallback'
 import { DEUS_TOKEN } from 'constants/tokens'
 import InputBox from './InputBox'
 
@@ -129,7 +129,7 @@ export default function ManualReviewModal({
     state: migrateCallbackState,
     callback: migrateCallback,
     error: migrateCallbackError,
-  } = useMigrateCallback([inputToken], inputAmount && [inputAmount], [outputToken])
+  } = useDepositCallback([inputToken], inputAmount && [inputAmount], [outputToken])
 
   const handleMigrate = useCallback(async () => {
     console.log('called handleMigrate')

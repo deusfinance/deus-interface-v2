@@ -12,6 +12,7 @@ interface Info {
   }
   rpcUrl: string
   blockExplorerUrl: string
+  color?: string
 }
 
 export const ChainInfo: { [chainId: number]: Info } = {
@@ -27,6 +28,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     },
     rpcUrl: 'https://mainnet.infura.io/v3/',
     blockExplorerUrl: 'https://etherscan.io',
+    color: '#8c8c8c',
   },
   [SupportedChainId.ROPSTEN]: {
     chainId: '0x3',
@@ -92,6 +94,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     },
     rpcUrl: 'https://bsc-dataseed1.binance.org',
     blockExplorerUrl: 'https://bscscan.com',
+    color: '#F7D15B',
   },
   [SupportedChainId.XDAI]: {
     chainId: '0x64',
@@ -144,6 +147,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     },
     rpcUrl: 'https://polygon-rpc.com',
     blockExplorerUrl: 'https://polygonscan.com',
+    color: '#7a4add',
   },
   [SupportedChainId.FANTOM]: {
     chainId: '0xfa',
@@ -157,6 +161,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     },
     rpcUrl: 'https://rpc.ftm.tools',
     blockExplorerUrl: 'https://ftmscan.com',
+    color: '#53b2e7',
   },
   [SupportedChainId.AVALANCHE]: {
     chainId: '0xA86A',
@@ -170,6 +175,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     },
     rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
     blockExplorerUrl: 'https://snowtrace.io',
+    color: '#d64f49',
   },
   [SupportedChainId.OKEX]: {
     chainId: '0x42',
@@ -196,6 +202,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     },
     rpcUrl: 'https://arb1.arbitrum.io/rpc',
     blockExplorerUrl: 'https://arbiscan.io',
+    color: '#90D1FC',
   },
   [SupportedChainId.CELO]: {
     chainId: '0xA4EC',
@@ -274,6 +281,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     },
     rpcUrl: 'https://andromeda.metis.io/?owner=1088',
     blockExplorerUrl: 'https://andromeda-explorer.metis.io/',
+    color: '#64d7cb',
   },
   [SupportedChainId.KAVA]: {
     chainId: '0x8ae',
@@ -287,6 +295,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     },
     rpcUrl: 'https://evm.kava.io',
     blockExplorerUrl: 'https://explorer.kava.io/',
+    color: '#eb5348',
   },
   [SupportedChainId.BASE]: {
     chainId: '0x2105',
@@ -300,6 +309,7 @@ export const ChainInfo: { [chainId: number]: Info } = {
     },
     rpcUrl: 'https://mainnet.base.org',
     blockExplorerUrl: 'https://basescan.org/',
+    color: '#2c2ad8',
   },
   [SupportedChainId.OP]: {
     chainId: '0xa',

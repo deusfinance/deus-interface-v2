@@ -29,6 +29,7 @@ const TokensWrap = styled.div`
   flex-flow: column nowrap;
   align-items: start;
   /* gap: 6px; */
+  font-size: 14px;
 `
 
 const MultipleImageWrapper = styled.div<{ isSingle?: boolean }>`
@@ -38,7 +39,7 @@ const MultipleImageWrapper = styled.div<{ isSingle?: boolean }>`
   justify-content: center;
   /* padding-right: ${({ isSingle }) => (isSingle ? '20px' : '0')}; */
   padding: 5px;
-  border: 3px solid ${({ theme }) => theme.border1};
+  border: 2px solid ${({ theme }) => theme.border1};
   border-radius: 100%;
 
   & > * {
@@ -65,10 +66,10 @@ const MultipleImageWrapper = styled.div<{ isSingle?: boolean }>`
 `
 
 function getImageSize() {
-  return isMobile ? 22 : 30
+  return isMobile ? 20 : 24
 }
 
-export default function TokenBox({ token, active }: { token: Token; active: boolean }) {
+export default function TokenBox({ token }: { token: Token }) {
   const logo = useCurrencyLogo(token.address)
 
   return (

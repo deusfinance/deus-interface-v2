@@ -1,6 +1,21 @@
 [
   {
     "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "address", "name": "user", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "index", "type": "uint256" },
+      {
+        "indexed": false,
+        "internalType": "enum Migrator.MigrationPreference",
+        "name": "newPreference",
+        "type": "uint8"
+      }
+    ],
+    "name": "ChangePreference",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
     "inputs": [{ "indexed": false, "internalType": "uint8", "name": "version", "type": "uint8" }],
     "name": "Initialized",
     "type": "event"
@@ -59,6 +74,35 @@
   },
   {
     "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "address", "name": "user", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "index", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "Split",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "address", "name": "user", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "index", "type": "uint256" },
+      { "indexed": false, "internalType": "address", "name": "receiver", "type": "address" }
+    ],
+    "name": "Transfer",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "address", "name": "user", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "index", "type": "uint256" }
+    ],
+    "name": "Undo",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
     "inputs": [{ "indexed": false, "internalType": "address", "name": "account", "type": "address" }],
     "name": "Unpaused",
     "type": "event"
@@ -79,9 +123,33 @@
   },
   {
     "inputs": [],
+    "name": "SETTER_ROLE",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "UNPAUSER_ROLE",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "WITHDRAWER_ROLE",
     "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "index", "type": "uint256" },
+      { "internalType": "enum Migrator.MigrationPreference", "name": "newPreference", "type": "uint8" }
+    ],
+    "name": "changePreference",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -254,6 +322,23 @@
     "type": "function"
   },
   {
+    "inputs": [{ "internalType": "uint256", "name": "_deadline", "type": "uint256" }],
+    "name": "setEarlyMigrationDeadline",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "index", "type": "uint256" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "split",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [{ "internalType": "bytes4", "name": "interfaceId", "type": "bytes4" }],
     "name": "supportsInterface",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
@@ -278,6 +363,23 @@
     "name": "totalLateMigratedAmount",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "index", "type": "uint256" },
+      { "internalType": "address", "name": "receiver", "type": "address" }
+    ],
+    "name": "transfer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "index", "type": "uint256" }],
+    "name": "undo",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   { "inputs": [], "name": "unpause", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
