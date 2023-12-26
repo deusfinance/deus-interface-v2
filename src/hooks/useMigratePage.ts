@@ -96,8 +96,8 @@ export const useBalancedRatio = () => {
 
   const balancedRatio = useMemo(() => {
     const symm = toBN(+migrationInfo?.total_migrated_to_symm * 1e-18)
-    const total = toBN(800000).minus(symm)
-    const ratio = total.div(800000)
+    const total = toBN(900000).minus(symm)
+    const ratio = total.div(900000)
     return ratio.toString()
   }, [migrationInfo])
   return balancedRatio
