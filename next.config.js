@@ -6,7 +6,7 @@ module.exports = {
     return [
       {
         source: '/',
-        destination: '/clqdr',
+        destination: '/migration',
         permanent: true,
       },
       {

@@ -250,9 +250,9 @@ export default function HeaderBox() {
 
   useEffect(() => {
     return autoRefresh(() => {
-      const { diff, day, hours } = getRemainingTime(Number(lateMigrationDeadlineTimeStamp))
+      const { diff, day, hours, seconds } = getRemainingTime(Number(lateMigrationDeadlineTimeStamp))
       setIsLateMigrationDeadlineFinished(diff === 0)
-      setLateMigrationDeadline(`${day}d : ${hours}h`)
+      setLateMigrationDeadline(`${day}d : ${hours}h : ${seconds}s`)
     }, 1)
   }, [lateMigrationDeadlineTimeStamp, chainId])
 
@@ -447,7 +447,7 @@ export default function HeaderBox() {
           {isEarlyMigrationDeadlineFinished && !isLateMigrationDeadlineFinished && (
             <>
               <TitleSpan> / Late Migration Ends In: </TitleSpan>
-              <TimeSpan style={{ color: 'green', fontWeight: 'bolder' }}> {lateMigrationDeadline} </TimeSpan>
+              <TimeSpan style={{ color: 'red', fontWeight: 'bolder' }}> {lateMigrationDeadline} </TimeSpan>
             </>
           )}
 
