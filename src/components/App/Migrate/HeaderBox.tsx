@@ -250,9 +250,9 @@ export default function HeaderBox() {
 
   useEffect(() => {
     return autoRefresh(() => {
-      const { diff, day, hours, seconds } = getRemainingTime(Number(lateMigrationDeadlineTimeStamp))
+      const { diff, day, hours, minutes, seconds } = getRemainingTime(Number(lateMigrationDeadlineTimeStamp))
       setIsLateMigrationDeadlineFinished(diff === 0)
-      setLateMigrationDeadline(`${day}d : ${hours}h : ${seconds}s`)
+      setLateMigrationDeadline(`${day}d : ${hours}h : ${minutes}m: ${seconds}s`)
     }, 1)
   }, [lateMigrationDeadlineTimeStamp, chainId])
 
