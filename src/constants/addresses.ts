@@ -48,9 +48,9 @@ export const DEUS_ADDRESS: AddressMap = {
   ...constructSameAddressMap('0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44', [
     SupportedChainId.MAINNET,
     SupportedChainId.POLYGON,
-    SupportedChainId.FANTOM,
   ]),
   [SupportedChainId.OP]: '0x66846420bC2ce961FFd2E4042Bfde0A0E96Fb2c6',
+  [SupportedChainId.FANTOM]: '0xDE55B113A27Cc0c5893CAa6Ee1C020b6B46650C0',
 }
 
 /* =====================================
@@ -242,6 +242,7 @@ export const AxlGateway_ADDRESS: AddressMap = {
   [SupportedChainId.KAVA]: '0xC8c1073Bb5b83f28778E5844469604BD0c4E293d',
   [SupportedChainId.BASE]: '0x0013efdA0FE688894b85707B89d7F0fb1a39f354',
   [SupportedChainId.OP]: '0x33257c271cD2414B444a00346dDaE6f2BB757372',
+  [SupportedChainId.FANTOM]: '0x33257c271cD2414B444a00346dDaE6f2BB757372',
 }
 
 // export const Bridge_ADDRESS: AddressMap = {

@@ -78,6 +78,7 @@ export const BridgeChains = [
   SupportedChainId.KAVA,
   SupportedChainId.BASE,
   SupportedChainId.OP,
+  SupportedChainId.FANTOM,
 ]
 
 export const FALLBACK_CHAIN_ID = SupportedChainId.FANTOM
