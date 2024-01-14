@@ -152,7 +152,7 @@ export default function ClaimBox({
 
       <div style={{ marginBottom: '30px' }} />
 
-      {getActionButton()}
+      {amount && amount.gt(0) && getActionButton()}
 
       <SubTitle>{`by submitting a new ${tokenSymbol}->DEUS migration the cooldown will be restarted.`}</SubTitle>
     </Wrapper>

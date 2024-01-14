@@ -74,7 +74,7 @@ export default function Convert() {
   return (
     <Container>
       <Hero>
-        <Title>DEUS/axlDEUS Converter</Title>
+        <Title>Migrate to new Deus contract</Title>
       </Hero>
       <Wrapper>
         <ConvertBox ConvertTokensList={ConvertTokensList} />
@@ -86,7 +86,7 @@ export default function Convert() {
           endTime={lastConversionEndTime[0]?.toString()}
         />
         <ClaimBox
-          tokenSymbol={'xDEUS'}
+          tokenSymbol={'xMultiDeus'}
           currency={ConvertTokensList[1]}
           amount={pendingXDeusConversions[0]}
           cooldownDuration={cooldownDuration}

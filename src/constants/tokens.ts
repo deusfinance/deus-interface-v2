@@ -42,8 +42,8 @@ export const XDEUS_TOKEN = new Token(
   SupportedChainId.FANTOM,
   XDEUS_ADDRESS[SupportedChainId.FANTOM],
   18,
-  'xDEUS',
-  'xDEUS'
+  'xMultiDeus',
+  'xMultiDeus'
 )
 
 // TODO: this is a random test token: should change after the launch of SYMM token
@@ -156,7 +156,7 @@ export const Tokens: { [key: string]: TokenMap } = {
   USDC: duplicateTokenByAddressMap(USDC, 6, 'USDC', 'USD//C', { [SupportedChainId.BSC]: 18 }),
   DEI: duplicateTokenByChainId(DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'DEI', 'DEI'),
   LEGACY_DEI: duplicateTokenByChainId(LEGACY_DEI_ADDRESS[SupportedChainId.FANTOM], 18, 'LegacyDEI', 'LegacyDEI'),
-  XDEUS: duplicateTokenByChainId(XDEUS_ADDRESS[SupportedChainId.FANTOM], 18, 'xDEUS', 'xDEUS'),
+  XDEUS: duplicateTokenByChainId(XDEUS_ADDRESS[SupportedChainId.FANTOM], 18, 'xMultiDeus', 'xMultiDeus'),
   bDEI_TOKEN: {
     [SupportedChainId.ARBITRUM]: new Token(
       SupportedChainId.ARBITRUM,
