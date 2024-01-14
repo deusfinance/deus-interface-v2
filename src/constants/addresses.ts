@@ -48,9 +48,9 @@ export const DEUS_ADDRESS: AddressMap = {
   ...constructSameAddressMap('0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44', [
     SupportedChainId.MAINNET,
     SupportedChainId.POLYGON,
+    SupportedChainId.FANTOM,
   ]),
   [SupportedChainId.OP]: '0x66846420bC2ce961FFd2E4042Bfde0A0E96Fb2c6',
-  [SupportedChainId.FANTOM]: '0xDE55B113A27Cc0c5893CAa6Ee1C020b6B46650C0',
 }
 
 /* =====================================
@@ -263,4 +263,12 @@ export const AxlWrappedDeus_ADDRESS: AddressMap = {
   [SupportedChainId.ARBITRUM]: '0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44',
   [SupportedChainId.BASE]: '0xebD4A18034C78A415088DF8508f102421eD693b1',
   [SupportedChainId.OP]: '0xebD4A18034C78A415088DF8508f102421eD693b1',
+}
+
+export const newDeus_ADDRESS: AddressMap = {
+  [SupportedChainId.FANTOM]: '0xDE55B113A27Cc0c5893CAa6Ee1C020b6B46650C0',
+}
+
+export const DeusConversion_ADDRESS: AddressMap = {
+  [SupportedChainId.FANTOM]: '0x9f273FF7B9E16FA5A6e08CF7257d6E697F2B3C5A',
 }

@@ -1,21 +1,26 @@
 [
   {
-    "id": "6",
+    "id": "1",
     "text": "Stake DEUS",
     "path": "",
     "children": [
-      { "id": "62", "text": "Convert DEUS", "path": "/xdeus/swap" },
-      { "id": "61", "text": "Stake xDEUS", "path": "/xdeus/stake" }
+      { "id": "12", "text": "Convert DEUS", "path": "/xdeus/swap" },
+      { "id": "11", "text": "Stake xDEUS", "path": "/xdeus/stake" }
     ]
   },
   {
-    "id": "7",
+    "id": "2",
     "text": "Migration",
     "path": "/migration"
   },
   {
-    "id": "8",
+    "id": "3",
     "text": "Bridge",
     "path": "/bridge"
+  },
+  {
+    "id": "4",
+    "text": "Convert",
+    "path": "/convert"
   }
 ]

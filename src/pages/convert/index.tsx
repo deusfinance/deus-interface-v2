@@ -2,14 +2,18 @@ import styled from 'styled-components'
 
 import Hero from 'components/Hero'
 import { Container, Title } from 'components/App/StableCoin'
-import SwapPage from 'components/App/Bridge'
-import InfoBox from 'components/App/Bridge/InfoBox'
+import ConvertBox from 'components/App/Convert/ConvertBox'
+import ClaimBox from 'components/App/Convert/ClaimBox'
+import { SupportedChainId } from 'constants/chains'
+import { Tokens } from 'constants/tokens'
+import useWeb3React from 'hooks/useWeb3'
+import { useCooldownDuration, usePendingConversions } from 'hooks/useDeusConversionPage'
 
 const Wrapper = styled.div`
   width: clamp(500px, 90%, 1000px);
   margin-top: 50px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 2rem;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;
@@ -56,15 +60,38 @@ export const TopBorder = styled.div`
   display: flex;
 `
 
-export default function Bridge() {
+export default function Convert() {
+  const { chainId } = useWeb3React()
+
+  const ConvertTokensList = [
+    Tokens['DEUS'][chainId ?? SupportedChainId.FANTOM],
+    Tokens['XDEUS'][chainId ?? SupportedChainId.FANTOM],
+  ]
+
+  const cooldownDuration = useCooldownDuration()
+  const [lastConversionEndTime, pendingLegacyDeusConversions, pendingXDeusConversions] = usePendingConversions()
+
   return (
     <Container>
       <Hero>
-        <Title>DEUS/axlDEUS Bridge</Title>
+        <Title>DEUS/axlDEUS Converter</Title>
       </Hero>
       <Wrapper>
-        <InfoBox />
-        <SwapPage />
+        <ConvertBox ConvertTokensList={ConvertTokensList} />
+        <ClaimBox
+          tokenSymbol={'multiDEUS'}
+          currency={ConvertTokensList[0]}
+          amount={pendingLegacyDeusConversions[0]}
+          cooldownDuration={cooldownDuration}
+          endTime={lastConversionEndTime[0]?.toString()}
+        />
+        <ClaimBox
+          tokenSymbol={'xDEUS'}
+          currency={ConvertTokensList[1]}
+          amount={pendingXDeusConversions[0]}
+          cooldownDuration={cooldownDuration}
+          endTime={lastConversionEndTime[0]?.toString()}
+        />
       </Wrapper>
     </Container>
   )
