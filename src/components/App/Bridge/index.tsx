@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { RefreshCcw, RefreshCw } from 'react-feather'
 
-import { DEUS_TOKEN, Tokens } from 'constants/tokens'
+import { DEUS_TOKEN, DEUS_TOKEN_FTM, Tokens } from 'constants/tokens'
 import { tryParseAmount } from 'utils/parse'
 
 import { useCurrencyBalance, useCurrencyBalances } from 'state/wallet/hooks'
@@ -65,8 +65,11 @@ export default function SwapPage() {
   const [reversed, setReversed] = useState(false)
   const debouncedAmountIn = useDebounce(amountIn, 500)
 
-  const [inputCurrency, setInputCurrency] = useState(Tokens['DEUS'][chainId ?? SupportedChainId.BSC])
+  const [inputCurrency, setInputCurrency] = useState(
+    chainId && chainId === SupportedChainId.FANTOM ? DEUS_TOKEN_FTM : Tokens['DEUS'][chainId ?? SupportedChainId.BSC]
+  )
   const [outputCurrency, setOutputCurrency] = useState(Tokens['AxlDEUS'][chainId ?? SupportedChainId.BSC])
+  console.log(inputCurrency?.address)
 
   const inputBalance = useCurrencyBalance(account ?? undefined, inputCurrency)
 
@@ -173,11 +176,13 @@ export default function SwapPage() {
   useEffect(() => {
     if (chainId) {
       if (!reversed) {
-        setInputCurrency(Tokens['DEUS'][chainId])
+        if (chainId !== SupportedChainId.FANTOM) setInputCurrency(Tokens['DEUS'][chainId])
+        else setInputCurrency(DEUS_TOKEN_FTM)
         setOutputCurrency(Tokens['AxlDEUS'][chainId])
       } else {
         setInputCurrency(Tokens['AxlDEUS'][chainId])
-        setOutputCurrency(Tokens['DEUS'][chainId])
+        if (chainId !== SupportedChainId.FANTOM) setOutputCurrency(Tokens['DEUS'][chainId])
+        else setOutputCurrency(DEUS_TOKEN_FTM)
       }
     }
   }, [chainId])

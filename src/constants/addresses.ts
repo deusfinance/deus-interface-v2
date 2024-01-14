@@ -242,6 +242,7 @@ export const AxlGateway_ADDRESS: AddressMap = {
   [SupportedChainId.KAVA]: '0xC8c1073Bb5b83f28778E5844469604BD0c4E293d',
   [SupportedChainId.BASE]: '0x0013efdA0FE688894b85707B89d7F0fb1a39f354',
   [SupportedChainId.OP]: '0x33257c271cD2414B444a00346dDaE6f2BB757372',
+  [SupportedChainId.FANTOM]: '0x33257c271cD2414B444a00346dDaE6f2BB757372',
 }
 
 // export const Bridge_ADDRESS: AddressMap = {
@@ -262,4 +263,12 @@ export const AxlWrappedDeus_ADDRESS: AddressMap = {
   [SupportedChainId.ARBITRUM]: '0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44',
   [SupportedChainId.BASE]: '0xebD4A18034C78A415088DF8508f102421eD693b1',
   [SupportedChainId.OP]: '0xebD4A18034C78A415088DF8508f102421eD693b1',
+}
+
+export const newDeus_ADDRESS: AddressMap = {
+  [SupportedChainId.FANTOM]: '0xDE55B113A27Cc0c5893CAa6Ee1C020b6B46650C0',
+}
+
+export const DeusConversion_ADDRESS: AddressMap = {
+  [SupportedChainId.FANTOM]: '0x9f273FF7B9E16FA5A6e08CF7257d6E697F2B3C5A',
 }

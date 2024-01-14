@@ -122,6 +122,11 @@ export default function Menu() {
               <div>Bridge</div>
             </Row>
           </Link>
+          <Link href="/convert" passHref>
+            <Row onClick={() => toggle()}>
+              <div>Convert</div>
+            </Row>
+          </Link>
           <Link href="/clqdr" passHref>
             <Row active={router.route.includes('/clqdr')} onClick={() => toggle()}>
               <div>cLQDR</div>
