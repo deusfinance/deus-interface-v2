@@ -127,11 +127,11 @@ export default function Menu() {
               <div>Convert</div>
             </Row>
           </Link>
-          <Link href="/clqdr" passHref>
+          {/* <Link href="/clqdr" passHref>
             <Row active={router.route.includes('/clqdr')} onClick={() => toggle()}>
               <div>cLQDR</div>
             </Row>
-          </Link>
+          </Link> */}
           <ExternalLink href="https://app.firebird.finance/swap?inputCurrency=FTM&outputCurrency=0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44&net=250">
             <Row onClick={() => toggle()}>
               <ExternalItem>
