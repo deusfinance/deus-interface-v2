@@ -39,7 +39,7 @@ export default function InfoBox() {
     <Wrapper>
       <Title>Explainer: </Title>
       <p>
-        1. If bridging to or from Base and Optimism, swap to axlDEUS, bridge{' '}
+        1. If bridging to or from Base, Fantom, or Optimism, swap to axlDEUS, bridge{' '}
         <ExternalLink href={squidRouterLink} style={{ textDecoration: 'underline' }}>
           here
         </ExternalLink>

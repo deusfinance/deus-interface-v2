@@ -108,7 +108,7 @@ export default function Vest() {
   return (
     <Container>
       <Hero>
-        <Title>DEUS/xDEUS Converter</Title>
+        <Title>multiDEUS/xmultiDEUS Converter</Title>
         <StatsHeader items={items} />
       </Hero>
       <Wrapper>

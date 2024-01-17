@@ -101,6 +101,7 @@ export default function InputBox({
   disabled,
   maxValue,
   disable_vdeus,
+  isMulti,
   onTokenSelect,
 }: {
   currency: Currency
@@ -110,6 +111,7 @@ export default function InputBox({
   disabled?: boolean
   maxValue?: string | null
   disable_vdeus?: boolean
+  isMulti?: boolean
   onTokenSelect?: () => void
 }) {
   const { account } = useWeb3React()
@@ -167,8 +169,8 @@ export default function InputBox({
             round
           />
           <Name>
-            {!disable_vdeus && currency?.symbol == 'DEUS' && 'x'}
-            {currency?.symbol}
+            {!disable_vdeus && currency?.symbol === 'DEUS' && 'x'}
+            {isMulti && currency?.symbol === 'DEUS' ? 'multiDEUS' : currency?.symbol}
           </Name>
           {onTokenSelect && <ChevronDown />}
         </Row>

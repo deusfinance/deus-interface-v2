@@ -19,7 +19,7 @@ import { DotFlashing } from 'components/Icons'
 import { useSwapAmountsOut } from 'hooks/useSwapPage'
 import AdvancedOptions from './AdvancedOptions'
 import InputBox from './InputBox'
-import { LiquidityPool } from 'constants/stakingPools'
+// import { LiquidityPool } from 'constants/stakingPools'
 
 const Container = styled.div`
   display: flex;
@@ -62,7 +62,7 @@ export default function SwapPage() {
 
   //get stable pool info
   const pool = StablePools[0]
-  const liquidityPool = LiquidityPool[0]
+  // const liquidityPool = LiquidityPool[0]
   const inputBalance = useCurrencyBalance(account ?? undefined, inputCurrency)
 
   //todo fix me in dei bond
@@ -166,7 +166,8 @@ export default function SwapPage() {
         value={amountIn}
         onChange={(value: string) => setAmountIn(value)}
         title={'From'}
-        disable_vdeus
+        disable_vdeus={true}
+        isMulti={true}
       />
       <ArrowDown
         style={{ cursor: 'pointer' }}
@@ -182,7 +183,7 @@ export default function SwapPage() {
         onChange={(value: string) => console.log(value)}
         title={'To'}
         disabled={true}
-        disable_vdeus
+        disable_vdeus={true}
       />
       <div style={{ marginTop: '20px' }}></div>
       {getApproveButton()}
