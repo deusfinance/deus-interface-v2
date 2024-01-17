@@ -23,7 +23,8 @@ const Item = styled.div<{ selected: boolean; left: boolean }>`
   margin-right: ${({ left }) => left && '0'};
   margin-left: ${({ left }) => !left && '0'};
   border-radius: 8px;
-  width: 50%;
+  /* width: 50%; */
+  width: 100%;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     text-align: center;
     `}
@@ -41,14 +42,14 @@ const Line = styled.div`
 
 export enum ActionTypes {
   // EASY = 'EASY',
-  MANUAL = 'MANUAL',
+  // MANUAL = 'MANUAL',
   DASHBOARD = 'DASHBOARD',
 }
 
 const ActionLabels = {
   // [ActionTypes.EASY]: 'Easy Migration',
-  [ActionTypes.MANUAL]: 'Manual Migration',
-  [ActionTypes.DASHBOARD]: 'My Migrations (Dashboard)',
+  // [ActionTypes.MANUAL]: 'Manual Migration',
+  [ActionTypes.DASHBOARD]: 'Migration Overview',
 }
 
 export default function ActionSetter({
