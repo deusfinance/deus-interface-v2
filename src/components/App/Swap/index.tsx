@@ -137,7 +137,11 @@ export default function SwapPage() {
         </MainButton>
       )
     } else if (showApprove) {
-      return <MainButton onClick={handleApprove}>Allow us to spend {inputCurrency?.symbol}</MainButton>
+      return (
+        <MainButton onClick={handleApprove}>
+          Allow us to spend {inputCurrency?.symbol === 'DEUS' ? 'multiDEUS' : inputCurrency?.symbol}
+        </MainButton>
+      )
     }
     return null
   }
@@ -148,7 +152,11 @@ export default function SwapPage() {
     } else if (showApprove) {
       return null
     } else if (insufficientBalance) {
-      return <MainButton disabled>Insufficient {inputCurrency?.symbol} Balance</MainButton>
+      return (
+        <MainButton disabled>
+          Insufficient {inputCurrency?.symbol === 'DEUS' ? 'multiDEUS' : inputCurrency?.symbol} Balance
+        </MainButton>
+      )
     } else if (awaitingRedeemConfirmation) {
       return (
         <MainButton>
@@ -184,6 +192,7 @@ export default function SwapPage() {
         title={'To'}
         disabled={true}
         disable_vdeus={true}
+        isMulti={true}
       />
       <div style={{ marginTop: '20px' }}></div>
       {getApproveButton()}

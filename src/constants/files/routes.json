@@ -1,11 +1,11 @@
 [
   {
     "id": "1",
-    "text": "Stake DEUS",
+    "text": "multiDEUS",
     "path": "",
     "children": [
-      { "id": "12", "text": "Convert DEUS", "path": "/xdeus/swap" },
-      { "id": "11", "text": "Stake xDEUS", "path": "/xdeus/stake" }
+      { "id": "12", "text": "Swap multiDEUS", "path": "/xdeus/swap" },
+      { "id": "11", "text": "Unstake xmultiDEUS", "path": "/xdeus/stake" }
     ]
   },
   {

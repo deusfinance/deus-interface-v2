@@ -12,9 +12,6 @@ import SwapPage from 'components/App/Swap'
 import { useVDeusStats } from 'hooks/useVDeusStats'
 import SingleChart from 'components/App/Swap/SingleChart'
 import { Row } from 'components/Row'
-import { ExternalLink } from 'components/Link'
-import Image from 'next/image'
-import ExternalLinkImage from '/public/static/images/pages/common/down.svg'
 
 const Wrapper = styled(Row)`
   margin-top: 50px;
@@ -70,18 +67,7 @@ export const TopBorder = styled.div`
   width: 100%;
   display: flex;
 `
-const ExternalLinkContainer = styled.div`
-  align-self: center;
-  display: flex;
-  background: none;
-  a {
-    color: ${({ theme }) => theme.text2};
-    &:hover {
-      color: ${({ theme }) => theme.text2};
-      text-decoration: underline;
-    }
-  }
-`
+
 export default function Vest() {
   const deusPrice = useDeusPrice()
   const { swapRatio } = useVDeusStats()
@@ -90,17 +76,6 @@ export default function Vest() {
     () => [
       { name: 'DEUS Price', value: formatDollarAmount(parseFloat(deusPrice), 2) },
       { name: 'xDeus Ratio', value: formatAmount(swapRatio, 2) + ' DEUS' },
-      {
-        name: '',
-        value: (
-          <ExternalLinkContainer>
-            <ExternalLink href="https://docs.deus.finance/xdeus/xdeus">
-              Read more <Image alt="read more" width={10} height={10} src={ExternalLinkImage} />
-            </ExternalLink>
-          </ExternalLinkContainer>
-        ),
-        hasOwnColor: true,
-      },
     ],
     [deusPrice, swapRatio]
   )
@@ -108,7 +83,7 @@ export default function Vest() {
   return (
     <Container>
       <Hero>
-        <Title>multiDEUS/xmultiDEUS Converter</Title>
+        <Title>multiDEUS/xmultiDEUS Swap</Title>
         <StatsHeader items={items} />
       </Hero>
       <Wrapper>

@@ -160,7 +160,7 @@ export default function InputBox({
           disabled={disabled}
           style={{ textAlign: 'left', height: '50px', fontSize: '1.3rem' }}
         />
-        <Row onClick={onTokenSelect ? () => onTokenSelect() : undefined}>
+        <Row onClick={onTokenSelect ? () => onTokenSelect() : undefined} style={{ minWidth: 'max-content' }}>
           <ImageWithFallback
             src={logo}
             width={getImageSize()}
