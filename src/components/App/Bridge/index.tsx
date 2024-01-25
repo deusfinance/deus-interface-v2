@@ -220,7 +220,7 @@ export default function SwapPage() {
         disabled
       />
 
-      {chainId && chainId !== SupportedChainId.FANTOM && (
+      {chainId && (
         <React.Fragment>
           <div style={{ marginTop: '20px' }} />
           <span style={{ fontSize: '13px' }}>

@@ -18,6 +18,7 @@ import { useClaimTokenConversionCallback } from 'hooks/useDeusConversionCallback
 import { getRemainingTime } from 'utils/time'
 import { autoRefresh } from 'utils/retry'
 import { useLastConversionEndTime } from 'hooks/useDeusConversionPage'
+import { RowCenter } from 'components/Row'
 
 const Container = styled.div`
   display: flex;
@@ -42,6 +43,31 @@ const SubTitle = styled.p`
   line-height: normal;
   margin-top: 12px;
 `
+const RemainingWrap = styled(RowCenter)`
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: linear-gradient(270deg, #0a7471 -1.33%, #005779 100%);
+  color: ${({ theme }) => theme.black};
+  height: 50px;
+  cursor: progress;
+
+  & > * {
+    &:first-child {
+      z-index: 100;
+      font-family: 'Inter';
+      font-weight: 700;
+    }
+  }
+`
+const RemainingBlock = styled.div<{ width?: string }>`
+  background: linear-gradient(270deg, #14e8e3 -1.33%, #01aef3 100%);
+  height: 100%;
+  left: 0;
+  bottom: 0;
+  position: absolute;
+  width: ${({ width }) => width ?? 'unset'};
+`
 
 export const getImageSize = () => {
   return isMobile ? 17 : 20
@@ -51,14 +77,12 @@ export default function ClaimBox({
   tokenSymbol,
   currency,
   amount,
-}: // cooldownDuration,
-// endTime,
-{
+  cooldownDuration,
+}: {
   tokenSymbol: string
   currency: Currency
   amount: BigNumber
-  // cooldownDuration: string
-  // endTime: string
+  cooldownDuration: string
 }) {
   const { account, chainId } = useWeb3React()
   const toggleWalletModal = useWalletModalToggle()
@@ -71,6 +95,7 @@ export default function ClaimBox({
 
   const [awaitingConvertConfirmation, setAwaitingConvertConfirmation] = useState(false)
   const [endTimeDeadline, setEndTimeDeadline] = useState('')
+  const [diff, setDiff] = useState(0)
   const [isEndTimeFinished, setIsEndTimeFinished] = useState(false)
 
   useEffect(() => {
@@ -78,6 +103,7 @@ export default function ClaimBox({
       const { diff, hours, minutes, seconds } = getRemainingTime(Number(endTime))
       setIsEndTimeFinished(diff === 0)
       setEndTimeDeadline(`${hours}h : ${minutes}m : ${seconds}s`)
+      setDiff(diff)
     }, 1)
   }, [endTime, chainId])
 
@@ -115,7 +141,14 @@ export default function ClaimBox({
         </MainButton>
       )
     } else if (!isEndTimeFinished) {
-      return <MainButton disabled>Claim in {endTimeDeadline}</MainButton>
+      const elapsed = ((Number(cooldownDuration) * 1000 - diff) / (Number(cooldownDuration) * 10)) * (30 / 6)
+      // console.log(Number(cooldownDuration) * 1000, diff, elapsed)
+      return (
+        <RemainingWrap>
+          <p>Claim in {endTimeDeadline}</p>
+          <RemainingBlock width={elapsed.toFixed(0) + '%'}></RemainingBlock>
+        </RemainingWrap>
+      )
     }
     return <MainButton onClick={() => handleClaim()}>Claim</MainButton>
   }

@@ -84,15 +84,13 @@ export default function Convert() {
           tokenSymbol={'multiDEUS'}
           currency={ConvertTokensList[0]}
           amount={pendingLegacyDeusConversions[0]}
-          // cooldownDuration={cooldownDuration}
-          // endTime={lastConversionEndTime[0]?.toString()}
+          cooldownDuration={cooldownDuration}
         />
         <ClaimBox
           tokenSymbol={'xmultiDEUS'}
           currency={ConvertTokensList[1]}
           amount={pendingXDeusConversions[0]}
-          // cooldownDuration={cooldownDuration}
-          // endTime={lastConversionEndTime[0]?.toString()}
+          cooldownDuration={cooldownDuration}
         />
       </Wrapper>
     </Container>
