@@ -20,6 +20,7 @@ import ArrowDownBox from 'components/Icons/ArrowDownBox'
 import { useInitiateTokenConversionCallback } from 'hooks/useDeusConversionCallback'
 import TokensModal from './TokensModal'
 import { Token } from '@sushiswap/core-sdk'
+import { getTimeLengthExtended } from 'utils/time'
 
 const Container = styled.div`
   display: flex;
@@ -43,7 +44,25 @@ export const MainButton = styled(PrimaryButton)`
   border-radius: 12px;
 `
 
-export default function ConvertBox({ ConvertTokensList }: { ConvertTokensList: Token[] }) {
+const SubTitle = styled.p`
+  color: #bfb4a8;
+  text-align: center;
+  font-size: 10px;
+  margin-bottom: 10px;
+
+  & > span {
+    font-weight: bolder;
+    font-size: 11px;
+  }
+`
+
+export default function ConvertBox({
+  ConvertTokensList,
+  cooldownDuration,
+}: {
+  ConvertTokensList: Token[]
+  cooldownDuration: string
+}) {
   const { chainId, account } = useWeb3React()
   const toggleWalletModal = useWalletModalToggle()
   const isSupportedChainId = useSupportedChainId()
@@ -186,7 +205,14 @@ export default function ConvertBox({ ConvertTokensList }: { ConvertTokensList: T
           disabled
         />
 
-        <div style={{ marginTop: '60px' }}></div>
+        <div style={{ marginTop: '40px' }}></div>
+        {cooldownDuration && (
+          <SubTitle>
+            The Cooldown to get your tokens after the migration is{' '}
+            <span>{getTimeLengthExtended(Number(cooldownDuration?.toString()) * 1000)?.fullLength}</span>
+          </SubTitle>
+        )}
+
         {getApproveButton()}
         {getActionButton()}
       </Wrapper>

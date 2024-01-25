@@ -1,3 +1,4 @@
+// import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import Hero from 'components/Hero'
@@ -69,7 +70,7 @@ export default function Convert() {
   ]
 
   const cooldownDuration = useCooldownDuration()
-  const [lastConversionEndTime, pendingLegacyDeusConversions, pendingXDeusConversions] = usePendingConversions()
+  const [pendingLegacyDeusConversions, pendingXDeusConversions] = usePendingConversions()
 
   return (
     <Container>
@@ -77,20 +78,21 @@ export default function Convert() {
         <Title>Migrate to new Deus contract</Title>
       </Hero>
       <Wrapper>
-        <ConvertBox ConvertTokensList={ConvertTokensList} />
+        <ConvertBox ConvertTokensList={ConvertTokensList} cooldownDuration={cooldownDuration} />
+
         <ClaimBox
           tokenSymbol={'multiDEUS'}
           currency={ConvertTokensList[0]}
           amount={pendingLegacyDeusConversions[0]}
-          cooldownDuration={cooldownDuration}
-          endTime={lastConversionEndTime[0]?.toString()}
+          // cooldownDuration={cooldownDuration}
+          // endTime={lastConversionEndTime[0]?.toString()}
         />
         <ClaimBox
           tokenSymbol={'xmultiDEUS'}
           currency={ConvertTokensList[1]}
           amount={pendingXDeusConversions[0]}
-          cooldownDuration={cooldownDuration}
-          endTime={lastConversionEndTime[0]?.toString()}
+          // cooldownDuration={cooldownDuration}
+          // endTime={lastConversionEndTime[0]?.toString()}
         />
       </Wrapper>
     </Container>

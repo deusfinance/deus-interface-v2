@@ -105,3 +105,31 @@ export function getTimeLength(timeLength: number): {
 
   return { hours, minutes, seconds, fullLength }
 }
+
+export function getTimeLengthExtended(timeLength: number): {
+  hours: string
+  minutes: string
+  seconds: string
+  fullLength: string
+} {
+  // Calculate hours, minutes, and seconds
+  const hours = Math.floor(timeLength / 3600000) // 1 hour = 3600000 milliseconds
+  const minutes = Math.floor((timeLength % 3600000) / 60000) // 1 minute = 60000 milliseconds
+  const seconds = Math.floor((timeLength % 60000) / 1000) // 1 second = 1000 milliseconds
+
+  // Format the output
+  const formattedHours = hours > 0 ? hours + ' hours, ' : ''
+  const formattedMinutes = minutes > 0 ? minutes + ' minutes, ' : ''
+  const formattedSeconds = seconds > 0 ? seconds + ' seconds' : ''
+
+  // Concatenate the non-zero durations
+  let fullLength = formattedHours + formattedMinutes + formattedSeconds
+  fullLength = fullLength.endsWith(', ') ? fullLength.slice(0, -2) : fullLength // Remove trailing comma if exists
+
+  return {
+    hours: hours + ' hr',
+    minutes: minutes + ' min',
+    seconds: seconds + ' sec',
+    fullLength,
+  }
+}

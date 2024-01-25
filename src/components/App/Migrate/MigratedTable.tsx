@@ -27,6 +27,8 @@ import { MigrationOptions } from 'constants/migrationOptions'
 import ActionModal from './ActionModal'
 import TransferModal from './TransferModal'
 import PreferenceModal from './PreferenceModal'
+import ClaimModal from './ClaimModal'
+import { SupportedChainId } from 'constants/chains'
 
 const Wrapper = styled.div`
   display: flex;
@@ -742,6 +744,7 @@ export enum ModalType {
   ChangePlan = 'Change',
   SPLIT = 'Split',
   TRANSFER = 'Transfer',
+  CLAIM = 'Claim',
 }
 
 const TableRowContentWrapper = ({
@@ -837,9 +840,15 @@ const TableRowContentWrapper = ({
           <SimpleButton onClick={() => toggleReviewModal(true, ModalType.TRANSFER)} width={'80px'}>
             Transfer
           </SimpleButton>
-          <SimpleButton disabled width={'140px'}>
-            Claim not started
-          </SimpleButton>
+          {false && token?.chainId === SupportedChainId.FANTOM ? (
+            <SimpleButton width={'140px'} onClick={() => toggleReviewModal(true, ModalType.CLAIM)}>
+              Claim DEUS
+            </SimpleButton>
+          ) : (
+            <SimpleButton disabled width={'140px'}>
+              Claim not started
+            </SimpleButton>
+          )}
         </ButtonWrap>
       </TableContent>
 
@@ -871,6 +880,12 @@ const TableRowContentWrapper = ({
         migratedToDEUS={migratedToDEUS}
         migratedToSYMM={migratedToSYMM}
         calculatedSymmPerDeus={calculatedSymmPerDeus}
+      />
+      <ClaimModal
+        inputToken={token}
+        migrationInfo={migrationInfo}
+        isOpen={isOpenModal && modalType === ModalType.CLAIM}
+        toggleModal={(action: boolean) => toggleModal(action)}
       />
     </>
   )

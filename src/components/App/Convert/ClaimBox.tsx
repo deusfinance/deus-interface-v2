@@ -17,6 +17,7 @@ import { formatBalance, formatNumber, toBN } from 'utils/numbers'
 import { useClaimTokenConversionCallback } from 'hooks/useDeusConversionCallback'
 import { getRemainingTime } from 'utils/time'
 import { autoRefresh } from 'utils/retry'
+import { useLastConversionEndTime } from 'hooks/useDeusConversionPage'
 
 const Container = styled.div`
   display: flex;
@@ -50,17 +51,20 @@ export default function ClaimBox({
   tokenSymbol,
   currency,
   amount,
-  cooldownDuration,
-  endTime,
-}: {
+}: // cooldownDuration,
+// endTime,
+{
   tokenSymbol: string
   currency: Currency
   amount: BigNumber
-  cooldownDuration: string
-  endTime: string
+  // cooldownDuration: string
+  // endTime: string
 }) {
   const { account, chainId } = useWeb3React()
   const toggleWalletModal = useWalletModalToggle()
+
+  const [lastConversionEndTime] = useLastConversionEndTime()
+  const endTime = lastConversionEndTime[0]?.toString()
 
   const logo = useCurrencyLogo((currency as Token)?.address)
   const DEUS_logo = useCurrencyLogo((DEUS_TOKEN_FTM as Token)?.address)

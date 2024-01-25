@@ -9,8 +9,10 @@ import { useMigratorContract } from 'hooks/useContract'
 import { calculateGasMargin } from 'utils/web3'
 import { DefaultHandlerError } from 'utils/parseError'
 import { MigrationType } from 'components/App/Migrate/Table'
-import { DEUS_TOKEN, SYMM_TOKEN } from 'constants/tokens'
+import { DEUS_TOKEN, SYMM_TOKEN, XDEUS_TOKEN } from 'constants/tokens'
 import { toHex } from 'utils/hex'
+import { INFO_URL } from 'constants/misc'
+import { makeHttpRequest } from 'utils/http'
 
 export enum TransactionCallbackState {
   INVALID = 'INVALID',
@@ -733,4 +735,164 @@ export function useChangePreferenceCallback(
       },
     }
   }, [account, chainId, library, migratorContract, constructCall, addTransaction])
+}
+
+export function useClaimCallback(
+  inputCurrency: Currency | undefined,
+  inputAmount: number,
+  index: number
+): {
+  state: TransactionCallbackState
+  callback: null | (() => Promise<string>)
+  error: string | null
+} {
+  const { account, chainId, library } = useWeb3React()
+  const addTransaction = useTransactionAdder()
+
+  const migratorContract = useMigratorContract()
+
+  //it should get proof data from the api
+  const getProofData = useCallback(async () => {
+    try {
+      const { href: url } = new URL(`/symm/proofs/${account}/`, INFO_URL)
+      return makeHttpRequest(url)
+    } catch (err) {
+      throw err
+    }
+  }, [account])
+
+  const constructCall = useCallback(async () => {
+    try {
+      if (!account || !library || !migratorContract || !inputAmount) {
+        throw new Error('Missing dependencies.')
+      }
+
+      const proofResponse = await getProofData()
+      const bdei_amount = proofResponse['bdei_amount']
+      const bdei_proof = proofResponse['bdei_proof']
+      const legacy_dei_proof = proofResponse['legacy_dei_proof']
+      const legacy_dei_amount = proofResponse['legacy_dei_amount']
+      // console.log({ bdei_proof, bdei_amount, legacy_dei_amount, legacy_dei_proof })
+
+      let methodName = ''
+      let args: any = []
+
+      if (inputCurrency?.symbol === XDEUS_TOKEN?.symbol) {
+        methodName = 'convertXDEUS'
+        args = [inputAmount]
+      } else if (inputCurrency?.symbol === 'LegacyDEI') {
+        methodName = 'convertLegacyDEI'
+        args = [inputAmount, legacy_dei_amount, legacy_dei_proof]
+      } else if (inputCurrency?.symbol === 'bDEI') {
+        methodName = 'convertBDEI'
+        args = [inputAmount, bdei_amount, bdei_proof]
+      }
+      console.log(args)
+
+      return {
+        address: migratorContract.address,
+        calldata: migratorContract.interface.encodeFunctionData(methodName, args) ?? '',
+        value: 0,
+      }
+    } catch (error) {
+      return {
+        error,
+      }
+    }
+  }, [account, library, migratorContract, inputAmount, getProofData, inputCurrency?.symbol])
+
+  return useMemo(() => {
+    if (!account || !chainId || !library || !migratorContract || !inputCurrency) {
+      return {
+        state: TransactionCallbackState.INVALID,
+        callback: null,
+        error: 'Missing dependencies',
+      }
+    }
+    if (!inputAmount) {
+      return {
+        state: TransactionCallbackState.INVALID,
+        callback: null,
+        error: 'No amount provided',
+      }
+    }
+
+    return {
+      state: TransactionCallbackState.VALID,
+      error: null,
+      callback: async function onMigrate(): Promise<string> {
+        console.log('onMigrate callback')
+        const call = constructCall()
+        const { address, calldata, value } = await call
+
+        // // @ts-ignore
+        // if ('error' in call) {
+        //   // @ts-ignore
+        //   console.error(call.error)
+        //   // @ts-ignore
+        //   if (call.error.message) {
+        //     // @ts-ignore
+        //     throw new Error(call.error.message)
+        //   } else {
+        //     throw new Error('Unexpected error. Could not construct calldata.')
+        //   }
+        // }
+
+        const tx = !value
+          ? { from: account, to: address, data: calldata }
+          : { from: account, to: address, data: calldata, value }
+
+        console.log('MIGRATE TRANSACTION', { tx, value })
+
+        const estimatedGas = await library.estimateGas(tx).catch((gasError) => {
+          console.debug('Gas estimate failed, trying eth_call to extract error', call)
+
+          return library
+            .call(tx)
+            .then((result) => {
+              console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
+              return {
+                error: new Error('Unexpected issue with estimating the gas. Please try again.'),
+              }
+            })
+            .catch((callError) => {
+              console.debug('Call threw an error', call, callError)
+              toast.error(DefaultHandlerError(callError))
+              return {
+                error: new Error(callError.message), // TODO make this human readable
+              }
+            })
+        })
+
+        if ('error' in estimatedGas) {
+          throw new Error('Unexpected error. Could not estimate gas for this transaction.')
+        }
+
+        return library
+          .getSigner()
+          .sendTransaction({
+            ...tx,
+            ...(estimatedGas ? { gasLimit: calculateGasMargin(estimatedGas) } : {}),
+            // gasPrice /// TODO add gasPrice based on EIP 1559
+          })
+          .then((response: TransactionResponse) => {
+            console.log(response)
+            const summary = 'Claimed Successfully'
+            addTransaction(response, { summary })
+
+            return response.hash
+          })
+          .catch((error) => {
+            // if the user rejected the tx, pass this along
+            if (error?.code === 4001) {
+              throw new Error('Transaction rejected.')
+            } else {
+              // otherwise, the error was unexpected and we need to convey that
+              console.error(`Transaction failed`, error, address, calldata, value)
+              throw new Error(`Transaction failed: ${error.message}`)
+            }
+          })
+      },
+    }
+  }, [account, chainId, library, migratorContract, inputCurrency, inputAmount, constructCall, addTransaction])
 }

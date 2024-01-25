@@ -31,10 +31,6 @@ export function usePendingConversions() {
         ? []
         : [
             {
-              methodName: 'lastConversionEndTime',
-              callInputs: [account],
-            },
-            {
               methodName: 'pendingLegacyDeusConversions',
               callInputs: [account],
             },
@@ -46,12 +42,34 @@ export function usePendingConversions() {
     [account]
   )
 
-  const [lastConversionEndTime, pendingLegacyDeusConversions, pendingXDeusConversions] =
-    useSingleContractMultipleMethods(deusConversionContract, amountOutCall)
+  const [pendingLegacyDeusConversions, pendingXDeusConversions] = useSingleContractMultipleMethods(
+    deusConversionContract,
+    amountOutCall
+  )
 
   return [
-    lastConversionEndTime?.result ? lastConversionEndTime?.result : '',
     pendingLegacyDeusConversions?.result ? pendingLegacyDeusConversions?.result : '',
     pendingXDeusConversions?.result ? pendingXDeusConversions?.result : '',
   ]
+}
+
+export function useLastConversionEndTime() {
+  const { account } = useWeb3React()
+  const deusConversionContract = useDeusConversionContract()
+
+  const amountOutCall = useMemo(
+    () =>
+      !account
+        ? []
+        : [
+            {
+              methodName: 'lastConversionEndTime',
+              callInputs: [account],
+            },
+          ],
+    [account]
+  )
+
+  const [lastConversionEndTime] = useSingleContractMultipleMethods(deusConversionContract, amountOutCall)
+  return [lastConversionEndTime?.result ? lastConversionEndTime?.result : '']
 }
