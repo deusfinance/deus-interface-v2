@@ -100,9 +100,10 @@ export default function ClaimBox({
 
   useEffect(() => {
     return autoRefresh(() => {
-      const { diff, hours, minutes, seconds } = getRemainingTime(Number(endTime))
+      const { diff, day, hours, minutes, seconds } = getRemainingTime(Number(endTime))
+
       setIsEndTimeFinished(diff === 0)
-      setEndTimeDeadline(`${hours}h : ${minutes}m : ${seconds}s`)
+      setEndTimeDeadline(`${day}d :${hours}h : ${minutes}m : ${seconds}s`)
       setDiff(diff)
     }, 1)
   }, [endTime, chainId])
@@ -141,8 +142,7 @@ export default function ClaimBox({
         </MainButton>
       )
     } else if (!isEndTimeFinished) {
-      const elapsed = ((Number(cooldownDuration) * 1000 - diff) / (Number(cooldownDuration) * 10)) * (30 / 6)
-      // console.log(Number(cooldownDuration) * 1000, diff, elapsed)
+      const elapsed = (Number(cooldownDuration) * 1000 - diff) / (Number(cooldownDuration) * 10)
       return (
         <RemainingWrap>
           <p>Claim in {endTimeDeadline}</p>

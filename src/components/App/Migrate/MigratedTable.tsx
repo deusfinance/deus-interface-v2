@@ -775,10 +775,10 @@ const TableRowContentWrapper = ({
   const calculatedSymmPerDeus = useMemo(
     () =>
       toBN(
-        Number(migrationContextData?.unvested_symm_per_deus) +
-          (isEarly ? Number(migrationContextData?.vested_symm_per_deus) : 0)
+        Number(migrationContextData?.vested_symm_per_deus) +
+          (isEarly ? Number(migrationContextData?.unvested_symm_per_deus) : 0)
       ).multipliedBy(migratedToSYMM),
-    [migrationContextData?.unvested_symm_per_deus, migrationContextData?.vested_symm_per_deus, isEarly, migratedToSYMM]
+    [migrationContextData?.vested_symm_per_deus, migrationContextData?.unvested_symm_per_deus, isEarly, migratedToSYMM]
   )
 
   return (
