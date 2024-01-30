@@ -1,25 +1,8 @@
 [
   {
-    "inputs": [
-      { "internalType": "address", "name": "admin", "type": "address" },
-      { "internalType": "address", "name": "operator", "type": "address" },
-      { "internalType": "address", "name": "_legacyDeus", "type": "address" },
-      { "internalType": "address", "name": "_xDeus", "type": "address" },
-      { "internalType": "address", "name": "_newDeus", "type": "address" },
-      { "internalType": "uint256", "name": "_initialLegacyDeusRatio", "type": "uint256" },
-      { "internalType": "uint256", "name": "_initialXDeusRatio", "type": "uint256" },
-      { "internalType": "uint256", "name": "_cooldownDuration", "type": "uint256" }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
     "anonymous": false,
-    "inputs": [
-      { "indexed": true, "internalType": "address", "name": "user", "type": "address" },
-      { "indexed": false, "internalType": "bool", "name": "value", "type": "bool" }
-    ],
-    "name": "BlacklistUser",
+    "inputs": [{ "indexed": true, "internalType": "address", "name": "user", "type": "address" }],
+    "name": "BlockUser",
     "type": "event"
   },
   {
@@ -54,6 +37,12 @@
   },
   {
     "anonymous": false,
+    "inputs": [{ "indexed": false, "internalType": "uint8", "name": "version", "type": "uint8" }],
+    "name": "Initialized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
     "inputs": [
       { "indexed": true, "internalType": "address", "name": "user", "type": "address" },
       { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" }
@@ -74,6 +63,12 @@
     "anonymous": false,
     "inputs": [{ "indexed": false, "internalType": "uint256", "name": "newRatio", "type": "uint256" }],
     "name": "LegacyDeusConversionRatioChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [{ "indexed": false, "internalType": "address", "name": "account", "type": "address" }],
+    "name": "Paused",
     "type": "event"
   },
   {
@@ -104,6 +99,18 @@
       { "indexed": true, "internalType": "address", "name": "sender", "type": "address" }
     ],
     "name": "RoleRevoked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [{ "indexed": true, "internalType": "address", "name": "user", "type": "address" }],
+    "name": "UnblockUser",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [{ "indexed": false, "internalType": "address", "name": "account", "type": "address" }],
+    "name": "Unpaused",
     "type": "event"
   },
   {
@@ -170,7 +177,35 @@
   },
   {
     "inputs": [],
+    "name": "PAUSER_ROLE",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "RATIO_SETTER_ROLE",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "UNPAUSER_ROLE",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "USER_BLOCKER_ROLE",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "USER_UNBLOCKER_ROLE",
     "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
     "stateMutability": "view",
     "type": "function"
@@ -183,18 +218,15 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "user", "type": "address" },
-      { "internalType": "bool", "name": "state", "type": "bool" }
-    ],
-    "name": "blacklistUser",
+    "inputs": [{ "internalType": "address", "name": "user", "type": "address" }],
+    "name": "blockUser",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "name": "blacklistedUsers",
+    "name": "blockedUsers",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
@@ -259,6 +291,22 @@
     "type": "function"
   },
   {
+    "inputs": [
+      { "internalType": "address", "name": "admin", "type": "address" },
+      { "internalType": "address", "name": "operator", "type": "address" },
+      { "internalType": "address", "name": "_legacyDeus", "type": "address" },
+      { "internalType": "address", "name": "_xDeus", "type": "address" },
+      { "internalType": "address", "name": "_newDeus", "type": "address" },
+      { "internalType": "uint256", "name": "_initialLegacyDeusRatio", "type": "uint256" },
+      { "internalType": "uint256", "name": "_initialXDeusRatio", "type": "uint256" },
+      { "internalType": "uint256", "name": "_cooldownDuration", "type": "uint256" }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }],
     "name": "initiateLegacyDeusConversion",
     "outputs": [],
@@ -274,7 +322,7 @@
   },
   {
     "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "name": "lastConversionEndTime",
+    "name": "lastConversionTime",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
@@ -297,6 +345,14 @@
     "inputs": [],
     "name": "newDeus",
     "outputs": [{ "internalType": "contract IERC20", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  { "inputs": [], "name": "pause", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+  {
+    "inputs": [],
+    "name": "paused",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -369,6 +425,14 @@
     "stateMutability": "view",
     "type": "function"
   },
+  {
+    "inputs": [{ "internalType": "address", "name": "user", "type": "address" }],
+    "name": "unblockUser",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  { "inputs": [], "name": "unpause", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
   {
     "inputs": [
       { "internalType": "address", "name": "token", "type": "address" },

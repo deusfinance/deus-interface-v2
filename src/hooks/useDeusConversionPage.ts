@@ -53,7 +53,7 @@ export function usePendingConversions() {
   ]
 }
 
-export function useLastConversionEndTime() {
+export function useLastConversionTime() {
   const { account } = useWeb3React()
   const deusConversionContract = useDeusConversionContract()
 
@@ -63,13 +63,13 @@ export function useLastConversionEndTime() {
         ? []
         : [
             {
-              methodName: 'lastConversionEndTime',
+              methodName: 'lastConversionTime',
               callInputs: [account],
             },
           ],
     [account]
   )
 
-  const [lastConversionEndTime] = useSingleContractMultipleMethods(deusConversionContract, amountOutCall)
-  return [lastConversionEndTime?.result ? lastConversionEndTime?.result : '']
+  const [LastConversionTime] = useSingleContractMultipleMethods(deusConversionContract, amountOutCall)
+  return [LastConversionTime?.result ? LastConversionTime?.result : '']
 }

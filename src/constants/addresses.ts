@@ -270,5 +270,5 @@ export const newDeus_ADDRESS: AddressMap = {
 }
 
 export const DeusConversion_ADDRESS: AddressMap = {
-  [SupportedChainId.FANTOM]: '0x9f273FF7B9E16FA5A6e08CF7257d6E697F2B3C5A',
+  [SupportedChainId.FANTOM]: '0x6c9E3B6b6C528ffdF0b5248a2B47069fcEc9e835',
 }
