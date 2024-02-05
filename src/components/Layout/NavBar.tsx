@@ -202,7 +202,9 @@ export default function NavBar() {
 
   const showBanner = localStorage.getItem('risk_warning') === 'true' ? false : true
   const [showTopBanner, setShowTopBanner] = useState(showBanner)
+  const [showTopBanner2, setShowTopBanner2] = useState(false)
   const bannerText = 'Users interacting with this software do so entirely at their own risk'
+  const bannerText2 = 'Conversion contract is currently being upgraded'
 
   function setShowBanner(inp: boolean) {
     if (!inp) {
@@ -210,6 +212,10 @@ export default function NavBar() {
       setShowTopBanner(false)
       sendEvent('click', { click_type: 'close_notification', click_action: 'risk_warning' })
     }
+  }
+
+  function setShowBanner2(inp: boolean) {
+    if (!inp) setShowTopBanner2(false)
   }
 
   function getMobileContent() {
@@ -222,6 +228,9 @@ export default function NavBar() {
           <Menu />
         </MobileWrapper>
         {showTopBanner && <RiskNotification onClose={setShowBanner} bg={'gray'} hasInfoIcon={true} text={bannerText} />}
+        {showTopBanner2 && router.route.includes('/convert') && (
+          <RiskNotification onClose={setShowBanner2} bg={'red'} hasInfoIcon={true} text={bannerText2} />
+        )}
       </>
     )
   }
@@ -283,6 +292,9 @@ export default function NavBar() {
           </Items>
         </DefaultWrapper>
         {showTopBanner && <RiskNotification onClose={setShowBanner} bg={'gray'} hasInfoIcon={true} text={bannerText} />}
+        {showTopBanner2 && router.route.includes('/convert') && (
+          <RiskNotification onClose={setShowBanner2} bg={'red'} hasInfoIcon={true} text={bannerText2} />
+        )}
       </>
     )
   }
