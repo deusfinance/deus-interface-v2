@@ -34,11 +34,6 @@ const Wrapper = styled(Container)`
   padding: 20px 15px;
   border-radius: 15px;
   justify-content: center;
-  & > * {
-    &:nth-child(3) {
-      margin: 10px auto;
-    }
-  }
 `
 export const MainButton = styled(PrimaryButton)`
   border-radius: 12px;
@@ -205,7 +200,7 @@ export default function ConvertBox({
           disabled
         />
 
-        <div style={{ marginTop: '40px' }}></div>
+        <div style={{ marginTop: '10px' }}></div>
         {cooldownDuration && (
           <SubTitle>
             The Cooldown to get your tokens after the migration is{' '}

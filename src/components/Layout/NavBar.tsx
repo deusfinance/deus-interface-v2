@@ -202,7 +202,7 @@ export default function NavBar() {
 
   const showBanner = localStorage.getItem('risk_warning') === 'true' ? false : true
   const [showTopBanner, setShowTopBanner] = useState(showBanner)
-  const [showTopBanner2, setShowTopBanner2] = useState(true)
+  const [showTopBanner2, setShowTopBanner2] = useState(false)
   const bannerText = 'Users interacting with this software do so entirely at their own risk'
   const bannerText2 =
     'Conversion contract is currently being upgraded; CLAIM newDeus from what you already converted. wait 2 hours before converting again so you can do everything through the ui'
