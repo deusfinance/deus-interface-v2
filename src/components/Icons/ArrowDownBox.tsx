@@ -14,6 +14,8 @@ const Circle = styled.div<{
   background: rgba(34, 35, 37, 1);
   width: 44px;
   height: 52px;
+  margin: -6px auto;
+  z-index: 1;
 `
 
 export default function ArrowDownBox({ size = 30, ...rest }: { size?: number; [x: string]: any }) {
