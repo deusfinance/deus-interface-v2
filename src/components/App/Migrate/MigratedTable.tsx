@@ -830,16 +830,37 @@ const TableRowContentWrapper = ({
               </span>
             )}
           </Value>
-          <SimpleButton onClick={() => toggleReviewModal(true, ModalType.ChangePlan)}>Change</SimpleButton>
+          {!(
+            token?.chainId === SupportedChainId.FANTOM &&
+            (token?.symbol === 'LegacyDEI' || token?.symbol === 'bDEI')
+          ) && <SimpleButton onClick={() => toggleReviewModal(true, ModalType.ChangePlan)}>Change</SimpleButton>}
         </MyMigratedAmount>
 
         <ButtonWrap>
-          <SimpleButton onClick={() => toggleReviewModal(true, ModalType.SPLIT)} width={'80px'}>
-            Split
-          </SimpleButton>
-          <SimpleButton onClick={() => toggleReviewModal(true, ModalType.TRANSFER)} width={'80px'}>
-            Transfer
-          </SimpleButton>
+          {!(
+            token?.chainId === SupportedChainId.FANTOM &&
+            (token?.symbol === 'LegacyDEI' || token?.symbol === 'bDEI')
+          ) ? (
+            <SimpleButton onClick={() => toggleReviewModal(true, ModalType.SPLIT)} width={'80px'}>
+              Split
+            </SimpleButton>
+          ) : (
+            <SimpleButton disabled width={'80px'}>
+              Split
+            </SimpleButton>
+          )}
+          {!(
+            token?.chainId === SupportedChainId.FANTOM &&
+            (token?.symbol === 'LegacyDEI' || token?.symbol === 'bDEI')
+          ) ? (
+            <SimpleButton onClick={() => toggleReviewModal(true, ModalType.TRANSFER)} width={'80px'}>
+              Transfer
+            </SimpleButton>
+          ) : (
+            <SimpleButton disabled width={'80px'}>
+              Transfer
+            </SimpleButton>
+          )}
           {false && token?.chainId === SupportedChainId.FANTOM ? (
             <SimpleButton width={'140px'} onClick={() => toggleReviewModal(true, ModalType.CLAIM)}>
               Claim DEUS
