@@ -13,6 +13,9 @@ import { ChevronDown as NavToggleIcon } from 'components/Icons'
 import useWeb3React from 'hooks/useWeb3'
 import useRpcChangerCallback from 'hooks/useRpcChangerCallback'
 import useOnOutsideClick from 'hooks/useOnOutsideClick'
+import { ModalType, SimpleButton } from './MigratedTable'
+// import ClaimModal from './ClaimModal'
+// import { XDEUS_TOKEN } from 'constants/tokens'
 
 const MainBoxTitle = styled.span`
   padding: 20px;
@@ -119,52 +122,82 @@ export default function MigrationHeader() {
   const toggle = () => setIsOpen((prev) => !prev)
   useOnOutsideClick(ref, () => setIsOpen(false))
 
-  return (
-    <Row ref={ref}>
-      <MainBoxTitle>Tokens Available to Migrate</MainBoxTitle>
+  const [modalType, setModalType] = useState<ModalType>(ModalType.WITHDRAW)
+  const [isOpenModal, toggleModal] = useState(false)
 
-      {chainId && MigrationChains.includes(chainId) && (
-        <ConnectedChain>
-          {!isMobile && <span>Connected Chain:</span>}
-          <ChainWrap onClick={() => toggle()}>
-            <InlineRow style={{ color: ChainInfo[chainId].color }} active>
-              <Image
-                src={ChainInfo[chainId].logoUrl}
-                width={getImageSize() + 'px'}
-                height={getImageSize() + 'px'}
-                alt={'chain-logo'}
-              />
-              <ChainDiv>{ChainInfo[chainId].label}</ChainDiv>
-            </InlineRow>
-            <NavToggle />
-          </ChainWrap>
-          <div>
-            <InlineModal isOpen={isOpen}>
-              {MigrationChains.map((chain, index) => {
-                return (
-                  <div key={index}>
-                    <InlineRow active={Number(ChainInfo[chain].chainId) === chainId} onClick={() => toggle()}>
-                      <Image
-                        src={ChainInfo[chain].logoUrl}
-                        width={getImageSize() + 'px'}
-                        height={getImageSize() + 'px'}
-                        alt={`${ChainInfo[chain].label}-logo`}
-                      />
-                      <ChainDiv
-                        onClick={() => {
-                          rpcChangerCallback(Number(ChainInfo[chain].chainId))
-                        }}
-                      >
-                        {ChainInfo[chain].label}
-                      </ChainDiv>
-                    </InlineRow>
-                  </div>
-                )
-              })}
-            </InlineModal>
-          </div>
-        </ConnectedChain>
-      )}
-    </Row>
+  function toggleReviewModal(arg: boolean, type: ModalType) {
+    setModalType(type)
+    toggleModal(arg)
+  }
+
+  return (
+    <>
+      <Row ref={ref}>
+        <MainBoxTitle>Claim:</MainBoxTitle>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <SimpleButton width={'140px'} onClick={() => toggleReviewModal(true, ModalType.CLAIM)}>
+            ConvertBDEI
+          </SimpleButton>
+
+          <SimpleButton width={'140px'} onClick={() => toggleReviewModal(true, ModalType.CLAIM)}>
+            ConvertLegacyDEI
+          </SimpleButton>
+
+          <SimpleButton width={'140px'} onClick={() => toggleReviewModal(true, ModalType.CLAIM)}>
+            ConvertXDEUS
+          </SimpleButton>
+        </div>
+
+        {chainId && MigrationChains.includes(chainId) && (
+          <ConnectedChain>
+            {!isMobile && <span>Connected Chain:</span>}
+            <ChainWrap onClick={() => toggle()}>
+              <InlineRow style={{ color: ChainInfo[chainId].color }} active>
+                <Image
+                  src={ChainInfo[chainId].logoUrl}
+                  width={getImageSize() + 'px'}
+                  height={getImageSize() + 'px'}
+                  alt={'chain-logo'}
+                />
+                <ChainDiv>{ChainInfo[chainId].label}</ChainDiv>
+              </InlineRow>
+              <NavToggle />
+            </ChainWrap>
+            <div>
+              <InlineModal isOpen={isOpen}>
+                {MigrationChains.map((chain, index) => {
+                  return (
+                    <div key={index}>
+                      <InlineRow active={Number(ChainInfo[chain].chainId) === chainId} onClick={() => toggle()}>
+                        <Image
+                          src={ChainInfo[chain].logoUrl}
+                          width={getImageSize() + 'px'}
+                          height={getImageSize() + 'px'}
+                          alt={`${ChainInfo[chain].label}-logo`}
+                        />
+                        <ChainDiv
+                          onClick={() => {
+                            rpcChangerCallback(Number(ChainInfo[chain].chainId))
+                          }}
+                        >
+                          {ChainInfo[chain].label}
+                        </ChainDiv>
+                      </InlineRow>
+                    </div>
+                  )
+                })}
+              </InlineModal>
+            </div>
+          </ConnectedChain>
+        )}
+      </Row>
+      {/* <ClaimModal
+        inputToken={XDEUS_TOKEN}
+        // migrationInfo={migrationInfo}
+        isOpen={isOpenModal && modalType === ModalType.CLAIM}
+        toggleModal={(action: boolean) => toggleModal(action)}
+      /> */}
+    </>
   )
 }

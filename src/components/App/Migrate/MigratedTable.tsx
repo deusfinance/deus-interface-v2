@@ -27,8 +27,8 @@ import { MigrationOptions } from 'constants/migrationOptions'
 import ActionModal from './ActionModal'
 import TransferModal from './TransferModal'
 import PreferenceModal from './PreferenceModal'
-import ClaimModal from './ClaimModal'
 import { SupportedChainId } from 'constants/chains'
+import ClaimDeus from './ClaimDeus'
 
 const Wrapper = styled.div`
   display: flex;
@@ -416,6 +416,10 @@ export default function MigratedTable() {
 
   return (
     <div style={{ width: '100%' }}>
+      {/* <MigrationHeader /> */}
+
+      <ClaimDeus />
+
       <TableInputWrapper>
         <InputField value={account ? truncateAddress(account) : ''} disabled placeholder="Wallet address" />
         {account ? (
@@ -596,7 +600,7 @@ export const InlineRow = styled.div<{ active?: boolean }>`
       pointer-events: none;
   `};
 `
-const SimpleButton = styled(BaseButton)<{ width?: string }>`
+export const SimpleButton = styled(BaseButton)<{ width?: string }>`
   width: ${({ width }) => (width ? width : '120px')};
   height: 30px;
   background-color: ${({ theme }) => theme.bg0};
@@ -901,12 +905,6 @@ const TableRowContentWrapper = ({
         migratedToDEUS={migratedToDEUS}
         migratedToSYMM={migratedToSYMM}
         calculatedSymmPerDeus={calculatedSymmPerDeus}
-      />
-      <ClaimModal
-        inputToken={token}
-        migrationInfo={migrationInfo}
-        isOpen={isOpenModal && modalType === ModalType.CLAIM}
-        toggleModal={(action: boolean) => toggleModal(action)}
       />
     </>
   )

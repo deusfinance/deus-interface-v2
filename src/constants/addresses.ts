@@ -272,3 +272,7 @@ export const newDeus_ADDRESS: AddressMap = {
 export const DeusConversion_ADDRESS: AddressMap = {
   [SupportedChainId.FANTOM]: '0x6c9E3B6b6C528ffdF0b5248a2B47069fcEc9e835',
 }
+
+export const ClaimDeus_ADDRESS: AddressMap = {
+  [SupportedChainId.FANTOM]: '0xBB901d8D3fAF0b675e443B2DE743d149bfe68353',
+}

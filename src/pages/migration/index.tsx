@@ -71,8 +71,6 @@ export default function Migrate() {
           <ActionSetter selected={selected} setSelected={setSelected} />
 
           <Wrapper>
-            {/* {selected !== ActionTypes.DASHBOARD && <MigrationHeader />} */}
-
             {/* {selected === ActionTypes.EASY && <CardBox />} */}
             {/* {selected === ActionTypes.MANUAL && <Table />} */}
             {selected === ActionTypes.DASHBOARD && <MigratedTable />}

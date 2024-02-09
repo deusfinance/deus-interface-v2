@@ -19,6 +19,7 @@ import MIGRATOR_ABI from 'constants/abi/MIGRATOR.json'
 // import BRIDGE_ABI from 'constants/abi/BRIDGE.json'
 import AXL_GATEWAY_ABI from 'constants/abi/AXL_GATEWAY.json'
 import DeusConversion from 'constants/abi/DeusConversion.json'
+import ClaimDeus from 'constants/abi/ClaimDeus.json'
 
 import CLQDR_ABI from 'constants/abi/CLQDR_ABI.json'
 import CLQDR_FULL_ABI from 'constants/abi/CLQDR_FULL_ABI.json'
@@ -37,6 +38,7 @@ import {
   // Bridge_ADDRESS,
   AxlGateway_ADDRESS,
   DeusConversion_ADDRESS,
+  ClaimDeus_ADDRESS,
 } from 'constants/addresses'
 import { LiquidityType, StakingType } from 'constants/stakingPools'
 
@@ -166,4 +168,10 @@ export function useDeusConversionContract() {
   const { chainId } = useWeb3React()
   const address = useMemo(() => (chainId ? DeusConversion_ADDRESS[chainId] : undefined), [chainId])
   return useContract(address, DeusConversion)
+}
+
+export function useClaimDeusContract() {
+  const { chainId } = useWeb3React()
+  const address = useMemo(() => (chainId ? ClaimDeus_ADDRESS[chainId] : undefined), [chainId])
+  return useContract(address, ClaimDeus)
 }
