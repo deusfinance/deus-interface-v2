@@ -418,7 +418,7 @@ export default function MigratedTable() {
     <div style={{ width: '100%' }}>
       {/* <MigrationHeader /> */}
 
-      <ClaimDeus />
+      {account && <ClaimDeus />}
 
       <TableInputWrapper>
         <InputField value={account ? truncateAddress(account) : ''} disabled placeholder="Wallet address" />

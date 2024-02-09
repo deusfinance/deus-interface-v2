@@ -948,7 +948,7 @@ export function useClaimDeusCallback(
   }, [account, library, claimDeusContract, claimable_deus_amount, proof])
 
   return useMemo(() => {
-    if (!account || !chainId || !library || !claimDeusContract) {
+    if (!account || !chainId || !library || !claimDeusContract || !claimable_deus_amount || !proof) {
       return {
         state: TransactionCallbackState.INVALID,
         callback: null,
@@ -1033,5 +1033,5 @@ export function useClaimDeusCallback(
           })
       },
     }
-  }, [account, chainId, library, claimDeusContract, constructCall, addTransaction])
+  }, [account, chainId, library, claimDeusContract, claimable_deus_amount, proof, constructCall, addTransaction])
 }
