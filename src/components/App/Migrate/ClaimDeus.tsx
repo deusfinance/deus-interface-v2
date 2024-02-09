@@ -16,6 +16,7 @@ import { ModalMigrationButton } from './ActionModal'
 import { ChainInfo } from 'constants/chainInfo'
 import { SupportedChainId } from 'constants/chains'
 import { useWalletModalToggle } from 'state/application/hooks'
+import { useGetClaimedDeus } from 'hooks/useMigratePage'
 // import ClaimModal from './ClaimModal'
 // import { XDEUS_TOKEN } from 'constants/tokens'
 
@@ -149,6 +150,8 @@ export default function ClaimDeus() {
     }
   }, [claimDeusCallback, claimDeusCallbackError, claimDeusCallbackState])
 
+  const claimedDeus = toBN(useGetClaimedDeus().toString())
+
   function getActionButton(): JSX.Element | null {
     if (!chainId || !account) {
       return <ModalMigrationButton onClick={toggleWalletModal}>Connect Wallet</ModalMigrationButton>
@@ -161,10 +164,30 @@ export default function ClaimDeus() {
           Switch to {ChainInfo[SupportedChainId.FANTOM].label}
         </ModalMigrationButton>
       )
+    } else if (toBN(claimable_deus_amount).minus(claimedDeus).times(1e-18).gt(0)) {
+      return (
+        <CheckButton
+          onClick={
+            toBN(claimable_deus_amount).minus(claimedDeus).times(1e-18).gt(0) ? () => handleClaimDeus() : undefined
+          }
+        >
+          <span>CLAIM {toBN(claimable_deus_amount).minus(claimedDeus).times(1e-18).toFixed(3).toString()}</span>
+        </CheckButton>
+      )
+    } else if (toBN(claimable_deus_amount).minus(claimedDeus).times(1e-18).eq(0)) {
+      return (
+        <CheckButton
+          onClick={
+            toBN(claimable_deus_amount).minus(claimedDeus).times(1e-18).gt(0) ? () => handleClaimDeus() : undefined
+          }
+        >
+          <span>Already Claimed</span>
+        </CheckButton>
+      )
     }
     return (
-      <CheckButton onClick={Number(claimable_deus_amount) > 0 ? () => handleClaimDeus() : undefined}>
-        <span>CLAIM {toBN(claimable_deus_amount).times(1e-18).toFixed(3).toString()}</span>
+      <CheckButton>
+        <span>LOADING</span>
       </CheckButton>
     )
   }
