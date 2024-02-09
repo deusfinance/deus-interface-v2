@@ -13,6 +13,7 @@ import { DEUS_TOKEN, SYMM_TOKEN, XDEUS_TOKEN } from 'constants/tokens'
 import { toHex } from 'utils/hex'
 import { INFO_URL } from 'constants/misc'
 import { makeHttpRequest } from 'utils/http'
+import { toBN } from 'utils/numbers'
 
 export enum TransactionCallbackState {
   INVALID = 'INVALID',
@@ -910,29 +911,14 @@ export function useClaimDeusCallback(
 
   const claimDeusContract = useClaimDeusContract()
 
-  //it should get proof data from the api
-  // const getProofData = useCallback(async () => {
-  //   try {
-  //     const { href: url } = new URL(`/symm/proofs/fantomClaimDeus/${account}/`, INFO_URL)
-  //     return makeHttpRequest(url)
-  //   } catch (err) {
-  //     throw err
-  //   }
-  // }, [account])
-
   const constructCall = useCallback(() => {
     try {
       if (!account || !library || !claimDeusContract) {
         throw new Error('Missing dependencies.')
       }
 
-      // const proofResponse = getProofData()
-      // const claimable_deus_amount = proofResponse['claimable_deus_amount']
-      // const proof = proofResponse['proof']
-      // console.log({ proofResponse })
-
       const methodName = 'claim'
-      const args = [claimable_deus_amount, proof]
+      const args = [toBN(claimable_deus_amount).toString(), proof]
       console.log(args)
 
       return {
