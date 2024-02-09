@@ -12,6 +12,10 @@ import { INFO_URL } from 'constants/misc'
 import { makeHttpRequest } from 'utils/http'
 import { toBN } from 'utils/numbers'
 import { BaseButton } from 'components/Button'
+import { ModalMigrationButton } from './ActionModal'
+import { ChainInfo } from 'constants/chainInfo'
+import { SupportedChainId } from 'constants/chains'
+import { useWalletModalToggle } from 'state/application/hooks'
 // import ClaimModal from './ClaimModal'
 // import { XDEUS_TOKEN } from 'constants/tokens'
 
@@ -72,6 +76,7 @@ export const getImageSize = () => {
 
 export default function ClaimDeus() {
   const { chainId, account } = useWeb3React()
+  const toggleWalletModal = useWalletModalToggle()
   const rpcChangerCallback = useRpcChangerCallback()
   const [awaitingConfirmation, setAwaitingConfirmation] = useState(false)
   const ref = useRef(null)
@@ -108,7 +113,6 @@ export default function ClaimDeus() {
     if (userData?.status === 'error') {
       setError(true)
     } else {
-      // setUserData(rest)
       setError(false)
       setClaimable_deus_amount(userData['claimable_deus_amount'])
       setProof(userData['proof'])
@@ -145,15 +149,30 @@ export default function ClaimDeus() {
     }
   }, [claimDeusCallback, claimDeusCallbackError, claimDeusCallbackState])
 
+  function getActionButton(): JSX.Element | null {
+    if (!chainId || !account) {
+      return <ModalMigrationButton onClick={toggleWalletModal}>Connect Wallet</ModalMigrationButton>
+    } else if (chainId !== SupportedChainId.FANTOM) {
+      return (
+        <ModalMigrationButton
+          style={{ background: ChainInfo[SupportedChainId.FANTOM].color, width: '200px', height: '30px' }}
+          onClick={() => rpcChangerCallback(Number(ChainInfo[SupportedChainId.FANTOM].chainId))}
+        >
+          Switch to {ChainInfo[SupportedChainId.FANTOM].label}
+        </ModalMigrationButton>
+      )
+    }
+    return (
+      <CheckButton onClick={Number(claimable_deus_amount) > 0 ? () => handleClaimDeus() : undefined}>
+        <span>CLAIM {toBN(claimable_deus_amount).times(1e-18).toFixed(3).toString()}</span>
+      </CheckButton>
+    )
+  }
+
   return (
     <Row ref={ref}>
       <MainBoxTitle>Claim DEUS:</MainBoxTitle>
-
-      <div style={{ display: 'flex' }}>
-        <CheckButton onClick={Number(claimable_deus_amount) > 0 ? () => handleClaimDeus() : undefined}>
-          <span>CLAIM {toBN(claimable_deus_amount).times(1e-18).toFixed(3).toString()}</span>
-        </CheckButton>
-      </div>
+      <div style={{ display: 'flex' }}>{getActionButton()}</div>
     </Row>
   )
 }
