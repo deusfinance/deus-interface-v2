@@ -174,19 +174,21 @@ export default function ClaimDeus() {
           <span>CLAIM {toBN(claimable_deus_amount).minus(claimedDeus).times(1e-18).toFixed(3).toString()}</span>
         </CheckButton>
       )
+    } else if (toBN(claimable_deus_amount).times(1e-18).eq(0)) {
+      return (
+        <CheckButton style={{ cursor: 'default' }}>
+          <span>Nothing to Claim</span>
+        </CheckButton>
+      )
     } else if (toBN(claimable_deus_amount).minus(claimedDeus).times(1e-18).eq(0)) {
       return (
-        <CheckButton
-          onClick={
-            toBN(claimable_deus_amount).minus(claimedDeus).times(1e-18).gt(0) ? () => handleClaimDeus() : undefined
-          }
-        >
+        <CheckButton style={{ cursor: 'default' }}>
           <span>Already Claimed</span>
         </CheckButton>
       )
     }
     return (
-      <CheckButton>
+      <CheckButton style={{ cursor: 'default' }}>
         <span>LOADING</span>
       </CheckButton>
     )
