@@ -18,7 +18,7 @@ import TokenBox from './TokenBox'
 import { Label } from 'recharts'
 import { formatBalance, formatNumber, toBN } from 'utils/numbers'
 import { Token } from '@sushiswap/core-sdk'
-import { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { makeHttpRequest } from 'utils/http'
 import { INFO_URL } from 'constants/misc'
 import useWeb3React from 'hooks/useWeb3'
@@ -28,6 +28,7 @@ import { useWalletModalToggle } from 'state/application/hooks'
 import { Tokens } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { ChainInfo } from 'constants/chainInfo'
+import { CustomTooltip2, InfoIcon, ToolTipWrap } from './HeaderBox'
 
 const Wrapper = styled.div`
   display: flex;
@@ -247,7 +248,22 @@ export function getAllUpperRow() {
     <UpperRow>
       <div style={{ display: 'flex', width: '100%', position: 'relative' }}>
         <TableTitle width="25%">Token</TableTitle>
-        <TableTitle width="20%">Snapshot Amount</TableTitle>
+        <TableTitle width="20%">
+          Snapshot Amount{' '}
+          <React.Fragment>
+            <a data-tip data-for={'multiline-id4'}>
+              <InfoIcon size={12} style={{ color: 'gray' }} />
+            </a>
+            <CustomTooltip2 id="multiline-id4" arrowColor={'#bea29c'}>
+              <ToolTipWrap>
+                <span style={{ color: 'white' }}>
+                  The amount, applicable to the Fantom chain, is the lesser of the June 7 snapshot balance or the total
+                  you have migrated.
+                </span>
+              </ToolTipWrap>
+            </CustomTooltip2>
+          </React.Fragment>
+        </TableTitle>
         <TableTitle width="20%">Claimable DEUS</TableTitle>
       </div>
     </UpperRow>
@@ -255,7 +271,7 @@ export function getAllUpperRow() {
 }
 
 export default function ClaimWrap() {
-  const { chainId, account } = useWeb3React()
+  const { account } = useWeb3React()
   const [claimable_deus_amount, setClaimable_deus_amount] = useState<any>(undefined)
   const [proof, setProof] = useState<any>(undefined)
   const [snapshotData, setSnapshotData] = useState<any>(undefined)
