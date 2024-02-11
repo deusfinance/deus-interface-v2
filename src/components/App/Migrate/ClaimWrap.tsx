@@ -297,7 +297,7 @@ export default function ClaimWrap() {
     } else {
       setClaimable_deus_amount(userData['claimable_deus_amount'])
       setProof(userData['proof'])
-      if (userData['user_data']) setSnapshotData(userData['user_data']['snapshot'])
+      if (userData['user_data']) setSnapshotData(userData['user_data'])
       else setSnapshotData(undefined)
       setError(false)
     }
@@ -339,11 +339,11 @@ export default function ClaimWrap() {
                 <TableRowContainer>
                   <TableRowContentWrapper
                     token={Tokens['bDEI_TOKEN'][SupportedChainId.FANTOM]}
-                    amount={snapshotData.bDEI}
+                    amount={snapshotData.bDEI_total}
                   />
                   <TableRowContentWrapper
                     token={Tokens['LEGACY_DEI'][SupportedChainId.FANTOM]}
-                    amount={snapshotData.legacyDEI}
+                    amount={snapshotData.legacyDEI_total}
                   />
                 </TableRowContainer>
               </ZebraStripesRow>
