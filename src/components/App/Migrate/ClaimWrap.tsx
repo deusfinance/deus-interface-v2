@@ -339,11 +339,19 @@ export default function ClaimWrap() {
                 <TableRowContainer>
                   <TableRowContentWrapper
                     token={Tokens['bDEI_TOKEN'][SupportedChainId.FANTOM]}
-                    amount={snapshotData.bDEI_total}
+                    amount={
+                      Number(snapshotData.bDEI_total) < Number(snapshotData?.snapshot?.bDEI)
+                        ? snapshotData.bDEI_total
+                        : snapshotData?.snapshot?.bDEI
+                    }
                   />
                   <TableRowContentWrapper
                     token={Tokens['LEGACY_DEI'][SupportedChainId.FANTOM]}
-                    amount={snapshotData.legacyDEI_total}
+                    amount={
+                      Number(snapshotData.legacyDEI_total) < Number(snapshotData?.snapshot?.legacyDEI)
+                        ? snapshotData.legacyDEI_total
+                        : snapshotData?.snapshot?.legacyDEI
+                    }
                   />
                 </TableRowContainer>
               </ZebraStripesRow>
