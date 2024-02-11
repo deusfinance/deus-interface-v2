@@ -8,6 +8,7 @@ import { useClaimDeusCallback, useSignMessage } from 'hooks/useMigrateCallback'
 import useWeb3React from 'hooks/useWeb3'
 import { ExternalLink } from 'components/Link'
 import toast from 'react-hot-toast'
+import { toBN } from 'utils/numbers'
 
 const MainModal = styled(Modal)`
   display: flex;
@@ -87,7 +88,7 @@ export default function ClaimConfirmationModal({
   const { account } = useWeb3React()
   const [signature, setSignature] = useState<string | undefined>(undefined)
   const [isFirstCheckboxChecked, setIsFirstCheckboxChecked] = useState(false)
-  const [isSecondCheckboxChecked, setIsSecondCheckboxChecked] = useState(false)
+  // const [isSecondCheckboxChecked, setIsSecondCheckboxChecked] = useState(false)
 
   const {
     state: signCallbackState,
@@ -163,7 +164,10 @@ export default function ClaimConfirmationModal({
           claims, there won&apos;t be any further / future claim available.
         </p>
 
-        <p>- You receive 20,00 DEUS directly after claiming, now in 0x77d9c21d45f6a4ea39dbca42cac67eab7a7f8701</p>
+        <p>
+          - You receive {toBN(claimable_deus_amount).times(1e-18).toFixed(3).toString()} DEUS directly after claiming,
+          now in {account}
+        </p>
 
         <p>- You need to sign two transactions with your wallet.</p>
 
@@ -199,7 +203,7 @@ export default function ClaimConfirmationModal({
           </label>
         </div>
 
-        <div>
+        {/* <div>
           <input
             type="checkbox"
             id="secondCheckbox"
@@ -209,13 +213,13 @@ export default function ClaimConfirmationModal({
           <label htmlFor="secondCheckbox">
             <span> I want to receive funds on a different address</span>
           </label>
-        </div>
+        </div> */}
       </MainWrap>
 
       <ButtonsWrap>
         <Button onClick={() => toggleModal(false)}>Reject</Button>
 
-        {!isSecondCheckboxChecked || !isFirstCheckboxChecked ? (
+        {!isFirstCheckboxChecked ? (
           <Button disable isAccept onClick={() => toast.error('Check the Boxes')}>
             Confirm
           </Button>
