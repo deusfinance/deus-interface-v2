@@ -28,7 +28,6 @@ import ActionModal from './ActionModal'
 import TransferModal from './TransferModal'
 import PreferenceModal from './PreferenceModal'
 import { SupportedChainId } from 'constants/chains'
-import ClaimDeus from './ClaimDeus'
 
 const Wrapper = styled.div`
   display: flex;
@@ -265,37 +264,33 @@ export default function MigratedTable() {
 
   const earlyMigrationDeadline = useGetEarlyMigrationDeadline()
 
-  const getAllMigrationData = useCallback(async (signature: string) => {
+  const getAllMigrationData = useCallback(async () => {
     try {
-      const res = await makeHttpRequest(`https://info.deus.finance/symm/v1/user-info?signature=${signature}`)
+      const res = await makeHttpRequest(`https://info.deus.finance/symm/v1/user-info?address=${account?.toString()}`)
       return res
     } catch (error) {
       return null
     }
-  }, [])
+  }, [account])
 
-  const handleAllMigration = useCallback(
-    async (signature: string) => {
-      setTableDataLoading(true)
-      const rest = await getAllMigrationData(signature)
-      if (rest?.status === 'error') {
-        setAllMigrationData(null)
-        setHasData(false)
-      } else if (rest) {
-        const values = Object.entries(rest)
-        setAllMigrationData(values)
-        setHasData(true)
-      }
-      setTableDataLoading(false)
-    },
-    [getAllMigrationData]
-  )
+  const handleAllMigration = useCallback(async () => {
+    setTableDataLoading(true)
+    const rest = await getAllMigrationData()
+    if (rest?.status === 'error') {
+      setAllMigrationData(null)
+      setHasData(false)
+    } else if (rest) {
+      const values = Object.entries(rest)
+      setAllMigrationData(values)
+      setHasData(true)
+    }
+    setTableDataLoading(false)
+  }, [getAllMigrationData])
 
   const handleCheck = useCallback(async () => {
     setChecked(true)
-    const signature = localStorage.getItem('migrationTermOfServiceSignature' + account?.toString())
-    if (signature) handleAllMigration(signature)
-  }, [account, handleAllMigration])
+    handleAllMigration()
+  }, [handleAllMigration])
 
   useEffect(() => {
     console.log('account changed')
@@ -418,8 +413,6 @@ export default function MigratedTable() {
     <div style={{ width: '100%' }}>
       {/* <MigrationHeader /> */}
 
-      {account && <ClaimDeus />}
-
       <TableInputWrapper>
         <InputField value={account ? truncateAddress(account) : ''} disabled placeholder="Wallet address" />
         {account ? (
@@ -509,11 +502,11 @@ export default function MigratedTable() {
   )
 }
 
-const TableRowContainer = styled.div`
+export const TableRowContainer = styled.div`
   width: 100%;
   display: table;
 `
-const TableContent = styled.div`
+export const TableContent = styled.div`
   display: flex;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -525,7 +518,7 @@ const TableContent = styled.div`
     padding-inline: 12px;
   `};
 `
-const TokenContainer = styled(Cell)`
+export const TokenContainer = styled(Cell)`
   width: 25%;
   & > div {
     height: 100%;
@@ -547,7 +540,7 @@ export const SmallChainWrap = styled(Row)`
     margin-top: 1px;
   }
 `
-const Label = styled.p`
+export const Label = styled.p`
   display: none;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display:inline-block;
@@ -555,7 +548,7 @@ const Label = styled.p`
     color:#7F8082;
   `};
 `
-const MyMigratedAmount = styled(Cell)`
+export const MyMigratedAmount = styled(Cell)`
   width: 20%;
   margin-block: auto;
   height: 100%;
@@ -573,7 +566,7 @@ const MyMigratedAmount = styled(Cell)`
     }
   `};
 `
-const ButtonWrap = styled(Cell)`
+export const ButtonWrap = styled(Cell)`
   width: 30%;
   margin-block: auto;
   height: 100%;
@@ -714,7 +707,6 @@ const TableRowContent = ({
 
   useEffect(() => {
     handleToken()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const balancedRatio = useBalancedRatio()

@@ -102,3 +102,19 @@ export function formatNumber(n?: number | string): string {
   if (numberValue !== 0 && Math.abs(numberValue) < 1) return n.toString()
   return numberValue.toLocaleString('en-US')
 }
+
+export function generateUniqueID() {
+  if (typeof window === 'undefined') {
+    // The window object is not available, handle accordingly
+    // For example, return a placeholder or generate the ID in another way
+    return '0x'
+  }
+
+  // Generate a random array of 32 bytes
+  const array = new Uint8Array(32)
+  window.crypto.getRandomValues(array)
+
+  // Convert the byte array to a hexadecimal string
+  const uniqueID = Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('')
+  return '0x' + uniqueID
+}

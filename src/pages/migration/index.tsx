@@ -1,16 +1,15 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { isMobile } from 'react-device-detect'
 
-// import Table from 'components/App/Migrate/Table'
 import ActionSetter, { ActionTypes } from 'components/App/Migrate/ActionSetter'
-// import CardBox from 'components/App/Migrate/CardBox'
 import HeaderBox from 'components/App/Migrate/HeaderBox'
-// import MigrationHeader from 'components/App/Migrate/MigrationHeader'
 import { MigrationWrap } from 'context/Migration'
-import ConfirmationModal from 'components/App/Migrate/ConfirmationModal'
 import MigratedTable from 'components/App/Migrate/MigratedTable'
-import useWeb3React from 'hooks/useWeb3'
+import ClaimWrap from 'components/App/Migrate/ClaimWrap'
+// import Table from 'components/App/Migrate/Table'
+// import CardBox from 'components/App/Migrate/CardBox'
+// import MigrationHeader from 'components/App/Migrate/MigrationHeader'
 
 export const Container = styled.div`
   display: flex;
@@ -52,16 +51,16 @@ export const getImageSize = () => {
 }
 
 export default function Migrate() {
-  const { account } = useWeb3React()
-  const [selected, setSelected] = useState<ActionTypes>(ActionTypes.DASHBOARD)
-  const showModal = useMemo(() => {
-    return localStorage.getItem('migrationTermOfServiceSignature' + account?.toString()) ? false : true
-  }, [account])
-  const [isOpenReviewModal, toggleReviewModal] = useState(showModal && !!account)
+  // const { account } = useWeb3React()
+  const [selected, setSelected] = useState<ActionTypes>(ActionTypes.CLAIM)
+  // const showModal = useMemo(() => {
+  //   return localStorage.getItem('migrationTermOfServiceSignature' + account?.toString()) ? false : true
+  // }, [account])
+  // const [isOpenReviewModal, toggleReviewModal] = useState(showModal && !!account)
 
-  useEffect(() => {
-    if (account) toggleReviewModal(showModal)
-  }, [account, showModal])
+  // useEffect(() => {
+  //   if (account) toggleReviewModal(showModal)
+  // }, [account, showModal])
 
   return (
     <>
@@ -73,11 +72,12 @@ export default function Migrate() {
           <Wrapper>
             {/* {selected === ActionTypes.EASY && <CardBox />} */}
             {/* {selected === ActionTypes.MANUAL && <Table />} */}
+            {selected === ActionTypes.CLAIM && <ClaimWrap />}
             {selected === ActionTypes.DASHBOARD && <MigratedTable />}
           </Wrapper>
         </MigrationWrap>
       </Container>
-      <ConfirmationModal isOpen={isOpenReviewModal} toggleModal={(action: boolean) => toggleReviewModal(action)} />
+      {/* <ConfirmationModal isOpen={isOpenReviewModal} toggleModal={(action: boolean) => toggleReviewModal(action)} /> */}
     </>
   )
 }
