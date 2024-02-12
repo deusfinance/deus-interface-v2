@@ -155,8 +155,14 @@ export default function ClaimConfirmationModal({
 
       <MainWrap>
         <p>
-          By signing this page, you agree to the terms and conditions outlined in this document. Here is a guide to help
-          you.
+          By signing this page, you agree to the terms and conditions outlined in this document. Here is a{' '}
+          <ExternalLink
+            href={'https://docs.deus.finance/contracts/reimbursement-guide'}
+            style={{ textDecoration: 'underline' }}
+          >
+            guide
+          </ExternalLink>{' '}
+          to help you.
         </p>
 
         <p>
@@ -217,15 +223,15 @@ export default function ClaimConfirmationModal({
       </MainWrap>
 
       <ButtonsWrap>
-        <Button onClick={() => toggleModal(false)}>Reject</Button>
+        {/* <Button onClick={() => toggleModal(false)}>Reject</Button> */}
 
         {!isFirstCheckboxChecked ? (
-          <Button disable isAccept onClick={() => toast.error('Check the Boxes')}>
-            Confirm
+          <Button disable isAccept onClick={() => toast.error('Check the Box')}>
+            Sign & Confirm
           </Button>
         ) : (
           <Button isAccept onClick={() => handleCheck()}>
-            Confirm
+            Sign & Confirm
           </Button>
         )}
       </ButtonsWrap>
