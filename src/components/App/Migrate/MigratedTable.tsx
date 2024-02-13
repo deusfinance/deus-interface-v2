@@ -235,8 +235,8 @@ export interface IMigrationInfo {
   user: string
   tokenAddress: string
   amount: number
-  timestamp: number
-  block: number
+  // timestamp: number
+  // block: number
   migrationPreference: number
   indexInChain: number
 }
@@ -469,8 +469,8 @@ export default function MigratedTable() {
                         user: migrationInfo[0],
                         tokenAddress: migrationInfo[1],
                         amount: migrationInfo[2],
-                        timestamp: migrationInfo[3],
-                        block: migrationInfo[4],
+                        // timestamp: migrationInfo[3],
+                        // block: migrationInfo[4],
                         migrationPreference: migrationInfo[5],
                         indexInChain: index,
                       }}

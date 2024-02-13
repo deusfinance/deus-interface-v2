@@ -297,7 +297,7 @@ export default function ClaimWrap() {
     } else {
       setClaimable_deus_amount(userData['claimable_deus_amount'])
       setProof(userData['proof'])
-      if (userData['user_data']) setSnapshotData(userData['user_data'])
+      if (userData['user_data']) setSnapshotData(userData['user_data']['fantom'])
       else setSnapshotData(undefined)
       setError(false)
     }
