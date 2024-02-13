@@ -12,7 +12,6 @@ import {
   SmallChainWrap,
   TableContent,
   TableRowContainer,
-  TokenContainer,
 } from './MigratedTable'
 import TokenBox from './TokenBox'
 import { Label } from 'recharts'
@@ -233,6 +232,18 @@ const WalletConnectButton = styled(PrimaryButtonWide)`
   max-width: 160px;
   max-height: 32px;
 `
+export const TokenContainer = styled(Cell)`
+  width: 38%;
+  & > div {
+    height: 100%;
+  }
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  `};
+`
 export interface IMigrationInfo {
   user: string
   tokenAddress: string
@@ -247,7 +258,7 @@ export function getAllUpperRow() {
   return (
     <UpperRow>
       <div style={{ display: 'flex', width: '100%', position: 'relative' }}>
-        <TableTitle width="25%">Token</TableTitle>
+        <TableTitle width="35%">Token</TableTitle>
         <TableTitle width="20%">
           Snapshot Amount{' '}
           <React.Fragment>
@@ -297,7 +308,7 @@ export default function ClaimWrap() {
     } else {
       setClaimable_deus_amount(userData['claimable_deus_amount'])
       setProof(userData['proof'])
-      if (userData['user_data']) setSnapshotData(userData['user_data']['fantom'])
+      if (userData['user_data']) setSnapshotData(userData['user_data'])
       else setSnapshotData(undefined)
       setError(false)
     }
@@ -330,7 +341,7 @@ export default function ClaimWrap() {
 
       {!error && snapshotData && <LargeContent>{getAllUpperRow()}</LargeContent>}
 
-      {!error && snapshotData && (
+      {!error && snapshotData && snapshotData['fantom'] && snapshotData['arbitrum'] && (
         <Wrapper>
           <TableWrapper>
             <tbody>
@@ -339,19 +350,22 @@ export default function ClaimWrap() {
                 <TableRowContainer>
                   <TableRowContentWrapper
                     token={Tokens['bDEI_TOKEN'][SupportedChainId.FANTOM]}
-                    amount={
-                      Number(snapshotData.bDEI_total) < Number(snapshotData?.snapshot?.bDEI)
-                        ? snapshotData.bDEI_total
-                        : snapshotData?.snapshot?.bDEI
-                    }
+                    amount={(
+                      (Number(snapshotData['fantom']['bDEI']['1']) < Number(snapshotData['fantom']?.snapshot?.bDEI)
+                        ? Number(snapshotData['fantom']['bDEI']['1'])
+                        : Number(snapshotData['fantom']?.snapshot?.bDEI)) +
+                      Number(snapshotData['arbitrum']['bDEI']['1'])
+                    ).toString()}
                   />
                   <TableRowContentWrapper
                     token={Tokens['LEGACY_DEI'][SupportedChainId.FANTOM]}
-                    amount={
-                      Number(snapshotData.legacyDEI_total) < Number(snapshotData?.snapshot?.legacyDEI)
-                        ? snapshotData.legacyDEI_total
-                        : snapshotData?.snapshot?.legacyDEI
-                    }
+                    amount={(
+                      (Number(snapshotData['fantom']['legacyDEI']['1']) <
+                      Number(snapshotData['fantom']?.snapshot?.legacyDEI)
+                        ? Number(snapshotData['fantom']['legacyDEI']['1'])
+                        : Number(snapshotData['fantom']?.snapshot?.legacyDEI)) +
+                      Number(snapshotData['arbitrum']['legacyDEI']['1'])
+                    ).toString()}
                   />
                 </TableRowContainer>
               </ZebraStripesRow>
@@ -387,6 +401,16 @@ const TableRowContentWrapper = ({ token, amount }: { token: Token; amount: strin
                   width={getImageSize() + 'px'}
                   height={getImageSize() + 'px'}
                   alt={`${ChainInfo[SupportedChainId.FANTOM].label}-logo`}
+                />{' '}
+                &{' '}
+                <span style={{ color: ChainInfo[SupportedChainId.ARBITRUM].color }}>
+                  {ChainInfo[SupportedChainId.ARBITRUM].label}{' '}
+                </span>
+                <Image
+                  src={ChainInfo[SupportedChainId.ARBITRUM].logoUrl}
+                  width={getImageSize() + 'px'}
+                  height={getImageSize() + 'px'}
+                  alt={`${ChainInfo[SupportedChainId.ARBITRUM].label}-logo`}
                 />
               </div>
             </InlineRow>

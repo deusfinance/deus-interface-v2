@@ -28,6 +28,7 @@ import ActionModal from './ActionModal'
 import TransferModal from './TransferModal'
 import PreferenceModal from './PreferenceModal'
 import { SupportedChainId } from 'constants/chains'
+import { ActionTypes } from './ActionSetter'
 
 const Wrapper = styled.div`
   display: flex;
@@ -239,6 +240,7 @@ export interface IMigrationInfo {
   // block: number
   migrationPreference: number
   indexInChain: number
+  claimStatus: boolean
 }
 
 function getAllUpperRow() {
@@ -254,7 +256,7 @@ function getAllUpperRow() {
   )
 }
 
-export default function MigratedTable() {
+export default function MigratedTable({ setSelected }: { setSelected: (value: ActionTypes) => void }) {
   const { account } = useWeb3React()
   const [hasData, setHasData] = useState(false)
   const [checked, setChecked] = useState(false)
@@ -472,10 +474,12 @@ export default function MigratedTable() {
                         // timestamp: migrationInfo[3],
                         // block: migrationInfo[4],
                         migrationPreference: migrationInfo[5],
+                        claimStatus: migrationInfo[6],
                         indexInChain: index,
                       }}
                       chain={+key}
                       isEarly={migrationInfo[3] <= Number(earlyMigrationDeadline)}
+                      setSelected={setSelected}
                     />
                   </React.Fragment>
                 ))
@@ -638,14 +642,16 @@ function TableRow({
   migrationInfo,
   chain,
   isEarly,
+  setSelected,
 }: {
   migrationInfo: IMigrationInfo
   chain: number
   isEarly: boolean
+  setSelected: (value: ActionTypes) => void
 }) {
   return (
     <ZebraStripesRow>
-      <TableRowContent migrationInfo={migrationInfo} chain={chain} isEarly={isEarly} />
+      <TableRowContent migrationInfo={migrationInfo} chain={chain} isEarly={isEarly} setSelected={setSelected} />
     </ZebraStripesRow>
   )
 }
@@ -687,10 +693,12 @@ const TableRowContent = ({
   migrationInfo,
   chain,
   isEarly,
+  setSelected,
 }: {
   migrationInfo: IMigrationInfo
   chain: number
   isEarly: boolean
+  setSelected: (value: ActionTypes) => void
 }) => {
   const { tokenAddress } = migrationInfo
   const [token, setToken] = useState<Token | undefined>(undefined)
@@ -728,6 +736,7 @@ const TableRowContent = ({
             migratedToSYMM={migratedToSYMM}
             migrationInfo={migrationInfo}
             isEarly={isEarly}
+            setSelected={setSelected}
           />
         </TableRowContainer>
       )}
@@ -749,12 +758,14 @@ const TableRowContentWrapper = ({
   migratedToSYMM,
   migrationInfo,
   isEarly,
+  setSelected,
 }: {
   token: Token
   migratedToDEUS: BigNumber
   migratedToSYMM: BigNumber
   migrationInfo: IMigrationInfo
   isEarly: boolean
+  setSelected: (value: ActionTypes) => void
 }) => {
   const [modalType, setModalType] = useState<ModalType>(ModalType.WITHDRAW)
   const [isOpenModal, toggleModal] = useState(false)
@@ -765,7 +776,7 @@ const TableRowContentWrapper = ({
   }
 
   const migrationContextData = useMigrationData()
-  const { amount: migratedAmount } = migrationInfo
+  const { amount: migratedAmount, claimStatus, migrationPreference } = migrationInfo
   const chain = token?.chainId
 
   const calculatedSymmPerDeus = useMemo(
@@ -857,10 +868,24 @@ const TableRowContentWrapper = ({
               Transfer
             </SimpleButton>
           )}
-          {false && token?.chainId === SupportedChainId.FANTOM ? (
-            <SimpleButton width={'140px'} onClick={() => toggleReviewModal(true, ModalType.CLAIM)}>
-              Claim DEUS
-            </SimpleButton>
+          {(token?.symbol === Tokens['LEGACY_DEI'][SupportedChainId.FANTOM]?.symbol ||
+            token?.symbol === Tokens['bDEI_TOKEN'][SupportedChainId.FANTOM]?.symbol) &&
+          (token?.chainId === SupportedChainId.FANTOM || token?.chainId === SupportedChainId.ARBITRUM) &&
+          migrationPreference === MigrationType.DEUS ? (
+            !claimStatus ? (
+              <SimpleButton width={'140px'} onClick={() => setSelected(ActionTypes.CLAIM)}>
+                Claim DEUS
+              </SimpleButton>
+            ) : (
+              <SimpleButton
+                disabled
+                style={{ background: 'green', color: 'white' }}
+                width={'140px'}
+                onClick={() => undefined}
+              >
+                Already Claimed
+              </SimpleButton>
+            )
           ) : (
             <SimpleButton disabled width={'140px'}>
               Claim not started

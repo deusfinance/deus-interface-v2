@@ -73,7 +73,7 @@ export default function Migrate() {
             {/* {selected === ActionTypes.EASY && <CardBox />} */}
             {/* {selected === ActionTypes.MANUAL && <Table />} */}
             {selected === ActionTypes.CLAIM && <ClaimWrap />}
-            {selected === ActionTypes.DASHBOARD && <MigratedTable />}
+            {selected === ActionTypes.DASHBOARD && <MigratedTable setSelected={setSelected} />}
           </Wrapper>
         </MigrationWrap>
       </Container>
