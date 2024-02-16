@@ -199,7 +199,7 @@ export default function ClaimConfirmationModal({
               and{' '}
               <ExternalLink
                 href={
-                  'https://docs.google.com/document/d/1aMosmYcePwTklGdiGa-jMB1fhvkko2BT/edit?usp=sharing&ouid=113697690915551028904&rtpof=true&sd=true'
+                  'https://docs.deus.finance/contracts/reimbursement-guide/reimbursement-process/waiver-and-release-letter'
                 }
                 style={{ textDecoration: 'underline' }}
               >
