@@ -125,27 +125,27 @@ export default function ClaimConfirmationModal({
       // toggleReviewModal(true)
       const txHash = await claimDeusCallback()
       // setAwaitingConfirmation(false)
-      // toggleModal(false)
+      toggleModal(false)
       console.log({ txHash })
     } catch (e) {
       // setAwaitingConfirmation(false)
-      // toggleModal(false)
+      toggleModal(false)
       if (e instanceof Error) {
       } else {
         console.error(e)
       }
     }
-  }, [claimDeusCallback, claimDeusCallbackError, claimDeusCallbackState])
+  }, [claimDeusCallback, claimDeusCallbackError, claimDeusCallbackState, toggleModal])
 
-  const handleCheck = useCallback(async () => {
-    handleSign().then((response) => {
-      if (response) {
-        setSignature(response)
-        handleClaimDeus()
-        toggleModal(false)
-      }
-    })
-  }, [handleClaimDeus, handleSign, toggleModal])
+  // const handleCheck = useCallback(async () => {
+  //   handleSign().then((response) => {
+  //     if (response) {
+  //       setSignature(response)
+  //       handleClaimDeus()
+  //       toggleModal(false)
+  //     }
+  //   })
+  // }, [handleClaimDeus, handleSign, toggleModal])
 
   return (
     <MainModal isOpen={isOpen} onBackgroundClick={() => toggleModal(false)} onEscapeKeydown={() => toggleModal(false)}>
@@ -231,7 +231,7 @@ export default function ClaimConfirmationModal({
             Sign & Confirm
           </Button>
         ) : (
-          <Button isAccept onClick={() => handleCheck()}>
+          <Button isAccept onClick={() => handleClaimDeus()}>
             Sign & Confirm
           </Button>
         )}
