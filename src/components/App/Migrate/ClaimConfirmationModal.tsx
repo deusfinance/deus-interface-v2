@@ -185,8 +185,9 @@ export default function ClaimConfirmationModal({
             id="firstCheckbox"
             checked={isFirstCheckboxChecked}
             onChange={(e) => setIsFirstCheckboxChecked(e.target.checked)}
+            style={{ width: '16px', height: '16px' }}
           />
-          <label htmlFor="firstCheckbox">
+          <label htmlFor="firstCheckbox" style={{ paddingTop: '5px' }}>
             <span>
               {' '}
               I went through the{' '}
