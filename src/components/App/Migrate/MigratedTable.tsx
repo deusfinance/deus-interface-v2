@@ -13,11 +13,12 @@ import { BN_ZERO, formatBalance, formatNumber, toBN } from 'utils/numbers'
 import BigNumber from 'bignumber.js'
 import { formatUnits } from '@ethersproject/units'
 import { DeusText } from '../Stake/RewardBox'
-import { CustomTooltip2, InfoIcon, SymmText, ToolTipWrap } from './HeaderBox'
+// import { CustomTooltip2, InfoIcon, SymmText, ToolTipWrap } from './HeaderBox'
+import { SymmText } from './HeaderBox'
 import { InputField } from 'components/Input'
 import { BaseButton, PrimaryButtonWide } from 'components/Button'
 import { RowBetween } from 'components/Row'
-import { ArrowRight } from 'react-feather'
+// import { ArrowRight } from 'react-feather'
 import { useBalancedRatio, useGetEarlyMigrationDeadline } from 'hooks/useMigratePage'
 import { truncateAddress } from 'utils/account'
 import { Tokens } from 'constants/tokens'
@@ -442,7 +443,7 @@ export default function MigratedTable({ setSelected }: { setSelected: (value: Ac
           </WalletConnectButton>
         )}
       </TableInputWrapper>
-      {hasData && (
+      {/* {hasData && (
         <TotalMigrationAmountWrapper>
           <p>My Total Migrated Amount to SYMM:</p>
           <div>
@@ -471,7 +472,7 @@ export default function MigratedTable({ setSelected }: { setSelected: (value: Ac
             </React.Fragment>
           </div>
         </TotalMigrationAmountWrapper>
-      )}
+      )} */}
       {hasData && <LargeContent>{getAllUpperRow()}</LargeContent>}
       <Wrapper>
         <TableWrapper>
