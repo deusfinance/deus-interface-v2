@@ -1,3 +1,4 @@
+import { generateUniqueID } from 'utils/numbers'
 import { RetryOptions } from 'utils/retry'
 
 export const NETWORK_CONTEXT_NAME = 'NETWORK'
@@ -35,3 +36,9 @@ I confirm that all the information provided during this process is accurate, com
 I also confirm to accept the general Terms of Service of DEUS (https://docs.deus.finance/contracts/legals-and-disclaimer/terms-of-service) confirming that I have read and understood them.
 
 I commit to comply with all laws and regulations relevant to the use of this service.`
+
+const uniqueID = generateUniqueID()
+
+export const claimTermOfServiceSignatureMessage = `I acknowledge I have read the waiver document at https://docs.deus.finance/contracts/reimbursement-guide/reimbursement-process/waiver-document and agree to the terms outlined. 
+
+This request has an unique ID ${uniqueID}`

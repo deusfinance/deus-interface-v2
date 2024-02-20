@@ -4,12 +4,13 @@ import { formatUnits } from '@ethersproject/units'
 import BigNumber from 'bignumber.js'
 
 import { useSingleContractMultipleMethods } from 'state/multicall/hooks'
-import { useMigratorContract } from './useContract'
+import { useClaimDeusContract, useMigratorContract } from './useContract'
 import { BN_ZERO, toBN } from 'utils/numbers'
 import { useMigrationData } from 'context/Migration'
 import { DEUS_ADDRESS } from 'constants/addresses'
 import { MigrationType } from 'components/App/Migrate/Table'
 import { SupportedChainId } from 'constants/chains'
+import useWeb3React from './useWeb3'
 
 export function useGetUserMigrations(
   ratio: number,
@@ -101,4 +102,25 @@ export const useBalancedRatio = () => {
     return ratio.toString()
   }, [migrationInfo])
   return balancedRatio
+}
+
+export function useGetClaimedDeus(): string {
+  const { account } = useWeb3React()
+  const claimDeusContract = useClaimDeusContract()
+
+  const amountOutCall = useMemo(
+    () =>
+      !account
+        ? []
+        : [
+            {
+              methodName: 'claimedDeus',
+              callInputs: [account],
+            },
+          ],
+    [account]
+  )
+
+  const [result] = useSingleContractMultipleMethods(claimDeusContract, amountOutCall)
+  return !result || !result.result ? '0' : result.result[0]
 }

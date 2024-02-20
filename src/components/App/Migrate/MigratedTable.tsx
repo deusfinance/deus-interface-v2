@@ -13,11 +13,12 @@ import { BN_ZERO, formatBalance, formatNumber, toBN } from 'utils/numbers'
 import BigNumber from 'bignumber.js'
 import { formatUnits } from '@ethersproject/units'
 import { DeusText } from '../Stake/RewardBox'
-import { CustomTooltip2, InfoIcon, SymmText, ToolTipWrap } from './HeaderBox'
+// import { CustomTooltip2, InfoIcon, SymmText, ToolTipWrap } from './HeaderBox'
+import { SymmText } from './HeaderBox'
 import { InputField } from 'components/Input'
 import { BaseButton, PrimaryButtonWide } from 'components/Button'
 import { RowBetween } from 'components/Row'
-import { ArrowRight } from 'react-feather'
+// import { ArrowRight } from 'react-feather'
 import { useBalancedRatio, useGetEarlyMigrationDeadline } from 'hooks/useMigratePage'
 import { truncateAddress } from 'utils/account'
 import { Tokens } from 'constants/tokens'
@@ -27,8 +28,8 @@ import { MigrationOptions } from 'constants/migrationOptions'
 import ActionModal from './ActionModal'
 import TransferModal from './TransferModal'
 import PreferenceModal from './PreferenceModal'
-import ClaimModal from './ClaimModal'
 import { SupportedChainId } from 'constants/chains'
+import { ActionTypes } from './ActionSetter'
 
 const Wrapper = styled.div`
   display: flex;
@@ -236,10 +237,11 @@ export interface IMigrationInfo {
   user: string
   tokenAddress: string
   amount: number
-  timestamp: number
-  block: number
+  // timestamp: number
+  // block: number
   migrationPreference: number
   indexInChain: number
+  claimStatus: boolean
 }
 
 function getAllUpperRow() {
@@ -255,7 +257,7 @@ function getAllUpperRow() {
   )
 }
 
-export default function MigratedTable() {
+export default function MigratedTable({ setSelected }: { setSelected: (value: ActionTypes) => void }) {
   const { account } = useWeb3React()
   const [hasData, setHasData] = useState(false)
   const [checked, setChecked] = useState(false)
@@ -265,37 +267,33 @@ export default function MigratedTable() {
 
   const earlyMigrationDeadline = useGetEarlyMigrationDeadline()
 
-  const getAllMigrationData = useCallback(async (signature: string) => {
+  const getAllMigrationData = useCallback(async () => {
     try {
-      const res = await makeHttpRequest(`https://info.deus.finance/symm/v1/user-info?signature=${signature}`)
+      const res = await makeHttpRequest(`https://info.deus.finance/symm/v1/user-info?address=${account?.toString()}`)
       return res
     } catch (error) {
       return null
     }
-  }, [])
+  }, [account])
 
-  const handleAllMigration = useCallback(
-    async (signature: string) => {
-      setTableDataLoading(true)
-      const rest = await getAllMigrationData(signature)
-      if (rest?.status === 'error') {
-        setAllMigrationData(null)
-        setHasData(false)
-      } else if (rest) {
-        const values = Object.entries(rest)
-        setAllMigrationData(values)
-        setHasData(true)
-      }
-      setTableDataLoading(false)
-    },
-    [getAllMigrationData]
-  )
+  const handleAllMigration = useCallback(async () => {
+    setTableDataLoading(true)
+    const rest = await getAllMigrationData()
+    if (rest?.status === 'error') {
+      setAllMigrationData(null)
+      setHasData(false)
+    } else if (rest) {
+      const values = Object.entries(rest)
+      setAllMigrationData(values)
+      setHasData(true)
+    }
+    setTableDataLoading(false)
+  }, [getAllMigrationData])
 
   const handleCheck = useCallback(async () => {
     setChecked(true)
-    const signature = localStorage.getItem('migrationTermOfServiceSignature' + account?.toString())
-    if (signature) handleAllMigration(signature)
-  }, [account, handleAllMigration])
+    handleAllMigration()
+  }, [handleAllMigration])
 
   useEffect(() => {
     console.log('account changed')
@@ -315,28 +313,32 @@ export default function MigratedTable() {
     return true
   }, [allMigrationData])
 
-  const migrationAmount: Array<Array<{ amount: number; token: string; chainId: number; migrationPreference: number }>> =
-    useMemo(() => {
-      if (allMigrationData?.length > 0) {
-        return allMigrationData.map(([key, values]: [string, []]) =>
-          values.map((migrationInfo) => ({
-            amount: migrationInfo[2],
-            token: migrationInfo[1],
-            migrationPreference: migrationInfo[5],
-            chainId: key,
-          }))
-        )
-      }
-      return
-    }, [allMigrationData])
+  const migrationAmount: Array<
+    Array<{ amount: number; token: string; chainId: number; isEarly: boolean; migrationPreference: number }>
+  > = useMemo(() => {
+    if (allMigrationData?.length > 0) {
+      return allMigrationData.map(([key, values]: [string, []]) =>
+        values.map((migrationInfo) => ({
+          amount: migrationInfo[2],
+          token: migrationInfo[1],
+          migrationPreference: migrationInfo[5],
+          isEarly: migrationInfo[3] <= Number(earlyMigrationDeadline),
+          chainId: key,
+        }))
+      )
+    }
+    return
+  }, [allMigrationData, earlyMigrationDeadline])
 
   const [totalAmount, setTotalAmount] = useState(0)
+  const [totalLateAmount, setTotalLateAmount] = useState(0)
   const [totalAmountToDeus, setTotalAmountToDeus] = useState(0)
   const balancedRatio = useBalancedRatio()
   const ratio = Number(balancedRatio)
 
   useEffect(() => {
     let amount = BN_ZERO
+    let lateAmount = BN_ZERO
     let amountToDeusOnly = BN_ZERO
 
     const filteredMigrationAmount = migrationAmount?.filter((migrationAmount) => migrationAmount.length !== 0)
@@ -350,21 +352,25 @@ export default function MigratedTable() {
             case Tokens['DEUS'][value.chainId]?.address:
               amount = amount.plus(value.amount)
               amountToDeusOnly = amountToDeusOnly.plus(migrationInfoAmount_toDeus)
+              if (!value?.isEarly) lateAmount = lateAmount.plus(value.amount)
               break
 
             case Tokens['XDEUS'][value.chainId]?.address:
               amount = amount.plus(value.amount)
               amountToDeusOnly = amountToDeusOnly.plus(migrationInfoAmount_toDeus)
+              if (!value?.isEarly) lateAmount = lateAmount.plus(value.amount)
               break
 
             case Tokens['bDEI_TOKEN'][value.chainId]?.address:
               amount = amount.plus(value.amount / MigrationOptions[3].divideRatio)
               amountToDeusOnly = amountToDeusOnly.plus(migrationInfoAmount_toDeus.div(MigrationOptions[3].divideRatio))
+              if (!value?.isEarly) lateAmount = lateAmount.plus(value.amount / MigrationOptions[3].divideRatio)
               break
 
             case Tokens['LEGACY_DEI'][value.chainId]?.address:
               amount = amount.plus(value.amount / MigrationOptions[2].divideRatio)
               amountToDeusOnly = amountToDeusOnly.plus(migrationInfoAmount_toDeus.div(MigrationOptions[2].divideRatio))
+              if (!value?.isEarly) lateAmount = lateAmount.plus(value.amount / MigrationOptions[2].divideRatio)
               break
           }
         } else {
@@ -373,37 +379,43 @@ export default function MigratedTable() {
               amount = amount.plus(value.amount)
               if (value.migrationPreference === MigrationType.DEUS)
                 amountToDeusOnly = amountToDeusOnly.plus(value.amount)
+              if (!value?.isEarly) lateAmount = lateAmount.plus(value.amount)
               break
 
             case Tokens['XDEUS'][value.chainId]?.address:
               amount = amount.plus(value.amount)
               if (value.migrationPreference === MigrationType.DEUS)
                 amountToDeusOnly = amountToDeusOnly.plus(value.amount)
+              if (!value?.isEarly) lateAmount = lateAmount.plus(value.amount)
               break
 
             case Tokens['bDEI_TOKEN'][value.chainId]?.address:
               amount = amount.plus(value.amount / MigrationOptions[3].divideRatio)
               if (value.migrationPreference === MigrationType.DEUS)
                 amountToDeusOnly = amountToDeusOnly.plus(value.amount / MigrationOptions[3].divideRatio)
+              if (!value?.isEarly) lateAmount = lateAmount.plus(value.amount / MigrationOptions[3].divideRatio)
               break
 
             case Tokens['LEGACY_DEI'][value.chainId]?.address:
               amount = amount.plus(value.amount / MigrationOptions[2].divideRatio)
               if (value.migrationPreference === MigrationType.DEUS)
                 amountToDeusOnly = amountToDeusOnly.plus(value.amount / MigrationOptions[2].divideRatio)
+              if (!value?.isEarly) lateAmount = lateAmount.plus(value.amount / MigrationOptions[2].divideRatio)
               break
           }
         }
       })
     })
     setTotalAmount(Number(amount.div(1e18)))
+    setTotalLateAmount(Number(lateAmount.div(1e18)))
     setTotalAmountToDeus(Number(amountToDeusOnly.div(1e18)))
   }, [migrationAmount, ratio])
 
   const migrationContextData = useMigrationData()
   const [calculatedSymmPerDeusUnvested, calculatedSymmPerDeusVested, calculatedSymmPerDeusTotal] = useMemo(() => {
     const totalAmountToSymm = totalAmount - totalAmountToDeus
-    const calculatedSymmPerDeusUnvested = Number(migrationContextData?.unvested_symm_per_deus) * totalAmountToSymm
+    const calculatedSymmPerDeusUnvested =
+      Number(migrationContextData?.unvested_symm_per_deus) * (totalAmountToSymm - totalLateAmount)
     const calculatedSymmPerDeusVested = Number(migrationContextData?.vested_symm_per_deus) * totalAmountToSymm
     const calculatedSymmPerDeusTotal = calculatedSymmPerDeusVested + calculatedSymmPerDeusUnvested
     return [calculatedSymmPerDeusUnvested, calculatedSymmPerDeusVested, calculatedSymmPerDeusTotal]
@@ -412,10 +424,13 @@ export default function MigratedTable() {
     migrationContextData?.vested_symm_per_deus,
     totalAmount,
     totalAmountToDeus,
+    totalLateAmount,
   ])
 
   return (
     <div style={{ width: '100%' }}>
+      {/* <MigrationHeader /> */}
+
       <TableInputWrapper>
         <InputField value={account ? truncateAddress(account) : ''} disabled placeholder="Wallet address" />
         {account ? (
@@ -428,7 +443,7 @@ export default function MigratedTable() {
           </WalletConnectButton>
         )}
       </TableInputWrapper>
-      {hasData && (
+      {/* {hasData && (
         <TotalMigrationAmountWrapper>
           <p>My Total Migrated Amount to SYMM:</p>
           <div>
@@ -457,7 +472,7 @@ export default function MigratedTable() {
             </React.Fragment>
           </div>
         </TotalMigrationAmountWrapper>
-      )}
+      )} */}
       {hasData && <LargeContent>{getAllUpperRow()}</LargeContent>}
       <Wrapper>
         <TableWrapper>
@@ -472,13 +487,15 @@ export default function MigratedTable() {
                         user: migrationInfo[0],
                         tokenAddress: migrationInfo[1],
                         amount: migrationInfo[2],
-                        timestamp: migrationInfo[3],
-                        block: migrationInfo[4],
+                        // timestamp: migrationInfo[3],
+                        // block: migrationInfo[4],
                         migrationPreference: migrationInfo[5],
+                        claimStatus: migrationInfo[6],
                         indexInChain: index,
                       }}
                       chain={+key}
                       isEarly={migrationInfo[3] <= Number(earlyMigrationDeadline)}
+                      setSelected={setSelected}
                     />
                   </React.Fragment>
                 ))
@@ -505,11 +522,11 @@ export default function MigratedTable() {
   )
 }
 
-const TableRowContainer = styled.div`
+export const TableRowContainer = styled.div`
   width: 100%;
   display: table;
 `
-const TableContent = styled.div`
+export const TableContent = styled.div`
   display: flex;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -521,7 +538,7 @@ const TableContent = styled.div`
     padding-inline: 12px;
   `};
 `
-const TokenContainer = styled(Cell)`
+export const TokenContainer = styled(Cell)`
   width: 25%;
   & > div {
     height: 100%;
@@ -543,7 +560,7 @@ export const SmallChainWrap = styled(Row)`
     margin-top: 1px;
   }
 `
-const Label = styled.p`
+export const Label = styled.p`
   display: none;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display:inline-block;
@@ -551,7 +568,7 @@ const Label = styled.p`
     color:#7F8082;
   `};
 `
-const MyMigratedAmount = styled(Cell)`
+export const MyMigratedAmount = styled(Cell)`
   width: 20%;
   margin-block: auto;
   height: 100%;
@@ -569,7 +586,7 @@ const MyMigratedAmount = styled(Cell)`
     }
   `};
 `
-const ButtonWrap = styled(Cell)`
+export const ButtonWrap = styled(Cell)`
   width: 30%;
   margin-block: auto;
   height: 100%;
@@ -596,7 +613,7 @@ export const InlineRow = styled.div<{ active?: boolean }>`
       pointer-events: none;
   `};
 `
-const SimpleButton = styled(BaseButton)<{ width?: string }>`
+export const SimpleButton = styled(BaseButton)<{ width?: string }>`
   width: ${({ width }) => (width ? width : '120px')};
   height: 30px;
   background-color: ${({ theme }) => theme.bg0};
@@ -641,14 +658,16 @@ function TableRow({
   migrationInfo,
   chain,
   isEarly,
+  setSelected,
 }: {
   migrationInfo: IMigrationInfo
   chain: number
   isEarly: boolean
+  setSelected: (value: ActionTypes) => void
 }) {
   return (
     <ZebraStripesRow>
-      <TableRowContent migrationInfo={migrationInfo} chain={chain} isEarly={isEarly} />
+      <TableRowContent migrationInfo={migrationInfo} chain={chain} isEarly={isEarly} setSelected={setSelected} />
     </ZebraStripesRow>
   )
 }
@@ -690,10 +709,12 @@ const TableRowContent = ({
   migrationInfo,
   chain,
   isEarly,
+  setSelected,
 }: {
   migrationInfo: IMigrationInfo
   chain: number
   isEarly: boolean
+  setSelected: (value: ActionTypes) => void
 }) => {
   const { tokenAddress } = migrationInfo
   const [token, setToken] = useState<Token | undefined>(undefined)
@@ -710,7 +731,6 @@ const TableRowContent = ({
 
   useEffect(() => {
     handleToken()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const balancedRatio = useBalancedRatio()
@@ -732,6 +752,7 @@ const TableRowContent = ({
             migratedToSYMM={migratedToSYMM}
             migrationInfo={migrationInfo}
             isEarly={isEarly}
+            setSelected={setSelected}
           />
         </TableRowContainer>
       )}
@@ -753,12 +774,14 @@ const TableRowContentWrapper = ({
   migratedToSYMM,
   migrationInfo,
   isEarly,
+  setSelected,
 }: {
   token: Token
   migratedToDEUS: BigNumber
   migratedToSYMM: BigNumber
   migrationInfo: IMigrationInfo
   isEarly: boolean
+  setSelected: (value: ActionTypes) => void
 }) => {
   const [modalType, setModalType] = useState<ModalType>(ModalType.WITHDRAW)
   const [isOpenModal, toggleModal] = useState(false)
@@ -769,7 +792,7 @@ const TableRowContentWrapper = ({
   }
 
   const migrationContextData = useMigrationData()
-  const { amount: migratedAmount } = migrationInfo
+  const { amount: migratedAmount, claimStatus, migrationPreference } = migrationInfo
   const chain = token?.chainId
 
   const calculatedSymmPerDeus = useMemo(
@@ -861,10 +884,24 @@ const TableRowContentWrapper = ({
               Transfer
             </SimpleButton>
           )}
-          {false && token?.chainId === SupportedChainId.FANTOM ? (
-            <SimpleButton width={'140px'} onClick={() => toggleReviewModal(true, ModalType.CLAIM)}>
-              Claim DEUS
-            </SimpleButton>
+          {(token?.symbol === Tokens['LEGACY_DEI'][SupportedChainId.FANTOM]?.symbol ||
+            token?.symbol === Tokens['bDEI_TOKEN'][SupportedChainId.FANTOM]?.symbol) &&
+          (token?.chainId === SupportedChainId.FANTOM || token?.chainId === SupportedChainId.ARBITRUM) &&
+          migrationPreference === MigrationType.DEUS ? (
+            !claimStatus ? (
+              <SimpleButton width={'140px'} onClick={() => setSelected(ActionTypes.CLAIM)}>
+                Claim DEUS
+              </SimpleButton>
+            ) : (
+              <SimpleButton
+                disabled
+                style={{ background: 'green', color: 'white' }}
+                width={'140px'}
+                onClick={() => undefined}
+              >
+                Already Claimed
+              </SimpleButton>
+            )
           ) : (
             <SimpleButton disabled width={'140px'}>
               Claim not started
@@ -901,12 +938,6 @@ const TableRowContentWrapper = ({
         migratedToDEUS={migratedToDEUS}
         migratedToSYMM={migratedToSYMM}
         calculatedSymmPerDeus={calculatedSymmPerDeus}
-      />
-      <ClaimModal
-        inputToken={token}
-        migrationInfo={migrationInfo}
-        isOpen={isOpenModal && modalType === ModalType.CLAIM}
-        toggleModal={(action: boolean) => toggleModal(action)}
       />
     </>
   )
