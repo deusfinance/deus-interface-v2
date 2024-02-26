@@ -950,18 +950,14 @@ export function useClaimDeusCallback(
         const call = constructCall()
         const { address, calldata, value } = await call
 
-        // // @ts-ignore
-        // if ('error' in call) {
-        //   // @ts-ignore
-        //   console.error(call.error)
-        //   // @ts-ignore
-        //   if (call.error.message) {
-        //     // @ts-ignore
-        //     throw new Error(call.error.message)
-        //   } else {
-        //     throw new Error('Unexpected error. Could not construct calldata.')
-        //   }
-        // }
+        if ('error' in call) {
+          console.error(call.error)
+          if (call.error.message) {
+            throw new Error(call.error.message)
+          } else {
+            throw new Error('Unexpected error. Could not construct calldata.')
+          }
+        }
 
         const tx = !value
           ? { from: account, to: address, data: calldata }

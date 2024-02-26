@@ -853,17 +853,13 @@ const TableRowContentWrapper = ({
               </span>
             )}
           </Value>
-          {!(
-            token?.chainId === SupportedChainId.FANTOM &&
-            (token?.symbol === 'LegacyDEI' || token?.symbol === 'bDEI')
-          ) && <SimpleButton onClick={() => toggleReviewModal(true, ModalType.ChangePlan)}>Change</SimpleButton>}
+          {!(token?.symbol === 'LegacyDEI' || token?.symbol === 'bDEI') && (
+            <SimpleButton onClick={() => toggleReviewModal(true, ModalType.ChangePlan)}>Change</SimpleButton>
+          )}
         </MyMigratedAmount>
 
         <ButtonWrap>
-          {!(
-            token?.chainId === SupportedChainId.FANTOM &&
-            (token?.symbol === 'LegacyDEI' || token?.symbol === 'bDEI')
-          ) ? (
+          {!(token?.symbol === 'LegacyDEI' || token?.symbol === 'bDEI') ? (
             <SimpleButton onClick={() => toggleReviewModal(true, ModalType.SPLIT)} width={'80px'}>
               Split
             </SimpleButton>
