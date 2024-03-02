@@ -834,9 +834,7 @@ const TableRowContentWrapper = ({
               <span style={{ color: '#8B8B8B' }}>{token.symbol}</span>
             </Value>
           </div>
-          {token?.symbol !== 'LegacyDEI' && token?.symbol !== 'bDEI' && (
-            <SimpleButton onClick={() => toggleReviewModal(true, ModalType.WITHDRAW)}>Withdraw</SimpleButton>
-          )}
+          <SimpleButton disabled>Withdraw</SimpleButton>
         </MyMigratedAmount>
         <MyMigratedAmount>
           <Label>Claimable Token:</Label>
@@ -853,33 +851,16 @@ const TableRowContentWrapper = ({
               </span>
             )}
           </Value>
-          {!(token?.symbol === 'LegacyDEI' || token?.symbol === 'bDEI') && (
-            <SimpleButton onClick={() => toggleReviewModal(true, ModalType.ChangePlan)}>Change</SimpleButton>
-          )}
+          <SimpleButton disabled>Change</SimpleButton>
         </MyMigratedAmount>
 
         <ButtonWrap>
-          {!(token?.symbol === 'LegacyDEI' || token?.symbol === 'bDEI') ? (
-            <SimpleButton onClick={() => toggleReviewModal(true, ModalType.SPLIT)} width={'80px'}>
-              Split
-            </SimpleButton>
-          ) : (
-            <SimpleButton disabled width={'80px'}>
-              Split
-            </SimpleButton>
-          )}
-          {!(
-            token?.chainId === SupportedChainId.FANTOM &&
-            (token?.symbol === 'LegacyDEI' || token?.symbol === 'bDEI')
-          ) ? (
-            <SimpleButton onClick={() => toggleReviewModal(true, ModalType.TRANSFER)} width={'80px'}>
-              Transfer
-            </SimpleButton>
-          ) : (
-            <SimpleButton disabled width={'80px'}>
-              Transfer
-            </SimpleButton>
-          )}
+          <SimpleButton disabled width={'80px'}>
+            Split
+          </SimpleButton>
+          <SimpleButton disabled width={'80px'}>
+            Transfer
+          </SimpleButton>
           {(token?.symbol === Tokens['LEGACY_DEI'][SupportedChainId.FANTOM]?.symbol ||
             token?.symbol === Tokens['bDEI_TOKEN'][SupportedChainId.FANTOM]?.symbol) &&
           (token?.chainId === SupportedChainId.FANTOM || token?.chainId === SupportedChainId.ARBITRUM) &&
