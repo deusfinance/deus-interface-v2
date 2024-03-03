@@ -207,6 +207,10 @@ export default function NavBar() {
   const bannerText2 =
     'Conversion contract is currently being upgraded; CLAIM newDeus from what you already converted. wait 2 hours before converting again so you can do everything through the ui'
 
+  const [showTopBanner3, setShowTopBanner3] = useState(true)
+  const bannerText3 =
+    'Migrations choices are final, no update is possible. Deus claims & transfers to other wallets will be active again very soon'
+
   function setShowBanner(inp: boolean) {
     if (!inp) {
       localStorage.setItem('risk_warning', 'true')
@@ -231,6 +235,9 @@ export default function NavBar() {
         {showTopBanner && <RiskNotification onClose={setShowBanner} bg={'gray'} hasInfoIcon={true} text={bannerText} />}
         {showTopBanner2 && router.route.includes('/convert') && (
           <RiskNotification onClose={setShowBanner2} bg={'red'} hasInfoIcon={true} text={bannerText2} />
+        )}
+        {showTopBanner3 && router.route.includes('/migration') && (
+          <RiskNotification onClose={setShowTopBanner3} bg={'#FF8F00'} hasInfoIcon={true} text={bannerText3} />
         )}
       </>
     )
@@ -295,6 +302,9 @@ export default function NavBar() {
         {showTopBanner && <RiskNotification onClose={setShowBanner} bg={'gray'} hasInfoIcon={true} text={bannerText} />}
         {showTopBanner2 && router.route.includes('/convert') && (
           <RiskNotification onClose={setShowBanner2} bg={'red'} hasInfoIcon={true} text={bannerText2} />
+        )}
+        {showTopBanner3 && router.route.includes('/migration') && (
+          <RiskNotification onClose={setShowTopBanner3} bg={'#FF8F00'} hasInfoIcon={true} text={bannerText3} />
         )}
       </>
     )
