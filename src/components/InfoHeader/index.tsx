@@ -15,6 +15,7 @@ const Value = styled.div`
   font-size: 12px;
   line-height: 16px;
   margin: 8px 24px;
+  text-align: center;
 `
 
 const CloseIconWrapper = styled.button`
@@ -53,7 +54,11 @@ export default function InfoHeader({
   return (
     <Wrapper bg={bg}>
       {hasInfoIcon && <InfoIcon size={20} />}
-      <Value>{text}</Value>
+      <Value>
+        {text.split('\n').map((line, index) => (
+          <div key={index}>{line}</div>
+        ))}
+      </Value>
       <CloseIconWrapper onClick={() => onClose(false)}>
         <CloseIcon size={'1.4rem'} />
       </CloseIconWrapper>
