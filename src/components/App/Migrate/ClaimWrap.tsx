@@ -367,6 +367,14 @@ export default function ClaimWrap() {
                       Number(snapshotData['arbitrum']['legacyDEI']['1'])
                     ).toString()}
                   />
+                  <TableRowContentWrapper
+                    token={Tokens['DEUS'][SupportedChainId.FANTOM]}
+                    amount={Number(snapshotData['other']?.['DEUS_total'] ?? 0).toString()}
+                  />
+                  <TableRowContentWrapper
+                    token={Tokens['XDEUS'][SupportedChainId.FANTOM]}
+                    amount={Number(snapshotData['other']?.['xDEUS_total'] ?? 0).toString()}
+                  />
                 </TableRowContainer>
               </ZebraStripesRow>
             </tbody>
@@ -382,6 +390,7 @@ export const getImageSize = () => {
 }
 
 const TableRowContentWrapper = ({ token, amount }: { token: Token; amount: string }) => {
+  const hasSnapshot = token.symbol !== 'DEUS' && token.symbol !== 'xmultiDEUS'
   return (
     <>
       <TableContent>
@@ -392,7 +401,7 @@ const TableRowContentWrapper = ({ token, amount }: { token: Token; amount: strin
           <SmallChainWrap>
             <InlineRow active>
               <div>
-                <span>Based on the June 7 snapshot on </span>
+                {hasSnapshot && <span>Based on the June 7 snapshot on </span>}
                 <span style={{ color: ChainInfo[SupportedChainId.FANTOM].color }}>
                   {ChainInfo[SupportedChainId.FANTOM].label}{' '}
                 </span>
@@ -418,12 +427,16 @@ const TableRowContentWrapper = ({ token, amount }: { token: Token; amount: strin
         </TokenContainer>
         <MyMigratedAmount>
           <Label>Snapshot Amount:</Label>
-          <div>
-            <Value>
-              {formatNumber(formatBalance(toBN(Number(amount) * 1e-18).toString())) ?? 'N/A'}{' '}
-              <span style={{ color: '#8B8B8B' }}>{token.symbol}</span>
-            </Value>
-          </div>
+          {hasSnapshot ? (
+            <div>
+              <Value>
+                {formatNumber(formatBalance(toBN(Number(amount) * 1e-18).toString())) ?? 'N/A'}{' '}
+                <span style={{ color: '#8B8B8B' }}>{token.symbol}</span>
+              </Value>
+            </div>
+          ) : (
+            <div>-</div>
+          )}
         </MyMigratedAmount>
         <MyMigratedAmount>
           <Label>Claimable DEUS:</Label>

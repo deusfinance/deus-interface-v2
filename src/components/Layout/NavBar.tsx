@@ -209,7 +209,7 @@ export default function NavBar() {
 
   const [showTopBanner3, setShowTopBanner3] = useState(true)
   const bannerText3 =
-    'you will claim all Deus from your bDei,  Dei, Deus and xDeus migrated to either Deus or to the balanced option \n (bDei and legacy Dei up to the June 7 snapshot)'
+    'You will claim all DEUS from your bDEI, DEI, DEUS and xDEUS migrated to either DEUS or to the balanced option \n (bDEI and legacy DEI up to the June 7 snapshot)'
 
   function setShowBanner(inp: boolean) {
     if (!inp) {
