@@ -28,7 +28,6 @@ import { MigrationOptions } from 'constants/migrationOptions'
 import ActionModal from './ActionModal'
 import TransferModal from './TransferModal'
 import PreferenceModal from './PreferenceModal'
-import { SupportedChainId } from 'constants/chains'
 import { ActionTypes } from './ActionSetter'
 
 const Wrapper = styled.div`
@@ -861,10 +860,7 @@ const TableRowContentWrapper = ({
           <SimpleButton disabled width={'80px'}>
             Transfer
           </SimpleButton>
-          {(token?.symbol === Tokens['LEGACY_DEI'][SupportedChainId.FANTOM]?.symbol ||
-            token?.symbol === Tokens['bDEI_TOKEN'][SupportedChainId.FANTOM]?.symbol) &&
-          (token?.chainId === SupportedChainId.FANTOM || token?.chainId === SupportedChainId.ARBITRUM) &&
-          migrationPreference === MigrationType.DEUS ? (
+          {migrationPreference !== MigrationType.SYMM ? (
             !claimStatus ? (
               <SimpleButton width={'140px'} onClick={() => setSelected(ActionTypes.CLAIM)}>
                 Claim DEUS

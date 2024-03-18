@@ -367,6 +367,19 @@ export default function ClaimWrap() {
                       Number(snapshotData['arbitrum']['legacyDEI']['1'])
                     ).toString()}
                   />
+                  <TableRowContentWrapper
+                    token={Tokens['DEUS'][SupportedChainId.FANTOM]}
+                    amount={(
+                      Number(snapshotData['other']?.['DEUS']?.[1]) + Number(snapshotData['other']?.['DEUS']?.[0] * 0.09)
+                    ).toString()}
+                  />
+                  <TableRowContentWrapper
+                    token={Tokens['XDEUS'][SupportedChainId.FANTOM]}
+                    amount={(
+                      Number(snapshotData['other']?.['xDEUS']?.[1]) +
+                      Number(snapshotData['other']?.['xDEUS']?.[0] * 0.09)
+                    ).toString()}
+                  />
                 </TableRowContainer>
               </ZebraStripesRow>
             </tbody>
@@ -382,6 +395,7 @@ export const getImageSize = () => {
 }
 
 const TableRowContentWrapper = ({ token, amount }: { token: Token; amount: string }) => {
+  const hasSnapshot = token.symbol !== 'DEUS' && token.symbol !== 'xmultiDEUS'
   return (
     <>
       <TableContent>
@@ -391,39 +405,47 @@ const TableRowContentWrapper = ({ token, amount }: { token: Token; amount: strin
           </Row>
           <SmallChainWrap>
             <InlineRow active>
-              <div>
-                <span>Based on the June 7 snapshot on </span>
-                <span style={{ color: ChainInfo[SupportedChainId.FANTOM].color }}>
-                  {ChainInfo[SupportedChainId.FANTOM].label}{' '}
-                </span>
-                <Image
-                  src={ChainInfo[SupportedChainId.FANTOM].logoUrl}
-                  width={getImageSize() + 'px'}
-                  height={getImageSize() + 'px'}
-                  alt={`${ChainInfo[SupportedChainId.FANTOM].label}-logo`}
-                />{' '}
-                &{' '}
-                <span style={{ color: ChainInfo[SupportedChainId.ARBITRUM].color }}>
-                  {ChainInfo[SupportedChainId.ARBITRUM].label}{' '}
-                </span>
-                <Image
-                  src={ChainInfo[SupportedChainId.ARBITRUM].logoUrl}
-                  width={getImageSize() + 'px'}
-                  height={getImageSize() + 'px'}
-                  alt={`${ChainInfo[SupportedChainId.ARBITRUM].label}-logo`}
-                />
-              </div>
+              {hasSnapshot ? (
+                <div>
+                  <span>Based on the June 7 snapshot on </span>
+                  <span style={{ color: ChainInfo[SupportedChainId.FANTOM].color }}>
+                    {ChainInfo[SupportedChainId.FANTOM].label}{' '}
+                  </span>
+                  <Image
+                    src={ChainInfo[SupportedChainId.FANTOM].logoUrl}
+                    width={getImageSize() + 'px'}
+                    height={getImageSize() + 'px'}
+                    alt={`${ChainInfo[SupportedChainId.FANTOM].label}-logo`}
+                  />{' '}
+                  &{' '}
+                  <span style={{ color: ChainInfo[SupportedChainId.ARBITRUM].color }}>
+                    {ChainInfo[SupportedChainId.ARBITRUM].label}{' '}
+                  </span>
+                  <Image
+                    src={ChainInfo[SupportedChainId.ARBITRUM].logoUrl}
+                    width={getImageSize() + 'px'}
+                    height={getImageSize() + 'px'}
+                    alt={`${ChainInfo[SupportedChainId.ARBITRUM].label}-logo`}
+                  />
+                </div>
+              ) : (
+                <div>On All chains</div>
+              )}
             </InlineRow>
           </SmallChainWrap>
         </TokenContainer>
         <MyMigratedAmount>
           <Label>Snapshot Amount:</Label>
-          <div>
-            <Value>
-              {formatNumber(formatBalance(toBN(Number(amount) * 1e-18).toString())) ?? 'N/A'}{' '}
-              <span style={{ color: '#8B8B8B' }}>{token.symbol}</span>
-            </Value>
-          </div>
+          {hasSnapshot ? (
+            <div>
+              <Value>
+                {formatNumber(formatBalance(toBN(Number(amount) * 1e-18).toString())) ?? 'N/A'}{' '}
+                <span style={{ color: '#8B8B8B' }}>{token.symbol}</span>
+              </Value>
+            </div>
+          ) : (
+            <div>-</div>
+          )}
         </MyMigratedAmount>
         <MyMigratedAmount>
           <Label>Claimable DEUS:</Label>
@@ -432,7 +454,7 @@ const TableRowContentWrapper = ({ token, amount }: { token: Token; amount: strin
               {formatNumber(
                 formatBalance(
                   toBN(amount)
-                    .div(token?.symbol === 'LegacyDEI' ? 217 : 185)
+                    .div(token?.symbol === 'LegacyDEI' ? 217 : token?.symbol === 'bDEI' ? 185 : 1)
                     .times(1e-18)
                     .toString()
                 )
