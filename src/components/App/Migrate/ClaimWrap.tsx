@@ -4,15 +4,8 @@ import { isMobile } from 'react-device-detect'
 
 import { BaseButton, PrimaryButtonWide } from 'components/Button'
 import { RowBetween } from 'components/Row'
-import ClaimDeus, { DeusText } from './ClaimDeus'
-import {
-  ButtonWrap,
-  InlineRow,
-  MyMigratedAmount,
-  SmallChainWrap,
-  TableContent,
-  TableRowContainer,
-} from './MigratedTable'
+import ClaimDeus, { BalancedText, DeusText } from './ClaimDeus'
+import { InlineRow, MyMigratedAmount, SmallChainWrap, TableContent, TableRowContainer } from './MigratedTable'
 import TokenBox from './TokenBox'
 import { Label } from 'recharts'
 import { formatBalance, formatNumber, toBN } from 'utils/numbers'
@@ -258,8 +251,8 @@ export function getAllUpperRow() {
   return (
     <UpperRow>
       <div style={{ display: 'flex', width: '100%', position: 'relative' }}>
-        <TableTitle width="35%">Token</TableTitle>
-        <TableTitle width="20%">
+        <TableTitle width="50%">Token</TableTitle>
+        <TableTitle width="25%">
           Snapshot Amount{' '}
           <React.Fragment>
             <a data-tip data-for={'multiline-id4'}>
@@ -275,7 +268,7 @@ export function getAllUpperRow() {
             </CustomTooltip2>
           </React.Fragment>
         </TableTitle>
-        <TableTitle width="20%">Claimable DEUS</TableTitle>
+        <TableTitle width="25%">Claimable DEUS</TableTitle>
       </div>
     </UpperRow>
   )
@@ -397,75 +390,75 @@ export const getImageSize = () => {
 const TableRowContentWrapper = ({ token, amount }: { token: Token; amount: string }) => {
   const hasSnapshot = token.symbol !== 'DEUS' && token.symbol !== 'xmultiDEUS'
   return (
-    <>
-      <TableContent>
-        <TokenContainer>
-          <Row style={{ marginBottom: '12px' }}>
-            <TokenBox token={token} />
-          </Row>
-          <SmallChainWrap>
-            <InlineRow active>
-              {hasSnapshot ? (
-                <div>
-                  <span>Based on the June 7 snapshot on </span>
-                  <span style={{ color: ChainInfo[SupportedChainId.FANTOM].color }}>
-                    {ChainInfo[SupportedChainId.FANTOM].label}{' '}
-                  </span>
-                  <Image
-                    src={ChainInfo[SupportedChainId.FANTOM].logoUrl}
-                    width={getImageSize() + 'px'}
-                    height={getImageSize() + 'px'}
-                    alt={`${ChainInfo[SupportedChainId.FANTOM].label}-logo`}
-                  />{' '}
-                  &{' '}
-                  <span style={{ color: ChainInfo[SupportedChainId.ARBITRUM].color }}>
-                    {ChainInfo[SupportedChainId.ARBITRUM].label}{' '}
-                  </span>
-                  <Image
-                    src={ChainInfo[SupportedChainId.ARBITRUM].logoUrl}
-                    width={getImageSize() + 'px'}
-                    height={getImageSize() + 'px'}
-                    alt={`${ChainInfo[SupportedChainId.ARBITRUM].label}-logo`}
-                  />
-                </div>
-              ) : (
-                <div>On All chains</div>
-              )}
-            </InlineRow>
-          </SmallChainWrap>
-        </TokenContainer>
-        <MyMigratedAmount>
-          <Label>Snapshot Amount:</Label>
-          {hasSnapshot ? (
-            <div>
-              <Value>
-                {formatNumber(formatBalance(toBN(Number(amount) * 1e-18).toString())) ?? 'N/A'}{' '}
-                <span style={{ color: '#8B8B8B' }}>{token.symbol}</span>
-              </Value>
-            </div>
-          ) : (
-            <div>-</div>
-          )}
-        </MyMigratedAmount>
-        <MyMigratedAmount>
-          <Label>Claimable DEUS:</Label>
-          <Value>
-            <span>
-              {formatNumber(
-                formatBalance(
-                  toBN(amount)
-                    .div(token?.symbol === 'LegacyDEI' ? 217 : token?.symbol === 'bDEI' ? 185 : 1)
-                    .times(1e-18)
-                    .toString()
-                )
-              ) ?? 'N/A'}{' '}
-              <DeusText>DEUS</DeusText>
-            </span>
-          </Value>
-        </MyMigratedAmount>
-
-        <ButtonWrap></ButtonWrap>
-      </TableContent>
-    </>
+    <TableContent>
+      <TokenContainer style={{ width: '50%' }}>
+        <Row style={{ marginBottom: '12px' }}>
+          <TokenBox token={token} />
+        </Row>
+        <SmallChainWrap>
+          <InlineRow active>
+            {hasSnapshot ? (
+              <div>
+                <span>Based on the June 7 snapshot on </span>
+                <span style={{ color: ChainInfo[SupportedChainId.FANTOM].color }}>
+                  {ChainInfo[SupportedChainId.FANTOM].label}{' '}
+                </span>
+                <Image
+                  src={ChainInfo[SupportedChainId.FANTOM].logoUrl}
+                  width={getImageSize() + 'px'}
+                  height={getImageSize() + 'px'}
+                  alt={`${ChainInfo[SupportedChainId.FANTOM].label}-logo`}
+                />{' '}
+                &{' '}
+                <span style={{ color: ChainInfo[SupportedChainId.ARBITRUM].color }}>
+                  {ChainInfo[SupportedChainId.ARBITRUM].label}{' '}
+                </span>
+                <Image
+                  src={ChainInfo[SupportedChainId.ARBITRUM].logoUrl}
+                  width={getImageSize() + 'px'}
+                  height={getImageSize() + 'px'}
+                  alt={`${ChainInfo[SupportedChainId.ARBITRUM].label}-logo`}
+                />
+              </div>
+            ) : (
+              <div>
+                Based on {<DeusText style={{ marginLeft: '0', fontWeight: '400' }}>DEUS migration</DeusText>} and total{' '}
+                {<BalancedText>Balanced migrations</BalancedText>} across{' '}
+                {<span style={{ fontWeight: '600' }}>all chains</span>}
+              </div>
+            )}
+          </InlineRow>
+        </SmallChainWrap>
+      </TokenContainer>
+      <MyMigratedAmount style={{ width: '25%' }}>
+        <Label>Snapshot Amount:</Label>
+        {hasSnapshot ? (
+          <div>
+            <Value>
+              {formatNumber(formatBalance(toBN(Number(amount) * 1e-18).toString())) ?? 'N/A'}{' '}
+              <span style={{ color: '#8B8B8B' }}>{token.symbol}</span>
+            </Value>
+          </div>
+        ) : (
+          <div>-</div>
+        )}
+      </MyMigratedAmount>
+      <MyMigratedAmount style={{ width: '25%' }}>
+        <Label>Claimable DEUS:</Label>
+        <Value>
+          <span>
+            {formatNumber(
+              formatBalance(
+                toBN(amount)
+                  .div(token?.symbol === 'LegacyDEI' ? 217 : token?.symbol === 'bDEI' ? 185 : 1)
+                  .times(1e-18)
+                  .toString()
+              )
+            ) ?? 'N/A'}{' '}
+            <DeusText>DEUS</DeusText>
+          </span>
+        </Value>
+      </MyMigratedAmount>
+    </TableContent>
   )
 }

@@ -77,6 +77,15 @@ export const DeusText = styled.span`
   -webkit-text-fill-color: transparent;
   margin-left: 4px;
 `
+export const BalancedText = styled.span`
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  background: linear-gradient(90deg, #dc756b, #f095a2, #d9a199, #d7c7c1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+`
 
 export const getImageSize = () => {
   return isMobile ? 15 : 20
@@ -116,7 +125,9 @@ export default function ClaimDeus({ claimable_deus_amount, proof }: { claimable_
             toBN(claimable_deus_amount).minus(claimedDeus).times(1e-18).gt(0) ? () => handleClaimDeus() : undefined
           }
         >
-          <span>CLAIM {toBN(claimable_deus_amount).minus(claimedDeus).times(1e-18).toFixed(3).toString()}</span>
+          <span style={{ fontWeight: '600' }}>
+            CLAIM {toBN(claimable_deus_amount).minus(claimedDeus).times(1e-18).toFixed(3).toString()}
+          </span>
         </CheckButton>
       )
     } else if (toBN(claimable_deus_amount).times(1e-18).eq(0)) {
