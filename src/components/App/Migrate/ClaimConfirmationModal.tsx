@@ -9,6 +9,7 @@ import useWeb3React from 'hooks/useWeb3'
 import { ExternalLink } from 'components/Link'
 import toast from 'react-hot-toast'
 import { toBN } from 'utils/numbers'
+import { useGetClaimedDeus } from 'hooks/useMigratePage'
 
 const MainModal = styled(Modal)`
   display: flex;
@@ -116,6 +117,8 @@ export default function ClaimConfirmationModal({
     error: claimDeusCallbackError,
   } = useClaimDeusCallback(claimable_deus_amount, proof)
 
+  const claimedDeus = toBN(useGetClaimedDeus().toString())
+
   const handleClaimDeus = useCallback(async () => {
     console.log('called handleClaimDeus')
     console.log(claimDeusCallbackState, claimDeusCallbackError)
@@ -171,8 +174,8 @@ export default function ClaimConfirmationModal({
         </p>
 
         <p>
-          - You receive {toBN(claimable_deus_amount).times(1e-18).toFixed(3).toString()} DEUS directly after claiming,
-          now in {account}
+          - You receive {toBN(claimable_deus_amount).minus(claimedDeus).times(1e-18).toFixed(3).toString()} DEUS
+          directly after claiming, now in {account}
         </p>
 
         <p>- You need to sign two transactions with your wallet.</p>

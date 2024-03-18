@@ -369,11 +369,16 @@ export default function ClaimWrap() {
                   />
                   <TableRowContentWrapper
                     token={Tokens['DEUS'][SupportedChainId.FANTOM]}
-                    amount={Number(snapshotData['other']?.['DEUS_total'] ?? 0).toString()}
+                    amount={(
+                      Number(snapshotData['other']?.['DEUS']?.[1]) + Number(snapshotData['other']?.['DEUS']?.[0] * 0.09)
+                    ).toString()}
                   />
                   <TableRowContentWrapper
                     token={Tokens['XDEUS'][SupportedChainId.FANTOM]}
-                    amount={Number(snapshotData['other']?.['xDEUS_total'] ?? 0).toString()}
+                    amount={(
+                      Number(snapshotData['other']?.['xDEUS']?.[1]) +
+                      Number(snapshotData['other']?.['xDEUS']?.[0] * 0.09)
+                    ).toString()}
                   />
                 </TableRowContainer>
               </ZebraStripesRow>
