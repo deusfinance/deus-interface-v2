@@ -152,7 +152,7 @@ export default function ClaimConfirmationModal({
 
   return (
     <MainModal isOpen={isOpen} onBackgroundClick={() => toggleModal(false)} onEscapeKeydown={() => toggleModal(false)}>
-      <ModalHeader onClose={() => toggleModal(false)} title={'Recovery Confirmation'} border={false} />
+      <ModalHeader onClose={() => toggleModal(false)} title={'Recovery Waiver'} border={false} />
 
       <Separator />
 
