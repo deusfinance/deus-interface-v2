@@ -152,7 +152,11 @@ export default function ClaimConfirmationModal({
 
   return (
     <MainModal isOpen={isOpen} onBackgroundClick={() => toggleModal(false)} onEscapeKeydown={() => toggleModal(false)}>
-      <ModalHeader onClose={() => toggleModal(false)} title={'Recovery Waiver'} border={false} />
+      <ModalHeader
+        onClose={() => toggleModal(false)}
+        title={'Claims from bDEI and LegacyDEI: Recovery Waiver'}
+        border={false}
+      />
 
       <Separator />
 
