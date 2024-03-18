@@ -400,28 +400,32 @@ const TableRowContentWrapper = ({ token, amount }: { token: Token; amount: strin
           </Row>
           <SmallChainWrap>
             <InlineRow active>
-              <div>
-                {hasSnapshot && <span>Based on the June 7 snapshot on </span>}
-                <span style={{ color: ChainInfo[SupportedChainId.FANTOM].color }}>
-                  {ChainInfo[SupportedChainId.FANTOM].label}{' '}
-                </span>
-                <Image
-                  src={ChainInfo[SupportedChainId.FANTOM].logoUrl}
-                  width={getImageSize() + 'px'}
-                  height={getImageSize() + 'px'}
-                  alt={`${ChainInfo[SupportedChainId.FANTOM].label}-logo`}
-                />{' '}
-                &{' '}
-                <span style={{ color: ChainInfo[SupportedChainId.ARBITRUM].color }}>
-                  {ChainInfo[SupportedChainId.ARBITRUM].label}{' '}
-                </span>
-                <Image
-                  src={ChainInfo[SupportedChainId.ARBITRUM].logoUrl}
-                  width={getImageSize() + 'px'}
-                  height={getImageSize() + 'px'}
-                  alt={`${ChainInfo[SupportedChainId.ARBITRUM].label}-logo`}
-                />
-              </div>
+              {hasSnapshot ? (
+                <div>
+                  <span>Based on the June 7 snapshot on </span>
+                  <span style={{ color: ChainInfo[SupportedChainId.FANTOM].color }}>
+                    {ChainInfo[SupportedChainId.FANTOM].label}{' '}
+                  </span>
+                  <Image
+                    src={ChainInfo[SupportedChainId.FANTOM].logoUrl}
+                    width={getImageSize() + 'px'}
+                    height={getImageSize() + 'px'}
+                    alt={`${ChainInfo[SupportedChainId.FANTOM].label}-logo`}
+                  />{' '}
+                  &{' '}
+                  <span style={{ color: ChainInfo[SupportedChainId.ARBITRUM].color }}>
+                    {ChainInfo[SupportedChainId.ARBITRUM].label}{' '}
+                  </span>
+                  <Image
+                    src={ChainInfo[SupportedChainId.ARBITRUM].logoUrl}
+                    width={getImageSize() + 'px'}
+                    height={getImageSize() + 'px'}
+                    alt={`${ChainInfo[SupportedChainId.ARBITRUM].label}-logo`}
+                  />
+                </div>
+              ) : (
+                <div>On All chains</div>
+              )}
             </InlineRow>
           </SmallChainWrap>
         </TokenContainer>
@@ -445,7 +449,7 @@ const TableRowContentWrapper = ({ token, amount }: { token: Token; amount: strin
               {formatNumber(
                 formatBalance(
                   toBN(amount)
-                    .div(token?.symbol === 'LegacyDEI' ? 217 : 185)
+                    .div(token?.symbol === 'LegacyDEI' ? 217 : token?.symbol === 'bDEI' ? 185 : 1)
                     .times(1e-18)
                     .toString()
                 )
