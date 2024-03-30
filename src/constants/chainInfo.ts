@@ -323,5 +323,20 @@ export const ChainInfo: { [chainId: number]: Info } = {
     },
     rpcUrl: 'https://optimism.llamarpc.com',
     blockExplorerUrl: 'https://optimistic.etherscan.io/',
+    color: '#ea3431',
+  },
+  [SupportedChainId.BLAST]: {
+    chainId: '0x13e31',
+    chainName: 'Blast',
+    label: 'Blast',
+    logoUrl: require('/public/static/images/networks/blast.svg'),
+    nativeCurrency: {
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    rpcUrl: 'https://rpc.blast.io	',
+    blockExplorerUrl: 'https://blastscan.io/',
+    color: '#f8f860',
   },
 }

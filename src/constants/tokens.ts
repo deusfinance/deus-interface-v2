@@ -28,6 +28,13 @@ export const DEUS_TOKEN = new Token(
   'DEUS'
 )
 export const DEUS_TOKEN_OP = new Token(SupportedChainId.OP, DEUS_ADDRESS[SupportedChainId.OP], 18, 'DEUS', 'DEUS')
+export const DEUS_TOKEN_BLAST = new Token(
+  SupportedChainId.BLAST,
+  DEUS_ADDRESS[SupportedChainId.BLAST],
+  18,
+  'DEUS',
+  'DEUS'
+)
 
 // This is the new token
 export const DEUS_TOKEN_FTM = new Token(
@@ -175,6 +182,7 @@ export const Tokens: { [key: string]: TokenMap } = {
   },
   DEUS: duplicateTokenByChainId('0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44', 18, 'DEUS', 'DEUS', SUPPORTED_CHAIN_IDS, [
     DEUS_TOKEN_OP,
+    DEUS_TOKEN_BLAST,
   ]),
   AxlDEUS: duplicateTokenByAddressMap(AxlWrappedDeus_ADDRESS, 18, 'axlDEUS', 'Axelar Wrapped DEUS'),
   // newDEUS: duplicateTokenByAddressMap(newDeus_ADDRESS, 18, 'newDEUS', 'newDEUS'),

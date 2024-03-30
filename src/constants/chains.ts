@@ -51,6 +51,7 @@ export enum SupportedChainId {
   BASE = 8453,
 
   OP = 10,
+  BLAST = 81457,
 }
 
 export const SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedChainId).filter(
@@ -79,6 +80,7 @@ export const BridgeChains = [
   SupportedChainId.BASE,
   SupportedChainId.OP,
   SupportedChainId.FANTOM,
+  SupportedChainId.BLAST,
 ]
 
 export const FALLBACK_CHAIN_ID = SupportedChainId.FANTOM

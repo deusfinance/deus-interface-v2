@@ -51,6 +51,7 @@ export const DEUS_ADDRESS: AddressMap = {
     SupportedChainId.FANTOM,
   ]),
   [SupportedChainId.OP]: '0x66846420bC2ce961FFd2E4042Bfde0A0E96Fb2c6',
+  [SupportedChainId.BLAST]: '0xDE55B113A27Cc0c5893CAa6Ee1C020b6B46650C0',
 }
 
 /* =====================================
@@ -243,6 +244,7 @@ export const AxlGateway_ADDRESS: AddressMap = {
   [SupportedChainId.BASE]: '0x0013efdA0FE688894b85707B89d7F0fb1a39f354',
   [SupportedChainId.OP]: '0x33257c271cD2414B444a00346dDaE6f2BB757372',
   [SupportedChainId.FANTOM]: '0x33257c271cD2414B444a00346dDaE6f2BB757372',
+  [SupportedChainId.BLAST]: '0x7B38CBF4250aEA97a80927c09baD72467eaEf5A6',
 }
 
 // export const Bridge_ADDRESS: AddressMap = {
@@ -263,11 +265,12 @@ export const AxlWrappedDeus_ADDRESS: AddressMap = {
   [SupportedChainId.ARBITRUM]: '0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44',
   [SupportedChainId.BASE]: '0xebD4A18034C78A415088DF8508f102421eD693b1',
   [SupportedChainId.OP]: '0xebD4A18034C78A415088DF8508f102421eD693b1',
+  [SupportedChainId.BLAST]: '0xebD4A18034C78A415088DF8508f102421eD693b1',
 }
 
-export const newDeus_ADDRESS: AddressMap = {
-  [SupportedChainId.FANTOM]: '0xDE55B113A27Cc0c5893CAa6Ee1C020b6B46650C0',
-}
+// export const newDeus_ADDRESS: AddressMap = {
+//   [SupportedChainId.FANTOM]: '0xDE55B113A27Cc0c5893CAa6Ee1C020b6B46650C0',
+// }
 
 export const DeusConversion_ADDRESS: AddressMap = {
   [SupportedChainId.FANTOM]: '0x6c9E3B6b6C528ffdF0b5248a2B47069fcEc9e835',
