@@ -857,9 +857,15 @@ const TableRowContentWrapper = ({
           <SimpleButton disabled width={'80px'}>
             Split
           </SimpleButton>
-          <SimpleButton disabled width={'80px'}>
-            Transfer
-          </SimpleButton>
+          {migrationPreference === MigrationType.SYMM ? (
+            <SimpleButton onClick={() => toggleReviewModal(true, ModalType.TRANSFER)} width={'80px'}>
+              Transfer
+            </SimpleButton>
+          ) : (
+            <SimpleButton disabled width={'80px'}>
+              Transfer
+            </SimpleButton>
+          )}
           {migrationPreference !== MigrationType.SYMM ? (
             !claimStatus ? (
               <SimpleButton width={'140px'} onClick={() => setSelected(ActionTypes.CLAIM)}>
