@@ -854,7 +854,7 @@ const TableRowContentWrapper = ({
         </MyMigratedAmount>
 
         <ButtonWrap>
-          <SimpleButton disabled width={'80px'}>
+          <SimpleButton onClick={() => toggleReviewModal(true, ModalType.SPLIT)} width={'80px'}>
             Split
           </SimpleButton>
           {migrationPreference === MigrationType.SYMM ? (
