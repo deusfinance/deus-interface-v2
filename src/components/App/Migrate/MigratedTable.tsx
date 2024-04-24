@@ -854,9 +854,15 @@ const TableRowContentWrapper = ({
         </MyMigratedAmount>
 
         <ButtonWrap>
-          <SimpleButton onClick={() => toggleReviewModal(true, ModalType.SPLIT)} width={'80px'}>
-            Split
-          </SimpleButton>
+          {migrationPreference === MigrationType.SYMM ? (
+            <SimpleButton onClick={() => toggleReviewModal(true, ModalType.SPLIT)} width={'80px'}>
+              Split
+            </SimpleButton>
+          ) : (
+            <SimpleButton disabled width={'80px'}>
+              Split
+            </SimpleButton>
+          )}
           {migrationPreference === MigrationType.SYMM ? (
             <SimpleButton onClick={() => toggleReviewModal(true, ModalType.TRANSFER)} width={'80px'}>
               Transfer
