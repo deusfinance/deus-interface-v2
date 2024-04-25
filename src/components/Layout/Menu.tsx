@@ -132,10 +132,10 @@ export default function Menu() {
               <div>cLQDR</div>
             </Row>
           </Link> */}
-          <ExternalLink href="https://app.firebird.finance/swap?inputCurrency=FTM&outputCurrency=0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44&net=250">
+          <ExternalLink href="https://swap.defillama.com/?chain=bsc&from=0x0000000000000000000000000000000000000000&to=0xde5ed76e7c05ec5e4572cfc88d1acea165109e44">
             <Row onClick={() => toggle()}>
               <ExternalItem>
-                <div>Buy $DEUS (firebird)</div>
+                <div>Buy $DEUS</div>
                 <ExternalLinkIcon />
               </ExternalItem>
             </Row>

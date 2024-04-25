@@ -14,7 +14,7 @@ import BigNumber from 'bignumber.js'
 import { formatUnits } from '@ethersproject/units'
 import { DeusText } from '../Stake/RewardBox'
 // import { CustomTooltip2, InfoIcon, SymmText, ToolTipWrap } from './HeaderBox'
-import { SymmText } from './HeaderBox'
+import { CustomTooltip2, InfoIcon, SymmText, ToolTipWrap } from './HeaderBox'
 import { InputField } from 'components/Input'
 import { BaseButton, PrimaryButtonWide } from 'components/Button'
 import { RowBetween } from 'components/Row'
@@ -29,6 +29,7 @@ import ActionModal from './ActionModal'
 import TransferModal from './TransferModal'
 import PreferenceModal from './PreferenceModal'
 import { ActionTypes } from './ActionSetter'
+import { ArrowRight } from 'react-feather'
 
 const Wrapper = styled.div`
   display: flex;
@@ -442,7 +443,7 @@ export default function MigratedTable({ setSelected }: { setSelected: (value: Ac
           </WalletConnectButton>
         )}
       </TableInputWrapper>
-      {/* {hasData && (
+      {hasData && (
         <TotalMigrationAmountWrapper>
           <p>My Total Migrated Amount to SYMM:</p>
           <div>
@@ -471,7 +472,7 @@ export default function MigratedTable({ setSelected }: { setSelected: (value: Ac
             </React.Fragment>
           </div>
         </TotalMigrationAmountWrapper>
-      )} */}
+      )}
       {hasData && <LargeContent>{getAllUpperRow()}</LargeContent>}
       <Wrapper>
         <TableWrapper>
