@@ -26,13 +26,13 @@ export const injected = new InjectedConnector({
 export const walletconnect = new WalletConnectV2Connector({
   options: {
     projectId: 'c84c04f4e4c5f8d2ee32d6d667de8a57',
-    chains: [250],
-    rpcMap: {250: 'https://rpc.ftm.tools'},
-    optionalChains: [250],
+    chains: [ 250 ],
+    rpcMap: { 250: 'https://rpc.ftm.tools', 2222: 'https://evm.kava.io', 81457: 'https://rpc.blast.io' },
+    optionalChains: [1, 56, 137, 250, 43114, 2222, 8453, 10, 81457],
     showQrModal: true,
     qrModalOptions: {
       themeVariables: {
-        '--wcm-z-index': '9999999',
+        '--wcm-z-index': '9999',
       },
     },
   },
