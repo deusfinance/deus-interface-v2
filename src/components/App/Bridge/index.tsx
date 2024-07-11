@@ -16,8 +16,8 @@ import { PrimaryButton } from 'components/Button'
 import { DotFlashing } from 'components/Icons'
 import InputBox from 'components/InputBox'
 import { SupportedChainId } from 'constants/chains'
-import { useAxlGatewayContract } from 'hooks/useContract'
-import useBridgeCallback from 'hooks/useBridgeCallback'
+import { useAxlGatewayContract, useMetaBridgeGatewayContract } from 'hooks/useContract'
+import useBridgeCallback, { useMetaBridgeCallback } from 'hooks/useBridgeCallback'
 import MigrationHeader from './MigrationHeader'
 import { ChainInfo } from 'constants/chainInfo'
 import { Link as LinkIcon } from 'components/Icons'
@@ -66,10 +66,17 @@ export default function SwapPage() {
   const debouncedAmountIn = useDebounce(amountIn, 500)
 
   const [inputCurrency, setInputCurrency] = useState(
-    chainId && chainId === SupportedChainId.FANTOM ? DEUS_TOKEN_FTM : Tokens['DEUS'][chainId ?? SupportedChainId.BSC]
+    chainId && chainId === SupportedChainId.FANTOM
+      ? DEUS_TOKEN_FTM
+      : chainId === SupportedChainId.BSC_TESTNET
+      ? Tokens['EERC'][SupportedChainId.BSC_TESTNET]
+      : Tokens['DEUS'][chainId ?? SupportedChainId.BSC]
   )
-  const [outputCurrency, setOutputCurrency] = useState(Tokens['AxlDEUS'][chainId ?? SupportedChainId.BSC])
-  console.log(inputCurrency?.address)
+  const [outputCurrency, setOutputCurrency] = useState(
+    chainId && chainId === SupportedChainId.BSC_TESTNET
+      ? Tokens['DEUS_OFT'][SupportedChainId.BSC_TESTNET]
+      : Tokens['AxlDEUS'][chainId ?? SupportedChainId.BSC]
+  )
 
   const inputBalance = useCurrencyBalance(account ?? undefined, inputCurrency)
 
@@ -88,11 +95,21 @@ export default function SwapPage() {
     error: swapCallbackError,
   } = useBridgeCallback(inputCurrency, inputAmount)
 
+  const {
+    state: metaSwapCallbackState,
+    callback: metaSwapCallback,
+    error: metaSwapCallbackError,
+  } = useMetaBridgeCallback(inputCurrency, inputAmount)
+
   const [awaitingApproveConfirmation, setAwaitingApproveConfirmation] = useState<boolean>(false)
   const [awaitingBridgeConfirmation, setAwaitingBridgeConfirmation] = useState<boolean>(false)
 
-  const AxlGatewayContract = useAxlGatewayContract()
-  const spender = useMemo(() => AxlGatewayContract?.address, [AxlGatewayContract])
+  const axlGatewayContract = useAxlGatewayContract()
+  const metaBridgeGatewayContract = useMetaBridgeGatewayContract()
+  const spender = useMemo(
+    () => (chainId === SupportedChainId.BSC_TESTNET ? metaBridgeGatewayContract?.address : axlGatewayContract?.address),
+    [axlGatewayContract?.address, chainId, metaBridgeGatewayContract]
+  )
 
   const currencyBalances = useCurrencyBalances(spender, [inputCurrency, outputCurrency])
 
@@ -135,6 +152,24 @@ export default function SwapPage() {
     }
   }, [swapCallbackState, swapCallback, swapCallbackError])
 
+  const handleMetaBridgeSwap = useCallback(async () => {
+    console.log('called handleMetaBridgeSwap')
+    console.log(metaSwapCallbackState, metaSwapCallbackError)
+    if (!metaSwapCallback) return
+    try {
+      setAwaitingBridgeConfirmation(true)
+      const txHash = await metaSwapCallback()
+      setAwaitingBridgeConfirmation(false)
+      console.log({ txHash })
+    } catch (e) {
+      setAwaitingBridgeConfirmation(false)
+      if (e instanceof Error) {
+      } else {
+        console.error(e)
+      }
+    }
+  }, [metaSwapCallbackState, metaSwapCallbackError, metaSwapCallback])
+
   function getApproveButton(): JSX.Element | null {
     if (!isSupportedChainId || !account) {
       return null
@@ -170,11 +205,15 @@ export default function SwapPage() {
         </MainButton>
       )
     }
-    return <MainButton onClick={() => handleSwap()}>Swap</MainButton>
+    return (
+      <MainButton onClick={() => (chainId === SupportedChainId.BSC_TESTNET ? handleMetaBridgeSwap() : handleSwap())}>
+        Swap
+      </MainButton>
+    )
   }
 
   useEffect(() => {
-    if (chainId) {
+    if (chainId && chainId !== SupportedChainId.BSC_TESTNET) {
       if (!reversed) {
         if (chainId !== SupportedChainId.FANTOM) setInputCurrency(Tokens['DEUS'][chainId])
         else setInputCurrency(DEUS_TOKEN_FTM)
@@ -184,8 +223,16 @@ export default function SwapPage() {
         if (chainId !== SupportedChainId.FANTOM) setOutputCurrency(Tokens['DEUS'][chainId])
         else setOutputCurrency(DEUS_TOKEN_FTM)
       }
+    } else if (chainId && chainId === SupportedChainId.BSC_TESTNET) {
+      if (!reversed) {
+        setInputCurrency(Tokens['EERC'][chainId])
+        setOutputCurrency(Tokens['DEUS_OFT'][chainId])
+      } else {
+        setInputCurrency(Tokens['DEUS_OFT'][chainId])
+        setOutputCurrency(Tokens['EERC'][chainId])
+      }
     }
-  }, [chainId])
+  }, [chainId, reversed])
 
   return (
     <Wrapper>

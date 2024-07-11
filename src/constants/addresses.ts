@@ -119,6 +119,7 @@ export const Multicall2: AddressMap = {
   [SupportedChainId.KAVA]: '0x731e0A91Ec7F87868124D85d87D92Aa5cF058351',
   [SupportedChainId.BASE]: '0xD9a273Dd2723a14B63b575ED9e5ac8E1B76f5f12',
   [SupportedChainId.BLAST]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [SupportedChainId.BSC_TESTNET]: '0xcA11bde05977b3631167028862bE2a173976CA11',
 }
 
 export const BaseV1Factory: AddressMap = {
@@ -246,6 +247,10 @@ export const AxlGateway_ADDRESS: AddressMap = {
   [SupportedChainId.OP]: '0x33257c271cD2414B444a00346dDaE6f2BB757372',
   [SupportedChainId.FANTOM]: '0x33257c271cD2414B444a00346dDaE6f2BB757372',
   [SupportedChainId.BLAST]: '0x7B38CBF4250aEA97a80927c09baD72467eaEf5A6',
+}
+
+export const MetaBridgeGateway_ADDRESS: AddressMap = {
+  [SupportedChainId.BSC_TESTNET]: '0xc7AdDb3179041F1BD951f6EAbB896fa277910d27',
 }
 
 // export const Bridge_ADDRESS: AddressMap = {

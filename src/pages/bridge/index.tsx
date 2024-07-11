@@ -60,7 +60,7 @@ export default function Bridge() {
   return (
     <Container>
       <Hero>
-        <Title>DEUS/axlDEUS Bridge</Title>
+        <Title>DEUS/bridgedDEUS Bridge</Title>
       </Hero>
       <Wrapper>
         <InfoBox />

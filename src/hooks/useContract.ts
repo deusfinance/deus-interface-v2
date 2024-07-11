@@ -18,6 +18,7 @@ import VEDEUS_MULTI_REWARDER_ERC20_ABI from 'constants/abi/VEDEUS_MULTI_REWARDER
 import MIGRATOR_ABI from 'constants/abi/MIGRATOR.json'
 // import BRIDGE_ABI from 'constants/abi/BRIDGE.json'
 import AXL_GATEWAY_ABI from 'constants/abi/AXL_GATEWAY.json'
+import META_BRIDGE_GATEWAY from 'constants/abi/META_BRIDGE_GATEWAY.json'
 import DeusConversion from 'constants/abi/DeusConversion.json'
 import ClaimDeus_ABI from 'constants/abi/ClaimDeus.json'
 
@@ -39,6 +40,7 @@ import {
   AxlGateway_ADDRESS,
   DeusConversion_ADDRESS,
   ClaimDeus_ADDRESS,
+  MetaBridgeGateway_ADDRESS,
 } from 'constants/addresses'
 import { LiquidityType, StakingType } from 'constants/stakingPools'
 
@@ -162,6 +164,12 @@ export function useAxlGatewayContract() {
   const { chainId } = useWeb3React()
   const address = useMemo(() => (chainId ? AxlGateway_ADDRESS[chainId] : undefined), [chainId])
   return useContract(address, AXL_GATEWAY_ABI)
+}
+
+export function useMetaBridgeGatewayContract() {
+  const { chainId } = useWeb3React()
+  const address = useMemo(() => (chainId ? MetaBridgeGateway_ADDRESS[chainId] : undefined), [chainId])
+  return useContract(address, META_BRIDGE_GATEWAY)
 }
 
 export function useDeusConversionContract() {

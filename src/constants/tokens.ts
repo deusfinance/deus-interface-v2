@@ -194,4 +194,16 @@ export const Tokens: { [key: string]: TokenMap } = {
     [SupportedChainId.FANTOM]: new Token(250, WRAPPED_NATIVE[250], 18, 'WFTM', 'Wrapped Fantom'),
     [SupportedChainId.BSC]: new Token(56, WRAPPED_NATIVE[56], 18, 'WBNB', 'Wrapped BNB'),
   },
+  EERC: {
+    [SupportedChainId.BSC_TESTNET]: new Token(
+      97,
+      '0x438Bec7eF8e19dD3291836418d9F10cA448dd5fA',
+      18,
+      'EERC',
+      'Example Token'
+    ),
+  },
+  DEUS_OFT: {
+    [SupportedChainId.BSC_TESTNET]: new Token(97, '0xdEb08AebaccCFb20731505b1E6F6498a2B2Bd689', 18, 'DOFT', 'DEUS OFT'),
+  },
 }

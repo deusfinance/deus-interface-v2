@@ -96,6 +96,20 @@ export const ChainInfo: { [chainId: number]: Info } = {
     blockExplorerUrl: 'https://bscscan.com',
     color: '#F7D15B',
   },
+  [SupportedChainId.BSC_TESTNET]: {
+    chainId: '0x61',
+    chainName: 'BNB Smart Chain Testnet',
+    label: 'BSC Testnet',
+    logoUrl: require('/public/static/images/networks/binance.svg'),
+    nativeCurrency: {
+      name: 'tBNB',
+      symbol: 'tBNB',
+      decimals: 18,
+    },
+    rpcUrl: 'https://bsc-testnet-rpc.publicnode.com',
+    blockExplorerUrl: 'https://testnet.bscscan.com',
+    color: '#F7D15B',
+  },
   [SupportedChainId.XDAI]: {
     chainId: '0x64',
     chainName: 'xDAI Chain',

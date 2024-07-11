@@ -81,6 +81,7 @@ export const BridgeChains = [
   SupportedChainId.OP,
   SupportedChainId.FANTOM,
   SupportedChainId.BLAST,
+  SupportedChainId.BSC_TESTNET,
 ]
 
 export const FALLBACK_CHAIN_ID = SupportedChainId.FANTOM
