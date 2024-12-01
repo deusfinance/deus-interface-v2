@@ -207,7 +207,7 @@ export default function NavBar() {
   const bannerText2 =
     'Conversion contract is currently being upgraded; CLAIM newDeus from what you already converted. wait 2 hours before converting again so you can do everything through the ui'
 
-  const [showTopBanner3, setShowTopBanner3] = useState(true)
+  const [showTopBanner3, setShowTopBanner3] = useState(false)
   const bannerText3 =
     'You will claim all DEUS from your bDEI, DEI, DEUS and xDEUS migrated to either DEUS or to the balanced option \n (bDEI and legacy DEI up to the June 7 snapshot)'
 
