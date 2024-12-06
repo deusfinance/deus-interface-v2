@@ -63,21 +63,18 @@ export default function Migrate() {
   // }, [account, showModal])
 
   return (
-    <>
-      <Container>
-        <MigrationWrap>
-          <HeaderBox />
-          <ActionSetter selected={selected} setSelected={setSelected} />
+    <Container>
+      <MigrationWrap>
+        <HeaderBox />
+        <ActionSetter selected={selected} setSelected={setSelected} />
 
-          <Wrapper>
-            {/* {selected === ActionTypes.EASY && <CardBox />} */}
-            {/* {selected === ActionTypes.MANUAL && <Table />} */}
-            {selected === ActionTypes.CLAIM && <ClaimWrap />}
-            {selected === ActionTypes.DASHBOARD && <MigratedTable setSelected={setSelected} />}
-          </Wrapper>
-        </MigrationWrap>
-      </Container>
-      {/* <ConfirmationModal isOpen={isOpenReviewModal} toggleModal={(action: boolean) => toggleReviewModal(action)} /> */}
-    </>
+        <Wrapper>
+          {/* {selected === ActionTypes.EASY && <CardBox />} */}
+          {/* {selected === ActionTypes.MANUAL && <Table />} */}
+          {selected === ActionTypes.CLAIM && <ClaimWrap />}
+          {selected === ActionTypes.DASHBOARD && <MigratedTable setSelected={setSelected} />}
+        </Wrapper>
+      </MigrationWrap>
+    </Container>
   )
 }
