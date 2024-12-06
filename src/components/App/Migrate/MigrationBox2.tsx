@@ -3,7 +3,7 @@ import useCurrencyLogo from 'hooks/useCurrencyLogo'
 import { formatBalance, formatNumber, toBN } from 'utils/numbers'
 import { MigrationType } from './Table'
 import { AmountBox, Card, ImageWrapper, InnerRow, getImageSize } from './MigrationBox'
-import { useBalancedRatio } from 'hooks/useMigratePage'
+// import { useBalancedRatio } from 'hooks/useMigratePage'
 import { getMigratedAmounts } from './MigratedTable'
 import { Token } from '@sushiswap/core-sdk'
 import { useMemo } from 'react'
@@ -36,11 +36,11 @@ export default function MigrationBox2({
     else if (migrationPreference === MigrationType.SYMM) return text + 'SYMM'
   }
 
-  const balancedRatio = useBalancedRatio()
+  // const balancedRatio = useBalancedRatio()
   const tokenChain = token?.chainId
 
   const [totalMigratedToDEUS, totalMigratedToSYMM] = getMigratedAmounts(
-    balancedRatio,
+    // balancedRatio,
     tokenChain,
     token,
     amount,

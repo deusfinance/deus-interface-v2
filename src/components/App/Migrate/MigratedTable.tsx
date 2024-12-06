@@ -675,13 +675,14 @@ function TableRow({
 const MigrationSourceTokens = [Tokens['DEUS'], Tokens['XDEUS'], Tokens['LEGACY_DEI'], Tokens['bDEI_TOKEN']]
 
 export function getMigratedAmounts(
-  balancedRatio: string,
+  // balancedRatio: string,
   chain: number,
   token: Token | undefined,
   amount: number,
   migrationPreference: MigrationType
 ) {
-  const ratio = Number(balancedRatio)
+  // const ratio = Number(balancedRatio)
+  const ratio = 0.1
   let migratedToDEUS = BN_ZERO
   let migratedToSYMM = BN_ZERO
   const migrationInfoAmount = toBN(amount.toString()).toString()
@@ -733,9 +734,9 @@ const TableRowContent = ({
     handleToken()
   }, [])
 
-  const balancedRatio = useBalancedRatio()
+  // const balancedRatio = useBalancedRatio()
   const [migratedToDEUS, migratedToSYMM] = getMigratedAmounts(
-    balancedRatio,
+    // balancedRatio,
     chain,
     token,
     migrationInfo?.amount,
