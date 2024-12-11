@@ -353,31 +353,34 @@ export default function MigratedTable({ setSelected }: { setSelected: (value: Ac
             case Tokens['DEUS'][value.chainId]?.address:
               amount = amount.plus(value.amount)
               amountToDeusOnly = amountToDeusOnly.plus(migrationInfoAmount_toDeus)
-              if (!value?.isEarly) lateAmount = lateAmount.plus(value.amount)
+              if (!value?.isEarly) lateAmount = lateAmount.plus(value.amount).multipliedBy(1 - ratio)
               break
 
             case Tokens['XDEUS'][value.chainId]?.address:
               amount = amount.plus(value.amount)
               amountToDeusOnly = amountToDeusOnly.plus(migrationInfoAmount_toDeus)
-              if (!value?.isEarly) lateAmount = lateAmount.plus(value.amount)
+              if (!value?.isEarly) lateAmount = lateAmount.plus(value.amount).multipliedBy(1 - ratio)
               break
 
             case Tokens['bDEI_TOKEN'][value.chainId]?.address:
               amount = amount.plus(value.amount / MigrationOptions[3].divideRatio)
               amountToDeusOnly = amountToDeusOnly.plus(migrationInfoAmount_toDeus.div(MigrationOptions[3].divideRatio))
-              if (!value?.isEarly) lateAmount = lateAmount.plus(value.amount / MigrationOptions[3].divideRatio)
+              if (!value?.isEarly)
+                lateAmount = lateAmount.plus(value.amount / MigrationOptions[3].divideRatio).multipliedBy(1 - ratio)
               break
 
             case Tokens['LEGACY_DEI'][value.chainId]?.address:
               amount = amount.plus(value.amount / MigrationOptions[2].divideRatio)
               amountToDeusOnly = amountToDeusOnly.plus(migrationInfoAmount_toDeus.div(MigrationOptions[2].divideRatio))
-              if (!value?.isEarly) lateAmount = lateAmount.plus(value.amount / MigrationOptions[2].divideRatio)
+              if (!value?.isEarly)
+                lateAmount = lateAmount.plus(value.amount / MigrationOptions[2].divideRatio).multipliedBy(1 - ratio)
               break
           }
         } else {
           switch (value.token) {
             case Tokens['DEUS'][value.chainId]?.address:
               amount = amount.plus(value.amount)
+
               if (value.migrationPreference === MigrationType.DEUS)
                 amountToDeusOnly = amountToDeusOnly.plus(value.amount)
               if (!value?.isEarly) lateAmount = lateAmount.plus(value.amount)
@@ -415,9 +418,8 @@ export default function MigratedTable({ setSelected }: { setSelected: (value: Ac
   const migrationContextData = useMigrationData()
   const [calculatedSymmPerDeusUnvested, calculatedSymmPerDeusVested, calculatedSymmPerDeusTotal] = useMemo(() => {
     const totalAmountToSymm = totalAmount - totalAmountToDeus
-    const totalLateAmountBalanced = totalLateAmount * 0.9
     const calculatedSymmPerDeusUnvested =
-      Number(migrationContextData?.unvested_symm_per_deus) * (totalAmountToSymm - totalLateAmountBalanced)
+      Number(migrationContextData?.unvested_symm_per_deus) * (totalAmountToSymm - totalLateAmount)
     const calculatedSymmPerDeusVested = Number(migrationContextData?.vested_symm_per_deus) * totalAmountToSymm
     const calculatedSymmPerDeusTotal = calculatedSymmPerDeusVested + calculatedSymmPerDeusUnvested
     return [calculatedSymmPerDeusUnvested, calculatedSymmPerDeusVested, calculatedSymmPerDeusTotal]
