@@ -142,11 +142,9 @@ export default function ClaimConfirmationModal({
 
   const handleCheck = useCallback(async () => {
     handleSign().then((response) => {
-      if (response) {
-        setSignature(response)
-        handleClaimDeus()
-        toggleModal(false)
-      }
+      setSignature(response)
+      handleClaimDeus()
+      toggleModal(false)
     })
   }, [handleClaimDeus, handleSign, toggleModal])
 
