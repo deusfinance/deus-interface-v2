@@ -19,7 +19,7 @@ import { InputField } from 'components/Input'
 import { BaseButton, PrimaryButtonWide } from 'components/Button'
 import { RowBetween } from 'components/Row'
 // import { ArrowRight } from 'react-feather'
-import { useBalancedRatio, useGetEarlyMigrationDeadline } from 'hooks/useMigratePage'
+import { useGetEarlyMigrationDeadline } from 'hooks/useMigratePage'
 import { truncateAddress } from 'utils/account'
 import { Tokens } from 'constants/tokens'
 import { useMigrationData } from 'context/Migration'
@@ -333,8 +333,9 @@ export default function MigratedTable({ setSelected }: { setSelected: (value: Ac
   const [totalAmount, setTotalAmount] = useState(0)
   const [totalLateAmount, setTotalLateAmount] = useState(0)
   const [totalAmountToDeus, setTotalAmountToDeus] = useState(0)
-  const balancedRatio = useBalancedRatio()
-  const ratio = Number(balancedRatio)
+  // const balancedRatio = useBalancedRatio()
+  // const ratio = Number(balancedRatio)
+  const ratio = 0.1
 
   useEffect(() => {
     let amount = BN_ZERO

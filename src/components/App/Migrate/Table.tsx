@@ -21,7 +21,7 @@ import TokenBox from './TokenBox'
 
 import { useTokenBalance } from 'state/wallet/hooks'
 import ManualReviewModal from './ManualReviewModal'
-import { useBalancedRatio, useGetUserMigrations } from 'hooks/useMigratePage'
+import { useGetUserMigrations } from 'hooks/useMigratePage'
 import BigNumber from 'bignumber.js'
 import { formatBalance } from 'utils/numbers'
 import { useSupportedChainId } from 'hooks/useSupportedChainId'
@@ -271,8 +271,10 @@ export default function Table() {
   const [isOpenReviewModal, toggleReviewModal] = useState(false)
   const [awaitingSwapConfirmation, setAwaitingSwapConfirmation] = useState(false)
 
-  const balancedRatio = useBalancedRatio()
-  const { userMigrations } = useGetUserMigrations(Number(balancedRatio), account)
+  // const balancedRatio = useBalancedRatio()
+  // const ratio = Number(balancedRatio)
+  const ratio = 0.1
+  const { userMigrations } = useGetUserMigrations(ratio, account)
 
   function handleClickModal(type: MigrationType, inputToken: Token) {
     setType(type)

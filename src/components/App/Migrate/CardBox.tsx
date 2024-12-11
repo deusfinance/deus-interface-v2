@@ -5,7 +5,7 @@ import { DEUS_TOKEN, Tokens, SYMM_TOKEN } from 'constants/tokens'
 import MigrationCard from './MigrationCard'
 import useWeb3React from 'hooks/useWeb3'
 import { useTokenBalances } from 'state/wallet/hooks'
-import { useBalancedRatio, useGetUserMigrations } from 'hooks/useMigratePage'
+import { useGetUserMigrations } from 'hooks/useMigratePage'
 import CongratsCard from './CongratsCard'
 import { isMobile } from 'react-device-detect'
 import { MigrationOptions, MigrationVersion } from 'constants/migrationOptions'
@@ -52,8 +52,10 @@ export default function CardBox() {
     })
   }, [sourceBalances, chainSourceTokens])
 
-  const balancedRatio = useBalancedRatio()
-  const { userTotalMigration_toDeus, userTotalMigration_toSymm } = useGetUserMigrations(Number(balancedRatio), account)
+  // const balancedRatio = useBalancedRatio()
+  // const ratio = Number(balancedRatio)
+  const ratio = 0.1
+  const { userTotalMigration_toDeus, userTotalMigration_toSymm } = useGetUserMigrations(ratio, account)
 
   const [isFullyEmpty, isFullyMigrated] = useMemo(() => {
     for (let index = 0; index < inputAmounts.length; index++) {
