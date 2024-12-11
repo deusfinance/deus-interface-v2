@@ -415,8 +415,9 @@ export default function MigratedTable({ setSelected }: { setSelected: (value: Ac
   const migrationContextData = useMigrationData()
   const [calculatedSymmPerDeusUnvested, calculatedSymmPerDeusVested, calculatedSymmPerDeusTotal] = useMemo(() => {
     const totalAmountToSymm = totalAmount - totalAmountToDeus
+    const totalLateAmountBalanced = totalLateAmount * 0.9
     const calculatedSymmPerDeusUnvested =
-      Number(migrationContextData?.unvested_symm_per_deus) * (totalAmountToSymm - totalLateAmount)
+      Number(migrationContextData?.unvested_symm_per_deus) * (totalAmountToSymm - totalLateAmountBalanced)
     const calculatedSymmPerDeusVested = Number(migrationContextData?.vested_symm_per_deus) * totalAmountToSymm
     const calculatedSymmPerDeusTotal = calculatedSymmPerDeusVested + calculatedSymmPerDeusUnvested
     return [calculatedSymmPerDeusUnvested, calculatedSymmPerDeusVested, calculatedSymmPerDeusTotal]
